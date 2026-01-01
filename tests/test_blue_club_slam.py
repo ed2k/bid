@@ -23,9 +23,10 @@ class TestBlueClubSlam(unittest.TestCase):
 
     def test_ace_asking_responses(self):
         # History: 1C -> 1S -> 4NT (Ace Ask)
-        hist = [Call(CallType.BID, 1, Strain.CLUBS), 
-                Call(CallType.BID, 1, Strain.SPADES), 
-                Call(CallType.BID, 4, Strain.NT)]
+        # History: 1C -> Pass -> 1S -> Pass -> 4NT (Ace Ask) -> Pass
+        hist = [Call(CallType.BID, 1, Strain.CLUBS), Call(CallType.PASS),
+                Call(CallType.BID, 1, Strain.SPADES), Call(CallType.PASS),
+                Call(CallType.BID, 4, Strain.NT), Call(CallType.PASS)]
         
         # 1. 5C (1 or 4 Aces) -> 1 Ace
         # S: A432 (A) H: KQ3 D: KQJ2 C: 432. (1 Ace)
@@ -60,7 +61,9 @@ class TestBlueClubSlam(unittest.TestCase):
 
     def test_1c_1s_sequences(self):
         # History: 1C -> 1S (3 Controls)
-        hist = [Call(CallType.BID, 1, Strain.CLUBS), Call(CallType.BID, 1, Strain.SPADES)]
+        # History: 1C -> Pass -> 1S -> Pass
+        hist = [Call(CallType.BID, 1, Strain.CLUBS), Call(CallType.PASS),
+                Call(CallType.BID, 1, Strain.SPADES), Call(CallType.PASS)]
         
         # 1. 1NT Rebid (18-20 Balanced)
         # S: KQJ H: KQJ D: QJ432 C: A2 (18 HCP Balanced, 1 Ace=2+K=1+K=1=4 Ctrl? No.
@@ -85,12 +88,14 @@ class TestBlueClubSlam(unittest.TestCase):
 
     def test_game_quant_sequences(self):
         # 1. 1S - 4S (Fast Arrival)
-        hist_1s = [Call(CallType.BID, 1, Strain.SPADES)]
+        # 1. 1S - 4S (Fast Arrival)
+        hist_1s = [Call(CallType.BID, 1, Strain.SPADES), Call(CallType.PASS)]
         # S: QJ987 H: K32 D: 432 C: 32 (6 HCP, 5S). Weak.
         self.assertBid("SQJ987 HK32 D432 C32", "4S", hist_1s)
         
         # 2. 1NT - 3NT (To Play)
-        hist_1nt = [Call(CallType.BID, 1, Strain.NT)]
+        # 2. 1NT - 3NT (To Play)
+        hist_1nt = [Call(CallType.BID, 1, Strain.NT), Call(CallType.PASS)]
         # S: K32 H: K32 D: K32 C: K432 (12 HCP Bal). 16+12=28. Game.
         self.assertBid("SK32 HK32 DK32 CK432", "3NT", hist_1nt)
         
@@ -99,7 +104,8 @@ class TestBlueClubSlam(unittest.TestCase):
         self.assertBid("SKQ2 HKQ2 DKQ2 CQ432", "4NT", hist_1nt)
         
         # 4. 2NT - 3NT (To Play)
-        hist_2nt = [Call(CallType.BID, 2, Strain.NT)]
+        # 4. 2NT - 3NT (To Play)
+        hist_2nt = [Call(CallType.BID, 2, Strain.NT), Call(CallType.PASS)]
         # S: Q32 H: Q32 D: Q32 C: Q432 (8 HCP). 21+8=29. Game.
         self.assertBid("SQ32 HQ32 DQ32 CQ432", "3NT", hist_2nt)
 
