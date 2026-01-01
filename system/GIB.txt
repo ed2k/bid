@@ -1,0 +1,354 @@
+GIB System Notes
+
+
+We have created a standard convention card for GIB. Click here to see GIB's convention card.
+
+In general, the GIB robots on BBO use the 2/1 system described below. You can click on any of GIB's bids for an explanation, and pause your mouse over a bid you plan on making to see how it will understand it.
+
+Click here for help understanding these explanations.
+Please drop us a line at support@bridgebase.com if you spot any errors in this document.
+
+
+These notes correspond to GIB version 40, deployed Feb 14, 2019.
+
+
+
+
+Overview
+
+2/1 Game Force with 5 card majors, strong NT, strong (17+) jump shift, weak 2 bids and a strong artificial 2♣.
+
+
+HCP vs Total Points
+Gib uses both old fashioned HCP (A=4, K=3, Q=2, J=1)) and “Total points” (HCP+3 for void, 2 for singleton, 1 for doubleton, but short suits containing an honor are reduced by 1 point). It will usually force to game if it thinks it has 25 Total Points between the two hands.
+
+
+
+
+How GIB Defends
+It's difficult to describe precisely how GIB defends. It doesn't use rules and guidelines, like humans often do. It simulates hands based on the auction, using double dummy analysis to determine the average result of each defensive play, and chooses the one with the best average. Sometimes this simulation comes up with the same choice that a human would make (there's a good reason for some of the guidelines -- they actually work well), but not always (some of our rules of thumb have become popular simply because they're easy to remember and "good enough"). When it has a choice of equivalent cards, it will choose based on leading and signalling conventions.
+
+GIB doesn't interpret your signals or make many inferences from the play, it uses simulations based on the auction. However, it's usually able to figure out that when you lead an honor, it's part of a sequence.
+
+GIB usually leads passively against NT (read the book Winning Notrump Leads to understand why). Don't assume it's leading its longest suit. When you lead, it doesn't assume you're leading your best suit, which is why it doesn't always return the suit like a human would.
+
+In suit contracts, GIB's opening lead is frequently a side singleton or doubleton, to try to get a ruff. When it leads a suit bid by the opponents, this is almost always the reason. Read the book Winning Suit Contract Leads for insight on the way GIB leads against suits.
+
+If it leads an honor that's part of a sequence, it uses standard honor leads (K from AKx, A from AK doubleton). If it leads from a long suit, it leads 4th best (but see above: it doesn't always lead its long suit). When leading from 3 small, it leads low against both suit and NT contracts.
+
+It doesn't use any signals when making discards, it just tries to make safe discards. In a suit contract it will frequently discard from a short suit while it has trumps left. Otherwise, it tends to discard from a long suit that's safe to shorten.
+
+When it's following to partner's opening lead, it will usually give an attitude signal:
+
+High spot card with an Ace or King
+High spot card with a Queen behind dummy's Ace or King
+Low in any other situation
+Note that it doesn't give count in this situation, so it's hard to know when you can give it a ruff.
+
+
+When it's trying to win the trick in third hand, it will play the lowest of equals. Otherwise, when following suit it usually gives standard count signals (high = even); an exception is when it's forced to play equivalent cards in a doubleton, it will randomize them because of "restricted choice".
+
+
+
+Bidding
+Basic Approach
+
+Opening bids
+
+1♣
+
+could be 3 if 4333,3433 or 4423. 2♣ response is forcing, inverted
+
+1♦
+
+usually 4 unless 4432. Opens 1♦ with 4-4 in the minors. 2♦ response is forcing, inverted. 2♣ response is game forcing.
+
+1♥ 1♠
+
+normally show 5 in all seats. Opens 1♠ with 5-5 in spades and clubs. 1M-2M direct raise shows 7-10 points. 1N response is forcing. Jacoby 2NT. Splinters.
+
+Two-way game tries.
+1NT
+
+balanced 15-17 HCP, may have a 5-card major (GIB treats 17 with 5-card major as 18). Followups
+
+2♣
+
+strong, artificial. 22+ HCP
+
+2♦ 2♥ 2♠
+
+weak 2 bid. Disciplined, with honors in the suit
+
+2NT
+
+balanced 20-21 HCP, may have a 5-card major.  Followups
+
+
+
+
+
+Responses and Rebids
+
+Opening jump rebid (1♣-1any-3♣ for example) promises 6+ card, 17-20 HCP
+
+Opening major rebid after 2/1 response does not promise 6 cards in the suit.
+
+Jacoby 2NT
+
+Raising responder's suit usually promises 4 cards, but will occasionally raise with only 3
+
+Competitive Auctions
+
+1-level overcall shows 5+; 8-17 HCP; 9-19 TP. However, might overcall 1-major with decent hand and a strong 4-card suit.
+
+GIB uses the law of total tricks.
+
+Takeout doubles to 4♥
+
+Negative X and Responsive X up to 3♠, Support X up to 2♥ (GIB may do support X with Kx).
+
+Weak jump overcalls (aggressive, 3-9 HCP, no allowance for vulnerability)
+
+Cappelletti when opponents open 1NT (aka Hamilton)
+
+Lebensohl after 1NT, double of weak 2, and after reverse.
+
+Michaels cue bid (over a weak 2 in a major, 4 of the same major shows a good hand with both minors, while 4NT shows a weaker hand with both minors).
+
+Unusual NT (when non-vulnerable GIB only does Unusual NT with intermediate hands, xx-KQxxxx KQxxx for example, but it needs a better hand when vulnerable)
+
+Unusual versus Unusual, lower cue = limit raise or better (GIB does UVU, but doesn't alert it with this name)
+
+Sandwich 1NT (by passed hand only)
+
+Truscott after partner's opening doubled (aka Jordan)
+
+
+Other conventions and treatments
+
+Fourth Suit Forcing (1♣-1♦-1♥-1♠ is artificial game force, 1♣-1♦-1♥-2♠ is game forcing with spades)
+
+New minor forcing (one-way)
+
+Roman Key Card Blackwood. GIB doesn't like to use Gerber, but it will respond appropriately
+
+Strong (Soloway) jump shifts by unpassed hand, fit jumps by passed hand (except jumps to 3♣, which are natural and invitational).
+Reverse Drury by passed hand in uncontested auctions.
+
+Notes
+
+Vulnerability does not affect most opening/overcall decisions. GIB tends to consider vulnerability and form of scoring only when thinking about leaving in a double for penalties, and other high-level competitive decisions (they get used when performing simulations and estimating the expected value of different outcomes). Some bidding rules, such as the decision whether to use Michaels or Unusual NT, take vulnerability explicitly into account; these were decided on a case-by-case basis, there's no general rule.
+
+Conventions that GIB does not play
+
+Gambling 3NT
+
+Namyats
+
+Bergen or Reverse Bergen Raises
+
+DONT
+
+Puppet Stayman
+
+Two-way Game Tries
+After a single raise of a major suit, GIB plays two-way game tries.
+
+
+
+The next step (1♥-2♥-2♠, 1♠-2♠-2NT) is a short-suit game try, showing unspecified shortness. Responder can bid the next step above that (2NT or 3♣) to ask where the shortness is. Opener bids the short suit, or bids his major if the short suit is one of the step suits.
+Any other bid below 3 of the major is a long suit game try, at least a 3-card suit with some honors. After 1♥-2♥, 2NT is a LSGT in spades (since 2♠ would be a short-suit game try).
+3 of the major is a general strength game try, showing about 17 points with no singleton or void (GIB rarely makes this bid, since this would probably be a 1NT opener).
+
+
+
+Roman Keycard Blackwood (RKCB)
+
+
+
+RKCB is a 4NT bid that, unlike regular Blackwood, asks for "keycards" instead of Aces. There are always 5 keycards - the 4 Aces plus the King of the agreed trump suit. If no trump suit has been clearly agreed, the King of the most recently bid suit is typically counted as the 5th keycard.
+
+Responses to 4NT RKCB 0314:
+
+5♣  0 or 3 keycards
+5♦  1 or 4 keycards
+5♥  2 or 5 keycards, but no Queen of the agreed suit
+5♠  2 or 5 keycards plus Queen of the agreed suit
+5NT An even number of keycards plus an unspecified void
+6x An odd number of keycards with a void. If 6x is below 6 of the agreed suit then the void is in the suit bid. If 6x is a bid in the agreed suit then the void is in an unspecified higher-ranking suit.
+
+
+After the 5♣ and 5♦ responses, the 4NT bidder can bid the next step that is not a signoff in order to ask for the Queen of the agreed suit. Then:
+
+Bidding the agreed suit at the cheapest level denies the Queen of the agreed suit.
+Bidding a new suit promises the Queen of the agreed suit plus the King of the suit bid.
+Bidding 5NT promises the Queen of the agreed suit and denies a side King that can be shown below 6 of the agreed suit.
+     
+
+A subsequent 5NT bid by the 4NT bidder (regardless of whether or not an ask for the Queen of the agreed suit has taken place) asks for specific Kings. The 5NT bid promises that all of the 5 keycards and the Queen of the agreed suit are accounted for. Then:
+
+The responder to RKCB is entitled to bid a grand slam if he thinks that 13 tricks rate to be available.
+If the responder to RKCB has a King that is lower-ranking than the agreed suit, he should bid that suit at the 6-level. If he has more than one such King, he should bid his lowest-ranking King.
+Otherwise the responder to RKCB should bid 6 of the agreed suit.
+     
+
+DOPI after interferences:
+
+Interference after 4NT (whether RKCB or regular Blackwood) is handled by the DOPI convention.
+Double with 0 keycards (or ace, playing regular blackwood), pass with 1 keycard (or ace, playing regular blackwood).
+
+
+
+
+After a 1N opening bid
+
+If the opponents overcall 2♣ (Cappelletti any 1-suited hand), Double is Stayman and all other bids as below. If the opponents double, all systems are on; Redouble is used to run out to a minor (opener should bid 2♣, responder passes or corrects to 2♦). After any other interference, Lebensohl is used.
+
+2♣     Stayman (promises at least one 4-card major unless inviting 3NT).
+2♦    No 4-card major
+2♥/2♠    Invitational with 5 of the suit bid and 4 of the other major
+2NT        Invitational (does not promise a 4-card major)
+3♣/3♦    5+ card suit. Forcing to game
+3♥/3♠    Smolen (forcing to game with 4 of the suit bid and 5 of the other major)
+4NT         Invitational to 6NT.
+2♥    4 hearts (could also have 4 spades)
+2♠         Invitational with 4 spades
+2NT        Invitational, denying 4 spades
+3♣/3♦    5+ card suit. Forcing to game
+3♥         Invitational
+3♠         Artificial slam try with at 4+ hearts, usually balanced
+4♣/4♦   Splinters (singleton or void in the suit bid, 4+ hearts, interest in slam)
+4NT        Invitational to 6NT
+2♠    4 spades (denies 4 hearts)
+2NT      Invitational (does not promise 4 hearts)
+3♣/3♦   5+ card suit. Forcing to game
+3♥        Artificial slam try with 4+ spades, usually balanced.
+3♠        Invitational
+4♣/4♦/4♥    Splinters (singleton or void in the suit bid, 4+ spades, interest in slam)
+4NT        Invitational to 6NT
+ 2♦    Jacoby Transfer Bid (promises 5+ hearts). Opener would normally bid 2♥, but can superaccept with a maximum and 4-card heart support. After 2♥:
+2♠        5+ hearts, 5+ spades, invitational to game.
+2NT        Exactly 5 hearts, invitational to game.
+3♣/3♦    5+ hearts, 4+ card suit. Forcing to game.
+3♥        Invitational with 6+ hearts
+3NT        Exactly 5 hearts. Choice of games (4♥ or 3NT).
+3♠/4♣/4♦    Splinters (6+ hearts, singleton or void in the suit bid,  interest in slam)
+4♥        6+ hearts, no singleton or void, mild slam interest
+4NT        Exactly 5 hearts. Invitational to 6♥ or 6NT
+5NT        Choice of slams (6♥ or 6NT)
+ 2♥    Jacoby Transfer Bid (promises 5+ spades). Opener would normally bid 2♠, but can superaccept with a maximum and 4-card spade support. After 2♠:   
+2NT        Exactly 5 spades, invitational to game.
+3♣/3♦    5+ spades, 4+ card suit. Forcing to game.
+3♥        5+ spades, 5+ hearts. Forcing to game.
+3♠        Invitational with 6+ spades
+3NT        Exactly 5 spades. Choice of games (4♠ or 3NT).
+4♣/4♦/4♥    Splinters (6+ spades, singleton or void in the suit bid,  interest in slam)
+4♠        6+ spades, no singleton or void, mild slam interest
+4NT        Exactly 5 spades. Invitational to 6♠ or 6NT
+5NT        Choice of slams (6♠ or 6NT).
+ 2♠    Minor Suit Stayman (Usually at least 54 in the minors, forcing to game)
+Opener would normally bid a 4+ card minor if he had one, but can bid 2NT with 3343 or 3334 distribution.
+ If responder's next bid is 3 of a major, he is promising a singleton or void in that suit, but not necessarily slam interest
+ 2NT    Minor Suit Transfer (Promises 6+ clubs. Opener must bid 3♣)
+If responder's next bid is 3 of a new suit, he is promising a singleton or void in that suit, but not necessarily slam interest
+ Responder's 3NT rebid is a mild slam try (usually balanced).
+ Responder's 4NT rebid is RKCB
+ 3♣    Minor Suit Transfer (Promises 6+ diamonds. Opener must bid 3♦)
+ If responder's next bid is 3 of a new suit, he is promising a singleton or void in that suit, but not necessarily slam interest
+ Responder's 3NT rebid is a mild slam try (usually balanced).
+ Responder's 4NT rebid is RKCB
+ 3♦/3♥/3♠    Singleton or void in the suit bid, at least 4 cards in the other 3 suits, no 5card major, forcing to game.
+ 3NT    Signoff
+ 4♣    Gerber
+ 4♦    Texas Transfer (Promises 6+ hearts, opener must bid 4♥)
+ New suit rebid by responder is a cuebid.
+ 4NT rebid by responder is RKCB.
+ 4♥    Texas Transfer (Promises 6+ spades, opener must bid 4♠)
+ New suit rebid by responder is a cuebid.
+4NT rebid by responder is RKCB.
+ 4NT    Invitational to 6NT
+ 5NT    Invitational to 7NT
+
+After a 2N opening bid
+  3♣ Stayman (promises at least one 4-card major)
+ 3♦   No 4-card major
+ 3♥/3♠  Smolen (forcing to game with 4 of the suit bid and 5 of the other major)
+ 4♣/4♦  5+ card suit. Interest in slam
+ 4♥/4♠  Signoff bids
+ 4NT    Invitational to 6NT
+ 3♥    4 hearts (could also have 4 spades)
+ 3♠      Artificial slam try with 4+ hearts
+ 3NT    Choice of games (4♠ or 3NT). Promises 4 spades.
+ 4♣/4♦  5+ card suit. Interest in slam
+ 4NT     Invitational to 6NT
+  3♠   4 spades (denies 4 hearts)
+ 3NT    Signoff (promises 4 hearts)
+ 4♣/4♦ 5+ card suit. Interest in slam.
+ 4♥      Artificial slam try with 4+ spades
+ 4NT     Invitational to 6NT
+ 3♦    Jacoby Transfer Bid (promises 5+ hearts). Opener would normally bid 3♥, but can superaccept with a maximum and 4-card heart support. After 3♥:
+ 3♠       5+ hearts, 5+ spades, interest in slam
+ 3NT     Exactly 5 hearts. Choice of games (4♥ or 3NT)
+ 4♣/4♦  5+ hearts, 4+ cards in suit bid, forcing to game
+ 4♥       Mild slam try with 6+ hearts
+ 4NT     Exactly 5 hearts. Invitational to 6♥ or 6NT
+ 5NT      Choice of slams (6♥ or 6NT)
+ 3♥    Jacoby Transfer Bid (promises 5+ spades). Opener would normally bid 3♠, but can superaccept with a maximum and 4-card spade support. After 3♠:
+ 3NT     Exactly 5 spades. Choice of games (4♠ or 3NT)
+ 4♣/4♦  5+ spades, 4+ cards in suit bid, forcing to game
+ 4♥       5+ spades, 5+ hearts, choice of games (4♥ or 4♠)
+ 4♠        Mild slam try with 6+ spades
+ 4NT     Exactly 5 spades. Invitational to 6♠ or 6NT
+ 5NT     Choice of slams (6♠ or 6NT)
+  3♠   Minor Suit Stayman (usually at least 54 in the minors, forcing to game)
+ Opener would normally bid a 4+ card minor if he had one. Otherwise he would bid 3NT.
+ If responder's next bid is 4 of a major, he is promising a singleton or void in that suit
+ 3NT  Signoff
+ 4♣  Gerber
+ 4♦   Texas Transfer (Promises 6+ hearts, opener must bid 4♥)
+ New suit rebid by responder is a cuebid.
+ 4NT rebid by responder is RKCB.
+ 4♥  Texas Transfer (Promises 6+ spades, opener must bid 4♠)
+ New suit rebid by responder is a cuebid.
+ 4NT rebid by responder is RKCB.
+ 4NT   Invitational to 6NT
+ 5NT   Invitational to 7NT
+
+Soloway Jump Shifts
+GIB plays Soloway Strong Jump Shifts by an unpassed hand in uncontested auctions. A jump shift shows one of the following types of hands:
+
+Strong rebiddable suit, 17+ total points, 4+ controls (A=2, K=1), no side 4-card suit
+Solid suit, 17+ total points, 4+ controls, may have a side 4-card suit
+Rebiddable suit, 18+ HCP, 4+ controls, 5332 or 6322 shape.
+Rebiddable suit, 17+ total points, 4+ controls, 4-card support for opener's suit
+
+Strong jump shifts are only from the 1 level to a higher suit on the 2 level. Jumps to a lower suit on the 3 level are natural and invitational.
+
+
+Opener can rebid his suit to show 6+, raise responder or bid RKC Blackwood with 3+ support, bid a side suit to deny support and show least KQ in the  suit, or bid NT at the cheapest level to show any other hand.
+
+
+
+Jump shifter shows which type of hand it had with its next bid:
+
+With types 1 or 2, it rebids its suit, jumping to game with a minimum and solid suit (note that it never shows the side suit in type 2).
+With type 3, it bids NT or raises NT to game.
+With type 4, it raises opener's suit with no side shortness, or bids its short suit (this is why it can never show its own side suit – a new suit is a splinter in support of opener).
+
+Reverse Drury
+GIB plays one-way Reverse Drury when partner opens a Major in 3rd or 4th seat. A 2♣ response shows at least 3-card support and invitational values (11-12 total points). This is not used if there is any interference; Jordan/Truscott 2NT is still used to show a limit raise over a double, a cue bid is used after an overcall, and 2♣ is natural (weak after a double, one-round force after an overcall).
+
+Opener's rebids are as follows:
+
+2♦   Full opener, inviting game, no extra shape.
+2M   Sub-minimum opener, no interest in game.
+New suit without jumping   4+ cards in the suit, less than 18 total points.
+New suit single jump   18+ total points, singleton in suit bid.
+New suit double jump   18+ total points, void in suit bid.
+2NT  5332 shape, one-round force, less than 18 total points.
+3NT  6322 shape, one-round force, less than 18 total points.
+3M   18+ total points, balanced.
+4M   To play, nothing extra to show.
+
+© 2018-2026 Bridge Base On Line LLC • About • Privacy • Terms and Conditions • Support • Robot Convention Card

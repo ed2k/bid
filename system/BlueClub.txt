@@ -1,0 +1,1088 @@
+BridgeHands
+
+ITALIAN BLUE CLUB
+Courtesy of BridgeGuys (Pradeep Verma)
+Also see Precision/Big Club Books
+Part 1 - Opening Bids
+Part 2 - Strong Calls
+Part 3 - Weak Calls
+Part 4 - Normal Calls
+Part 5 - 1NT, 2C, 3C Calls
+Part 6 - One Level Suit Calls
+Part 7 - Defensive Bidding
+
+PART I - OPENING BIDS
+1.
+
+Strong Openings = 17 +
+
+   1C:  17+, unbalanced; 18+ balanced
+   2D:  17 - 24, 4-4-4-1 distribution, any singleton
+   2NT: 21-22 balanced
+
+2.
+
+Weak Openings: 6 - 11
+
+   2H/2S                  : 6 or 7 carder suit, rule of 2 and 3
+   3D/3H/3S (not 3C) : 6 or 7 carder suit, rule of 2 and 3
+   3NT                     : 7 carder minor with AKQ, nothing much else
+   4C/4D/4H/4S         : 8 carder suit, rule of 2 and 3
+   5C/5D                  : 8 carder suit, rule of 2 and 3
+
+3.
+
+Normal Openings: 11 - 16
+
+   1D                : May be 3 carder with C suit
+   1H/1S            : Minimum 4 carder
+   1NT (13-17)    : 13-15 with C suit and 3 carder H and S,  OR
+     16-17 any suit; BALANCED
+   2C                : very good 5 carder or good 6 carder C
+   3C                : very good 7 carder suit, 7-8 playing tricks
+
+PART II - DEVELOPMENT OF STRONG CALLS
+1.
+
+Response to 1C Openings (control showing) without intervention
+
+   1D   : 0 - 5, maximum 2 controls
+   1H   : 6+   , maximum 2 controls Forcing to 2NT level
+   1S   : 3 controls, Game force
+   1NT  : 4 controls, Game force
+   2C   : 5 controls, Game force
+   2D   : 6 controls, Game force
+   2NT  : 7 controls, Game force and then you will not believe us
+   2H/2S: 4-5, six carder points mostly in the suit
+2.
+
+Responses to 1C opening (control showing) with intervention
+
+
+   Intervention                    Response
+   ------------                       --------
+   Double                           Pass: 0 - 3
+    1D  : 4 - 5
+    Redouble: 4 - 5 C suit
+    1H and above: as original
+
+   1D/1H/1S                        Pass: for original 1D
+    Double: for original 1H
+    Next step and above: 3 controls etc
+    2H/2S: as original
+
+   1NT                                Pass: 0 - 5
+    Double: for penalties (6+)
+    2C/2D: 0 - 5, long suit, non-forcing
+    2H/2S: as original
+
+   2C/2D/2H/2S                    Double: for penalties
+    2NT:    3 - 4 controls
+    Cue bid: 5 or more controls
+
+   3 level                             Pass: 0 - 6
+    Double: For penalties
+    Suit: non-forcing, contesting 7 - 8 points
+
+   Summary:
+1) After intervention by 1D/1H/1S, Pass replaces 1D and Double replaces
+   1H, gaining one step on 1D intervention and losing 1 step on 1S
+   intervention.
+
+        2) On intervention by double, opportunity is made available to show
+   0 - 3 or 4 -5 points.
+
+        3) On intervention by 1NT or above, double is always for penalties
+
+4) On intervention at 2 level, 2NT and  cue bid show controls.
+3.
+
+Development of 1C Openings
+
+   1D          1H/S unbalanced min 4 carder, canape' style for safety
+   (0 - 5)     1NT (18 -20) balanced
+    2C: Gladiator, opener to bid 2D on way to signoff
+ 2D      Pass to play
+           2H/2S to play
+2NT six carder C with K or Q
+3D  six carder D with K or Q
+
+            2D: Stayman
+    2H/2S Golden Misiere 5 carder with 5 points or 6 carder
+          with 4-5 points, points distributed in different suits
+                    2NT   Five card minor with KQ
+    3C/3D Six carder with KQ
+    4C/4D Texas
+
+                2C/2D unbalanced hand, minimum 5 carder
+2H/2S/3C/3D Minimum 5 carder forcing 1 round (Jump bid)
+    Rebid same suit next round, non forcing
+    New suit, next round, forcing
+2NT (23-24) Balanced
+      Pass: Natural
+      3C  : Gladiator, opener to bid 3D followed by Pass/3H/3S
+    to play
+      3D  : Stayman
+      3H/3S: 4-5, 5 carder opener to cue bid with a fit (Axx
+     or Kxx) or close at 3NT or 4H/4S
+      4C/4D: Texas
+3NT (25-26), Balanced
+     4C: Gladiator (0 - 3), opener to bid 4D followed by Pass/
+4H/4S/4C/5D to play
+                     4D: Stayman
+     4H/4S: Natural, 4 - 5 points
+
+
+    1H                      1S: Minimum 5 carder, responses natural min 4 carder
+
+    (6+, Max 2 controls 1NT: 18 - 20 Balanced
+    forcing upto 2NT)            2C: Baron followed by 2NT, min non-forcing
+                                        Any call at 3 level is forcing
+                                 2D: Stayman followed by 2NT, min non-forcing
+                                        Any call at 3 level is forcing
+                                            2H/2S: Minimum 5 carder
+                                            2NT: min, non-forcing
+                     2NT: 23 - 24
+                                            3C: Baron
+                                            3D: Stayman
+     Jump in a suit, six carder semi solid, responder to
+     join with Qx or better
+
+     1S (3 controls,         1NT: 18 - 20 Balanced
+ game force)              2C: Baron
+                                            2D: Stayman
+                                             2H/2S: 5 carder
+
+     2C/2D/2H/2S: five carder
+                                            Natural 4 carder by responder
+
+     1NT (4 controls)        2C/2D/2H/2S: five carder
+              2NT: 18 - 20 Balanced
+  3C: Baron
+  3D: Stayman
+  3H/3S: Five carder, opener to cue bid with a
+  fit (Axx or Kxx)
+
+      2C (5 controls)        2D/2H/2S: Five carder, bids by responder natural
+                                                 4 carders
+     2NT: 18 - 20 balanced
+  3C: Baron
+  3D: Stayman
+  3H/3S: Five carder, opener to cue bid with a
+ fit
+
+      2D (6 controls)        same as above
+
+      2H/2S (4-5, six carder) Natural (Most of the points in the suit)
+
+      2NT (7 controls) 3C/3D/3H/3S: 5 carder
+3NT: 18 - 20 Balanced
+    4C: Baron
+    4D: Stayman
+    4H/4S: Five carder
+
+ Summary
+ -------
+ 1) 1D/1H: shows max 2 controls and then controls are shown step wise
+ 2) 1H is 6+ and forcing to 2NT level. If opener or responder bid 2NT after
+    next bid by either, it shows minimum hand, which can either be passed or
+    with more points, opener or responder should cross 2NT level with or without
+    jump.
+ 3) After 1D, opener bids canape' style for finding a fit on unbalanced hand
+    but after 1H/S etc response, opener bids naturally always 5 carder first
+ 4) After any response, opener bids NT on balanced hand after which responder's
+    minimum C is gladiator and min D is stayman, if response was 1D and
+    min C is Baron on any other response
+ 5) Baron is employed only by "RESPONDER" and not by opener. Opener must first
+    show balanced hand by bidding NT
+ 6) Gladiator is employed only by "RESPONDER" to show 0 - 3 points and no game
+    desire on his part
+ 7) With a fit (Axx, Kxx) opener or responder should raise to set the ground
+    for cue-bidding at low level
+4.
+
+Development of 2D openings (17-24, 4-4-4-1)
+
+   Legend: NBS: Next below Singleton
+                           +: Singleton
+
+   2S (0 - 3) signoff      2NT: 17-20, S+
+   (May be 3 carder)            Pass/3C/3D/3H/3S: Sign off
+   3C/3D/3S: 21-24 NBS (3C = D+, 3D = H+, 3S = C+)
+   3H/3NT: 23-24, S+
+
+   2NT one weak six        3C/3S/3H/3S: NBS
+   carder Max KJ, nothing     Actual suit or 3NT. With a fit opener can
+   else in hand                   cue bid
+
+   3C/3D/3H/3S: fair suit: Actual singleton (NOTE: NOT NBS)
+   6 carder, min AJ              Responder with fit bids:
+   nothing else in hand        1st step: suit with 1 honor, no singleton
+                                       2nd step: suit with 2 honors, no singleton
+                                       3rd step: suit with side singleton
+                                                     cue bid by opener on which responder
+                                                     bids his singleton
+
+   2H relay       2S 17 - 20 Major +
+       2NT Relay
+   3C: 17 - 20 H+
+       3H Relay
+   3S  17 - 18 }
+   3NT 19 - 20 }
+   4H Relay for opener to show controls
+        starting from 3 upwards after which 5H is
+        relay asking for Qs. Any other call is
+        a signoff
+                            3D: 17 - 18, S+
+3S Relay, opener to show controls after which
+4S is relay asking for Q. Any other call is
+signoff.
+
+                            3H: 19 - 20, S+, 3S Relay for controls and then
+4S for Q.  Any other call, sign off.
+
+  2NT 17 - 20 , C+ (NBS)
+3C Relay
+   3D: 17 - 18 }
+   3H: 19 - 20 }
+                             4C Relay for controls and then 5C for Q.
+                             Any other call is signoff
+
+                  3C 17 - 20 D+ (NBS)
+3D Relay
+   3H: 17 - 18 }
+   3S: 19 - 20 }
+ 4D Relay for controls and then 5D for Q. Any other
+      call is signoff
+
+          3D: 21-24 H+ (NBS)
+      3H Relay for controls starting from 5 and then 4H for Q
+                            Any other call is signoff
+
+                  3H: 21-24 S+ (NBS)
+      3S relay for controls starting from 5 and then 4S for Q.
+                            Any other call is signoff
+
+                  3S: 21-24 C+ (NBS)
+      4C relay for controls starting from 5 and then 5C for Q.
+                            Any other call is signoff
+            
+  3NT: 21-24 D+ (only call upto 3NT level)
+      4D relay for controls starting from 5 and then 5D for Q.
+                            Any other call is signoff
+     
+Summary
+-------
+1) Response of 2S may be 3 carder with a very weak hand to sign off
+2) Response of 2NT shows poor hand with 6 carder and opener bids NBS.
+3) Response of 3 of a suit shows fair suit, which opener with min and no
+   fit should pass in a hurry. With a fit, opener bids his "ACTUAL SINGLETON"
+   and not NBS, on which responder shows quality of his suit and holding of a
+   singleton or otherwise.
+4) Response of 2H is relay asking for point range and singleton. Opener's first
+   three steps are for 17 - 20 range(2S: major +, 2NT C+, 3C: D+) and next four
+   steps are 21 - 24 range(3D=H+,3H+S+,3S=C+,3NT=D+)
+5) After responder has employed 2H relay, any call by him is a sign off unless
+   he continues to bid opener's singleton.
+
+5.
+
+Development of 2NT opening (21-22 Balanced)
+   3C Gladiator                   3D
+     Pass/3H/3S/4C To Play
+     3NT: six carder C with K or Q
+     4D:  six carder D with K or Q (opener may
+  like to play in 4NT)
+
+   3D  Stayman                    3H major (does not deny S)
+     3S: 5 carder opener to cue bid with fit
+     3NT: To play
+     4C: relay asking for distribution
+ 4D: D suit (3-4-4-2) or (2-4-4-3)
+ 4H: Only H suit (3-4-3-3)
+ 4S: S suit (4-4-3-2) or (4-4-2-3)
+ 4NT: C suit (3-4-2-4) or (2-4-3-4)
+
+  3S (S major, denies H)
+     3NT: To play
+     4C: relay for distribution
+4D: D suit (4-3-4-2) or (4-2-4-3)
+4S: only S suit (4-3-3-3)
+4NT: C suit(4-3-2-4) or (4-2-3-4)
+
+                                  3NT No major
+     4C Relay for minors
+4D: D suit 3-3-4-3
+4H: C and D with 3 carder H (2-3-4-4)
+4S: C and D with 3 carder S (3-2-4-4)
+4NT: C suit 3-3-3-4
+5C : 5 carder C
+5D : 5 carder D
+
+   3H/3S suit 5 carder            3NT no fit
+  Raise: support, less than Axx, Kxx
+  Cue bid: Axx or Kxx support
+
+   3NT to play
+   4C/4D                          Texas
+   4H/S(very good six carder      To Play
+slam aspiration)
+
+Summary:
+-------
+1) 3 C by responder is gladiator, making it possible to sign off in 3D
+2) 3D is stayman and followed by 4 C is asking for distribution
+
+
+PART III - Development of Weak Calls
+1.
+
+Development of 2H/2S (6-11 Rule of 2 and 3) six carder
+ 
+   2S/2NT Relay for points and quality (P and Q)
+  Stepwise response (P before Q)
+  1st step: 6 - 9, two top honors missing
+  2nd step: 6 - 9, with two top honors
+  3rd step: 10 - 11, two top honors missing
+  4th step: 10 - 11, with two top honors
+  5th step: Suit headed with AKQ
+   New Suit:  Forcing one round
+
+2.
+
+ Development of 3NT (solid 7-carder minor headed with AKQ)
+
+   Pass: To play
+   4C relay asking for singleton(+)
+ 4D: D+
+ 4H: H+
+ 4S: S+
+ 4NT: No +
+         5C: D +                <<< Remember >>> 5C is D+
+ 5D: C +             <<< Remember >>> 5D is C+
+
+3.
+
+Development of other weak openings
+
+New suit is forcing one round
+Another new suit next round game force.
+
+
+PART IV - BASIC CONCEPTS FOR DEVELOPMENT OF NORMAL CALLS (13 - 16)
+
+1.
+
+FOR OPENER: Single suiter
+
+   i) Hand with 13-14 is considered weak. Hand with 15-16 is considered strong
+      ONLY if the suit is good.
+
+  ii) Weak hand is shown by bidding min. NT, rebid or raise
+
+ iii) Strong hand is shown by jump bid.
+       2NT: good six carder, max AJ
+       In suit: semi solid six carder
+
+  iv) Balanced 16-17 hand is opened 1NT
+  
+   v) With 13-16, C suit, opening bids are
+   1D : 13-14 VUL, weak 4 or 5 carder C
+   1NT: 13-14 NON VUL or 15 VUL, weak 4 or 5 carder C
+   2C : 13-16, very good C suit
+   3C : 13-16 seven carder very good C suit, 7-8 playing tricks
+2.
+
+FOR OPENER: Two Suiter canape' style
+
+
+   i) Weak hand is shown by higher, then lower suit (second suit is at least as
+      long as first suit, may be longer), or by NT or raise. After 1NT response
+      canape' is not guaranteed as bid of lower second suit is to find best fit.
+
+  ii) Weak hand with 4 D and 4S is opened 1S with tolerance for H, otherwise 1D
+ iii) Strong hand is shown by:
+          reverse(not at 1 level): Second suit, 5 carder
+  Jump in second suit: Second suit semi-solid six carder (except when
+       second suit is C in which case it shows 4 carder
+       C and semisolid six carder first suit)
+          Jump in partner's suit: when opener was himself going to reverse in
+  that suit
+3.
+
+FOR RESPONDER: single suiter
+
+   i) 1 over 1 is 6+ (one round force), 1NT is 8-10, 2 over 1 is 11+ forcing to
+      2NT
+  ii) Second round jump in own suit is 10-11, semi solid six carder
+ iii) Second round jump in opener's 1 D suit is 9-10 non forcing but in opener's
+      1H/S suit is 12+, SuperFit, forcing
+  iv) New suit at 3 level with or without a jump is forcing
+   v) hands with 12+ are shown by:
+   Reverse : second suit five carder (Responder uses 2C or 2D as
+         first bid, even with 3 carder but with some
+      values, to prepare for reverse
+           Jump in a new suit: Semi-solid six carder
+ Cue bid in opponents' suit, opener to bid NT with a stopper
+ Second round jump in opener's major: SuperFit (Min 4 card support
+                                        with two top honors.
+           Using SuperFit calls (See item 5)
+4.
+
+FOR RESPONDER: Two suiter
+   -------------
+   i) Hands upto 11 points are bid in canape' style,  higher then lower or NT
+      or raise
+  ii) Hands with 12+ are shown by:
+     Reverse at 2 level: first suit always min 4 carder except when it
+                  or higher is D three carder with values
+                Second round jump in new suit: first suit min 4 carder, second suit
+                  semi solid six carder
+5.
+
+FOR RESPONDER: SUPERFIT calls in opener's major
+
+   SUPERFIT means 12+, minimum 4 card support with two top honors in opener's
+   first major or five card support in opener's second major where opener was
+   going to reverse in that suit.
+   Responder shows controls (A or K, not singleton or void) with superfit as
+   follows:
+
+   i) 1H/S by opener followed by rebid of 2H/2S/2NT
+
+      2C - 4C        : control in C, not in D
+      2D - 4D        : control in D, not in C
+      2C - 4D        : Alike controls in C and D (A for Ascending)
+      2D - 4C        : Different controls in C and D (D for Descending)
+
+  ii) 1S by opener followed by 2H
+
+      2C/2D - 3S     : Superfit in S, control in C/D, control in other minor not
+       denied. Opener was going to employ superfit call if rebid
+       was 2S or 2NT
+      2C/2D - 4C     : Superfit in H, 5 card support. Responder was going to
+       reverse in H, control in C, control in D not denied
+      2C/2D - 4D     : Superfit in H, 5 card support. Responder was going to
+       reverse in H, control in D, no control in C
+      2C/2D - 4H     : Superfit in H, 5 card support, Responder was going to
+       reverse in H, C or D control,  minimum hand
+      2C/2D - 3H     : Superfit in H, 5 card support, Responder was going to
+       reverse in H, better hand, inviting cue bidding
+
+ iii) 1H by opener followed by 2S
+
+      2C/2D - 4C     : Fit in H, responder was going to employ superfit call,
+       control in C/D. control in other minor not denied
+      2C/2D - 4D     : Fit in S, 5 card support, responder was going to reverse
+       in S, no controls promised in C or D, better hand
+       inviting cue bid
+      2C/2D - 4S     : Fit in S, 5 card support, responder was going to reverse
+       in S, minimum hand, control in C and D not denied
+      2C/2D - 3S     : Fit in S, 5 card support, responder was going to reverse
+       in S, better hand, inviting cue bidding
+
+    Summary
+    -------
+   i) On rebid of same major or 2NT, responder's 2C/2D followed by 4C/4D shows
+      controls and type of controls in C/D
+  ii) On opener's 1S/2H, responder's 2C/2D followed by jump to 3S shows superfit
+      in S and jump to 4C/D shows reversible hand in H and control in C/D but
+      jump to 4H shows minimum hand denying controls in C/D. With
+      better hand, responder raises 2H to 3H, still showing reversible hand and
+      inviting cue bidding
+ iii) On opener's 1H/2S reverse, responder's 2C/2D followed by jump to 4C shows
+      reversible hand in H and jump to 4D shows reversible hand in S.
+      Jump to 4S shows minimum reversible hand and raise to 3S shows better
+      reversible hand in S.
+6.
+
+SLAM Bidding
+
+   i) 4NT is Ace asking ONLY of bid by opener or responder in second round
+      of bidding or when it is with a jump. Otherwise, if suit has matched and
+      4NT is bid after cue-bids, it shows willingness to play at 5 level and
+      asks for continuation of cue bidding. If suit is not matched, it is
+      QUANTITATIVE asking partner to bid six with additional values or else
+      sign off.
+  ii) Principle of fast approach means that after strong opening support or
+      after responder shows 12+, if partner jumps to game, there is no slam
+      aspiration and hand is minimum, but if suit is matched with a single
+      raise, there is slam ambition and cue bids must continue below the game
+      level.
+ iii) When suit has matched, cue bid shows first or second round control (A,K
+      singleton or void) starting from lowest bid. If a suit is bypassed, it
+      initially denies a control, but if that suit is bid next time it shows
+      first round control in first cue bid and second round control in
+      second cue bid.
+  iv) After a jump bid, showing semi-solid six carder partner should raise with
+      any three carder or Qx to set the scene for cue bidding.
+   v) After cue bids, the partner holding minimum hand should not go beyond the
+      game level. Crossing game level shows additional value.
+  vi) Having bypassed a suit in cue bidding twice, and then bidding shows third
+      round control i.e. Qxx or xx.
+ vii) Jump to 5NT asks partner to show quality of the suit agreed. Partner is
+      to bid 7 with two top honors, otherwise:
+      S Suit:         6S: Suit headed with A or K, min 4 carder
+      6H: Suit headed with A or K
+      6D: Suit headed with Q
+      5C: Suit headed with J or less
+
+      H Suit          6H: Suit headed with A or K
+      6D: Suit headed with Q
+      6C: Suit headed with J or less
+
+      D Suit          6D: Suit headed with A or K
+      6C: Suit headed with Q or less
+
+      C Suit          6C: Suit lacks 2 top honors
+viii) Responses to 4NT, if Ace asking are
+      5C : 4 or 1
+      5D : 3 or 0
+      5H : Two Aces same rank (both majors or minors)
+      5S : Two Aces mixed (neither same rank nor same color (S and D or H and C)
+      5NT: Two Aces of same color (either both black or both red)
+
+      To remember: 41-30-RMC (rank/mixed/color)
+
+PART V - DEVELOPMENT OF 1NT/2C/3C Calls
+
+1.
+
+DEVELOPMENT OF 1 NOTRUMP OPENING:
+
+   13-15 with C suit, 16-17 any suit Balanced.
+   If 13-15, always with 3 carder H and 3 carder S
+
+   2C     Relay asking for   2D: C Suit: 13 with 5 carder, 14 with 4 carder
+   (8-11) range                  2S/2NT/3C: sign off
+ 3D/3H/3S: 11 points, inviting
+ 4H/4S: To play
+                             2H: C suit, 14 with 5 carder or 15 with 4 carder
+ 2S/2NT/3C/3D sign off
+ 3H/3S: 11 points, inviting
+                                 4H/4S: To play
+                             2S: 16-17 (S for Spades, S for Strong)
+ 2NT Stayman
+     3C  no major
+     3D  both majors with 3 card D
+     3H  H major
+     3S  S major
+     3NT both majors with 3 card C
+                             3C/3D signoff
+ 3H/3S forcing
+                             2NT:C suit 15 with 5 carder
+ 3C/3D signoff
+ 3H/3S inviting
+ 4H/4S To play
+
+   Double on intervention    Double on intervention shows 16-17
+   replaces 2C.
+
+   2D stayman              2H: 16-17 H suit
+   12+ Game force                2S/3C/3D: 5 carder, opener to raise with a
+                                         fit (Axx or Kxx) or bid NT or show 2nd suit
+                                 2NT: Opener to show second suit
+ 3H : raise, opener to cue-bid (4 card support)
+ 3S : Semi-solid six carder, opener to join on
+      Qx or better
+                                 3NT: To play
+ 4H : To play (4 card support)
+
+ 2S: 16-17 S major
+2NT: opener to show second suit
+3C/3D/3H: five carder, opener to cue bid with a
+  fit and raise with Qxx or less support
+  or bid NT
+                                 3S : opener to cue bid
+3NT/4S: To play (4S 4 card support)
+    2NT:13-15 C suit
+3C Relay for strength and length of C suit
+   3D 13-14, 4 carder C suit
+   3H 15, 4 carder C suit
+   3S 13-14, 5 carder C suit
+   3NT 15, 5 carder C suit
+3D/3H/3S: five carder, opener to cue bid with a
+  fit and raise with Qxx or less support
+  or bid NT
+3NT: To play
+                                   3C: 16-17 no major
+ 3D Relay for minors
+    3H: C suit
+    3S: D suit
+    3NT: both C and D suit
+                            3D/3H/3S: 16-17 five carder
+ New suit five carder
+ Raise support, opener to cue bid
+
+   On intervention, 2NT or   Double on intervention shows 16-17
+   cue bid replaces 2D
+   (2NT promises a stopper
+    and cue bid asks for a
+    stopper)
+
+   2H/2S signoff            Natural
+   0 - 7 To play
+
+   2NT Balanced             Natural
+   10-11
+
+   3C/3D/3H/3S              Natural
+   6 carder headed with two
+   top honors nothing else
+
+   Summary
+   -------
+   i) 2C is relay (8-11) asking for range on which only 2S by opener shows
+      16-17 while 2D/2H/2NT show C suit with points/length. On 2S responder's
+      2NT is stayman. Calls upto 3C/3D are sign offs
+  ii) 2D is 12+ stayman on which only 2NT shows 13-15 C suit on which 3C is
+      relay and opener shows points and length of C suit. Calls 2H/2S/3C are
+      16-17 and responder can there after  ascertain minors or second suit or
+      reverse in 3H/3S on which opener bids NT with no fit, raises with 3 card
+      support with Q or less, and cue bids with fit (Axx or Kxx)
+ iii) Jump to 3 shows only 6 carder with 2 top honors, nothing else in hand.
+2.
+
+DEVELOPMENT OF 3C OPENING
+   -------------------------
+   13-16 seven carder very good suit, 7-8 playing tricks
+   Effort is to play in NT by showing stoppers, not suits
+
+   3D D stopper          3H:  H stopper, no S stopper
+ 3S:  S stopper, no H stopper
+ 3NT: S and H stopper
+ 4C:  No stopper in H or S or both
+
+   3H H stopper          3S:  D stopper, no S stopper (NOTE: critical suit is D)
+   (no D stopper)        3NT: D and S stopper
+ 4C:  no D stopper
+
+   3S S stopper          3NT: H and D stopper
+   (no D or H stopper)   4C:  No stopper either in H or D or in both
+
+   3NT stoppers in       To play
+   D,H and S
+
+   4C inviting
+
+   4D/4H/4S              Cue bid with fit, otherwise natural
+   semi-solid 6 carder,
+   12+ slam interest
+
+   Summary
+   -------
+   i) Bids shows stoppers. With stoppers missing in a suit, 4C is signoff
+  ii) After 3C-3H, bid of 3S by opener shows stopper in D, the CRITICAL SUIT,
+      and denies stopper in S
+ iii) Jump by responder in new suit is 12+, six carder semi-solid suit, slam
+      interest
+3.
+
+DEVELOPMENT OF 2C OPENING
+
+   13-16 Very Good C Suit, normally six carder
+   13-16 only C Suit OR 15-16 with a side suit
+
+   2D Relay     2H   15-16, 4 carder H
+     Pass/2NT/3C/3D To play
+     2S: 12+ five carder S (reverse)
+     3H: Minimum 4 carder support, opener to cue bid
+     3S: 12+, 4 card D, 6 carder semi-solid S
+     4C: 12+, five card support in H, responder was going to
+         reverse, no control in D, waiting bid not necessarily
+                         control in C
+                     4D: 12+, five card support in H, control in D
+                     4H: To play
+      
+2S   15-16, 4 carder S
+     Pass/2NT/3C/3D: To play
+     3H: 12+, five card H (reverse)
+     3S: Minimum 4 card support, opener to cuebid
+     4C: 12+ five card support in S, responder was going to
+ reverse. no control in D, waiting bid not necessarily
+ control in C
+                     4D: Same as above, control in D
+     4H: 12+, 4 card D, six carder semi-solid H
+     4S: To play
+                 
+                2NT  13-16 C suit, stoppers in two side suits
+     3C: To Play
+     3D: Relay for NT probe
+ 3H  stoppers in H and D
+ 3S  stoppers in S and D
+ 3NT stoppers in H and S
+                     3H: 12+, five card H (reverse). D may be waiting bid
+ 3NT  no support for H
+ 3S   fit in H, stopper in S, not in D
+ 4C   fit in H, stopper on D but not a control
+ 4D   fit in H, control in D
+                         4H   Qxx or less support, hence no cue bid
+      (fit means min Axx or Kxx support)
+                     3S: 12+, 5 card S (reverse)
+ 3NT no support for S
+ 4C  fit in S, stopper in H or S but not a control
+ 4D  fit in S, control in D, no control or stopper in H
+ 4H  fit in S, control in H, no control or stopper in D
+ 4S  Qxx or less 3 card support, hence no cue bid
+
+3C   13-16 C suit, stopper in one side suit
+     3D Relay NT Probe
+3H  stopper in H
+3S  stopper in S
+3NT stopper in D
+                     3H 12+, 5 carder H (reverse) D may be waiting bid
+        3S  stopper in S, no support for H
+        3NT no stopper in S, no support for H,stopper in D
+                        4C  fit in H, no control in D
+4D  fit in H, control in D
+4H  Qxx or less 3 card support
+                     3S 12+, 5 card S (reverse) D may be waiting bid
+3NT no support in S, stopper either in H or D
+4C  fit in S, no control in D
+4D  fit in S, control in D
+4H  Qxx or less 3 card support
+                     4H/4S: 4 card D, six card semi-solid H/S, slam intention
+                3D   15-16, 4 card D
+     3H: 12+, 5 carder, opener to bid naturally
+     3S: 12+, 5 carder, opener to bid naturally
+     3NT/4C: To play
+     4D: Support, opener to cue bid
+                 3H/3S/4D: 15-16, 6-5 distribution, responder bids naturally
+ 4C: 15-16 very good C suit
+
+   2H/2S 6-10, 5 card  4C: 15-16, opener was going to reverse in H/S, no control
+   non-forcing             in D
+                       4D: 15-16, opener was going to reverse in H/S, control in
+   C and D
+
+   2NT 11-12 balanced  Natural
+
+   3C 8-10 raise       Natural
+
+   3D/3H/3S 12+        Raise with Qx or better or rebid C or 3NT
+   semi-solid six
+   carder
+
+   Summary
+   -------
+   i) Responder's 2H/2S is weak, non forcing on which opener's jump to 4C/4D
+      shows 15-16 with 4 card support and control.
+  ii) Responder's 2D is relay, openers 2NT/3C shows only C suit with stoppers
+      in side suits and relay of 3D is relay asking for suits stopped, but
+      responder's second round bid of 3H/3S shows 12+, reversible hand with 5
+      carder suit (D may have been waiting bid) on which opener cue bids  with
+      a fit(Axx, Kxx) and gives a waiting bid of 4C without controls in side
+      suits. With only Qxx or less 3 card support, opener raises it 4H/4S
+      without cue bidding
+ iii) Responder's 2D is relay and opener's 2H/2S shows 15-16 with 4 carder H/S
+      on which responder's jump to 4C/4D shows 12+, reversible hand in opener's
+      second suit and controls in D
+  iv) Opener's jump in second suit show 15-16, 6-5 distribution.
+
+PART VI - DEVELOPMENT OF SUIT CALLS OF ONE (13-16)
+
+Minimum 4 carder, D may be 3 carder with a C suit
+1.	REBIDS BY OPENER: Single suiter hands
+
+   13-14 Minimum NT, Rebid original suit, raise partner's suit
+   15-16 Jump to 2NT: Weak six carder, at best AJ
+ Jump in original suit: semi-solid six carder
+2.	REBIDS BY OPENER: Two suiter hands
+
+   13-14  Minimum NT, lower suit, raise partner's suit, simple rebid (with S and
+  D, 4 carder open 1S and then D with no tolerance for H but tolerance
+  for C so that if partner bids 2H, opener can bid 2NT showing minimum.
+  With tolerance for H, but no tolerance in C, open 1D)
+
+  Canape' style, second suit is at least as long as first (may be 4-4)
+  but EXCEPTION: After 1NT, response, first suit may be longer than
+  second as effort is to find the best fit on unbalanced hands
+
+   15-16  Reverse at 2 level, or above: canape', second suit always 5 carder
+
+  Jump in second lower or higher suit, first suit 4 carder (may not
+  be biddable), second suit semi-solid six carder but EXCEPTION: If
+  second suit is C, then first suit is semi-solid six carder and C
+  is only 4 carder because 15-16 hands with a good C suit and a side
+  suit are opened as 2C.
+
+  Jump to 3 or 4 level in partner's major: reversible hand with 5 card
+  support or 15-16, 4-4-4-1 with 4 card support.
+
+          Jump to 4C on 2C/2D response shows first suit semi-solid six carder
+  and 4 card C as partner's 2C/2D may be waiting bid. Partner to join
+  first suit with Qx or better.
+
+  Jump to 4D on 2D response shows first suit 4 carder, six carder semi-
+  solid D suit as partner's 2D may be a waiting bid. Partner to start
+  cue bidding as he has already shown values in D, by bidding 2D
+  even 3 carder
+
+  Jump to 4C/4D on partner's response of 1H/1S, shows reversible hand
+  in H/S, game certain, first round control in C/D. Direct jump to
+  4H/4S denies FIRST ROUND control in C/D
+
+ 5-5 hands 13-14 higher/lower/higher
+   15-16 lower/higher/lower
+
+ 5-6 hands 13-14 higher/lower/higher/lower
+   15-16 lower/higher/lower/higher
+
+ 6-5 hands 13-14 higher/lower/higher/higher
+   15-16 lower/higher/lower/higher
+3.	REBIDS BY OPENER: Three suiter hands 4-4-4-1
+
+   13-14   Select better two suits and bid higher/lower
+   15-16   Treat as 13-14 as hand is not treated as of higher range unless at
+   least one suit is good 5 carder but give a jump to 3 level in
+   partner's major.
+4.	RESPONDER'S BIDS
+
+   First Round        Second Round
+   1 over 1: 6+       Minimum NT, rebid, raise, lower suit(canape'): 8 - 10
+ 
+      Reverse at 2/3 level: 12+, first suit 4 carder, second
+      suit always 5 carder
+
+      Jump in same suit: (9-10) semi-solid six carder
+
+      Jump in new suit: 12+, semi-solid six carder. first
+      suit 4 carder
+
+      Jump to 3 in opener's original minor (1D): 9-10 five card
+      support, non-forcing
+
+      Jump to 3 in opener's first major: 12+, superfit
+
+     1NT 8-10         Natural
+
+     2C/2D:11+ May    Reverse canape': 12+, second suit 5 carder, C/D may be
+     be 3 carder      3 carder
+     with values,
+     forcing up to    Jump in new suit: 12+, 4 card C/D, six carder semi-solid
+     2NT              suit, unless it is a superfit call for opener's major
+
+      Superfit call in opener's major, 12+
+
+      New lower suit at 3 level (3C after 2D) canape': forcing,
+      D minimum 4 carder, C 4 or 5 carder
+
+      2H over 1S      Natural
+      11+ minimum
+      4 card, forcing New lower suit at 3 level, canape', forcing
+      to 2NT
+
+      Jump to 2NT     Natural
+      11-12 Dead
+      Center
+
+      Jump in new     Natural
+      suit,12+ semi-
+      solid 6 carder
+
+      Jump to 4C on   Gerber Ace asking, opener to show 0-1-2-3-4 step wise
+      opener's 1H/1S
+
+      Jump to 3 in    Natural
+      opener's major
+      10-11 limit bid
+ 
+      Jump to 4 in    Natural
+      opener's major
+      7-9, five card
+      support, one
+      singleton
+ 
+    Summary
+    -------
+    i) 15-16 hands are to be treated as 13-14 unless the hand contains at least
+       one good five carder.
+   ii) Single suiter hands are bid by opener by min NT, raise, rebid,lower suit,
+       if 13-14 and by jump to 2NT if 15-16. Jump in suit always promises six
+       carder semi-solid suit.
+  iii) Two suiter hands 13-14 are bid canape' style higher/lower. With S & D as
+       suits 4-4, open S with tolerance for C and D with tolerance for H. Three
+       suiter 4-4-4-1 hands are opened selecting the 2 best suits, in canape'
+       style.
+   iv) Two suiter 15-16 hands are opened lower/higher (second suit always five
+       carder). Jump in second suit promises first suit 4 carder, second suit
+       semi-solid six carder (except when jump is in C, in which case C is
+       4 carder and first suit is semi-solid). Jump in responser's suit shows
+       reversible hand, five card support.
+    v) Responder's 2 over 1 is forcing to 2NT level. Response of 2C/2D may be
+       three carder with values in the suit to prepare for reverse or show
+       superfit in opener's major.
+   vi) Responder's second jump in own suit is limited semi-solid six carder but
+       first round jump in a suit or second round jump in new suit shows semi-
+       solid six carder with first suit as 4 carder (unless superfit calls are
+       used).
+  vii) Responder's second round jump in opener's minor (D) is limited,
+       non-forcing, but in opener's major is forcing.
+
+
+PART VII - DEFENSIVE BIDDING
+1.
+
+TWO SUITER HANDS 5 - 5 (3rd and 4th position)
+
+   Legend: SAPV (Strength as per vulnerability)
+   weak:    6-11, Non-vul vs Vul
+   Normal:  13-15, equal vulnerability
+   Strong:  16+, Vul vs Non-vul
+
+   Jump to 2NT or                Two lowest suits, SAPV
+   2NT on 1NT
+
+   Jump to 3C on 1D/1H/1S   Two remaining suits, SAPV
+
+   Jump to 2D on 1C             Two major suits, SAPV
+
+   Cue bid on 1D/1H/1S         Two extreme suits, SAPV
+
+   2C on 1C                         8+, good 6 carder suit, rule of 2 & 3
+
+   Jump to 3C on 1C             Two extreme suits, SAPV
+(cue bid)
+
+   If strength does not match SAPV calls above, the two suits are bid in a
+   natural manner. Partner bids naturally showing preference in two suits with a
+   jump or cue bid if in game zone.
+2.
+
+OTHER OVERCALLS: (2nd Position)
+
+                                       Partner's bids
+   1 over 1: 8+, good five carder        Natural
+
+                                                    Cue bid shows 12+ and asks for stopper
+
+                                                    Jump in new suit shows semi-solid six
+                                                    carder, 12+
+
+   2 over 1: 8+ good 6 carder            Same as above, rule of 2 and 3
+
+   1NT  or 2NT on opening of             2C stayman
+   2C/2D/2H/2S: 16-18 with
+   stopper
+                                         2H/2S signoff
+
+ Cue bid asking for second stopper
+ failing which suit
+
+                                         Jump to 3 in a suit, six carder suit
+ headed with two honors, nothing else
+ in hand
+
+    Two suiter calls SAPV                Simple preference to play
+                                                      Jump or cue bid forcing
+   
+
+    Jump in a new suit, semi-solid    Raise, non-forcing
+    six carder, SAPV (ITEM 1)               Jump or cue bid forcing
+
+    Double on strong 1C: 16+             Jump or 1NT with 8+
+ 
+    Double, 13+, 3 card support in       Pass at 1 level 9+, five carder good
+    each remaining suit, max double-     same suit as opener asking doubler to
+    ton in opener's suit or 16+, 3       lead the suit to force opener to play
+    card support not necessary           in NT
+
+ Pass at 2 level, 10+, min. 4 cards in
+ opener's suit with two winners in that
+ suit
+
+ Simple bid after which if doubler bids
+ again, he shows 16+
+
+ Jump in a suit, 10+, min 4 carder
+
+ Cue bid 12+, asking for stopper
+
+    Double followed by 1NT             2C stayman
+    19-21 with a stopper                 2H/2S signoff
+ Cue bid, 6+
+ Jump in a new suit, 6+ forcing
+   
+    Double followed by jump or           Natural
+    cue bid 21+
+
+
+    Summary
+    -------
+    i) Double of a suit call shows hand of same strength as opener's with min.
+       3 card support in remaining suits. Jump by partner shows 10+, cue bid
+       shows 12+. If partner responds without jump, doubler must pass with
+       13-15, but may take another bid with 16_, jump or cue bid with 19+. If
+       16+, 3 card support in remaining suits is not necessary.
+   ii) Simple 1NT/2NT overcall shows 16-18 with a stopper, but if initial
+       double, it shows 19-21 with a stopper.
+  iii) Special bids for two suiters are used specifying strength of the hand. If
+       the strength does not fit in the specified calls, hand is bid in a
+       natural fashion.
+   iv) Simple 1 over 1 over calls shows good five carder suit while 2 over 1
+       shows 8+, with very good six carder suit
+    v) Jump in a new suit shows semi-solid six carder suit, strength varying
+       according to vulnerability.
+3.
+
+OTHER OVERCALLS: Fourth position, BALANCING when RHO has passed
+
+                                                Partner's bid
+
+   1 over 1: 8+ good five carder     Pass with less than 11
+                                                Suit, raise: 11+
+     Jump or cue bid: 13+
+
+   1NT: 8-10 with a stopper          2C Stayman
+   2NT without jump (10-11 with      Others natural
+   stopper
+
+   2 over 1: 8+, good six carder     Same as 1 over 1
+   rule of 2 and 3
+
+   Double: 11+, min. 3 card support   Pass 11+, good five card same suit as
+   in remaining suits, maximum         opener.
+   doubleton in opener's suit. With
+   13+,take second bid in next round  1NT: 8 - 11 with stopper
+          Jump, Cue bid, 13+
+
+   Jump in a new suit:  semi-        Natural
+   solid six carder, SAPV
+
+   2C on 1NT asking for preference   2D: Preference for H
+   in majors 11+                     2H: Preference for S
+
+PART VIII - LEADS
+1.
+
+Principles
+
+   - lower of the touching honors unless lead is from top of sequence against
+     NT contract, in which case lead top of sequence
+
+   - K from three honors unless it is AK doubleton
+   - A from AK
+   - 10 from J10xx or broken sequence
+   - 3rd best from even number of cards and lowest from odd number of cards
+2.
+
+Leads
+
+   Lead                    From
+   ----                      ----
+   A                         AKx
+   K                         AK, AKQ, KQJ, KQ10
+   Q                         KQx, Qx, QJ10, QJ9 against NT
+   J                          QJx, Jx, J10, J109, J108 against NT
+   10                        J10x, 10x, A109, K109, Q109, 1098, J108 against NT
+   9                          109x, 9x
+   3rd best                 Even number of cards, Rule of 12
+   lowest                   odd number of cards, Rule of 10
+
+   OR
+                               3 cards with an honor (A,K,Q,J or 10)
+   MUD                      3 cards without an honor
+                               (Middle, Up, Down: MUD)
+
+HOME  Encyclopedia  Newsletter  Laws  Products  Services  Reviews  Tournaments  Blog  Training Practice Links HELP
+Contacts: Sales  Support  Reviews  Q&A    Disclaimer    Privacy    © 2005 BridgeHands   Updated 01/22/11
