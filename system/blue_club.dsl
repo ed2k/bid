@@ -406,6 +406,11 @@ OPEN 1NT:
   ACES: 2
   ACE_TOPOLOGY: MIXED
 
+# 1C - 1S - 4NT - 5NT: 2 Aces, Same Color
+1C - 1S - 4NT - 5NT:
+  ACES: 2
+  ACE_TOPOLOGY: COLOR
+
 # ==========================================
 # DEFENSIVE BIDDING (Overcalls)
 # ==========================================
