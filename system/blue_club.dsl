@@ -406,7 +406,101 @@ OPEN 1NT:
   ACES: 2
   ACE_TOPOLOGY: MIXED
 
-# 1C - 1S - 4NT - 5NT: 2 Aces, Same Color (Black or Red)
-1C - 1S - 4NT - 5NT:
-  ACES: 2
-  ACE_TOPOLOGY: COLOR
+# ==========================================
+# DEFENSIVE BIDDING (Overcalls)
+# ==========================================
+
+# --- 1-Level Overcalls (8+, Good 5-carder) ---
+
+# (1C) - 1D: Natural Overcall
+(1C) - 1D:
+  HCP: 8-16
+  LEN D: 5+
+
+# (1C) - 1H: Natural Overcall
+(1C) - 1H:
+  HCP: 8-16
+  LEN H: 5+
+
+# (1C) - 1S: Natural Overcall
+(1C) - 1S:
+  HCP: 8-16
+  LEN S: 5+
+
+# (1D) - 1H: Natural Overcall
+(1D) - 1H:
+  HCP: 8-16
+  LEN H: 5+
+
+# (1D) - 1S: Natural Overcall
+(1D) - 1S:
+  HCP: 8-16
+  LEN S: 5+
+
+# (1H) - 1S: Natural Overcall
+(1H) - 1S:
+  HCP: 8-16
+  LEN S: 5+
+
+# --- 1NT Overcall (16-18 Balanced) ---
+
+# (1C) - 1NT
+(1C) - 1NT:
+  HCP: 16-18
+  SHAPE: BALANCED
+
+# (1D) - 1NT
+(1D) - 1NT:
+  HCP: 16-18
+  SHAPE: BALANCED
+
+# (1H) - 1NT
+(1H) - 1NT:
+  HCP: 16-18
+  SHAPE: BALANCED
+
+# (1S) - 1NT
+(1S) - 1NT:
+  HCP: 16-18
+  SHAPE: BALANCED
+
+# --- Jump Overcalls (Weak/Intermediate) ---
+# DSL Text says "Jump in new suit shows semi-solid six carder, strength varying".
+# Commonly weak in modern, but text implies variable.
+# Let's use 12-16 HCP, 6+ Suit ("Intermediate") per text implication of strength.
+
+# (1C) - 2D
+(1C) - 2D:
+  HCP: 12-16
+  LEN D: 6+
+
+# (1C) - 2H
+(1C) - 2H:
+  HCP: 12-16
+  LEN H: 6+
+
+# (1C) - 2S
+(1C) - 2S:
+  HCP: 12-16
+  LEN S: 6+
+
+# --- Doubles (Takeout / Strong) ---
+
+# (1C) - X: Double of Strong 1C (16+)
+(1C) - X:
+  HCP: 16+
+
+# (1D) - X: Takeout (12+)
+(1D) - X:
+  HCP: 12+
+  LEN D: 0-2 # Shortness in opponent suit typically
+
+# (1H) - X: Takeout (12+)
+(1H) - X:
+  HCP: 12+
+  LEN H: 0-2
+
+# (1S) - X: Takeout (12+)
+(1S) - X:
+  HCP: 12+
+  LEN S: 0-2
