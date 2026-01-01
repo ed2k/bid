@@ -138,6 +138,9 @@ class SystemTranslator:
                     s = s[1:-1]
                 call_obj = self._parse_call(s)
                 steps.append((call_obj, is_direct))
+            
+            # DEBUG
+            # print(f"DEBUG TRANS: Rule {data['bid']} Steps={[(str(c), d) for c,d in steps]} Shape={data['shape']}")
         
         def trigger(history: List[Call]) -> bool:
             if trig_type == 'OPEN':
@@ -186,7 +189,13 @@ class SystemTranslator:
                         hist_idx -= 1
                     
                     step_idx -= 1
-                    
+                
+                # Strict Match Check: Ensure no remaining non-pass calls in history
+                while hist_idx >= 0:
+                    if history[hist_idx].type != CallType.PASS:
+                        return False
+                    hist_idx -= 1
+
                 return True
 
             return False 

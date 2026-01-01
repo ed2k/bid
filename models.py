@@ -250,6 +250,16 @@ class Call:
         return f"{self.level}{self.strain}"
 
     def __eq__(self, other):
+        if not isinstance(other, Call):
+            return False
+        return (self.type == other.type and 
+                self.level == other.level and 
+                self.strain == other.strain)
+
+    def __hash__(self):
+        return hash((self.type, self.level, self.strain))
+
+    def __eq__(self, other):
         return (isinstance(other, Call) and 
                 self.type == other.type and 
                 self.level == other.level and 

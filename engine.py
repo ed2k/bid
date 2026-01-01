@@ -7,9 +7,31 @@ class Engine:
     def __init__(self, system: BiddingSystem):
         self.system = system
 
-    def get_bid(self, history: List[Call], hand: Hand) -> Call:
-        rule = self.system.get_bid(history, hand)
+    def get_bid(self, 
+                history: List[Call], 
+                hand: Hand,
+                my_seat: Seat = None,
+                dealer_seat: Seat = None,
+                opp_system: BiddingSystem = None) -> Call:
+        
+        # Determine active system
+        active_system = self.system
+        if my_seat is not None and dealer_seat is not None and opp_system is not None:
+            # Determine current seat index
+            # Dealer starts. Seat is 0-3 int value.
+            # History len = 0 -> Dealer turn.
+            # History len = 1 -> Dealer + 1.
+            current_seat_val = (dealer_seat.value + len(history)) % 4
+            current_seat = Seat(current_seat_val)
+            
+            is_my_side = (current_seat == my_seat) or (current_seat == my_seat.partner)
+            if not is_my_side:
+                active_system = opp_system
+
+        rule = active_system.get_bid(history, hand)
         if rule:
+            # DEBUG
+            # print(f"DEBUG ENGINE: Matched Rule '{rule.description}' Priority={rule.priority} Call={rule.call}")
             return rule.call
         # Default fallback: Pass
         return Call(CallType.PASS)
