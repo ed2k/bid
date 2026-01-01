@@ -21,6 +21,19 @@ class Strain(IntEnum):
     def __str__(self):
         return ["C", "D", "H", "S", "NT"][self.value]
 
+class Seat(IntEnum):
+    NORTH = 0
+    EAST = 1
+    SOUTH = 2
+    WEST = 3
+
+    def __str__(self):
+        return ["N", "E", "S", "W"][self.value]
+
+    @property
+    def partner(self):
+        return Seat((self.value + 2) % 4)
+
 class Rank(IntEnum):
     TWO = 2
     THREE = 3

@@ -1,5 +1,5 @@
 from typing import List, Dict, Optional
-from bid.models import Hand, Call, CallType
+from bid.models import Hand, Call, CallType, Seat
 from bid.system import BiddingSystem, Rule
 from bid.constraints import HandConstraints
 
@@ -14,42 +14,46 @@ class Engine:
         # Default fallback: Pass
         return Call(CallType.PASS)
 
-    def explain_auction(self, history: List[Call], dealer_seat_index: int = 0):
+    def estimate_deal(self, 
+                      history: List[Call], 
+                      my_seat: Seat, 
+                      dealer_seat: Seat, 
+                      my_system: BiddingSystem, 
+                      opp_system: BiddingSystem) -> Dict[Seat, HandConstraints]:
         """
         Analyze the auction and return constraints for each player.
-        Assuming 4 seats: N, E, S, W (0, 1, 2, 3)
         """
         # Initialize constraints (0-37 HCP, 0-13 len)
-        constraints = {i: HandConstraints() for i in range(4)}
+        constraints = {s: HandConstraints() for s in Seat}
         
-        current_seat = dealer_seat_index
+        current_seat = dealer_seat
         
         for i, call in enumerate(history):
-            # Find the rule that generated this call
-            # We need to find which rule *would* generate this call in this context
-            # CAUTION: This assumes the player is playing OUR system.
-            # In validation, we assume everyone plays the same system.
-            
-            # Since we don't have the hand, we look for rules where
-            # trigger(history_before) is true AND rule.call == actual_call
+            # Determine which system applies
+            is_my_side = (current_seat == my_seat) or (current_seat == my_seat.partner)
+            active_system = my_system if is_my_side else opp_system
             
             history_before = history[:i]
             matching_rules = []
             
-            for r in self.system.rules:
+            # Find rules in the active system that would produce this call
+            for r in active_system.rules:
                 if r.trigger(history_before) and r.call == call:
                     matching_rules.append(r)
             
-            # If multiple rules match, it's ambiguous, but usually different constraints.
-            # Ideally we take the union of constraints.
-            # For simplicity, take the highest priority one or the first one.
-            
             if matching_rules:
+                # If multiple rules match, ideally intersection/union. 
+                # For now, take first match.
                 r = matching_rules[0]
-                # Update constraints for current_seat
                 constraints[current_seat] = constraints[current_seat].intersect(r.constraints)
+            else:
+                # No rule matched. 
+                # If PASS, implies no opening/response rule triggered. 
+                # This logic is complex (negative processing). 
+                # For now, do nothing if no explicit rule matches.
+                pass
             
-            current_seat = (current_seat + 1) % 4
+            current_seat = Seat((current_seat.value + 1) % 4)
             
         return constraints
 
