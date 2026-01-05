@@ -235,3 +235,104 @@ OPEN 3S:
   HCP: 6-10
   SHAPE: BALANCED
 
+# ==========================================
+# DEFENSIVE BIDDING (Opponent Opened Suit)
+# ==========================================
+
+# (1x) - Simple Overcall: 11-15 HCP, 5+ Major
+(1C) - 1H:
+  HCP: 11-15
+  LEN H: 5+
+(1C) - 1S:
+  HCP: 11-15
+  LEN S: 5+
+
+(1D) - 1H:
+  HCP: 11-15
+  LEN H: 5+
+(1D) - 1S:
+  HCP: 11-15
+  LEN S: 5+
+
+(1H) - 1S:
+  HCP: 11-15
+  LEN S: 5+
+
+# (1x) - 1NT: 16-18 Balanced, Stopper (approximated as balanced strength in DSL)
+(1C) - 1NT:
+  HCP: 16-18
+  SHAPE: BALANCED
+(1D) - 1NT:
+  HCP: 16-18
+  SHAPE: BALANCED
+(1H) - 1NT:
+  HCP: 16-18
+  SHAPE: BALANCED
+(1S) - 1NT:
+  HCP: 16-18
+  SHAPE: BALANCED
+
+# (1x) - Cuebid: 14+ HCP, 5-5 Two Suiter (Michaels)
+# (1C) - 2C
+(1C) - 2C:
+  HCP: 14+
+  LEN H: 5+
+  LEN S: 5+
+
+# (1D) - 2D
+(1D) - 2D:
+  HCP: 14+
+  LEN H: 5+
+  LEN S: 5+
+
+# (1H) - 2H (5-5 Spades + Minor)
+(1H) - 2H:
+  HCP: 14+
+  LEN S: 5+
+
+# (1S) - 2S (5-5 Hearts + Minor)
+(1S) - 2S:
+  HCP: 14+
+  LEN H: 5+
+
+# (1x) - Double: Takeout (13+ HCP)
+# DSL doesn't support complex takeout logic (shortness check) easily without custom predicates.
+# We will use basic HCP and Support assumption logic or just HCP 13+.
+# Text says "13 pts, support in all other suits".
+(1C) - X:
+  HCP: 13+
+  LEN C: 0-2
+(1D) - X:
+  HCP: 13+
+  LEN D: 0-2
+(1H) - X:
+  HCP: 13+
+  LEN H: 0-2
+(1S) - X:
+  HCP: 13+
+  LEN S: 0-2
+
+# ==========================================
+# DEFENSIVE BIDDING (Opponent Opened 1NT)
+# ==========================================
+
+# (1NT) - X: Balanced, same strength or penalty (16+)
+# Assuming strong NT opponent (15-17).
+(1NT) - X:
+  HCP: 16+
+
+# (1NT) - 2C: 5-5 Minors
+(1NT) - 2C:
+  LEN C: 5+
+  LEN D: 5+
+
+# (1NT) - 2D: 5-5 Majors
+(1NT) - 2D:
+  LEN H: 5+
+  LEN S: 5+
+
+# (1NT) - 2H/2S: Natural 6+
+(1NT) - 2H:
+  LEN H: 6+
+(1NT) - 2S:
+  LEN S: 6+

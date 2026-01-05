@@ -106,5 +106,42 @@ class TestPrecision(unittest.TestCase):
         # S: AKQJ H: AKQ D: K32 C: Q32 (25 HCP Bal)
         self.assertBid("SAKQJ HAKQ DK32 CQ32", "3NT", history)
 
+    def test_defensive_bidding(self):
+        # 1. Simple Overcall: (1D) - 1H (11-15 HCP, 5+H)
+        history_1d = [Call(CallType.BID, 1, Strain.DIAMONDS)]
+        # S: 432 H: AKJ32 D: 432 C: 32 (4+3+1 = 8 in H. NEED 11+. Add K in S).
+        # S: K432 H: AKJ32 D: 432 C: 3 (3+8=11 HCP)
+        self.assertBid("SK432 HAKJ32 D432 C3", "1H", history_1d)
+
+        # 2. 1NT Overcall: (1D) - 1NT (16-18)
+        # S: AKJ2 H: KQJ2 D: Q32 C: 32 (8+6+2=16 HCP Bal)
+        self.assertBid("SAKJ2 HKQJ2 DQ32 C32", "1NT", history_1d)
+
+        # 3. Takeout Double: (1C) - X (13+, Shortness)
+        history_1c = [Call(CallType.BID, 1, Strain.CLUBS)]
+        # S: AK32 H: A432 D: A432 C: 2 (7+4+4=15 HCP)
+        self.assertBid("SAK32 HA432 DA432 C2", "X", history_1c)
+
+        # 4. Michaels Cuebid: (1C) - 2C (14+, 5-5 Majors)
+        # S: KQJ32 H: KQJ32 D: 32 C: 2 (14 HCP? 6+6 = 12. Need more).
+        # S: AKJ32 H: AKJ32 D: 32 C: 2 (18 HCP)
+        self.assertBid("SAKJ32 HAKJ32 D32 C2", "2C", history_1c)
+
+    def test_nt_defense(self):
+        # (1NT)
+        history_1nt = [Call(CallType.BID, 1, Strain.NT)]
+        
+        # 1. 2C (5-5 Minors)
+        # S: 2 H: 32 D: KQJ43 CKQJ32 (12 HCP, 5-5 Minors. 1+2+5+5=13 cards)
+        self.assertBid("S2 H32 DKQJ43 CKQJ32", "2C", history_1nt)
+
+        # 2. 2D (5-5 Majors)
+        # S: KQJ32 H: KQJ32 D: 32 C: 2 (12 HCP)
+        self.assertBid("SKQJ32 HKQJ32 D32 C2", "2D", history_1nt)
+
+        # 3. Double (16+ Balanced)
+        # S: AKJ2 H: KQ32 D: A32 C: 32 (8+5+4 = 17 HCP)
+        self.assertBid("SAKJ2 HKQ32 DA32 C32", "X", history_1nt)
+
 if __name__ == "__main__":
     unittest.main()
