@@ -1,0 +1,627 @@
+
+SAYC - Standard Amercian Yellow Card
+
+A copy of the actual ACBL SAYC convention card (dated April 2003) is available at the ACBL website::
+http://www.acbl.org/documentlibrary/play/sayc_book.pdf
+http://www.acbl.org/documentlibrary/play/sayc_card.pdf
+
+Also see Standard American Books
+
+OVERVIEW
+
+The “ACBL Standard Yellow Card” system, so named based on the original color of the yellow convention card, is one where all partnerships have agreed to play the system exactly as described in this booklet. The object is to provide a simple, modern method that will lead to a good, solid understanding in a partnership when both players have read this booklet.
+
+The beauty of this type of game is that players know in advance not only their own bidding agreements, but those of their opponents. The game is free of complex bidding systems. There are few Alerts and Announcements (none unexpected), and there should be a minimum of director calls.
+
+Few sequences are defined in the later rounds of “ACBL Standard Yellow Card” auctions. Players are free to assign forcing, invitational or non-forcing meanings to natural calls in such sequences. They are not, however, free to introduce their own sophisticated methods in these undefined areas.
+
+The relaxed spirit of the ACBL Standard Yellow Card game is best achieved by group cooperation. Contestants are encouraged to adhere to both the letter and the spirit of this game.
+
+Players may still exercise their bridge judgments, such as opening a four-card major in third seat. The ACBL Standard Yellow Card “normally five-card majors” approach can withstand an occasional deviation. Players who routinely open a four-card major in third seat, however, are not adhering to the spirit of this game. Similarly, partnerships that prefer to use light initial actions are expected to adjust their requirements or enter a concurrent General Conventions Chart event.
+
+Psychs are a sensitive subject to players in this type of game. A very rare, totally unexpected psych is not illegal, but players who wish to psych with any degree of frequency are encouraged to enter other games.
+
+Please read the booklet before entering the game and understand that you have agreed to play the system as described. Enjoy!
+
+CHOICES
+
+If you play in an ACBL Standard Yellow Card game, you have only five choices to make. They involve defensive card play — see DEFENSIVE LEADS AND SIGNALS.
+
+GENERAL APPROACH
+
+Normally open five-card majors in all seats.
+
+Open the higher of long suits of equal length: 5–5 or 6–6.
+
+Normally open 1D with 4–4 in the minors.
+
+Normally open 1C with 3–3 in the minors.
+
+Notrump openings show a balanced hand and can be made with a five-card major suit or a five-card minor suit.
+
+1NT = 15–17
+
+2NT = 20–21
+
+3NT = 25–27
+
+Strong conventional 2C opening.
+
+Weak two-bids in diamonds, hearts and spades.
+
+RESPONSES AND LATER BIDDING AFTER A 15–17 1NT OPENING
+
+2C is “non-forcing” Stayman, meaning that the bidding can stop in two of a suit. Opener rebids 2H with 4–4 in the majors. If responder rebids three of either minor, he shows slam interest and at least a five-card suit.
+
+The Jacoby transfer that shows a five-card suit is used for the majors: 2D is a transfer to hearts, 2H is a transfer to spades. Opener accepts the transfer, though he can jump to the three level with 17 points and four-card support for responder’s major. For example:
+
+1NT	2D
+2H = normal acceptance of transfer	 
+3H = 17 points and four-card support	 
+  If, after the transfer is accepted, responder bids a new suit, that is natural and game forcing. Possible calls after the accepted transfer are:
+
+1NT	
+2H
+
+2S	
+Pass = content to play 2S.
+
+ 	
+2NT, 3S = invitational. Over 2NT opener may pass;
+3S with a minimum hand;
+3NT or 4S with a maximum.
+
+ 	
+3C, 3D, 3H = natural and game forcing.
+
+ 	
+3NT = asking for a choice between 3NT and 4S.
+
+ 	
+4S = placing the contract, with a six-card or longer suit.
+
+A 2S response requires the 1NT bidder to rebid 3C, which may be passed with a club bust, or responder may rebid 3D with a diamond bust. Example:
+
+1NT	
+2S
+
+3C	
+Pass = club bust
+
+3H = 17 points and four-card support	
+3D = diamond bust (notrump opener passes).
+
+  Other responses to 1NT:
+
+1NT	
+3C, 3D = a six-card or longer suit and invitational to 3NT.
+
+ 	
+3H, 3S = at least a six-card suit and slam interest
+(otherwise, responder uses a transfer bid).
+
+ 	
+4C = Gerber, asking for aces.
+4C IS GERBER OVER ANY 1NT OR 2NT
+BY PARTNER, INCLUDING A REBID OF 1NT OR 2NT. Response show the number of aces, by steps, same as Blackwood 4NT.
+5C is used to ask for kings.
+
+ 
+
+Ace Asking	King Asking
+1NT — 4C	1NT — 4C
+4D   = 0 or 4 aces	4x   = 5C
+4H   = 1 ace	5D  = 0 or 4 kings
+4S    = 2 aces	5H = 1 king
+4NT = 3 aces	5S = 2 kings
+ 	5NT = 3 kings
+If the player using Gerber makes any bid other than 5C, that is to play (including 4NT).
+
+A direct raise of 1NT to 4NT is natural and invites 6NT. 4NT is slam invitational only because 4C is available as Gerber (to ask about aces).
+
+INTERFERENCE AFTER A 1NT OPENING BID
+
+If an opponent doubles, all conventional responses are “on.” For example:
+
+1NT	(Double)	2C	Stayman
+1NT	(Double)	2D	Transfer to Hearts
+If an opponent bids over your 1NT opener, conventional responses like Stayman and transfers are “off.” Bids are natural except for a cuebid, which can be used with game forcing strength as a substitute for Stayman.
+
+If the opponents intervene over a conventional response, bids carry the same meaning as if there were no intervention. A bid says, “I’m bidding voluntarily, so I have a real fit with you.”
+
+1NT	(Pass)	2D	(Double)
+2H	2H = Real fit for Hearts, but Pass with only two Hearts (Responder can still bid 2H if appropriate with weak values)
+
+RESPONSES TO A 2NT OR A 3NT OPENING
+
+Stayman and Jacoby transfers for the majors are used.
+
+2NT	3C	
+Stayman
+
+ 	3D, 3H	
+Transfer to Hearts and Spades, respectively
+
+ 	4C	
+Gerber (ace asking)
+
+ 	4N	
+Invites a slam in Notrump
+
+3NT	4C	
+Stayman
+
+ 	4D, 4H	
+Transfer to Hearts and Spades, respectively
+
+
+RESPONSES AND LATER BIDDING AFTER A 1H OR A 1S OPENING
+
+1H and 1S openings show a five-card or longer suit. Responses:
+
+1H	1S	
+At least four spades, 6 or more points.
+Tends to deny a heart fit.
+
+ 	1NT	
+6–10 points, denies four spades or three Hearts.
+NOT forcing.
+
+ 	2C, 2D	
+11 points or more, promises at least four of the suit.
+
+ 	2H	
+Three-card or longer heart support; 6–10 dummy points.
+
+ 	2N	
+Game-forcing raise (Jacoby 2NT), 13+ dummy points.
+Asks opener to show a short suit to help responder evaluate slam prospects
+
+ 	2S, 3C, 3D	
+Strong jump shifts. Invites a slam.
+
+ 	3H	
+limit raise (10–12 dummy points with
+three or more Hearts).
+
+ 	4H	
+Usually five+ hearts, a singleton or void,
+and fewer than 10 HCP.
+
+Opener’s rebids are natural and standard.
+
+Rebids with a minimum hand (13–16 points):
+
+Rebidding notrump at the lowest available level;
+
+Raising responder’s suit at the lowest level (may have good three-card support);
+
+Rebidding a new suit at the one level or rebidding a new suit at the two level that is lower ranking than the opening suit (not reversing);
+
+Rebidding opener’s suit at the lowest level.
+
+Rebids with a medium hand (17–18 points):
+
+Jump raise or jump rebid of opener’s suit;
+
+Reverse in a new suit, i.e., bid a new suit at the two level which is higher ranking than the opening suit;
+
+Non-reverse bid in a new suit (this has the wide range of 13–18 points).
+
+With a maximum hand (19–21 or 22 points) opener must make a very strong rebid:
+
+Jump in Notrump;
+
+Double jump raise of responder’s suit or double jump rebid of opener’s suit;
+
+Jump shift in a new suit.
+
+If responder jumps to 2NT over a 1H or 1S opening, that is Jacoby 2NT, asking opener to show a singleton or void. If opener has no short suit, he shows his hand strength;
+
+1H	2N	 
+3C, 3D, 3S	 	
+Singleton or void in that suit.
+Other bids deny a short suit.
+
+4H	 	
+Minimum hand.
+
+3NT	 	
+Medium hand (15-17).
+
+3H	 	
+Maximum hand (18+).
+
+Responder follows up by attempting to sign off in game, bidding 4NT Blackwood, or cuebidding if still interested in trying to cooperate with opener in making the slam decision.
+
+SUBSEQUENT BIDDING BY RESPONDER
+
+If responder has bid a suit at the one level, he next determines whether he wishes to sign off in a partscore, invite game, sign off in game, or force to game and get more information about opener’s hand.
+
+Bids available for a sign-off in partscore: Pass, 1NT, 2 of a previously bid suit.
+
+1H	1S	
+2C	Pass, 2H, 2S	
+6–10 points, sign-off in partscore.
+
+Bids available for inviting game: 2NT, 3 of a previously bid suit:
+
+1H	1S	
+2D	2N, 3D, 3H, 3S	
+11–12 points, inviting game.
+
+After opener rebids in a suit, a new suit by responder is forcing. If the new suit is the fourth suit, the bid may be artificial/conventional.
+
+1H	1S	
+2C	2D	
+One-round force, could be conventional.
+
+However, after a 1NT rebid by opener, bids of a new suit at the next higher level are non-forcing.
+
+1H	1S	
+1N	2C, 2D	
+Non-forcing. Responder must jump shift to 3C or 3D to force game.
+
+Second-round forcing bids following a 1NT rebid by opener: a reverse or jump shift into a new suit is a game force.
+
+1C	1H	
+1N	2S, 3D	
+Game force.
+
+Bids available for signing off in game.
+
+    3NT, 4H, 4S, 5C, 5D.
+
+If responder initially bids a new suit at the two level, the same rules apply EXCEPT that a subsequent jump raise of opener’s first suit to the THREE LEVEL is game forcing — responder should make a limit raise directly over the opening with 10–12 points and at least three-card support:
+
+1S	2C	
+2H	2N, 3C, 3H	
+Invitation to game (11–12 points).
+
+2S	
+Preference, not forcing.  Responder has 11-12 points and a doubleton Spade.
+
+3D	
+Game force, could be conventional.
+
+3H	
+Game force.
+
+NOTE: Responder promises to bid again if he responded with a new suit at the two level unless opener’s rebid is at the game level.
+
+1S	2C	
+2D		
+Forcing one round. Responder can limit his hand by bidding 2S, 2NT, 3C, or 3D at this point. He should not pass, since opener could have 18 points (just short of a jump shift rebid).
+
+
+RESPONSES TO A 1C OR A 1D OPENING
+
+A 1D opener suggests a four-card or longer suit, since 1C is preferred on hands where a three-card minor suit must be opened. The exception is a hand with 4–4–3–2 shape: four spades, four hearts, three diamonds, and two clubs, which should be opened 1D.
+
+Responses and later bidding generally follow the ideas set down in the previous section. Bidding at the one level is up-the-line in principle. Responder needs more trumps to raise (four to raise 1D; five to raise 1C, though one fewer trump will do in a pinch in a competitive sequence). Responses of 2NT and 3NT are standard:
+
+1C	2N	
+13-15, game forcing
+
+3N	
+16-17
+
+There is no forcing minor-suit raise.
+ 
+
+A 2C OPENING, RESPONSES, AND LATER BIDDING
+
+A 2C opening shows at least 22+ points, or the playing equivalent. Responses:
+
+2C	2D	
+Conventional, could be “waiting” with a good hand not suited to a positive response.
+
+2H, 2S, 3C, 3D	
+Natural and game forcing.
+At least a five-card suit and 8 points.
+
+2N	
+A balanced 8 HCP
+
+If opener rebids 2NT after a 2D response (showing 22–24 points), the same responses are used as over a 2NT opening:
+
+2C	2D	
+2NT	3C	
+Stayman
+
+3D, 3H	
+Transfers to hearts and spades, respectively.
+
+4C	
+Gerber
+
+4N	
+Inviting a slam in Notrump
+
+If opener rebids a suit over a 2D response, the bidding is forcing to 3 of opener’s major or 4 of opener’s minor.
+
+2C	2D	
+2H	2S	
+3H		
+Not forcing
+
+
+SEQUENCE AFTER A WEAK TWO-BID OF 2D, 2H, OR 2S
+
+A weak two-bid shows a six-card suit of reasonable quality and 5–11 HCP. On rare occasions it may be a very good five-card suit. It is possible to open a weak two with a poor seven-card suit (not good enough to open with at the three level). Responses:
+
+A 2NT response is forcing, showing game interest. (This applies also if the opponents intervene with a double or a bid.) Opener rebids his suit with a minimum weak two (5–8 points). With a maximum hand opener bids another suit to show a “feature” (ace or king in that suit); lacking a feature, he raises to 3NT and lets responder place the contract.
+
+Any raise of opener’s suit is to play and could be preemptive. A 3NT response is also to play.
+
+“RONF” on the card means “Raise Only Non-Force.” A new-suit response is forcing one round and shows at least a five-card suit. Opener should raise a major suit response with a three-card fit, or perhaps with a doubleton honor.
+
+With no fit for responder’s suit, opener rebids:
+
+    With a minimum weak two-bid (5–8 points), rebid the suit at the lowest level.
+  With a maximum weak two-bid, name a new suit or bid notrump.
+ 
+
+SLAM BIDDING
+
+Blackwood 4NT is used to ask for aces. Responses show the number of aces by steps. 5NT is then used to ask for kings; 5NT guarantees the partnership holds all four aces.
+
+...	...	
+...	4N	
+Ace ask
+
+5C		
+0 or 4 aces
+
+5D		
+1 ace
+
+5H		
+2 aces
+
+5S		
+3 aces
+
+ 
+
+...	...	
+...	4N	
+5x	5N	
+King ask
+
+6C		
+0 or 4 kings
+
+6D		
+1 king
+
+6H		
+2 kings
+
+6S		
+3 kings
+
+A jump to 5NT (and some 5NT bids when the auction is at the five level) is “Grand Slam Force,” asking partner to bid a grand slam with two of the three top trump honors;
+
+    5NT — 6 of the trump suit = fewer than two top trump honors (A, K, or Q).
+         — 7 of the trump suit = two of the three top trump honors.
+ 
+
+DEFENSIVE BIDDING
+
+Overcalls show 8–16 points (double and bid the long suit with a stronger hand). The only forcing response is a cuebid of opener’s suit, asking the overcaller about the quality of his overcall:
+
+ (1D)	 1S	 (Pass)	 2D
+ (Pass)
+
+ 2S = minimum overcall
+
+ Other = extra strength (11 - 12 points minimum)
+
+A 1NT overcall shows 15–18 points and a balanced hand (preferably a stopper in opener’s suit). No conventional responses are used to the 1NT overcall except 2C, which is Stayman.
+
+A jump overcall of 2NT shows at least 5–5 in the lower two unbid suits.
+
+Jump overcalls are preemptive, showing the same value as an opening bid at the same level:
+
+(1D)	2S	
+ = A hand that would open a weak two-bid in spades
+
+3C	
+ = A hand that would open 3C
+
+A cuebid overcall when the opponents have bid two suits is natural in either suit.
+
+A cuebid overcall when the opponents have bid only one suit is a Michaels cuebid, showing a 5–5 two-suiter (or more distributional). If the opening is in a minor suit, the cuebid shows the majors; if the opening is in a major, the cuebid shows the other major and an unspecified minor.
+
+(1D)	2D	
+ = At least 5–5 in the majors, 8 points or more.
+
+(1S)	2S	
+ = At least 5–5 in hearts and a minor;
+    10 points or more
+
+Responder can bid 2NT over a major suit cuebid to ask for partner’s minor.
+
+(1H)	
+ 2H
+
+(Pass)	
+ 2N (asks for the minor)
+
+(P)	 3C = Club suit.
+ 	 3D = Diamond suit.
+A reopening bid means much the same as a direct seat bid, though it can be lighter at the minimum end. A reopening 1NT after an opponent has opened shows 10–15 points. This is a wide range, but there will not usually be a game on for you.
+
+A double is for takeout over an opening partscore bid (4D or lower); penalty over opening game bids (4H or higher). A below-game jump response to a takeout double is invitational. To force, responder cuebids opener’s suit.
+
+Versus an opening preempt, an overcall in a suit or Notrump is natural; a cuebid is Michaels.
+ 
+
+COMPETITIVE BIDDING
+
+There is almost an endless variety of possible sequences, so it pays to have simple guidelines to prevent bidding misunderstandings.
+
+Bids mean the same things they meant without the intervening bid. Still, it is sometimes necessary to pick a bid that would normally have been a second choice without the overcall:
+
+ 1D	 (Pass)	 1S	 (2C)
+?			
+Holding:
+
+S J43
+H A875
+D AQJ4
+C J3
+
+Rebid 2S
+
+Rebid 1NT if RHO has passed instead of bidding (2C)
+
+Cuebidding right-hand opponent’s suit shows values for game without clear direction for the moment. This is often used to show a game-forcing raise:
+
+ 1S	 (2C)	 3C = game force; usually a raise
+The negative double is used through 2S promising four cards (at least) in an unbid major. Bidding a major at the two level or higher shows 11 or more points and a five-card or longer suit.
+
+ 1C	 (1D)	 (Double) = 4-4 or better in the majors.
+ 1D	 (1H)	 (Double) = Exactly four Spades (1S) promises 5
+ 1D	 (1S)	 (Double) = 4 Hearts and 6+ points or 5 Hearts and 5-10 points.
+If RHO makes a takeout double:
+
+ 1D
+
+(Double)
+
+ 1H, 1S = forcing, point count not limited.
+
+(Double)
+
+ 2C = Non-forcing (6-10 points, usually a 6 card suit).
+
+(Double)
+
+ 2NT = Limit raise (at least 10 points) — or better.
+
+(Double)
+
+ Redouble = 10 points or more, but it is better to make a more descriptive bid of 1H, 1S, or 2NT with the appropriate hand.
+
+(Double)
+
+ 3D = Preemptive, good trump support but fewer than 10 points.
+
+A Responder’s jump shift after a double is to play:
+
+ 1D
+
+ (Double)
+
+ 2H, 2S, 3C = 6+ card suit, like a weak two-bid or preemptive three-bid
+
+A Redouble can have one of three meanings:
+
+To play if:
+
+Your side is at the four level or higher:
+
+ 4S
+
+ (Double)
+
+ Redouble = Penalty;
+
+The opponents double a conventional bid:
+
+ 1NT
+
+ (Pass)
+
+ 2D
+
+ (Double)
+
+Redouble = Penalty, good diamond suit;
+
+A good hand if their double is for takeout:
+
+ 1S
+
+ (Double)
+
+ Redouble = 10+ points;
+
+SOS, requesting a different suit, if your side is doubled for penalty in a trump suitat the three level or lower:
+
+ 1D
+
+ (Pass)
+
+ Pass
+
+ (Double)
+
+ Pass
+
+ (Pass)
+
+ Redouble =  SOS, responder can support at least two of the unbid suits.
+
+Unless otherwise noted elsewhere, any bid or double by an opponent cancels a convention intended for non-competitive sequences.
+
+Examples:
+
+ 1H
+
+ (2S)
+
+ 2NT = Natural (12-14 HCP).
+
+ 2C
+
+(Double)
+
+ 2D = Natural and positive
+
+If the opponents use a convention (such as Michaels or the unusual notrump), you can double to show at least 10 points, or you can cuebid one of their shown suits to force to game.
+
+ 1S
+
+ (2S)
+
+ 3H = Game force.
+
+ Double = At least 10 points, probably balanced.
+
+
+DEFENSIVE LEADS AND SIGNALS
+
+This is the one area where choices are offered. The following are specified:
+
+Defensive signals when following suit or discarding are “high encourages, low discourages.” Leads are top of touching honors (with choices from A–K–x and interior sequences).
+
+Pairs must choose from the following options.
+
+Where no card is pre-marked in bold Italics, pairs must mark their leads.
+
+• Which card is led from A–K–x.
+
+• Which card is led from x–x–x, x–x–x–x, or x–x–x–x–x.
+
+• Whether 4th best, or 3rd & 5th best leads are used.
+
+• Whether 3rd best is led from K–J–10–x, K–10–9–x, or Q–10–9–x
+(and from A–J–10–x, or A–10–9–x vs. notrump).
+Must be indicated by circling the card led.
+
+• Whether or not frequent count signals are given.
+
+It is Declarer’s responsibility to look at the opponents’ carding agreements. In the absence of a circle, cards in bold Italics are presumed to be the agreement.
+
+NOTE:
+
+If you are playing the ACBL Standard Yellow Card in an open game, you may add defenses to opponents’ conventions (e.g., unusual vs. unusual, and Mathe over big club). Put these convention-defenses in the section “Defenses vs. Opp’s Conventions” on the left-hand side of the convention card.
+
+SP3 (bk) Rev. 04/03
+
+
+HOME  Encyclopedia  Newsletter  Laws  Products  Services  Reviews  Tournaments  Blog  Training Practice Links HELP
+Contacts: Sales  Support  Reviews  Q&A    Disclaimer    Privacy    © 2005 BridgeHands   Updated 01/22/11
