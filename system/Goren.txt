@@ -1,0 +1,365 @@
+
+ Goren System
+(provided courtesy of BridgeGuys)
+
+Also see Goren Bridge Books
+
+The basics of the Goren Bidding System includes opening the longest suit first. Other features is opening the lower of 4-4 in the Minor suits, jumping to 2 Notrump or 3 of the opening suit, if the point count is 13 to 15 support points. The Notrump range is between 16 and 18 high card points, and all 2 Diamonds/Hearts/Spades opening are strong.
+
+Mr. Charles Goren devised a Point Count Table to be used when opening, responding, and rebidding. The charts below present his Point Count Tables.
+
+Ace:
+
+4 points
+
+King:
+
+3 points
+
+Queen:
+
+2 points
+
+Jack:
+
+1 point
+
+ 
+
+4 Aces:
+
+Add 1 point
+
+K Q x
+
+2 points
+
+A Q x
+
+1.5 points
+
+K Q x
+
+1 point
+
+K x
+
+.5 points
+
+Distributional Points are counted as follows:
+
+For any opening bid:
+
+Void:	
+3 points
+
+Singleton:	
+2 points
+
+Doubleton:	
+1 point
+
+If the partner is able to raise the opening of his partner:
+
+Void:	
+5 points
+
+Singleton:	
+3 points
+
+Doubleton:	
+1 point
+
+The concept behind the Point Count is expanded by adding the Distributional Points to the Point Count of the responder when a fit has been determined, and the result is then added to the actual point count of the total honors. The thought behind this calculation is to increase or promote each honor in the bid suit of the partner by 1 point, unless the honors already exceed 4 points. On the other hand, 1 point is deducted from the total distributional values, if the holding only contains a 3-card support, and/or the complete distribution is 4-3-3-3.
+
+Certain requirements are advised when opening one of a suit.
+
+1. All holdings containing 14 high card points must be opened.
+2. Any holding with 13 high card points may be opened, but there must be a reasonable, logical rebid available.
+3. All openings are required to have 2 Quick Tricks.
+4. Any 1 Notrump opening must contain between 16 and 18 high card points and must have a balanced distribution.
+5. An opening in Third Seat is permitted, if the hand contains 11 high card points and the holding contains a good suit.
+
+Certain requirements are advised when opening two of a suit. As the high card point range diminishes, the quality of the suit increases.
+
+1. The opener must have 25 high card points and a good 5-card suit.
+2. The opener must have 23 high card points and a good 6-card suit.
+3. The opener must have 21 high card points and a good 7-card suit.
+
+In his original book, Goren's Bridge Complete, the Goren Opening Bids are shown below:
+
+1C
+
+13-22 HCPs
+
+3+ Clubs
+
+1D
+
+13-22 HCPs
+
+4+ Diamonds
+
+1H
+
+13-22 HCPs
+
+4+ Hearts
+
+1S
+
+13-22 HCPs
+
+4+ Spades
+
+1N
+
+16-18 HCPs
+
+Balanced shape
+
+2C
+
+23+ HCPs
+
+5+ Clubs
+
+2D
+
+23+ HCPs
+
+5+ Diamonds
+
+2H
+
+23+ HCPs
+
+5+ Hearts
+
+2S
+
+23+ HCPs
+
+5+ Spades
+
+2N
+
+22-24 HCPs
+
+Balanced shape
+
+This early version shows that the opening of a 4-card Major suit was allowed. The later, revised edition of the book Goren's New Bridge Complete in 1985 showed a preference for opening a 5-card Major suit and allowed for an Minor suit opening of a 3-card suit. The point range for a 2 Notrump range was also revised. These revised opening bids are shown below.
+
+1C
+
+13-22 HCPs
+
+3+ Clubs
+
+1D
+
+13-22 HCPs
+
+3+ Diamonds
+
+1H
+
+13-22 HCPs
+
+5+ Hearts
+
+1S
+
+13-22 HCPs
+
+5+ Spades
+
+1N
+
+16-18 HCPs
+
+Balanced shape
+
+2C
+
+23+ HCPs
+
+Any shape
+
+2D
+
+6-12 HCPs
+
+6+ Diamonds
+
+2H
+
+6-12 HCPs
+
+6+ Hearts
+
+2S
+
+6-12 HCPs
+
+6+ Spades
+
+2N
+
+21-22 HCPs
+
+Balanced shape
+
+Certain circumstances are understood, if one partner decides to open with a preemptive bid on the Three Level. The partner should not open any suit on the Three Level with a holding containing 10 high card points or more. The partner, after a preemptive opening, should not raise the suit of the partner unless he holds at least 3 or 4 certain Quick Tricks.
+
+If the opponents open the auction with a bid suit first, then a Takeout Double requires that the doubler must possess a holding which would normally be an opening, which signifies 13 high card points or more. If the Takeout Double is over a 1 Notrump opening, then the doubler is required to hold at least 10 high card points.
+
+If the Right Hand Opponent responds to the opening of his partner, then the responder of the Takeout Doubler is not required to bid. If the Right Hand Opponent passes, then the responder of the Takeout Doubler is required to respond. According to the Goren Bidding System, the responder may then bid once with 0 to 6 high card points, the responder may rebid again with 9 high card points, and the responder may jump bid with 11 to 12 high card points.
+
+As a defense against the Takeout Double, the responder to the opener should pass with less than 5 high card points, bid with any values between 6 and 9 high card points, and redouble when holding 10 high card points or more.
+
+After the auction has officially been opened, any overcall must contain at least 10 high card points if the overcall is on the One Level. On the Two Level, the overcaller must have 12 high card points or more and a good suit. To overcall with 1 Notrump, the point range must be between 16 and 18 high card points and the distribution must be balanced.
+
+ 
+
+In the Goren Bidding System, the responses are defined and should be adhered to as much as possible in order to communicate definite information to the partner.
+
+If the partner opens with one of a suit, the responder will respond according to the following chart, if there is no immediate fit. The responses are based on a balanced distribution, not on a non-balanced distribution.
+
+1N
+
+6-10 HCPs
+
+2N
+
+13-15 HCPs
+
+3N
+
+16-18 HCPs
+
+If the responder is holding any support for the suit bid by his partner, then the responses should follow the guidelines established below. These responses are based on the fact that the responder has an unbalanced distribution and can respond after an immediate fit.
+
+Raise 1 Level:
+
+With 7-10 HCPs
+
+Raise 2 Levels:
+
+With 13-16 HCPs
+
+Jump to 4 Level:
+
+With 9 HCPs or less and 5-card support
+
+Jump Shift:
+
+With 19 HCPs or more
+
+If no immediate fit is discovered, then the following chart shows the possible responses.
+
+Show a new suit at the 1 Level:
+
+With 6 HCPs plus
+
+Show a new suit at the 2 Level:
+
+With 10 HCPs plus
+
+Make 2 progressive bids without forcing to game:
+
+With 11-12 HCPs
+
+ 
+
+ 
+
+ 
+
+ 
+
+If the partner opens a strong 2 Clubs/Diamonds/Hearts/Spades, then the responder should communicate his holding to the partner in the following manner, by bidding:
+
+2N
+
+With 6 HCPs or less
+
+Positive Response:
+
+With 7 HCPs and 1 Quick Trick
+
+Positive Response:
+
+With 8 HCPs and 0.5 Quick Tricks
+
+ 
+ 
+
+
+An opening of 1 Notrump promises 16 to 18 high card points and a balanced distribution. The responder has several options to communicate to his partner a description of his holding by bidding the following, which would strongly indicate an unbalanced distribution.
+
+Bid 2C with 8 HCPs or more and a 4-card Major suit
+
+Bid 2D, 2H or 2S with less than 8 HCPs and a 5-card suit
+
+Bid 3 of any suit with 10 HCPs and  a good suit
+
+Bid 4 of a long Major suit and less than 10 HCPs
+
+An opening of 1 Notrump promises 16 to 18 high card points and a balanced distribution. The responder has several options to communicate to his partner a description of his holding by bidding the following, which would strongly indicate a balanced distribution.
+
+2N
+
+With 7 HCPs and a 5-card suit
+
+2N
+
+With 8-9 HCPs
+
+3N
+
+With 10-14 HCPs
+
+4N
+
+With 15-16 HCPs
+
+6N
+
+With 17-18 HCPs
+
+7N
+
+With 21 HCPs
+
+If the opener opens the auction with 2 Notrump, promising 21 to 22 high card points, a balanced distribution, and all four suits protected, then the responder has the following options with a balanced distribution:
+
+3N
+
+With 4-8 HCPs
+
+4N
+
+With 10 HCPs
+
+6N
+
+With 11-12 HCPs
+
+7N
+
+With 15 HCPs
+
+If the opener opens the auction with 2 Notrump, promising 21 to 22 high card points, a balanced distribution, and all four suits protected, then the responder has the following options with an unbalanced distribution:
+
+Responder bids a 5-card Major suit with 1 top honor and 4 high card points
+
+Responder bids a 6-card suit except Clubs
+
+Responder bids 3 Clubs with 4 high card points and a 4-card Major suit
+
+ 
+
+
+HOME  Encyclopedia  Newsletter  Laws  Products  Services  Reviews  Tournaments  Blog  Training Practice Links HELP
+Contacts: Sales  Support  Reviews  Q&A    Disclaimer    Privacy    © 2005 BridgeHands   Updated 01/22/11
