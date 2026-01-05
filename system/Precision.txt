@@ -1,0 +1,1395 @@
+Precision Big Club
+
+Big Club - Systems using the 1 Club System include: Bangkok Club, Italian Blue Club, Canary Club, Carrot Club, French Club, Little Roman, Marmic, Orange Club, Precision, Relay, Roman System, Roth Club, Simplified Club, Trefle Squeeze, Vanderbilt, Vienna.
+
+ The following methods are used by many Precision players - Note: all artificial bids are alertable
+
+See below for other methods.
+
+Also see Precision/Big Club Books, Alpha Cuebid , Beta Cuebid, Trump Asking Bid, Control Asking Bid, Suit Asking Bid, Delta Asking Bid.
+
+Illustrative Precision system based on the book "Precision Today":
+
+Opening Bids
+
+1C
+
+16+ HCP or a very good 15 HCP hand.
+
+1D
+
+11-15 HCP with 2+ Diamonds
+
+1H/S
+
+11-15 HCP with 5+ suit
+
+1N
+
+10-12, 11-14, 13-15 HCP (various opening ranges are in use)
+
+2C
+
+11-15 HCP with 6+ Clubs maybe with 4-5 card major (simplified method)
+
+2D
+
+11-15 HCP with a three suited hand with shortness in Diamonds
+
+2H/S
+
+5-10 HCP with 6+ cards in major suit (preemptive weak 2)
+
+2N
+
+22-23 HCP, balanced (standard);
+optionally Unusual Notrump - weak with long minors
+
+3C+
+
+Same as other systems - preemptive at 3 level, Gambling 3N, NAMYATS
+
+ 
+
+1N Opener: 10 – 12 points (1st, 2nd, and3rd seat)
+(treatments vary with other Notrump ranges)
+
+1N – 2D
+
+Forcing Stayman (to game); may not have 4 card major
+
+1N – 2C;
+any – 2N
+
+Game invitational, denies a 4 card major
+
+1N – 2N;
+
+Game invitational, denies a 4 card major
+
+1N – 2C;
+2D – 2H
+
+Crawling Stayman to play or correct to 2S; Garbage Stayman too.
+
+1N – 2H/S/3C/D
+
+To play
+
+1N – 3H/S
+
+Game forcing, 5er; Opener chooses 3NT or 4H/S
+
+1N – (X) – P
+
+To play; may be 9-13 HCP
+
+1N – (X) – XX
+
+One suited hand (Moscow Escape), opener puppets to 2C, responder Passes or bids suit if required
+
+1N - (X) – 2C/D/H
+
+Responder has support for suit and higher suit (Moscow Escape), opener Passes or bids lowest reasonable suit
+
+1N – (X) – 2N
+
+Unusual Notrump for the minors (Lebensohl "off")
+
+1N - 2C/D;
+2x - 3y
+
+New suit at 3 level shows 6+ card suit.
+Invitational if responder began with 2C
+Game forcing (Slam try) if responder began with 2D
+
+1N – (any) – 2x
+
+To play
+
+1N – (any) – X
+
+Takeout Lebensohl (some play standard penalty treatment)
+
+1N – (2x) – 3x
+
+Stayman without stopper (not Western Cuebid)
+
+ 
+
+2D Opening: 11-15 points, Diamond shortage
+
+2D – 2H/S/3C
+
+To play, 0-11
+
+2D – 2N
+
+Query asking; have 11 HCP+ with shortness to ask.
+
+2D – 2N;
+3C
+
+3=4=1=5
+(aid: 1st step black 3C = only 3S)
+
+2D –2N;
+3D
+
+4=3=1=5
+(aid: 2nd step red 3D = only 3H)
+
+2D – 2N;
+3H
+
+4=4=1=4 with 11-13 points
+(aid: 3rd step = weak)
+
+2D – 2N;
+3S
+
+4=4=1=4 with 14-15 points
+(aid: 4th step = strong)
+
+2D – 2N;
+3N
+
+4=4=1=4 with DA or DK
+(aid: 3N = stopper)
+
+2D – 2N;
+4C
+
+4=4=0=5 with 11-13 points
+(aid: 4C = no stopper, weak)
+
+2D – 2N;
+4D
+
+4=4=0=5 with 14-15 points
+(aid: 4D = no stopper, strong)
+
+2D – 3H/S
+
+Responder sets Game Force, 5+ H/S
+
+ 
+
+2C Opening: 11-15 points, 6+ Clubs (no 5 card major)
+
+2C – 2D
+
+Waiting/query; asks Opener for a 4 card major
+2C–2D; 2H/S=4 & 11-13, 2N=bal,  3C=Clubs, 3D=4D & 5C,
+3H/S=4 & 14-15, 3N = Solid Clubs & 14-15 (3S/N non-std)
+
+2C – 2H/S
+
+Invitational; must be 5er in length and  11-13 TP
+
+2C – 3H/S
+
+6+ pieces, game forcing, 14 + TP
+
+2C – 2N
+
+Invitational
+
+2C – 3C
+
+Competitive
+
+2C – 3D
+
+Inviting 3 Notrump (no 4 card major, forcing to 4m)
+
+ 
+
+Responses to 1C
+
+1C – 1D
+
+0-7 HCP
+
+1C – 1H/S
+
+8+ distribution points and any 5 card suit
+If playing asking bids, TAB, reTAB, CAB, reCAB, Alpha, Beta apply
+
+1C – 1N
+
+8-13 HCP, balanced (5 in minor okay but not major)
+If playing asking bids, CAB, reCAB, Alpha, Beta apply
+
+1C – 2C/D
+
+8+ distribution points and any 5 card suit (same as 1H/S response)
+If playing asking bids, TAB, reTAB, CAB, reCAB, Alpha, Beta apply
+
+1C – 2H/S
+
+4-6 HCP disciplined preemptive (no worse than K J 10 9 x x).
+If opener queries with 2N, responder shows shortage if possible
+
+1C – 2N
+
+14+ HCP, balanced and 4+ controls
+If playing asking bids, Suit AB, CAB, reCAB, Beta apply
+
+
+1C – 3C
+
+Black shortage, 1=4=4=4 or 4=4=4=1, < 4 controls (mostly < 12 HCP)
+If opener asks by bidding 3D, Responder bids 3H=C or 3S=S shortage
+1C – 3C; 3D – 3H/N;  P/3N/4M to play, 4C asks controls (0-2, 3, 4…)
+
+
+1C – 3D
+
+Red shortage, 4=1=4=4 or 4=1=4=4, < 4 controls (mostly < 12 HCP)
+If opener asks by bidding 3H, Responder bids 3S=D or 3N=H shortage
+1C – 3D; 3H – 3S/N;  4M to play, 4D asks controls (0-2, 3, 4…)
+
+1C – 3H
+
+Spade shortage, 1=4=4=4, 12+ HCP and 4+ controls
+If playing asking bids, CAB, Beta apply
+
+1C – 3S
+
+Club shortage, 4=4=4=1, 12+ HCP and 4+ controls
+If playing asking bids, CAB, Beta apply
+
+1C – 3N
+
+Solid running 7 or 8 card suit (opener's right to play in NT)
+
+1C – 4C
+
+Diamond shortage, 4=4=1=4, 4+ controls and 12+ HCP
+If playing asking bids, CAB, Beta apply
+
+1C – 4D
+
+Heart shortage, 4=1=4=4, 4+ controls and 12+ HCP
+If playing asking bids, CAB, Beta apply
+
+ 
+
+Auctions after 1C – 1D (Negative Response)
+
+1C – 1D
+
+1H/S
+
+Usually 5+ card suit (could be 4=4=4=1 or 4=4=1=4), 5+ LTC
+
+Non-forcing
+
+1C – 1D
+1N
+
+16-19 HCP, balanced
+Non-forcing, responder "systems on": Stayman, Jacoby, Texas, 4 Suit Transfers
+
+1C – 1D
+
+2C/D
+
+5+ card suit, 5+ Losing Trick Count
+Non-forcing
+
+1C – 1D
+2H/S
+
+5+ card suit, 0-4 LTC (equivalent to 2C opener in normal systems)
+Forcing
+
+1C – 1D
+2N
+
+20-21 HCP, balanced
+Non-forcing, responder "systems on": Stayman, Jacoby, Texas, 4 Suit Transfers
+
+1C – 1D
+3C/D
+
+6+ card suit, 0-3 LTC
+Forcing
+
+1C – 1D
+3H/S
+
+6+ card suit, 0-3 LTC
+Forcing
+
+1C – 1D
+3N
+
+24-26 HCP, balanced, responder "systems on": Stayman, Jacoby, Texas, 4 Suit Transfers
+
+1C – 1D
+4H/S
+
+8+ card suit, above NAMYATS 4C/D opener
+
+ 
+
+Auctions after 1C – 1D; 1H (non-forcing)
+
+0-3 Dist Pts
+
+Pass
+
+4-5 Dist Pts
+
+Raise denomination (suit or Notrump), or bid Spades with 4+
+
+6-7 Dist Pts
+
+Jump raise denomination (suit or Notrump)
+
+6-7 Dist Pts
+
+5+ and no support, bid new suit
+
+ 
+
+Auctions after 1C – 1D; 1N (non-forcing 16-19 HCP)
+
+1C – 1D
+
+1N – 2D/H
+
+0-6 Dist Pts, transfer and Pass (unless opener super-accepts)
+
+1C – 1D;
+1N – 2S;
+3C
+
+1C - 1D;
+1N - 2N;
+3D
+
+ 
+
+
+Four Suit Transfers (stronger hand plays), otherwise use 2C to invite
+
+ 
+
+1C – 1D
+1N – 2S
+
+Stayman with 6-7 HCP, however responder may not have a 4 card major; opener responses:
+2D = 16-17 and no major
+2H/S = 16-17 with major (up the line)
+2N = 18-19 "bad" and no major
+3C = 18-19 with major/s, responder puppets to 3D, opener shows major
+3D = 18-19 "good" with no major, responder normally bids 3N
+
+ 
+ 
+
+ 
+
+ 
+
+Jackson-Kokish Relay
+
+An alternative opener Notrump bidding response, conserving bidding space and allows other uses for opener's 2N opening bid (as Unusual Notrump)
+ 
+1C - 1D;
+1H - 1S;
+1N	After responder's 1D negative response, opener's 1H forces responder to bid 1S.  Using this approach, opener's 1N second rebid shows 19-21 points
+ 	 
+1C - 1D;
+1N	Opener's direct 1N rebid continues to shows 16-18 points
+ 	 
+1C - 1D;
+1H - 1S;
+2N	Opener's 2N rebid after relay shows 25-27 points
+ 	 
+1C - 1D;
+2N	Opener's 2N direct rebid shows 22-24 points
+
+Note: some players use other different treatments
+
+ 
+
+ 
+
+1C – Positive Response; Opener Rebids
+(all game forcing)
+
+1C – 1H/S
+1N
+
+16-19 HCP, balanced and no support
+If playing asking bids, Beta responses
+
+1N – 2C/D
+2N
+
+16-19 HCP, balanced and no support
+If playing asking bids, Beta responses
+
+1C – 1H/S
+2N
+
+20-21 or 24+ HCP ("Good-bad"), balanced and no support
+If playing asking bids, Delta responses
+
+1C – 2C/D
+3N
+
+20-21 or 24+ HCP ("Good-bad"), balanced and no support
+If playing asking bids, Delta responses
+
+ 
+ 
+
+1C - 1H/S/2C/D
+Non NT - Alpha
+
+Alpha Cuebid (Support Asking Bids), off when responder bid is above 2D.  Steps based on controls:
+1st = 0-3 controls and J x x or less
+2nd = 4+ controls and J x x or less
+3rd = 0-3 controls and Q x x or above
+4th = 4+ controls and Q x x or above
+5th = 4+ controls and Q x x x or above
+(some play jump responses show 0-1 trump support for opener and either 5-5 or longer 2 suited hand or broken 7+ card suit if rebid
+
+ 
+
+ 
+
+ 
+
+1C     – 1H/S
+2H/S - TAB
+
+Trump Asking Bid (TAB) - Steps based on trump length & honors:
+
+1st = 5+ trump with 0 of top 3 (AKQ)
+2nd = 5+ trump with 1 of top 3
+3rd = 5+ trump with 2 of top 3
+4th = 6+ trump with 1 of top 3
+5th = 6+ trump with 2 of top 3
+6th = 5+ trump with AKQ
+
+Repeat TABs also possible to show specific honors
+If playing asking bids, opener may TAB after Alpha response
+
+
+Note – CABs are only on after TABs
+ 
+
+1C     – 1H/S;
+2H/S – any;
+New Suit < 5C
+
+Control Asking Bid (CAB) about new suit.  Steps based on controls:
+Note - others reverse responses (slow shows)
+
+1st = No controls, J x x or worse
+2nd = 3rd round control, Q or xx
+3rd = 2nd round control, K or x
+4th = 1st round control, A or void
+5th = AK or AQ
+Repeat CAB asks shortage/strength (1st = short, 2nd = honor/s)
+
+If playing asking bids, CABs on after TAB, Alpha, or Unusual Positive
+
+1C – 1H/S;
+2H/S – any;
+New Suit 5C+
+
+Compressed Control Asking Bids (CAB) about new suit.  Steps based on controls:
+Note - others reverse responses (slow shows)
+
+1st = No controls, J x x or worse
+2nd = 2nd round control, K or x
+3rd = 1st round control, A or void
+
+1C – 2C/D
+
+Same treatment as majors described above
+
+
+Optional Beta Asking Bids, used when partners do not have a suit fit
+ 
+
+1C - 1N;
+2N - Beta
+
+1C - 3D;
+3H - 3S;
+4C - Beta
+
+1C - 4C;
+4D - Beta
+
+Beta Cuebid, responder rebids show controls:
+1st = 0-2 controls (or 4 if prior Unusual Positive)
+2nd = 3 controls (or 5 if prior Unusual Positive)
+3rd = 4 controls (or 6 if prior Unusual Positive)
+4th = 5 controls (or 7 if prior Unusual Positive)
+
+If playing Beta, on after TAB, Alpha, or Notrump response
+
+
+ 
+
+ 
+
+1C – positive
+New Suit
+
+
+Opener suit bid is Natural, 5+ card suit
+
+If playing Alpha Asking Bids, responder steps based on controls:
+
+1st = 0-3 controls and J x x or less
+2nd = 4+ controls and J x x or less
+3rd = 0-3 controls and Q x x or above
+4th = 4+ controls and Q x x or above
+5th = 4+ controls and Q x x x or above
+(some play jump responses show 0-1 trump support for opener and either 5-5 or longer 2 suited hand or broken 7+ card suit if rebid
+
+ 
+
+1C – 1N
+2C
+
+Stayman, responder rebids: (transfer approach, stronger hand plays)
+FYI – Stayman may only be shape-asking (not promising majors)
+2D = 4H and 8-10 HCP (may have Spades)
+2H = 4S and 8-10 HCP
+2S = 8-10 HCP without 4 card major
+2N = 11-13 HCP with 4333 shape
+3C = 11-13 HCP with Clubs and another 4 card suit
+3D = 11-13 HCP with 4 Diamonds and 4 Hearts
+3H = 11-13 HCP with 4 Hearts and 4 Spades
+
+3S = 11-13 HCP with 4 Spades and 4 Diamonds
+3N = 11-13 HCP and poor 5 card suit
+Note – Precision players have further rebids not described here
+
+1C – 1N
+2D/H/S
+
+Natural
+(various Precision follow-up treatments: natural, Support or Suit AB)
+
+1C – 1N
+2N
+
+Artificial, shows 5+ Clubs (some Precision play natural)
+
+1C – 2N
+3C
+
+Baron, bid 4 card up-the-line (some Precision play SABs)
+
+1C – 2N
+3D/H/S
+
+1C - 2N
+3D/H/S - Suit AB
+
+5+ card suit natural
+
+
+Suit Asking Bid: steps showing trump support for opener:
+
+1st = 2-3 trump, no honors
+2nd = Doubleton honor
+3rd = Tripleton honor
+4th = Doubleton, 2 honors
+5th = Tripleton, 2 honors
+6th = 4 trump
+
+1C – positive
+Jump Suit
+
+Natural, 5+ card suit, showing extra length and values.
+
+If playing Delta Asking Bids, responder shows Aces:
+
+Lowest suit = Ace in named suit, may have additional Aces
+Skip suit = Possess Ace, missing Aces in skipped suit/s
+Notrump = No Aces in suits skipped
+Cheapest level trump suit = No Aces
+
+
+1C - positive;
+...  - ...;
+Quantitative	Jump Notrump bids by opener are Quantitative
+If playing Beta Asking Bids followed by signoff attempt, responder may make Quantitative Notrump raise as slam try
+
+  
+
+Interference over 1C
+(Mathe, two-suited systems: CRASH, DONT, SET-SCRew, etc)
+
+General Approach
+P = 0-4, 1D = 5-7. 1M = 8+, X = 5+ T/O, NT = 8-13 stoppers, Unusual versus Unusual, XX = GF
+
+1C – (X) – P
+
+0-4 HCP
+
+1C – (X) – 1D
+
+5-7 HCP
+
+1C – (X) – XX
+
+Game Forcing, usually balanced
+
+1C – (X) – 1D
+
+5-7 HCP
+
+1C – (X) – 1N
+
+8-13 HCP and stoppers if Double shows majors
+
+ 
+
+1C – (1x) – P
+
+0-4 HCP or a Trap Pass
+Note – if Trap Pass and opener Doubles, psyche overcaller will usually flee
+
+1C – (1x) – X
+
+5+ HCP or 5-8 unbalanced
+1 round forcing unless opener rebids 1N
+
+1C - (1X) - 2x
+
+Game Forcing, no stopper (ala Western Cuebid)
+
+If opponents' 1N shows minors, use Unusual Versus Unusual type treatment
+ 
+
+1C – (1N) – X
+
+Moderate HCP, ability to penalize at least 1 suit
+
+1C – (1N) – 2C/D
+
+5+ Hearts/Spades, game forcing
+
+1C – (1N) – 2H/S
+
+5+ Hearts/Spades, non-forcing
+
+ 
+
+1C – (2x) – X
+
+6-8 HCP, any shape (Responsive Double)
+1 round forcing unless opener rebids 2N
+
+1C – (2x) – 2y
+
+5+ card suit, game forcing
+
+1C – (2x) – 2N
+
+8-10 or 14+ (“good-bad”) with stoppers
+
+1C – (2x) – 3N
+
+11-13 with stoppers
+
+ 
+
+1C – (3x) – X
+
+Game Forcing
+
+1C – (3x) – 3y
+
+5+ card suit, game forcing
+
+1C – (3x) – 3N
+
+8-11 HCP with stoppers
+
+ 
+
+1C – (4x) – X
+
+“Cards” (defensive values)
+
+ 
+
+1C – (P) – 1D – (1H/S)
+P
+
+16-18 HCP, balanced
+
+1C – (P) – 1D – (1H/S)
+X
+
+Takeout
+
+1C – (P) – 1D – (1H/S)
+1N
+
+17-19 HCP, stopper
+
+1C – (P) – 1D – (1H/S)
+2N
+
+20-21 HCP, stopper
+
+1C – (P) – 1D – (1H/S)
+2H/S
+
+19+ Dist. Pts., cuebid lacking stopper
+
+
+If opponents' 1N shows minors
+ 
+
+1C – (P) – 1D – (1N)
+P
+
+16-18 HCP, balanced
+
+1C – (P) – 1D – (1N)
+X
+
+Penalty oriented
+
+1C – (P) – 1D – (1N)
+2C/D
+
+Hearts/Spades, extra values (Unusual Versus Unusual)
+Forcing 1 round
+
+1C – (P) – 1D – (1N)
+2H/S
+
+16-18 HCP, Hearts/Spades
+Non-Forcing
+
+1C – (P) – 1D – (1N)
+2N
+
+Upper 1NT values, stoppers in minors
+
+1C – (P) – 1D – (2N)
+2C/D
+
+Hearts/Spades, extra values (Unusual Versus Unusual)
+Forcing 1 round
+
+
+If opponents' Double shows Diamonds
+ 
+
+1C – (P) – 1D – (X)
+P
+
+16-18 HCP, balanced
+
+1C – (P) – 1D – (1N)
+1N
+
+17-18 HCP, Diamond stopper
+
+1C – (P) – 1D – (1N)
+2C/D/H/S, etc
+
+Precision “systems on”, ignore opponent’s Double
+
+1C – (P) – 1D – (2x)
+P
+
+16-18 HCP, balanced
+
+1C – (P) – 1D – (2x)
+any
+
+18+ HCP
+
+
+Opener Doubles – general approach
+ 
+
+1C – (2x) – X – (3x)
+X
+
+Takeout
+
+3rd Double
+
+Penalty
+
+2nd Double
+
+Penalty if responder’s Double was Penalty
+
+ 
+1C – (P) – 1D – (1H/S)
+P
+
+16-18 HCP, balanced
+
+1C – (P) – 1D – (1H/S)
+X
+
+Takeout
+
+1C – (P) – 1D – (1H/S)
+1N
+
+17-19 HCP, stopper
+
+1C – (P) – 1D – (1H/S)
+2N
+
+20-21 HCP, stopper
+
+1C – (P) – 1D – (1H/S)
+2H/S
+
+19+ Dist. Pts., cuebid lacking stopper
+
+ 
+
+PRECISION BIDDING IN BRIDGE
+Courtesy of Mark London
+
+Notes: * means not specified in simplified version.
+# means specified in simplified version.
+@ means specified in Goren's version.
+! means not specified in Goren's version.
+
+         Count distribution points only when supporting partners suit.
+           A = 2 controls, K = 1 control
+
+1. 1C: 16 or more, 15 with 5-5 or 14 with 6-5
+      Responses:
+      a) NEGATIVE: 1D: 0-7 or (* Impossible negative(4441) 8 pts)
+  1) 1NT: 16-18 balanced
+  Pass: 0-6 balanced
+  2C: 6-7 stayman
+                               ! 2D: No major 16-17
+                               ! 2NT: No major 18
+  2D/2H/2S: 0-5 unbalanced, signoff
+  Jump to 3 of a suit: Impossible negative,
+       singleton in suit bid
+                  2) 2NT: 19-21 balanced
+3C: stayman or Impossible negative
+3H/3S: 5 carder, forcing
+3NT: sign off
+4 of a suit: natural, long suit
+5 of a minor: game, signoff
+                  3) 3NT: 24-26 (#25-27)
+  4) Jump in a suit: 22, good 5 carder suit or freak hand with
+9 winner. With 4441 bid lowest suit.
+ # Treat like strong 2 bid, min NT =  negative response,
+ #   raise shows some values.
+                           min NT: 0-3 doubleton support
+   raise: 0-3, 3 card support
+   New suit: 4-7 min 4 carder (avoid with weak suit)
+   Jump raise: 4-7, 3 carder support
+   Jump new suit: Impossible negative
+     Jump NT: Impossible Negative in opener's suit
+                  5) Non Jump in suit bid: 5 carder minor or 4 carder major.
+                        With both, bid 4 card major unless very weak.
+   Pass: 0-4, 2 card support
+   Raise: 2-4, 3 card support
+   min NT: 5-7, no 5 carder
+   new suit: 5-7, 5 carder
+   Jump Raise: 5-7 4 card support
+   Jump new suit: Impossible negative
+     Jump NT: Impossible Negative in opener's suit
+ 
+    * b) CONSTRUCTIVE: 2H/2S: 4-7, 6 carder with 1 top honor
+                   7 carder with J
+    * c) CONSTRUCTIVE: 3C/3D/3H/3S: 4-7, 7 carder or J to 8
+      After a CONSTRUCTIVE response
+       Pass: No chance of game
+       Game: sign off
+       2NT: suit fitting. asking for singleton
+ Rebid: no singleton
+ New suit: singleton
+               New suit: Forcing
+Raise: 3 card support
+new suit: 2 card or less, side values in suit bid
+                Rebid: minimum, no 3 card support
+3NT: maximum, no 3 card support
+               Raise: Inviting
+Pass: minimum
+Game: maximum
+      d) POSITIVE: 1H/1S/2C/2D: 8 points, 5 carder.  With 11 points or more
+   and at least 4 controls, jump at your next response (unless
+   you have a balanced hand and would go past 3NT).
+ Raise: TAB (see below) (#3+ card support min)
+         New suit: 5 card+
+             Responder bids as follows with 8-10 pts or 0-3 controls
+raise: 3+ card support
+New suit: 4+ cards, denies support
+NT: denies support or good need suit
+rebid suit: 6+ cards, prefer rebidding a major suit
+    to bidding or raising a minor suit
+     With 11+ pts and 4+ controls responder bids similarly,
+     but with a jump, but not if bid passes 3NT.
+ NT response: no 5 card suit (unless weak minor)
+      @ 2C: exactly 8 points, no unbid 4c or longer suit
+New suit: 4+ cards
+                        rebid suit: 6+ cards, prefer rebidding a major suit
+                                    to bidding or raising a minor suit
+NT: Game forcing
+ Jump raise: 19-21 good support
+Game: Signoff
+New suit: Cue bid
+ Jump shift: Solid 6c or longer and 19+.  May use AAB for
+     responses.
+Raise: min
+NT: min with some strength in all unbid suits
+New suit: Cue bid
+ 3NT: 16-18, no good 5+ card suit or 4c major, balanced
+New suit: At least 5-5 distribution
+ 4H/4S: 16, no good 5+ card suit, 3+ card support
+      e) POSITIVE: 1NT: 8-10 balanced
+ 2C: Stayman
+   2D: no major
+   2H/2S: major
+                 2D/2H/2S/3C: 5 carder suit
+   Raise: 3 card support
+   Show major or NT
+         2NT: invitational to game
+Pass: minimum
+3NT: maximum
+                 3NT: sign off, 17-18 pts, balanced
+ Jump in a suit: min 19, 6 carder semi solid suit
+   4NT: invitational to 6 NT
+Pass: minimum
+6NT: maximum
+      f) POSITIVE: 2NT: 11-13 balanced or more than 15
+ 3C: stayman
+With greater than 15, respond:
+4C with 4c C
+4D with 4c D, no 4c C
+4H with 4c H, maybe 4c S
+4S with 4c S, no 4c H
+ 3D/3H/3S: 5 carder
+ 3NT: sign off
+ 4C: Gerber
+
+      g) POSITIVE: 3NT: 14-15 balanced
+       4C: modified stayman asking responder to start bidding his
+   4 carder starting from lowest
+    # h) POSITIVE: 2H-3D Impossible negative(4441) 8 pts, singleton in suit bid.
+
+      RESPONSES AFTER INTERVENTION
+a) After Double by opponents:
+      Pass: 0-7 with 4+ card C
+      1D: 0-7 with 3 or less card C
+        Redouble: 8 pts, two 4 card majors
+Other calls: natural as without intervention
+b) After an overcall up to 2S:
+      Pass: 0-4
+        double: 5-8 pts, no 5c suit
+        suit bid: 5-8 pts, 5c suit
+        jump suit bid: 5-8 pts, 6c+ suit
+min NT: 9+, 5c+ suit, unbalanced
+jump NT: 9-11 balanced, stopper in opponents suit
+3NT over a 1 level overcall: 12-14, stopper in opponents suit
+                Cuebid: 9+ no good 5c suit, no stopper in opponents suit
+NOTE: Many play 1NT over a 1 level overcall as normal 8-10 pt
+balanced and stopper, and use cuebid instead.
+b) After an overcall greater than 2S:
+double: Penalty
+3NT: 9-12, 1 good stopper
+Suit: Good 5c+, probable game
+  Cuebid: Strong takeout
+
+      After a POSITIVE suit response,
+      Raise of that suit is TRUMP ASKING BID called TAB.
+      No top 3 honors: 1st step, 5+ carder
+      1 top honor=2nd step 5 carder
+      2 top honor=3rd step, 5 carder
+      1 top honor=4th step, 6 carder
+      2 top honors=5th step, 6 carder
+      3 top honor=6th step, 5+ carder
+      Jump shift=19pts, semi solid 6 carder with max 1 top honor missing
+      this is ACE ASKING BID (AAB)
+      Cheapest NT: No top honor, no side Ace
+      single raise: top honor in openers suit, no side Ace
+      New Suit: No top honor, Ace is sut bid
+      Jump in new suit: Top honor in openers suit, side A in suit bid
+      Jump in NT: No top honor, 2 side Aces
+      Jump raise: Top honor, 2 side Aces
+      Ater opener has applied TAB or AAB, any suit bid is CONTROL ASKING BID
+      (CAB).
+      1st step: 3 or more low cards (No control)
+      2nd step: Doubleton or Q (3rd round control)
+      3rd step: Singleton or K (2nd round control)
+      4th step: void or Ace    (1st round control)
+      5th step: AK or AQ       (1st and 2nd round control)
+      Opener can then rebid the suit to find out if control is honor or
+      ruffing.  (Goren omits this, but it was in original precision and is
+      included in other versions.)  The replies are:
+        1st step: ruffing
+              2nd step: honor
+      TAB and CAB after intervening bid by opponents:
+      1st step: Double
+      2nd step: Pass
+      3rd step: next higher bid .......
+
+2. 1D: 11-15, min. 2 carder diamond (@ 4 cards). 
+
+           With 11 HCP don't bid with 4333 or 4432 without a major, or if strength
+           only in the short suits.
+       a) Pass: 0-7 (although you might bid with a max and long suit)
+       b) 1H/1S: 8-15, 4 carder. With both bid H first, with both 5 carder S 1st
+       Bid 4 card major even if you have longer minor.
+    11-13:
+   Raise with 4 card support
+   bid S 4 carder over H
+   Rebid 6 carder
+   1NT balanced
+   bid 4 or 5 carder C minor
+            14-15:
+   Jump raise with 4 card support
+   bid 4c+ good new suit above 2D
+   Jump rebid 6 carder
+   Jump to 3C with 5-5
+   Jump to 2NT
+       c) 1NT: 8-10 balanced
+       d) 2NT: 16+ balanced (# 11-13 balanced) responses:
+   3C unbalanced min
+3D asks to show 4c major
+   3D balanced max
+   3NT balanced min
+   new suit unbalanced max
+       e) 3NT: 14-15 balance, 4 card major (# 14-16)
+       f) 2C: 11, C suit, no 4 card major
+     Opener to show point range and stopper in Major suits
+       11-13                      14-15
+          NO stopper     2D                          3C
+  H stopper      2H                        3H
+  S stopper      2S                         3S
+  H,S stopper    2NT                      3NT
+
+       g) 2D: * 11-15, 4 card support, no major
+        Opener to show point range and stopper in Major suits same
+        as above except 3D at 11-13 no stopper
+      # 8-10, 4 card support, no major
+       h) Jump in a new suit, 16+ 4 card majo5 carder good suit
+                 1) raise: min 3 carder support
+ 2) 3NT: min balanced, 2 card support
+         3) New suit or 3D: min unbalanced, max doubleton support
+                 4) 2NT: maximum balanced
+3NT: balanced minimum
+3C: unbalanced minimum
+3D: balanced maximum
+new suit: unbalanced max
+       i) 3D: * Pre-emptive, 5 card support
+      # 11-13, 4+ card support
+
+       RESPONSES AFTER INTERVENTION
+    Double:
+Redouble: 11 or more
+Other: natural as without intervention
+            Overcall:
+Double at 2 level: one 4 card major
+Double at 3 level: for penalties
+Cue Bid: min 11, opener bids good 4c side suit
+
+3. 1H/1S: 11-15 5 carder.  Bid longer minor first unless weak hand.
+Note: Goren specifies that game try bids are help asking bids in
+precision, i.e. looking for support in that suit.  More common is
+game tries showing long suit, although they are very similar.
+      RESPONSES (NO INTERVENTION)
+      a) Pass: 0-7 no game, poor support
+      b) Single raise: 8-10, 3 card support
+       1) pass with minimum
+       2) new suit with max
+      c) Jump Raise: 11-13, 3 carder support (# Qxx or better)
+      d) Triple Raise: max 10 points, 14-15 with distribution, 4 carder
+      e) Double Jump in new suit: 11-15, 4 card support void or singleton in suit
+      f) New suit without jump: 1S over 1H 8-15, 2 level response requires
+   11 (less with very good suit). 2H over 1S shows at least 5 cards.
+ Opener to show 11-13 or 14-15
+     11-13: (#11-14)
+ 1) raise 3 card support
+                 2) Rebid 6 carder
+                 3) min NT 5332
+ 4) bid new suit, 4 carder at 2 level
+ 5) Rebid 5 card suit
+ After any of the above, only the following bids by responder
+   are forcing:
+1) Jump in new suit
+2) new suit at 3 level
+3) new suit after 2/1 response
+4) Jump raise of opener's suits after 2/1
+     14-15: (#good 14 - 15)
+ 1) Jump Responders major with 3 card suport
+ 2) Jump in own good 6 carder
+                 3) new suit (good, at least KQxx) at 3 level
+ 4) Jump to 3NT
+ 5) Raise Responders minor to 3 level with 3 card support
+      g) 1NT: 8-15 forcing, no good suit, no support
+ 1) 11-13: Rebid own suit
+   Bid 2nd lower 4 carder
+   3 carder minor if necessary
+                 2) 14-15: Bid 2nd higher suit at 2 level
+   raise to 2NT
+   Bid new good suit at 3 level
+   Jump rebid own 6 carder
+      h) 3NT: 14-15 points, good 3 card support (# 14-16, denies 3 card support)
+      i) Jump in new suit: 16 with good 5 carder
+           1) raise with 3 carder
+      2) poor support min NT
+      3) show good 4 carder with unbalanced hand
+              4) rebid 6 carder
+      j) Jump to 2NT: 16 points, 3 card support, no good 5 carder
+                   (# 11-13 points, denies 3 card support)
+
+         RESPONSES AFTER INTERVENTION
+ a) After Double by opponents:
+      1) raise to 2,3,4: max 7 pts, preemptive
+                2) 1NT: 8-10, min 3 card support
+                3) 2NT: 11-13, min 3 card support
+        4) Redouble: 11 or more
+5) Other calls: natural as without intervention
+         b) After an overcall
+1) Raises=natural as without intervention
+                2) 1NT: 8-10, 1 stopper
+        3) 2NT: 11-12, 1 stopper
+        4) Cuebid: 11 points, good support
+5) Double: holding 2nd 4 carder major
+                6) Other calls: natural as without intervention
+
+4. 1NT: 13-15 balanced, may have 5 card minor
+       ! Bid 1D with a bad 13-14 and Vulnerable vs. Non-vulnerable or 3rd seat Vulnerable
+       ! Bid 1D with both majors to make it easier to find a low level 4-4
+       ! fit in a major, as if 1NT-2C-2H-2NT, you will be forced to bid
+       ! S at the 3 level.  Also, then the sequence 1NT-2C-2major-3minor can
+       ! be bid as an invite to 3NT with a long minor without a 4 card major,
+       ! as opener will not return to the other major thinking you have it.
+
+      RESPONSES (NO INTERVENTION)
+      a) Pass: 0-9 balanced
+      b) 2C: non-forcing stayman 8-11 or weak hand and short in C.
+(#  10-11 or weak with long C, next bid 3C)
+      1) 2D: no major
+              2) 2H: H major (@ maybe S, see above)
+              3) 2S: S major
+      ! A suit rebid by responder now shows at least 5
+      ! cards.  A minor suit rebid usually shows at least 6
+      ! and does not guarantee a 4 card major, invite to 3NT.
+      c) 2D: 12 forcing stayman
+              1) show 4 card major, H first.
+      ! 2NT asks to show 4+ card minor, or bid 3NT if none
+      2) 5 card minor
+      3) 2NT
+      ! 3C asks to show shape:
+      ! 3D=3343, 3H=2344, 3S=3244, 3NT=3334
+      d) 2H/2S/3C/3D: signoff, long suit no game
+      e) 3H/3S: 13, 5 carder.
+      ! With 17 and minor suit strength bid 2D first to
+      ! investigate minor suit slam if opener has 5 card suit
+      1) 3NT: max doubleton support
+      2) Raise: 3 card support min hand
+      3) Cuebid: 3 card support, max hand
+      f) 2NT: 10-11 balanced
+      g) 3NT: 12-17 balanced
+      h) 4NT: 18-19 balanced
+      i) 6NT: min 20, balanced
+      j) 4C: Gerber Ace asking
+
+      RESPONSES AFTER INTERVENTION
+      After Double:
+Pass: asks opener to rescue himself
+Redouble: 8 or more (@ 10)
+2 level bid: 0-7 signoff (# 2C = stayman)
+      After Overcall:
+      Double: penalties
+      suit: sign off
+      cuebid: Game force Stayman
+      3H/3S: 5 card, game force
+
+5. 2C: 11-15 6 cards or very good 5 cards with other 4 card suit
+           (except with singleton/void D in which case bid 2D).
+      ! With a bad 6 carder, bid 1NT with 13-15 pts and 3-2-2 and stoppers in
+      ! other suits.  With a bad 6 carder, 3D, and 2-2 in majors, bid 1D. 
+      ! Don't bid a bad 6 carder otherwise unless you have < 2D.
+
+       RESPONSES (NO INTERVENTION)
+       a) Pass: 0-7
+       b) 2D: 11 pts, usually looking for 4-4 major fit, can be bid with less
+points with C support and/or strength in the major.
+      11-13:
+   2H/2S: side suit 4 or 5 carder
+   2NT: 6 carder C, 2 side suits stopped
+3D: stoppers in suits
+    3H: H and D stopped
+    3S: S and D stopped
+    3NT: H and S stopped
+   3C: 6 carder C, 1 side suit stopped
+       3D: stopper in suit
+   3H: H stopped
+   3S S stopped
+   3NT: D stopped
+   3D: 6 carder C, 5 carder D
+              14-15:
+   3H/3S: side suit
+   3NT: solid 6 carder C, no 4c major
+   4C: Broken 6 carder suit, highly unbalanced
+        c) 2H/2S: 8-10, 5 carder suit, not forcing
+   3C: Signoff
+   raise: invite
+   2NT: invite, poor support
+d) 2NT: 11-12 balanced no major (# 11-13)
+   pass or 3C: minimum
+   3NT or new suit: Maximum
+        f) 3C: 8-10 points, 3 card support, no 5 card major, not forcing
+    Pass: 11-13
+    3NT: 14-15
+        g) 3D/3H/3S: 14 pts, 5 carder
+    11-13: Raise with 3 card support or 3NT
+    14-15: Cue bid Ace in the cheapest suit
+h) 3NT: 14-16 balanced
+
+        RESPONSES AFTER INTERVENTION
+a) After Double:
+Redouble: 11 pts, penalize later
+Other calls: as without intervention
+        b) After overcall at 2 level:
+Double: No penalties, opener to bid major suit if any
+              @ 2NT: conventional, in replacement of original 2D relay
+       11-13: 3C
+       14-15: Cuebid in opponents suit, stopper
+      second suit: natural
+        c) After overcall at 3 level:
+Double: for penalties
+Other calls: natural
+      
+6. 2D: 11-14, distribution: 4414 4405 3415 or 4315
+       Responder should ignore strength in D suit (except for A) unless planning to
+       play in NT.  Opener should discount singleton K or Q of D when opening with 11-12.
+        a) Pass: 0-10, 6 carder diamonds
+b) 2H/2S/3C: 0-7 sign off
+c) 3D; 11-13, semisolid 6 carder D
+d) 3NT: 11-13, solid 6 carder D suit
+e) 3H/3S: 5-7 points, 5 carder suit, no wasted value in D
+ Pass: minimum
+ 4H/4S: maximum, void in D
+        f) 2NT: 8 points, opener to define his hand
+      3C: 3-4-1-5
+     3D: opener to define his hand
+ 3H: minimum
+ 3S: maximum
+                      3D: 4-3-1-5
+     3H: opener to define his hand
+ 3S: minimum
+ 3NT: maximum
+                      3H: 11-13, 4-4-1-4
+      3S: 14-15, 4-4-1-4
+      3NT: 14-15, 4-4-1-4 (D=K or A)
+      4C: 11-13 4-4-0-5
+      4D: 14-15 4-4-0-5
+        g) game: Signoff
+
+      ! RESPONSES AFTER INTERVENTION
+a) After Major Overcall:
+X: Penalty.  Openers bids 3NT with 3 cards in suit, else pass
+b) After X showing D:
+XX: negative, 11 pts, game forcing
+c) After D Overcall:
+X: Penalty
+New suit: not forcing
+Cue bid: looking for controls
+d) After X showing values:
+XX: Long D suit
+2H/S: weak hand, 4+ carder
+If responder and RHO passes, opener bids:
+XX: shows 4414
+2H: 3415
+2S: 4315
+3C: 4405 min
+3D: 4405 max
+e) After pass through 3C response followed by an overcall,
+   opener must pass since partner's strength unknown.
+f) After 2NT Response followed by a Major overcall
+Pass with 3c C
+X with 4c C
+g) After 2NT Response followed by a D overcall
+Pass: 4144
+X: 4405
+Major: shows 4 cards.
+
+7. 2H/2S: 8-10 good 6 carder (# 5-10)
+         Avoid with a 4c other major.
+         a) Pass: no game, no fit
+ b) Raise to 3 or 4: sign off
+ c) New suit: forcing
+Raise: 3 card support
+     rebid own suit: forcing
+         d) 2NT: conventinal
+ opener bids suit with singleton or void
+ Rebid own suit
+
+8. 2NT:22-23 balanced
+        Pass: 0-3 balanced
+3C: 3 pts, stayman
+3D: Jacoby transfer to 3H holding minimum 5 carder
+        3H: Jacoby transfer to 3S holding minimum 5 carder
+After transfer is accepted, responder can then bid:
+      3NT: opener chooses between 3NT and 4H
+      Game in major: 6 carder
+      new suit: cuebid and slam try
+3NT: signoff, 4 points, no major, balanced
+4C: Gerber Ace asking bid
+4NT: Invitational to 6NT, 10 pts, no major
+
+9. 3C/3D/3H/3S: 6-10, little side strength, penalty not more than 500 if doubled
+     Responder is master and bids according to his holding and
+     vulnerability as opener has already declared his winners
+
+10. 3NT: 27-29 balanced
+
+----------------------------------------------------------------------------
+
+Goren recommends the following for defensive bidding, but it is not an
+essential part of Precision, so any overcall system can be used.
+
+    DEFENSIVE BIDDING AFTER SUIT OPENING
+
+    a) Simple suit Overcall: 11-15 pts, 5 carder, at least KQ
+    b) Jump suit overcall: Preemptive like original
+    c) 1NT: balanced 16-18 At least 1 stopper
+   2C: non-forcing stayman
+   2D:/2H/2S: signoff
+   2NT/3NT: natural
+           Jump in new suit below game: natural and forcing
+    d) Double: 13 pts, support in all other suits
+      suit: 0-7 pts
+      jump suit: 8-10 non forcing
+      1NT: 8-10 balanced, 1 stopper
+      Pass: solid 5 carder trump with KQJ10 or better asking
+    partner to lead trumps
+    f) Cuebid: 14 pts, two suiter 5-5
+      if responder does not bid one of the two suits, again cuebid
+
+      DEFENSIVE BIDDING AFTER 1NT opening
+      a) Double: balanced, same strength as openers NT
+      b) 2C: 5-5 minors
+      c) 2D: 5-5 majors
+      d) 2H/2S: natural, very good 6 carder suit
+
+HOME  Encyclopedia  Newsletter  Laws  Products  Services  Reviews  Tournaments  Blog  Training Practice Links HELP
+Contacts: Sales  Support  Reviews  Q&A    Disclaimer    Privacy    © 2005 BridgeHands   Updated 01/22/11
