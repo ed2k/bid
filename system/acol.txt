@@ -1,0 +1,1574 @@
+
+ACOL System - BY George Jesner
+(provided courtesy of BridgeGuys)
+
+Also see ACOL Bridge Books
+
+The Acol Bidding System is not a Standard Bidding System as the Five Card American Standard Bidding System. This means that the Acol Bidding System is rather interpretable and allows a stronger latitude in flexibility according to the partnership agreement. We would like to present a General Structure of the Acol Bidding System in order that the bridge player, who would like to learn, has a general concept of the meanings behind the bids.
+
+General Structure of the Acol Bidding System
+ 
+
+ 
+ 
+
+ 
+
+Opener
+
+ 
+
+ 
+
+With 5+ card suits, open the higher ranking longer suit
+
+With only 4 card suits, such as a 4-3-3-3 distribution, open the 4 card suit. If you wish to guarantee a 5-card 1 Spade opener, the opener will then open 1 Club with 4 Spades, and this is the only situation when you will only have 4 Spades.
+
+With a 4-3-4-2 distribution, open the lower suit.
+
+With a 3-4-4-2 touching distribution, open the higher suit. The exception is when your holding are Hearts and Spades as in the distribution of 4-4-2-3, and the general rule is to open 1 Heart.
+
+With a 4-4-1-4 distribution, open the suit immediately below the singleton. The exception is the 4-4-4-1 distribution, then the opening should be 1 Heart.
+
+ 
+
+Responder
+
+ 
+
+The responder will bid his 4-card suits up the line, but will prefer a Major suit over a 1 Club opening unless he holds considerable extra values.
+
+Any change of suit rebid by the responder is forcing except over opener's 1 No Trump rebid.
+
+Opener's Rebid
+
+ 
+
+A non-reverse change of suit rebid by opener is non-forcing, if the responder bids at the One Level, but is forcing if the responder has made a 2-over-1 response.
+
+A reverse by opener is forcing for one round with 16+ points and at least 5-4 distribution and the first suit will be longer.
+
+Fourth Suit Forcing is generally forcing, except for the following auction:
+
+    1C - 1D;
+    1H - 1S;
+
+1.
+
+In this instance, a 1 No Trump rebid shows 15+ HCP and is generally forcing.
+
+2.
+
+However, rebids by the responder at the Two-Level are non-forcing over 2C, 2D, 2H by the opener.
+
+3.
+
+Three-Level rebids are generally forcing.
+
+Any possibly ambiguous bid by the opener or responder shows values or length in that suit. This is called fragmenting, rather than splintering, which means that the bid is indicating a stopper, rather than asking for a stopper. To fragment means to show a Stopper. To Splinter is to asking for a Stopper, and this is very important to remember.
+
+Over 3 of a Major, when there is a known fit in the Major, 3 No Trump is a natural bid, if Three of a Major is Non-Forcing. But it is a Trump Cue if Three of a Major is forcing.
+
+Over 3 of a Minor, Three No Trump is always at least a suggestion to play.
+
+A simple raise of responder's 2-over-1 is Invitational, that is Non-Forcing. A Jump raise to 4 of a Minor is Generally Forcing and suggests slam interest. Hands worth "3-5" Minor raise must find another bid.
+
+The auction 1S -  2H promises 5 cards in Hearts, but 2 of a Minor promises only a 4-card suit.
+
+A new suit at the Four Level, after partner has shown strength, is a cuebid showing a hand too strong to raise partner's last bid suit directly.
+
+The following bidding auctions should clarify this principle:
+
+1C - 1S;
+3H - 4D
+
+
+Shows a strong Heart raise
+
+1H - 1S;
+3H - 4C/D
+
+The rebid by responder is a cuebid, and Hearts is the agreed upon suit.
+
+1H - 2C;
+2D
+
+
+Forcing bid for one round.
+
+1H - 1S;
+2D
+
+
+Non Forcing bid
+
+1H - 1S;
+3H
+
+
+Invitational
+
+1H - 2C;
+3H
+
+
+Game Forcing
+
+1S - 2H;
+3H
+
+
+Invitational
+
+1C - 1H;
+2D - 3C
+
+
+Suit rebids by Responder are signoff, Non-Forcing.
+
+1C - 1H;
+2D - 2S
+
+
+4-card Spade suit, Game Forcing
+
+1C - 1H;
+2D - 2N
+
+
+Invitational
+
+1C - 1H;
+2D - 3D
+
+
+Forcing one round.
+
+1C - 1H;
+2D - 3H
+
+
+Opener has reversed, Game Forcing
+
+1H - 1S;
+2D - 3C;
+3D - 3H
+3N
+
+
+3H is a Trump Cuebid, showing Slam interest
+
+1H - 3H;
+3D
+
+Responder has the option to Pass or correct to 4H
+ 
+
+ 
+
+ACOL SYSTEM
+BY GEORGE JESNER
+
+With the introduction of the Acol Bidding System, bridge players have been trying to modify it. The following is a short summary of a modification by Mr. George Jesner of England. There will be a certain terminology used, which will not be understood by every bridge player. We have attempted to include the clarifications as much as possible. The Acol System proposed and is credited to Mr. George Jesner. After reviewing the material contained on this page, the bridge player could have questions which we have not anticipated. If this is the case, please contact us.
+
+As an introduction and explanation, this modification, which is quite involved, by Mr. George Jesner is a natural system featuring 4-card suit openings, a Weak Notrump with a range of 12 to 14 HCP, and Benjamin Two-Bids. Be aware that we have tried to include most of the material and that it is quite long.
+
+OPENING BIDS
+
+Bid
+
+Meaning
+
+1C
+
+10-21 HCP. At least 4 clubs.
+
+1D
+
+10-21 HCP. At least 4 diamonds.
+
+1H
+
+10-21 HCP. At least 4 hearts.
+
+1S
+
+10-21 HCP. At least 4 spades.
+
+1N
+
+12-14 HCP. Any distribution of 5-3-3-2, 4-3-3-3, 4-4-3-2 (including weak 5-card Majors).
+
+2C
+
+8+ Quick Tricks in an unspecified suit, or 21-22 HCP, or 25-26 HCP with a balanced hand.
+
+2D
+
+Game Forcing hand, or 23-24 HCP, or 27-28 HCP with a balanced hand.
+
+2H
+
+4-9 HCP. A 6-card Heart suit.
+
+2S
+
+4-9 HCP. A 6-card Spade suit.
+
+2N
+
+19-20 HCP. Balanced hand.
+
+3C, 3D,
+3H, 3S
+
+Standard preempts
+
+3N
+
+Broken preempt in either Minor.
+
+4C
+
+Transfer to 4 Hearts.
+
+4D
+
+Transfer to 4 Spades.
+
+4H
+
+Standard Four Level preempt.
+
+4S
+
+Standard Four Level preempt.
+
+4N
+
+Specific Ace asking bid.
+
+5D, 5C
+
+Standard preempt.
+
+5H, 5S
+
+Specific trump asking bid.  Raise to 6 with one top honor.
+Raise to 7 with two top honors.
+
+6C, 6D,
+6H, 6S
+
+Specific trump asking bid. Raise to 7 with one top honor
+
+
+One Level Opening Bids
+
+Open the longest suit. If two suits of equal length (whether 4/4 or 5/5) open the higher ranking, which includes touching suits, except with clubs and spades where the opening should be 1 Club. With 4-4-4-1 distribution, open the suit below the singleton.
+
+Therefore, in the bidding auction:
+
+1D - 1H;
+1S
+
+The 1 Spade rebid by the opener shows a distribution of 5 Diamonds and 4 Spades.
+
+There are occasions where a 4-card suit is opened in preference to a 5-card suit. For example, open 1 Spade in preference to 1 Heart when holding a good 4-card Spade suit and a very poor 5-card Heart suit, and less than 16 points. It avoids a rebid problem with a poor 5-card suit and insufficient values to reverse on the second round. The suit must be very poor, otherwise the auction is distorted.
+
+1S - 2S;
+
+4S
+
+May show a 3-card support
+
+Gives responder the choice of Game,
+shows 5 Hearts, quality is as good as Spade holding.
+
+1H - 2H;
+2N
+
+
+17-18 HCP
+
+Raises of One Level Opening Bids
+
+Bidding	
+Meaning
+
+1C - 3C
+
+Limit Raise
+
+1D - 3D
+
+Limit Raise
+
+1H - 3H
+
+Limit Raise. 3 Notrump cues the Ace of Hearts.
+
+1S - 3S
+
+Limit Raise. 3 Notrump cues the Ace of Spades
+
+1C - 4C
+
+Gerber
+
+
+1D - 4D
+
+Distribution: 3-3-4-3. Strong holding. Attempting Slam.
+3 Notrump has been bypassed.
+
+
+1H - 4D
+
+13-14 HCP. Distribution: 3-4-3-3. Shows a poor hand lacking intermediates. Example: Axx - Qxxx - Kxx - KJx
+No ruffing values.
+
+
+1S - 4D
+
+13-14 HCP. Distribution: 4-3-3-3. Shows a poor hand lacking intermediates. Example: Qxxx - Axx - Kxx - KJx
+No ruffing values.
+
+
+Notrump Responses to One Level Opening Bids
+ 
+
+1C - 1N
+
+7-9 HCP. In principle, it denies 4 Hearts or 4 Spades.
+
+1D - 1N
+
+6-9 HCP. In principle, it denies 4 Hearts or 4 Spades.
+
+1H - 1N
+
+5-9 HCP. In principle, it denies 3-card Heart support, otherwise responder raises to 2 Hearts and also denies 4 Spades.
+
+1S - 1N
+
+5-9 HCP. It denies 3-card Spade support, otherwise responder raises to 2 Spades.
+
+1x - 2N
+
+10-12 HCP and is a natural bid, and denies both 4-card Major suits, except over 1 Spade where responder may have 4-card Heart suit. This bid also shows at least a doubleton in partner's suit, but the responder may have a 3-card support for opener's Major suit, but this bid denies a 4-card support for opener's Major suit.
+
+1x - 3N
+
+13-14 HCP, and is a natural bid, and denies both 4-card Major suits, except over 1 Spade where responder may have 4-card Heart suit. This bid also shows at least a doubleton in partner's suit. Responder may have a 3-card support for opener's Major suit, but this bid denies a 4-card support for opener's Major suit.
+
+Note that the chance of opener holding 4 Spades after opening 1 Heart are minimized.
+ 
+
+Suit Responses to One Level Opening Bids
+
+Jump Shifts show 15 HCP plus, and at least a 4-card suit, but the Jump Shift says nothing about the suit quality, and Jump Shifts are also Game Forcing. With a 4-card plus support for opener's suit, the Jump Shift may be a short suit, called a Stepping Stone. This means bidding the suit with the highest control. For example: with Axx and KQx, the correct bid is to bid the suit containing the Ace.
+ 
+
+Balanced Hand Openings
+
+12-14 HCP
+
+1 Notrump
+
+15-16 HCP
+
+1 suit and rebid lowest Notrump
+
+17-18 HCP
+
+1 suit and Jump rebid in Notrump (usually 2NT)
+
+19-20 HCP
+
+2 Notrump
+
+21-22 HCP
+
+2 Clubs and rebid 2 Notrump over 2 Diamonds negative
+
+23-24 HCP
+
+2 Diamonds and rebid 2 Notrump over 2 Hearts negative
+
+26-26 HCP
+
+2 Clubs and rebid 3 Notrump over 2 Diamonds negative
+
+27-28 HCP
+
+2 Diamonds and rebid 3 Notrump over 2 Hearts negative
+
+Examples:
+
+1S - 2C;
+2N
+
+
+15-16 HCP
+
+1S - 2C;
+3N
+
+
+17-18 HCP
+
+
+1 Notrump Opening Bid
+
+1 Notrump shows 12-14 HCP and may contain a 5-card Minor or a weak 5-card Major.
+This Guideline helps to avoid rebidding the weak Major suit.
+
+Responses
+
+1N - 2C
+
+Stayman. 
+
+1N - 2D/H/S
+
+Natural sign-offs.
+
+1N - 2N
+
+Baron, Game Forcing, suggesting Slam.
+
+1N - 3C/D/H/S
+
+These bids are natural, Game Forcing, and
+inquire about support.
+With xxx simply support the suit.
+With Qxx or better, cue-bid first
+round control even if holding a minimum.
+
+1N - 3N
+
+This is a sign-off bid.
+
+1N - 4C
+
+Gerber.
+5 Clubs asks for Kings and
+4 Notrump is a sign-off.
+
+1N - 4N
+
+Quantitative invitation to 6 Notrump.
+
+1N -5N
+
+Quantitative invitation to 7 Notrump.
+Opener must bid 6 Notrump with a minimum.
+
+1N - 2C;
+2D - 2H/S
+
+Stayman
+2D denies a 4 card major. 2H/S is to play,  does not necessarily indicate 5/4 in the Majors
+
+1N - 2C;
+2D - 2N
+
+Invitational, because 1 NT - 2NT is Baron.
+
+1N - 2C;
+2D - 3C
+
+6-card Club suit with one top honor missing and the expectation of an outside entry. The Ace or the King may be missing, but the Queen must be present. Strong invitation to 3 Notrump. For example: KQJxxx and an outside King. Note: with Diamonds there is no bid available to describe this hand, therefore, pass or bid 3 Notrump.
+
+1N - 2C;
+2D - 3D
+
+Game Forcing and asking about distribution.
+The opener's responses are included below.
+
+1N - 2C;
+2D - 3S
+
+Invitational, 6-card plus suit, and asks the opener
+to bid 4 Hearts, 4 Spades with outside top cards.
+
+1N - 2C;
+2D - 3N
+
+Sign-off bid.
+
+For the purposes of the 3 Diamond Game Forcing inquiring bid, Kxx or Axx is good support and QJx is borderline.  The responses are:
+ 
+
+1N - 2C;
+2D - 3D;
+3H
+
+Stayman by responder
+Game Forcing and asking about distribution.
+3H shows 2 Spades, 3 Hearts.  Then a 4 Clubs bid by the responder asks for strength in the Major
+
+1N - 2C;
+2D - 3D;
+3S
+
+3S shows 3 Spades, 2 Hearts. Then a 4 Clubs bid by the responder asks for strength in the Major.
+
+1N - 2C;
+2D - 3D;
+3N
+
+3N shows 3 Spades, 3 Hearts,
+and poor strength in the Majors.
+
+1N - 2C;
+2D - 3D;
+4C
+
+4C shows 3 Spades, 3 Hearts, but better hearts.
+
+1N - 2C;
+2D - 3D;
+4D
+
+4D shows 3 Spades, 3 Hearts, but better spades.
+
+1N - 2C;
+2D - 3D;
+4H
+
+4H shows 3 Spades, 3 Hearts, and both adequate.
+
+The above 4 Club Major strength inquiry bid indicates Slam interest and the responses are:
+
+1N - 2C;
+2D - 3D;
+3H/S/4C
+
+Stayman by responder
+3D Game Forcing and asking about distribution.
+See above
+
+1N - 2C;
+2D - 3D;
+4D
+
+
+
+4D shows poor support in both Majors.
+
+1N - 2C;
+2D - 3D;
+4H
+
+
+
+4H shows good support in both Majors.
+
+1N - 2C;
+2D - 3D;
+4S
+
+
+
+4S shows good support in both Majors.  Perhaps Kx/Axx or Ax/QJx.
+
+ 
+
+1N - 2C;
+2H - 3S;
+
+Stayman by responder
+3S is invitational, 6-card plus suit, asks opener to bid 4 Spades with outside top cards.
+
+1N - 2N;
+3S - 4S
+
+Baron, Game Forcing,  suggesting Slam.
+4S shows Slam interest, otherwise responder would have used Stayman, but with a poor 4-card Spade support.
+
+1N - 2N;
+4S
+
+
+4S shows good support in both Majors. Perhaps Kx/Axx or Ax/QJx.
+
+1N - 3C;
+3D
+
+3C is natural,Game Forcing, asking support.
+3D shows Honor-xx+ in Clubs and Ace of Diamonds.
+
+1N - 3C;
+3H
+
+
+3H shows Honor+xx+ in Clubs and Ace of Hearts,but denies the Ace of Diamonds
+
+1N - 3C;
+3S
+
+
+3S shows Honor-xx+ in Clubs and Ace of Spades, but denies the Ace of Diamonds and the Ace of Hearts
+
+1N - 3C;
+3N
+
+
+3N shows a doubleton in Clubs.
+
+1N - 3C;
+4C
+
+
+4C shows three-card support in Clubs and denies Honor-xx+ Club support or the Ace of Diamonds, the Ace of Hearts and the Ace of Spades.
+
+ 
+
+2N
+
+2 Notrump shows 19-20 HCP and a balanced hand. It may contain a 5-card Minor or a weak 5-card Major.  This is to avoid rebidding the weak Major suit.
+
+2N - 3C;
+
+3C is Baron over all 2 Notrump openings.
+However, the Flint 3 Diamond convention
+is not played over any 2 Notrump openings.
+
+2N - 3D/H/S
+ 
+
+Natural bids, Game Forcing, asking about support. With xxx support, simply support the suit. With Qxx or better, cue-bid first round control, even if minimum.
+
+2N - 3N;
+
+Sign-off.
+
+2N - 4C;
+
+Gerber,  4C asks for Kings and 4 Notrump is a Sign-off.
+
+2N - 4D;
+
+Solid Diamond suit, invites cue bids.
+
+2N - 4N;
+
+Quantitative Invitation to 6 Notrump.
+
+2N - 5N;
+
+Quantitative invitation to 7 Notrump. Opener must bid 6 Notrump with a minimum.
+
+Notes:
+
+1.
+
+All 2 Notrump openings may contain a 5-card Major suit. 2 Notrump may be opened instead of 1 Heart or 1 Spade to avoid rebidding the weak Major suit.
+
+2 Notrump may have to be rebid over 2 Clubs or 2 Diamonds because an Acol Two should contain a 6-card suit.
+
+2 Notrump may have to be rebid over 2 Diamonds or 2 Hearts because the Major suit is too weak to suggest as a trump suit.
+
+2.
+
+3C is forcing Club bid over a 2 Notrump rebid.
+
+2C - 2D;             2D - 2H;
+2N - 3C;             2N - 3C;
+
+3.
+
+4C is not Gerber in these auction, instead showing a 6-card solid Club suit with one top honor, such as the Ace or the King missing, but having the Queen. Bidding 4C is Forcing through 4N.
+
+2C - 2D;             2D - 2H;
+2N - 4C;             2N - 4C;
+
+
+Strong Openings
+
+The strong opening bids in George Jesner's System are 2 Clubs and 2 Diamonds.
+
+A 2 Clubs bid shows 8+ Quick Tricks in an unspecified suit or 21-22 HCP or 25-26 HCP and a balanced hand, and a 2 Diamonds bid shows a Game Forcing hand or 23-24 HCP or 27-28 HCP and a balanced hand depending on the rebid of the opener. These openings also contain outside defensive playing tricks - at least 2.5 defensive tricks outside of opener's suit.
+
+2 Clubs and 2 Diamonds opening bids are Asking Bids. They ask for certain honor combinations, namely Ace and a King of different suit, or Ace/King of the same suit, or King/King/King/King, or King/King/King/Queen, or King and Queen/King and Queen. Responder may give a positive response with these honor combinations or better. It must be noted that the combination: King/King/Queen/Queen is not sufficient for a positive response.
+
+The negative responses over 2 Clubs and 2 Diamonds openings are 2 Diamonds and 2 Hearts respectively. Over opener's rebid, the cheapest bid in Notrump by the responder is a second negative.
+
+2 Club Opening Bid: 2 Clubs shows 8+ Quick Tricks in an unspecified suit or 21-22 HCP or 25-26 HCP and a balanced hand.
+
+Note that an Acol Two Opening, except for 2 Clubs or 2 Notrump, is described as 8-9 Quick Tricks, forcing for one round, and showing either 6-card plus suit or possibly a two suiter. It also contains outside defensive playing tricks - around 2 to 2.5 defensive tricks outside of opener's suit.
+
+Responses to 2 Club Openings
+
+2C - 2D;
+
+Negative response denies positive combination. Remember the positive combinations are: AK or A/K or K/K/K/K or K/K/KQ or KQ/KQ. Remember that the combination: K/K/Q/Q is not sufficient for a positive response.
+
+2D - 2H;
+
+Negative response denies positive combination. Remember the positive combinations are: AK or A/K or K/K/K/K or K/K/KQ or KQ/KQ. Remember that the combination: K/K/Q/Q is not sufficient for a positive response.
+
+2C - 2H;
+
+5-card plus suit, unless the distribution of the responder is 4-4-4-1, 4-4-1-4, or 1-4-4-4, but is a natural bid with a positive combination.
+
+2C/D - 2S;
+ 
+
+5-card plus suit, unless the distribution of the responder is 4-1-4-4, but is a natural bid with a positive combination.
+
+2C/D - 2N;
+ 
+
+Balanced hand, and any 4-3-3-3 or 4-4-3-2 distribution, but a natural bid with positive combination.
+
+2C/D - 3C;
+
+5-card plus suit, but a natural bid with a positive combination.
+
+2C - 3D;
+
+5-card plus suit, but a natural bid with a positive combination.
+
+2C/D - 3H;
+
+Solid suit, which may play opposite a void
+for no losers. Cue bids follow.
+
+2C/D - 3S;
+
+Solid suit, which may play opposite a void
+for no losers. Cue bids follow.
+
+2C/D - 3N;
+
+Shows 2 Aces and a balanced hand.
+
+2C/D - 4C;
+
+Solid suit, which may play opposite a void
+for no losers. Cue bids follow.
+
+2C/D - 4DE;
+
+Solid suit, which may play opposite a void
+for no losers. Cue bids follow.
+
+Opener's Rebid Over 2 Diamond Response
+
+2C - 2D;
+2H/S/3C/3D
+
+Negative response denies positive combination.
+8 playing tricks in suit bid.
+
+2C - 2D;
+2N
+
+
+21-22 HCP and balanced hand.
+
+2C - 2D;
+3H
+
+
+4 Spades and 6 Hearts, 8-9 Quick Tricks but Non-Forcing.
+
+2C - 2D;
+3S
+
+
+6 Spades and 4 Hearts, 8-9 Quick Tricks but Non-Forcing.
+
+2C - 2D;
+3N
+
+
+25-26 HCP and balanced hand.
+
+Second Negative
+
+2C - 2D;
+2H - 2S/N
+
+Negative response denies positive combination.
+Second negative. Also refers to distribution with a Stopper or values.
+
+2C - 2D;
+3C - 3N
+
+Negative response denies positive combination.
+Second negative. Also refers to distribution with a Stopper or values.
+
+Responder's Jump Suit Response After A Negative
+
+2C - 2D;
+2H/S - 3S/4C/D/H
+
+Negative response denies positive combination.
+Shows a solid 6-card plus suit with one of the two top honors missing.
+
+2C - 2N;
+3C 3D/H/S/4C
+
+Baron
+These are natural bids, Game Forcing, and asks about support. With xxx support, simply support the suit. With Qxx or better cue-bid first round control, even if minimum
+
+2C - 2N;
+3N
+
+
+Sign-off.
+
+2C - 2N;
+4D
+
+
+Solid Diamond suit, invites cue bids.
+
+2C - 2N;
+4N
+
+
+Quantitative invitation to 6 NT.
+
+2C - 2N;
+5N
+
+
+Quantitative invitation to 7 NT.  The opener must bid 6 NT with a minimum.
+
+2C - 2D;
+3N - 4C/D
+
+Negative response denies positive combination.
+3N is Baron. 4C/D is Game force with good suit.
+
+2C - 2D;
+4H/S/5C/D
+
+
+Sign-off bids.
+
+2C - 2D;
+4N
+
+
+Quantitative bid.
+
+2C - 2D;
+5H/S
+
+
+Invitational to 6 Hearts, 6 Spades respectively with good trumps.
+
+Opener's Rebid After A Positive Response
+
+2C - 2N;
+3C - 3N
+
+Balanced hand with positive combination.
+3C is Baron.  3N is signoff
+
+2C - 2N;
+3D/H/S/4C
+
+
+Set the trump suit and leads to cue bids.
+
+2C - 2H/S;
+2S
+
+5-card plus suit, with a positive combination.
+Acol 2 Spade opener, strong 5-card plus suit, and could contain a second suit.
+
+2C - 2H/S;
+2N
+
+
+21-22 HCP, balanced hand, and denies 4-card Major support.
+
+2C - 2H/S;
+3N
+
+
+25-26 HCP, balanced hand, and denies 4-card Major support
+
+Over Interference
+
+2C - (any) - P - (P);
+X
+
+Forcing, but nothing to bid.
+Penalty Double
+
+2C - (any) - 2D/H/S/3C
+
+Positive response with good suit.
+
+2C - (any) - P - (P);
+2N
+
+Forcing, but nothing to bid, shows balanced hand 21+ HCP.
+
+2C - (any) - P - (P);
+2D/H/S/3C
+
+ACOL Two in that suit
+
+
+2 Diamond Opening Bid
+
+2 Diamonds shows a Game Forcing hand or 23-24 HCP or 27-28 HCP balanced hand.
+
+Responses To 2 Diamond Openings
+
+2D - 2H;
+
+Negative response denies positive combination. See above for Positive Combinations.
+
+2D - 2S;
+
+5-card plus suit, unless responder has 4-4-4-1, 4-4-1-4 or 4-1-4-4.
+
+2D - 2N;
+
+Balanced hand, any 4-3-3-3 or 4-4-3-2, natural with positive combination.
+
+2D - 3C;
+
+5-card plus suit, unless responder is 1-4-4-4, natural with positive combination.
+
+2D - 3D;
+
+5-card plus suit, natural with positive combination.
+
+2D - 3H;
+
+5-card plus suit, natural with positive combination.
+
+2D - 3S;
+
+Solid suit, which may play opposite void for no losers. Cue bids follow.
+
+2D - 3N;
+
+2 aces and balanced hand.
+
+2D - 4C;
+
+Solid suit, which may play opposite void for no losers. Cue bids follow.
+
+2D - 4D;
+
+Solid suit, which may play opposite void for no losers. Cue bids follow.
+
+2D - 4H;
+
+Solid suit, which may play opposite void for no losers. Cue bids follow.
+
+Opener's Rebid Over 2 Hearts Response
+
+2D - 2H;
+
+Negative response denies positive combination.
+See above for Positive Combinations.
+
+2D - 2H;
+3C/D/H
+
+Game force in suit bid.
+
+2D - 2H;
+2N
+
+23-24 HCP and balanced hand.
+
+2D - 2H;
+3S/4C/D/H
+
+Indicates a Solid suit. Cue bidding begins.
+
+2D - 2H;
+3N
+
+27-28 HCP and balanced hand.
+
+Second Negative
+
+2D - 2H;
+
+Negative response denies positive combination.
+See above for Positive Combinations.
+
+2D - 2H;
+2S - 2N;
+
+2D - 2H;
+3C/D/H - 3N
+
+The negative responses over 2C and 2D openings are 2D and 2H respectively. Over opener's rebid, the cheapest bid in Notrump by the responder is a second negative.
+
+2D - 2H;
+2S - 3C
+
+2D - 2H;
+3C - 3D
+
+2C - 2H;
+3D - 3H
+
+2C - 2H;
+3H - 3S
+
+Negative response denies positive combination.
+See above for Positive Combinations.
+
+ 
+
+Each rebid by the responder is an
+alternative method of indicating a
+second negative by bidding the cheapest
+suit possible above the rebid by opener.
+
+Responder's Jump Suit Response After A Negative Response
+
+2D - 2H;
+2S - 4C/D/H
+
+Negative, see above for Positive Combinations.
+Each rebid shows a solid 6-card plus suit, with one of the two top honors missing.
+
+2D - 2H;
+3C - 4D/H/S
+
+Negative, see above for Positive Combinations.
+Each rebid shows a solid 6-card plus suit,
+with one of the two top honors missing.
+
+2D - 2H;
+3D - 4H/S/5C;
+
+Negative, see above for Positive Combinations.
+Each rebid shows a solid 6-card plus suit,
+with one of the two top honors missing.
+
+2D - 2H;
+3H - 4S/5C/5D
+
+Negative, see above for Positive Combinations.
+Each rebid shows a solid 6-card plus suit, with one of the two top honors missing.
+
+After a Negative Response, opener bids or Jump bids. These bids are Forcing and responder must bid again, even if it is a Second Negative bid.
+
+2D - 2H;
+
+Negative response denies positive combination.
+See above for Positive Combinations.
+
+2D- 2N;
+3C
+
+Baron
+
+2D - 2N;
+3D/H/S/4C
+
+
+Natural bids, Game force, asks about support,
+with xxx support simply support the suit, with
+Qxx or better cue-bid first round control (even
+if minimum).
+
+2D - 2N;
+3N
+
+
+Sign-off
+
+2D - 2N;
+4D
+
+
+Solid diamond suit, invites cue bids.
+
+2D - 2N;
+4N
+
+
+Quantitative invitation to 6 NT.
+
+2D - 2N;
+5N
+
+
+Quantitative invitation to 7 NT. Opener must bid 6 NT with a minimum.
+
+ 
+
+2D - 2N;
+
+Balanced hand, any 4-3-3-3 or 4-4-3-2, natural with positive combination.
+
+2D - 2N;
+3C
+
+
+Baron
+
+2D - 2N;
+3N
+
+
+Sign-off
+
+2D - 2N;
+3D/H/S/4C
+
+
+These rebids by the opener sets the trump suit and leads to cue bids.
+
+2D - 2H;
+3N - 4C
+
+
+Baron
+
+2D - 2H;
+4D
+
+
+Game force with good diamond suit.
+
+2D - 2H;
+4H/S/5C/5D
+
+
+Sign-off.
+
+2D -2H;
+4N
+
+
+Quantitative.
+
+2D - 2H;
+5H/S
+
+
+Invitational to 6 Hearts or 6 Spades with good trumps.
+
+Over Interference
+
+2D - (any) - P
+
+Forcing Pass
+
+2D - (any) - P - (P);
+X
+
+
+Penalty Double
+
+2D - (any) - P - (P);
+2H/S/2N/3C/3D
+
+
+Positive with a good suit
+
+2D - (any) - any  - (P);
+2S/3C/3D
+
+Game forcing in Opener's suit
+
+
+Baron, Clubs or Gerber
+
+Consistent agreement is needed whether the following similar sequences are Baron, Gerber, or merely show Clubs:
+
+2C - 2N;
+
+Positive response.
+
+2C - 2N;
+3C
+
+Baron
+
+2C -2N;
+4C
+
+Baron
+
+2C - 3N;
+4C/5C
+
+Positive response.
+Clubs
+
+Gerber is probably unnecessary in these sequences because opener can bid a suit and later Blackwood.
+ 
+
+2 Hearts, 2 Spades Opening Bids
+
+Weak two bid. 4-9 HCP, 6-card suit (quality undescribed but less than AKxxxx).
+Denies a void. 1 to 1.5 defensive tricks in any suit.
+
+2H/S - 2S/N;
+
+Forcing for one round.
+
+2H - 2N;
+
+Feature asking. Game forcing.
+
+2H/S - 2S/N;
+3H/S
+
+
+Nothing outside Major.
+
+2H/S - 2S/N;
+3N
+
+
+Random bits and pieces outside, sign-off.
+
+2H/S - 2S/N;
+3x
+
+
+High card or potentially Stopper.
+
+2H/S - 2S/N;
+3x - 3C/D
+
+
+3C/D is natural bid. Forcing for one round.
+
+2H/S - 2S/N;
+3S/4C/D
+
+
+Good suit, game force, requests cue-bid.
+
+2H/S - 2S/N;
+3x - 3N
+
+
+Sign-off.
+
+ 
+
+Preemptive Bids
+
+3N
+
+Broken 8-card minor suit pre-empt.
+
+4C/D
+
+Preemptive opening bids.
+
+4H/S/5C/D
+ 
+
+Preemptive opening bids.
+Possibly lacking the defensive trick
+requirements for an Acol 2 bid.
+
+4N
+
+Acol 4 NT Opening Bid.
+
+5H/S
+
+Responder raises one level for each Top Honor held = Ace or King.
+
+6C/D/H/S
+
+Responder raises one level for each Top Honor held = Ace or King
+
+
+
+Gerber
+
+4C is Gerber after opening bids of:  1C, 1D, 1H, 1S, 1N, 2H, 2S, 2N
+
+These are the only situations where Gerber applies.
+
+After 1 Notrump and 2 Notrump opening bids and the response to Gerber, 4 Notrump is a signoff, and 5 Clubs asks for Kings. However after 1 Club, 1 Diamond, 1 Heart, 1 Spade, 2 Hearts and 2 Spades openings and the response to Gerber, 4 Notrump, if available, asks for Kings.
+
+Asking for Kings guarantees that all the Aces are held, and responder may Jump to a Grand Slam with a source of tricks. It does not necessarily show Grand Slam interest. The partnership may still play in game.
+
+
+4 Notrump Quantitative
+
+4NT is quantitative in the following auctions:
+
+1/2N -4N;
+ 
+
+Benjamin Two followed by a Negative Response
+
+The Benjamin Convention differs from the Weak Two Bid used in American 5-Card Standard, in that the 2 Diamonds bid is no longer used as a Weak Two Bid, but rather as an Artificial Strong Two Bid, as is the 2 Clubs bid when opening. In the following bidding auctions, the responder shows a Negative response:
+
+2C - 2D;
+2/3N - 4N
+
+
+Benjamin Two followed by a Positive Response
+
+2C - 2/3N;
+
+
+4 Notrump Blackwood
+
+4 Notrump is always Blackwood unless the auction defines the 4 Notrump bid as quantitative.
+
+1/2N - 4C;
+any    - 4N
+
+4N is a signoff after Gerber
+
+1H/S/2H/S - 4C;
+any               - 4N
+
+4NT is Gerber asking for Kings.
+
+Responder only shows a void suit over Blackwood which he feels may be the key to a Slam or Grand Slam. Do not bid above the level of the trump suit, if one is agreed or probably agreed. A bid of Six of the Trump Suit shows a void in a higher-ranking suit.
+
+After the response to Blackwood, 5 Notrump guarantees possession of all the Aces and asks for the number of Kings held. Therefore the Blackwood initiator has Grand Slam interest. The responses are:
+
+... - ...;
+5N - 6C;
+
+
+Zero (no) Kings
+
+... - ...;
+5N - 6D
+
+
+1 King
+
+... - ...;
+5N - 6H;
+
+
+2 Kings
+
+... - ...;
+5N - 6S;
+
+
+3 Kings
+
+... - ...;
+5N - 6N
+
+
+4 Kings
+
+... - ...;
+5N - 7x
+
+
+Shows an undisclosed source of Quick Tricks.
+
+In the unlikely event that the opponents intervene, a Double is for Penalty, a Pass is Neutral suggesting no interest in slam, and Step Responses imply slam interest. The first Step Response would be to show an Ace.
+
+In the unlikely event that the opponents intervene in an extreme manner, a Double shows zero or two Aces or an even number, a Pass shows one or three Aces or an odd number. If all four Aces are held, then the bidding auction should proceed as in the DEPO convention.
+
+Information about the Auctions:
+4th Suit is not forcing.
+
+Change of suit at the Three Level is Game Forcing.
+
+1S - 2D;
+2H - 3C            3C is Non-Forcing
+
+Opener's Reverse Bids are an inferentially Forcing bids. They show about 16-19 HCP, or equivalent distribution. The responder may pass a Reverse Bid only if he should not have responded on the first round of bidding. However, if the opener reverses and responder bids again, then responder's rebid is Forcing for one round. The responder may rebid a strong suit, say KQJxxx with other values outside, to find out more about the hand.
+
+Jump Reverses by opener are absolutely Game Forcing.
+
+Responder's Reverse Bids are an inferentially a Forcing bid. Although this sequence is highly encouraging and will seldom be passed. Remember, 4th suit is not forcing:
+
+1D - 1H;
+2D - 2S
+
+After a force to game, a Jump in one of opener's suits determines that suit and shows a double fit. For example, after this auction 3H would be preference and 4H would show good Hearts and good Diamonds, most likely a top honor in Diamonds.
+
+1H - 1S;
+3D
+
+Over a force by the responder, opener must show distribution. For example, after this auction 3S shows a 4-card Spade suit and not necessarily any extra values.
+
+1H - 3C;
+3S
+
+Similarly, over a force by opener, the responder must show distribution. After this auction the responder probably shows 3-2-3-5 distribution or even 3-1-3-6.
+
+1H - 2C;
+3D - 3NT
+
+
+Auctions After An Opponent Doubles
+
+After an opponent Doubles a One Level opening, a Pass says nothing about the holding, but promises at least doubleton support. A new suit shows a poor hand and void or singleton in opener's suit. A Jump in a new suit shows poor hand and a 6-card suit. A 1 Notrump bid shows 6-9 HCP, and is to play.
+
+A single Raise shows 4-6 HCP but can be very weak. A Jump Raise is a Preemptive Raise and showing about 5-9 HCP. A Raise to Game is Preemptive with strong distribution. A 2 Notrump bid is a good raise showing 10-12 HCP and 4-card support. A Redouble shows about 10+ HCP and shows the balance of the points.
+
+
+Defensive Bidding
+
+Overcalls
+
+Shows a 5-card plus suit and less than an opening hand, about 12 HCP. The emphasis is on good suit rather than point count. These overcalls are also Lead Directing. New suit responses are non-forcing.
+
+Jumps and cuebids force overcaller to bid again.
+
+Several bidding sequences:
+
+1H - 1S;
+2H - 3S;    Non-Forcing
+
+1H - 1S;
+1N - 3S;     Non-Forcing
+
+(1C) - 1H - (P) - 1S;     Non-Forcing
+
+(1C) - 1H - (P) - 2S;     Forcing
+
+
+Takeout Doubles
+
+Shows an opening hand, about 12+ HCP, or better.
+
+With 9+ HCP, the responder jumps in his longest suit.
+
+Responding 1 Notrump shows 6-9/10 HCP with a stopper in the opponent's suit.
+
+(1C/D/H) - X - (XX) - P;     Denies 4 cards in the next higher suit.
+
+(1C) - X - (1S) - X;             Shows Spades
+
+(1H) - X - (2H) - 3C;           Non-Forcing
+
+
+Redouble
+
+(1H) -   X - (XX) - P;
+(P)   - 1S - (X)    - P;
+(P)   - XX                           "SOS" convention, Kock-Weiner showing Minors
+ 
+
+Responsive Doubles
+
+Responsive Doubles are used over opponent's raises to 3 Spades.  For example, the second double in the following auction is responsive.
+
+(1S) - X - (3S) - X;
+ 
+
+1 Notrump Overcall
+
+Shows 15-17 HCP with a stopper in the opponent's suit/s in all positions.  This shows 15-17 HCP with a stopper in the opponent's suits.  Note the inference that partner could not even overcall.
+
+(1D) - P - (1S) - 1N;
+
+
+Single Jump Overcall
+
+Intermediate to strong with 6-7 playing tricks but not forcing. It also shows 2 defensive tricks. 15 HCP plus. Good 6-card suit. Usually denies a full stopper in the opponent's suit. With a stopper in the opponent's suit, commence with a double. After this bidding sequence, the responder shows half a stopper.
+
+ (1H) - 2S - (P) - 3H;
+
+Jump overcalls are weak against artificial systems.  A study of the defense to Precision is recommended.
+ 
+
+Cue-bid
+
+Always equals Game Force.
+ 
+
+Jump Cue-Bid
+
+Requests partner to bid Notrump with a stopper in the opponent's suit.  A Jump Cuebid typically shows a solid suit. See Western cuebid.
+ 
+
+2 Notrump Overcall over One of a Suit
+
+This bid shows a 6/5 distribution or better in the unbid suits.  The Overcall may be weak or strong, Forcing One Round.
+ 
+
+Defensive Bidding
+
+Doubles are Penalty Doubles.
+ 
+
+Over a Precision Club Opening
+
+(1C) - X                     Majors
+
+(1C) - 1N                   Minors
+
+(1C) - 2C/D/H/S       Weak Jump Overcalls
+
+ 
+
+Over 1NT
+
+(1N) - X                    Shows 15 HCP plus, and may be a Penalty Double
+
+(1N) - 2x                  Natural
+
+(1N) - 3x                  Shows 6/7 playing tricks
+
+
+Over Opponent's Transfer
+
+Response to 1 Notrump Bid
+
+(1N) - P - (2D) - X      Double shows values in suit (2D is a transfer to 2H)
+
+(1N) - P - (2D) - 2H    2H shows a weak hand, 4 Spades and longer Minor suit
+
+(1N) - P - (2D) - 2S     2S shows a long Spade suit as KQJTxxx
+ 
+
+Over Weak Two Bids
+
+(2x) - X                        Double is for Penalty
+(2x) - 2N                      2N shows 15-18 HCP and good stoppers in opponent's suit
+(2x) - 3C                  3C is for takeout
+ 
+
+Over Weak Three Bids
+
+(3x) - X                        Double is for Penalty
+(3C/D/H) - 3D/H/S   3D/H/S is the Fishbein Takeout
+
+
+Leads and Signals
+
+Overlead all except Ace-King.
+
+The lead of an Ace against Notrump Contract, except the Gambling 3 Notrump, requests partner to play his highest card.
+
+Leads are the 4th highest in a suit containing an honor. Against suit contracts lead Middle-Up-Down or MUD from three small and 4th highest or top from four small.
+Against Notrump contracts, lead the top of nothing from three small and 4th highest or top from four small.
+
+Natural encouragement and count signals. High-low is encouraging or even number.
+
+McKenny Suit Preference Signals are used where obvious. In various countries, the Suit Preference Signal is known by the names of bridge writers. The McKenny Suit Preference Signals is a standard term in Great Britain simply for the Suit Preference, and it named for Mr. William E. Mckenny of the ACBL, who helped popularize it.
+
+
+DUM or Down-Up-Middle
+
+When following suit with say 742, play the 2, which is a preference signal or discouraging, then the 7 and then the 4, showing an odd number. When following suit with say 72, after playing the queen from Q72 per force, play 7 followed by the 2, showing an even number.
+
+
+HOME  Encyclopedia  Newsletter  Laws  Products  Services  Reviews  Tournaments  Blog  Training Practice Links HELP
+Contacts: Sales  Support  Reviews  Q&A    Disclaimer    Privacy    © 2005 BridgeHands   Updated 01/22/11
