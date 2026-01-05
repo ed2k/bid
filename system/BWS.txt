@@ -1,0 +1,1486 @@
+
+Bridge World Standard
+Complete System BWS 2001
+
+Introduction
+I. Definitions
+II. General Understandings and Defaults
+III. Slam-Bidding Methods
+IV. Partnership-Bidding Methods
+   A. Opening-Bid Requirements
+   B. Choice of Suit
+   C. After Our Preempt
+   D. After Our Two Clubs
+   E. After Our Two-Notrump-Family Opening
+   F. After Our One-Notrump Opening
+   G. After Our Major-Suit Opening
+   H. After Our Minor-Suit Opening
+   I. After Any Suit One-Bid
+V. Competitive-Bidding Methods
+   A. Competition After Our Preempt
+   B. Competition After Our Two-Club Opening
+   C. Competition After Our One-Notrump Opening
+   D. Competition After Our Major-Suit Opening
+   E. Competition After Our Minor-Suit Opening
+   F. Competition After Any Suit One-Bid
+VI. Defensive-Bidding Methods
+   A. Initial Defensive-Action Requirements
+   B. After Our Double of a One-Bid
+   C. After Our Suit Overcall of a One-Bid
+   D. After Our One-Notrump Overcall
+   E. After We Reopen a One-Bid
+   F. When the Opener has Preempted
+   G. After Our Sandwich-Position Action
+   H. Delayed Auction Entry
+VII. Bridge World Standard Defense
+
+
+Introduction
+
+   Bridge World Standard encapsultates common American expert practices, determined by polls, as a set of partnership agreements (and, where there is no consensus, non-agreements). It is used as a framework for problems in the Master Solvers’ Club, by impromptu partnerships, and as a basis for discussion by those who wish to formulate their own system.
+   Where the experts are in substantial agreement (with close cases decided, when possible, by the votes of Bridge World readers at large), those methods become part of the system. Where there are competing popular approaches, alternative methods, called leaves, are listed.
+
+
+I. Definitions
+
+   A distribution shown with hyphens refers to any pattern including those suit lengths (for example, 5-4-3-1 means any hand with one five-card suit, one four-card suit, one tripleton and one singleton). A distribution shown with equal signs refers to specific suit lengths (for example, 5=4=3=1 means a hand with five spades, four hearts, three diamonds and one club). Balanced means 4-3-3-3, 4-4-3-2 or 5-3-3-2.
+   A competitive action is one taken over an opponent’s bid, double or redouble. An action taken in direct position immediately follows an opponent’s action; one taken in reopening position follows an opponent’s action and two passes.
+   Points refer to 4-3-2-1 high-card points (HCP).
+
+
+II. General Understandings and Defaults
+
+   Bypass rule: If a player bypasses a natural notrump bid to make a nonforcing bid, then later bids notrump competitively uninvited, that notrump bid is unusual (showing additional distribution, not offering to play in notrump).
+
+   Doubles subject to no explicit agreement:
+(a) [default]
+
+when a pass would be forcing, a double discourages further offensive bidding
+
+[leaf]
+
+is for penalty when partner is limited; discourages further offensive bidding when partner is unlimited;
+
+(b) [default]
+
+when a pass would be nonforcing and both partners are unlimited, a double indicates undescribed high-card values, with sufficient length in the suit doubled to sustain a penalty pass on ordinary distribution
+
+[leaf]
+
+any other agreement;
+
+(c) [default]
+
+when a pass would be nonforcing, the doubler is unlimited but his partner is limited, a double is for penalty
+
+[leaf]
+
+any other agreement;
+
+(d) when a pass would be nonforcing, either the doubler is limited and his partner is unlimited or both partners are limited, a double is for penalty.
+
+
+
+   Five notrump: If an undiscussed but clearly forcing noncompetitive five-notrump bid might logically be interpreted as more than one of these alternatives, the priority order of interpretation is
+
+(1) Grand-Slam Force,
+
+(2) choice of slam,
+
+(3) control-showing bid.
+
+
+   Forcing vs. nonforcing: When a call could logically be interpreted as either forcing or nonforcing and there is no explicit agreement:
+   In general:
+
+[default]
+
+In a competitive situation, treat as nonforcing; in a noncompetitive situation, treat as forcing or nonforcing by which seems more sensible to the observer
+
+[leaf]
+
+forcing rather than nonforcing.
+
+
+
+   Specific cases:
+
+(a) Vulnerability exerts influence solely in that some situations are forcing only when our side is vulnerable against not. Those situations include at least when the opponents bid at or above game and our side has shown strength or itself bid game nonpreemptively (but there is no agreement on other cases).
+
+(b) If we have been forced to game but have not bid game, competitive situations thereafter above the game level are forcing.
+
+(c) If we have bid game nonpreemptively, the default applies.
+
+(d) If we have invited game and the invitation has not been declined, competitive situations thereafter are forcing only as high as where the force would have expired noncompetitively.
+
+(e) A two-notrump opening does not create a force if the opponents bid.
+
+(f) If a two-club opening is overcalled, responder’s pass is forcing at every level.
+
+(g) No force is created after
+
+(1) our penalty double or penalty pass of a takeout double when the partnership is not otherwise committed to further bidding;
+
+(2) an opponent raises over our takeout double, simple overcall, or jump-overcall of a preemptive opening;
+
+(3) an opponent’s preemptive bid over our one-over-one response;
+
+(4) a strength-showing redouble by an already-limited hand.
+
+(h) A strength-showing redouble by an unlimited hand creates a force to at least a level dictated by the logic of the auction.
+
+
+
+   Form of scoring: BWS makes no adjustments in its agreements to match changes in the form of scoring (as in matchpoints vs. IMPs).
+
+   Four notrump:
+
+(a) If an undiscussed but clearly forcing noncompetitive four-notrump bid might logically be interpreted as more than one of these alternatives, the priority order of interpretation is
+
+(1) ace- or key-card-asking convention,
+
+(2) offer of general slam encouragement,
+
+(3) control-showing bid.
+
+(b) There is no agreement about an undiscussed competitive four-notrump bid that might logically be interpreted as ace-asking, key-card-asking, or something else. However, if an undiscussed forcing competitive four-notrump bid cannot logically be ace- or key-card-asking, it is for general takeout.
+
+
+
+   Interpretation priorities: When a call is subject to different possible interpretations and there is no explicit system agreement, it should be considered:
+
+(a) natural rather than artificial;
+
+(b) [default]
+
+if a double, non-penalty or penalty by which seems more sensible to the observer
+
+[leaf]
+
+non-penalty rather than penalty;
+
+(c) lead-directing or not by which seems more sensible to the observer;
+
+(d) if a redouble, business or escape by which seems more sensible to the observer;
+
+(e) if a pass over an opponent’s redouble, penalty or escape by which seems more sensible to the observer.
+
+
+
+   Jumps:
+
+(a) The default interpretation of a bid one level above a strength-showing force (e.g., one spade — four diamonds) is a splinter.
+
+(b) The default interpretation of a bid one level above a splinter (e.g., one spade — five diamonds) is Exclusion Key-Card Blackwood. (There are explicit exceptions to this principle.)
+
+
+
+   Lead-directing doubles:
+
+(a) A double of a suitless auction to three notrump or four notrump requests the lead of leader’s shorter major.
+
+(b) No special lead is suggested by a double
+
+(1) of a suitless auction to six notrump or seven notrump;
+
+(2) when some combination of dummy’s suit, leader’s suit, and doubler’s suit is available;
+
+(3) when there are expected and unexpected leads; or
+
+(4) after the opponents’ previously uncontested Stayman auction.
+
+(c) A double for an unusual lead against a suit contract cancels an earlier lead-directional message.
+
+
+
+   Opposing doubles:
+
+[default]
+
+When a forcing bid is doubled and there is no contrary explicit system agreement or logic from the auction, a pass is forcing and a redouble is to play (suggests a contract).
+
+
+[leaf]
+
+pass and redouble are both nonforcing (suggest a contract).
+
+
+
+   Passed-hand situations: When it is logically possible and there is no explicit understanding to the contrary, an action taken by a passed hand has the same general meaning as the corresponding action taken by an unpassed hand, subject to whatever constraints are imposed by the failure to open the bidding.
+
+   Passes over redoubles: A pass over a redouble is
+
+(a) for penalty when a preemptive opening is doubled in either position, a suit one-bid is doubled in reopening position, a bid at the two level or higher is doubled after the opponents have bid three or more times;
+
+(b) for takeout when a suit one-bid is doubled in direct position or a new-suit response is doubled;
+
+(c) subject to no special agreement when a raise of a one-bid, or a one-notrump response, or a one-level bid after the opponents have bid three or more times is doubled.
+
+
+
+   Redoubles: A redouble is natural (to play) except the following, which are for takeout: opener’s redouble of the direct double of a suit one-bid passed for penalty; advancer’s redouble of either the penalty double of a simple overcall of a one-bid or the double of a two-notrump overcall of a weak two-bid.
+
+   Splinters vs. Fragments: When two bids are to be used systemically to show distribution, and either each will show shortness in the suit bid (“splinter”) or each will show shortness in the suit left unbid (“fragment”), the splinter interpretation applies in all cases.
+
+   Suit jumps:
+
+[default]
+
+If an undiscussed competitive suit jump might logically be interpreted in more than one way, it is natural
+
+[leaf]
+
+a fit-jump.
+
+
+
+   Two notrump: Competitive two-notrump bids that might be used artificially to help distinguish actions designed to contest the auction from those of a constructive nature are natural.
+
+
+
+III. Slam-Bidding Methods
+
+   Ace- and Key-Card-Asking:
+(a) When a four-notrump bid is Key-Card Blackwood (KCB), the replies are: 0|3-1|4
+
+[default] five clubs = 0 or 3 key cards; five diamonds = 1 or 4; five hearts (spades) = 2 without (with) the trump queen
+
+[leaf] 1|4-3|0 (five clubs = 1 or 4 key cards; five diamonds = 0 or 3; five hearts (spades) = 2 without (with) the trump queen)
+
+(b) When a four-notrump bid is Six-Key-Card Blackwood (6KCB), the replies are similar with “trump queen” replaced by “key queen.”
+
+(c) When a four-notrump bid is Blackwood but is neither KCB nor 6KCB, or when a bid other than four notrump asks for aces, the replies are 0|3-1|4 [one step = 0 or 3 aces; two steps = 1 or 4; three steps = 2].
+
+
+(d) When Gerber (four clubs asking for aces) is used, the replies are in steps: one step = 0 aces, two steps = 1 ace, and so forth.
+
+
+
+   Agreed Suit and Number of Keys: When four-notrump is a key-card ask, it is 6KCB when and only when two suits have been supported.
+   In KCB, absent an explicit agreement, the priority order for determining the agreed suit is: the only supported suit; the only shown suit; the most recently shown suit.
+   Specific cases:
+
+(a) [default]
+
+After a two-club opening and a later Blackwood four-notrump bid by opener when there is no explicitly agreed suit: If opener has shown length in only one suit, four notrump is KCB with that suit agreed; otherwise, it is KCB and the usual rules apply.
+
+
+[leaf]
+
+four notrump is KCB and the usual agreed-suit rules apply.;
+
+(b) [default]
+
+When responder to a suit one-bid jump-shifts and then bids four notrump, that is Key-Card Blackwood in responder’s suit.
+
+[leaf]
+
+Key-Card Blackwood in opener’s suit.
+
+[leaf]
+
+not Key-Card Blackwood.
+
+
+
+   Approaches to slam decisions:
+   Kaplan Control Principles: When there is an agreed suit:
+
+(a) After a slam-try by one partner below four of the agreed suit,
+
+(1) a non-signoff bid or redouble by the other is slam-positive and indicates a specific control;
+
+(2) failure to show a control is slam-negative, but does not deny that control.
+
+(b) After a slam-try by one partner above four of the agreed suit, the other must show any biddable control below five of the agreed suit (and doing so carries no implication of overall extra values).
+
+
+   Last Train: Any time there is only one call that indicates slam interest or further slam interest without raising the partnership’s level of commitment, it is a “Last Train” slam-try, unrelated to the strain named (unless followed by an uninvited further action).
+   Open suit: When one partner has requested that the other (“replier”) bid slam with at least second-round control of a particular suit (the “open” suit) regardless of the rest of his hand, this scheme is used for replier’s actions: with no control in the open suit, pass or return to (usually five of) the agreed suit; with second-round control, bid six of the agreed suit (or five notrump with the guarded king); with first-round control, control-bid in the open suit (or, with, additionally, first-round or maximum-possible and an as-yet-unshown control in another suit, control-bid in that suit).
+
+   Blackwood follow-ups:
+
+(a) a later bid in the agreed suit (or, in 6KCB, in one of the raised suits) is nonforcing.
+
+(b) After a 0|3 or 1|4 reply to KCB, the cheapest forcing bid by the Blackwood bidder is a trump-queen-ask if it is below five of the agreed suit, and the negative reply is a return to the agreed suit. After a 0|3 or 1|4 reply to 6KCB, the cheapest bid by the Blackwood bidder below five of a raised suit is a queen-ask relating to both raised suits, with replies in steps: one step, no queen; two steps, one queen; three or more steps, two queens.
+
+(c) A five-notrump bid by the Blackwood (or KCB or 6KCB) bidder confirms partnership possession of all the aces (or of all key cards and the trump queen or key queens or equivalent), invites a grand slam, and asks for specific kings outside the agreed suit (in KCB) or outside the raised suits (in 6KCB).
+
+
+
+   Exclusion Blackwood: When a call is defined as Exclusion Blackwood (EB), the replies are in steps similar to Key-Card Blackwood, but the replier does not count the ace of an excluded suit. The EB interpretation applies to certain jumps that name an excluded suit, and also when a player makes a slam-try, indicates a short suit, receives no encouragement, and then bids four notrump (in which case the short suit is an excluded suit).
+
+   Grand-Slam Force: When a five-notrump bid is the Grand-Slam Force (GSF):
+
+(a) The scheme for determining the agreed suit is the same as it is for Key-Card Blackwood.
+
+(b) Replier bids above the agreed suit with two (or three) of the top three trump honors. With a lesser trump holding, he bids cheapest-weakest (the higher the bid, the stronger the holding).
+
+
+
+   Interference:
+
+(a) When there is interference after an ace- or key-card-ask, the replies are:
+
+(1) at low enough levels, DOPI (double or redouble = 0 or 0|3, pass = 1 or 1|4, cheapest bid = 2 or 2 without the trump queen, etc.);
+
+(2) at high enough levels, DEPO (double = even, pass = odd).
+
+(b) When there is interference after a Grand-Slam Force, the replies are:
+
+(1) at low enough levels, DOPI (double or redouble substitutes for what would have been the cheapest bid, pass substitutes for what would have been the second-cheapest bid, the cheapest bid substitutes for what would have been the third-cheapest bid, etc., subject to the logic of the auction);
+
+(2) at high enough levels, DEPO (double = even, pass = odd).
+
+(c) When an artificial slam-try (such as a control-bid or a splinter) is doubled, the weakest action by the next player to speak is a return to the agreed suit (or whatever would have been the weakest action without the double).
+
+
+
+   Slow arrival: Except where there is a specific agreement to the contrary, when there is a choice between two game-forcing bids in a particular strain, BWS uses “slow arrival” (a jump is either stronger than a simple bid or it is a “picture bid” with a specific descriptive meaning).
+
+   Voids: A reply to an ace- or key-card-ask above the usual range shows a void:
+
+(a) the cheapest void-showing reply shows two [or an even number of] aces/key cards plus a void;
+
+(b) a higher action indicates one [or an odd number of] ace[s]/key card[s] plus a void and, when possible, indicates the suit of the void.
+
+
+
+
+
+IV. Partnership-Bidding Methods
+
+   This section describes agreements about auctions in which our side makes the first bid and the opponents do nothing but pass.
+
+
+A. Opening-Bid Requirements
+
+   BWS-2001 is a mostly natural system based on an artificial strong two-club opening, weak two-bids in the other suits, strong notrump (with Stayman and transfers), and five-card majors (with a semi-forcing one-notrump response). Opening requirements are neither extremely sound nor light. The minimum requirement to open with a long minor is about half a point higher than with a long major.
+
+ A Q x x x  A x x  J x x x  x
+
+is a minimum one-spade opening bid as dealer with neither side vulnerable.
+
+ A K Q J 10  A K Q  K 10 9 x  x
+
+or
+
+ A K Q J 10  A K Q  Q 10 9 x  x
+
+is a minimum two-club opening bid as dealer with neither side vulnerable.
+
+   This scheme is used for opening the bidding with a balanced hand:
+
+   [default] suit, then minimum notrump: 12 to 14
+   [leaf] suit, then minimum notrump: strong 12 to 14
+   one notrump: 15 to 17
+   suit, then strong action in notrump: 18 to 19
+   two notrump: 20 to weak 22
+   two clubs, then minimum notrump: strong 22 to 24
+   [default] two clubs, then two hearts (Kokish) over a two-diamond response, then two notrump over a two-spade relay: 25-plus
+   [leaf] two clubs, then single jump in notrump: 25 to 27
+
+   It is optional to open one notrump with any of these distributions: 5-3-3-2 with a long major, 2=4=2=5, 2=4=5=2, 6-3-2-2 with a long minor.
+
+   It is acceptable to open two notrump (or two clubs, intending to rebid in notrump) with an unstopped doubleton, a five-card major, a six-card minor, or five-four distribution including a five-card minor.
+
+   On the understanding that requirements within an overall style vary with form of scoring, table position and vulnerability, the BWS requirements for initial preemptive openings are not extreme in any direction.
+
+   A three-notrump opening is gambling (solid seven-card minor) with little side strength.
+
+   An opening of four of a minor is natural. [default] { Namyats: a strong four-of-a-major opening, clubs = hearts or diamonds = spades. [leaf]}
+
+   A first- or second-position weak two-bid that includes three of this list of characteristics is unacceptable: five cards in the bid suit; seven cards in the bid suit; flimsy (definition adjusted to suit the vulnerability) six cards in the bid suit; side void; side four-card or longer suit. Otherwise, opener may use his judgment.
+
+
+B. Choice of Suit
+
+   When opening a one-bid in a minor suit: with three-three in the minors, always bid one club; with either four-four in the minors or four diamonds, five clubs and a minimum-range hand, use judgment to decide which minor to open.
+
+   With a minimum-range five-six hand, open in the higher and shorter suit only when the long suits are adjacent.
+
+   On a hand calling for an opening one-bid with five-five in the black suits, opener should always bid one spade. [default] { bid one spade unless the hand is strong. [leaf] } { use some other criterion to decide which suit to open. [leaf] }
+
+   In third or fourth position, it is acceptable to open in a strong four-card major if the auction rates to be manageable thereafter.
+
+
+C. After Our Preempt
+
+   Responding to preemptive openings in a suit: When responder is an unpassed hand:
+(a) a four-notrump response or a jump-response of four clubs is a key-card-ask [in opener’s implied major when Namyats is used];
+
+(b) a raise of a major-suit preempt to five is a trump-ask after a four-bid, otherwise preemptive (a bar);
+
+(c) a simple new-suit response to partner’s game-level preemptive opening is an asking-bid about the suit named (replies: one step, neither first- nor second-round control; two steps, second-round control; three steps, first-round control; higher, first- and second-round controls);
+
+(d) a simple below-game new-suit response is a one-round force;
+
+(e) a below-game, jump new-suit response other than four clubs is
+
+[default:] an asking-bid about the bid suit
+
+[leaf] preemptive.;
+
+(f) when Namyats is used, a one-step response to a four-of-a-minor opening is a slam-try;
+
+(g) a two-notrump response to a weak two-bid invites game and suggests a fit for opener’s suit.
+
+
+
+   Responses to a three-notrump opening:
+
+(a) club bids are “pass or correct”;
+
+(b) four notrump is invitational;
+
+(c) four diamonds asks for side shortness (opener bids four of a major with shortness there, four notrump with no shortness, or five of a minor with shortness in the other minor;
+
+(d) any other bid is natural.
+
+
+
+   Weak two-bidder’s continuations: After a two-notrump response to a weak two-bid, opener’s rebids are:
+
+
+[default]
+
+Feature-showing with a maximum.
+
+
+[leaf]
+
+Ogust (three clubs = minimum, weak suit; three diamonds = minimum, strong suit; three hearts = maximum, weak suit; three spades = maximum, strong suit).
+
+
+
+
+
+D. After Our Two Clubs
+
+   A two-diamond response to two clubs . . .
+
+[default]
+
+denies the values for a positive response in a hand with either a strong suit (at least six-card length or five cards headed by at least two honors) or acceptable orientation to bid notrump.
+
+
+[leaf]
+
+denies the values for a positive response.
+
+
+[leaf]
+
+denies a hand suitable for a positive response but shows strength beyond a double negative (a two-heart response would show double-negative strength).
+
+
+
+   A suit-bid response to two clubs from three hearts to four diamonds indicates a one-loser suit.
+
+   After a two-diamond response and a natural simple new-suit rebid by opener, responder’s cheapest minor-suit bid through three diamonds is a double negative (after which opener’s same-suit rebid of three of a major may be passed), new-suit single jump is a splinter raise, and double raise is a picture bid (strong trumps and little else).
+   When two clubs — two diamonds — three no­trump shows 25-27 HCP: four clubs = Stayman; four of a red suit = Texas; four spades = minors; five clubs asks for aces (0, 1, 2, . . . replies)
+
+
+
+
+E. After Our Two-Notrump-Family Opening
+
+   These methods apply after a two-notrump opening bid, a two-notrump rebid by a two-club opener following a two-diamond response, and a two-notrump rerebid by a two-club opener in the sequence two clubs — two diamonds — two hearts (Kokish) — two spades (relay) — two notrump:
+(a) Texas (four-level) transfers, after which four notrump is Key-Card Blackwood and a new-suit bid is Exclusion Key-Card Blackwood;
+
+(b) Gerber;
+
+(c) three spades showing both minors;
+
+(d) Jacoby (three-level) transfers, after which a notrump bid or a new-suit bid is natural, a self-raise to the four level is a slam-try, and a new-suit jump is an “auto splinter” (a one-suiter with shortness in the bid suit);
+
+(e) Stayman, with responder’s three-of-a-major rebid over three diamonds Smolen. There is no agreement on the difference between showing the same major-suit shape via transfer and via Smolen.
+
+
+
+F. After Our One-Notrump Opening
+
+   Response to a one-notrump opening:
+(a) Texas (four-level) transfers, after which four notrump is Key-Card Blackwood, and a new-suit bid is Exclusion Key-Card Blackwood;
+
+(b) Gerber;
+
+(c) Jacoby (two-level) transfers, after which a notrump bid or a new-suit bid is natural (transferring to spades and then bidding hearts shows at least five-five), a self-raise to the three level is invitational, a self-raise to the four level is a slam-try, and a new-suit jump is an “auto splinter” (a one-suiter with shortness in the bid suit);
+
+(d) Stayman (possibly a weak hand; opener bids hearts with both majors), followed by responder’s bid of:
+
+(i) two hearts is weak (scrambling for a two-level contract with length in both majors);
+
+(ii) two spades is invitational;
+
+(iii) three of a major is invitational if a direct raise, or Smolen (forcing; ostensibly four of the bid major and five of the other) if over two diamonds, or a slam-try in opener’s shown major if in the unbid major;
+
+(e) [default] four-suit transfers with
+
+two spades = clubs (simple new-suit rebid by responder shows shortness),
+
+two notrump = diamonds (simple new-suit rebid by responder shows shortness),
+
+three clubs = both minors weak (nonforcing),
+
+three of another suit = both minors strong (three diamonds = no major-suit shortness; three of a major = at most one card in the suit bid).
+
+[leaf] { two spades to show minors (or a weak hand with diamonds), two notrump as invitational, three of a minor as weak.}
+
+[leaf] { two spades to show minors (or a weak hand with diamonds), two notrump as invitational, three of a minor as invitational.}
+
+
+
+
+
+G. After Our Major-Suit Opening
+(See also section I., below)
+
+   Responder is unpassed except where otherwise stated.
+   Responses: These methods apply to responding to a major-suit opening:
+(a) a one-notrump response is “semi-forcing” (limited to at most game-invitational strength);
+
+(b) a two-over-one response is forcing to game except where responder rebids his suit simply after opener has not promised extra values;
+
+(c) a single raise is moderately constructive (when responding with a weaker fitting hand, bid one notrump planning to rebid two of the major, a sequence that could also show 6-9 HCP and a doubleton fit);
+
+(d) a double raise is invitational with four or more trumps (with equivalent values and only three trumps, respond one notrump planning to rebid three of the major after a minimum new-suit rebid);
+
+(e) two notrump (no side shortness) or a new-suit double jump (splinter) shows game-forcing strength with at least a four-card fit;
+
+(f) a jump-shift followed by support indicates a hand stronger than ordinary game-going values [a jump-shift shows more than ordinary game-going strength (the equivalent of 16 HCP plus), a substantial suit (at least five-card length with at least two of the top three honors), and one of three hand-types: balanced, one-suited, support];
+
+(g) three notrump or a triple raise is a weak preemptive raise, the former showing some defensive strength.
+
+
+
+   Opener’s rebids:
+
+   After a one-spade response to one heart:
+
+(a) a one-notrump or two-notrump rebid may include a singleton spade;
+
+(b) a three-notrump rebid shows long, strong hearts;
+
+(c) a four-heart rebid is unrestricted as to spade length;
+
+(d) a four-of-a-minor rebid is a splinter raise.
+
+
+   One heart — one notrump — two spades is forcing.
+   After one spade — one notrump — two clubs — ?, a two-diamond rebid is [default:] Bart, artificially temporarily suggesting five hearts and converting natural rebids by responder to showing stronger hands than if the same action had been taken directly. { natural. [leaf] }
+
+   One of a major — one notrump — rebid one level above a forcing reverse or jump-shift is an autosplinter (big one-suiter; shortness bid).
+
+   After a two-over-one response, a two-level reverse or a non-jump three-level new-suit bid shows extra strength, but two notrump or a single raise may be based on a minimum hand.
+
+   After a single raise:
+
+(a) a reraise to three is preemptive;
+
+(b) two notrump is forcing, ostensibly a game-invitation;
+
+(c) a simple new-suit bid is a game-try showing length (or a suit where honor strength would be helpful).
+
+
+
+   After a two-notrump forcing raise: a simple new-suit bid shows shortness, a new-suit jump shows a two-suiter, and the three other game-and-below bids (simple same-suit rebid, three notrump, jump same-suit rebid), herein called TOBs, deny the requirements for any new-suit bid. The TOBs are graded from strongest to weakest (cheapest bid is strongest).
+
+   After a direct game-invitational raise to three of opener’s major: the cheapest bid asks for shortness. One heart — three hearts — three notrump is a control-bid in spades.
+
+   Passed-Hand Situations: These methods apply to responding to a major-suit opening by a passed hand:
+
+(a) one notrump is semi-forcing (6-12 points);
+
+(b) two clubs is Drury-Fit (a hand too strong for a single raise, but unsuited to a higher bid);
+
+(c) three clubs is natural, similar to two diamonds but with long clubs;
+
+(d) a jump-shift other than three clubs is a strong raise with length in the suit bid;
+
+(e) a double jump-shift is a splinter raise.
+
+
+
+
+
+H. After Our Minor-Suit Opening
+(See also section I., below)
+
+   Responder is unpassed except where otherwise stated.
+
+   Responses:
+
+   After a one-club opening, responder normally bids one diamond with longer diamonds than either major, or with four-four in diamonds and a major in a hand worth at least a game invitation; but the normal response is in a four-card major with a minimum-range response and four-four in a major and diamonds.
+
+   A one-notrump response to a minor opening shows 6-10 points.
+
+   A two-club response to one diamond is forcing to game except where responder rebids his suit simply after opener has not promised extra values. (Thus, in particular, one diamond — two clubs — three clubs and one diamond — two clubs — two diamonds — three diamonds are forcing. With three=six in the minors and invitational strength, responder’s normal plan is two clubs followed by three clubs.)
+
+   A two-notrump response to a minor opening is natural and invitational.
+
+   A single minor-suit raise is game-invitational or stronger and denies a four-card or longer major; a double raise is preemptive (but of sufficient strength to support a contract of three notrump or four of the minor opposite a balanced hand with 18-19 HCP); a double jump-shift is a game-forcing splinter.
+
+   A jump-shift response shows a strong suit (at least five to at least two of the top three honors) and one of three hand-types: long suit, good support, balanced or near-balanced.
+
+   A three-notrump response to a minor-suit opening shows a balanced hand, 16-17 HCP, and little suit-slam interest.
+
+   A triple jump-shift response to a minor-suit opening is natural (an exception to “one level above a splinter is Exclusion Key-Card Blackwood”).
+
+   Opener’s Rebids:
+
+   A one-notrump rebid [default] may not { [leaf] may } include a singleton in responder’s suit.
+
+   In rebidding, after having opened in a minor suit:
+(a) with 4=3=3=3 or 3=4=3=3, rebid in notrump over a one-over-one response that does not hit a four-card fit;
+
+(b) with 4-4-3-2 too weak to open one notrump and lacking four-card support, rebid in a four-card suit at the one level when possible;
+
+(c) with 4-4-3-2 too strong to open one notrump and lacking four-card support:
+
+(1) with 4=4=2=3 after a one-diamond response, rebid two notrump;
+
+(2) otherwise use judgment to decide whether to rebid two notrump or a four-card suit at the one level.
+
+
+
+   Opener’s reverse after a one-level suit response is forcing and promises a rebid below game.
+
+   Opener’s rebid one level above either a jump-shift or a forcing reverse is a game-forcing splinter raise.
+
+   Opener’s reverse after a one-notrump response is forcing.
+
+   Opener’s double jump to three notrump shows a long, usually strong suit.
+
+   After a strong single minor raise, opener can
+
+(1) show willingness to play in three of his minor by bidding it,
+
+(2) bid two notrump nonforcing, or
+
+(3) bid a new suit (after which the bidding may still stop at three of the agreed minor).
+
+
+
+   Opener’s reverse of the form one diamond — two clubs — two of a major does not promise extra values.
+
+   After a natural, nonforcing two-notrump response:
+
+(a) a simple rebid of opener’s suit is nonforcing;
+
+(b) any new-suit bid at the three level is forcing.
+
+
+
+   Passed-Hand Situations: When responder to a minor-suit opening is a passed hand:
+
+(a) A one notrump response shows 6-10; two notrump shows 11-12.
+
+(b) A single raise is invitational or stronger, but not forcing.
+
+(c) A preemptive double raise has the same range as by an unpassed hand.
+
+(d) A jump-shift shows a strong hand, a fit, and length in the bid suit.
+
+(e) A double jump-shift is a splinter raise.
+
+
+
+
+
+I. After Any Suit One-Bid
+
+   Responder is unpassed except where otherwise stated.
+
+   After a new-suit one-level response:
+(a) opener’s single raise shows a minimum opening of requisite shape;
+
+(b) with 4=3=5=1 or 4=3=1=5 distribution, opener should rebid in spades after a one-heart response.
+
+
+
+   After a one-level new-suit response and opener’s simple new-suit rebid:
+
+(a) two notrump or three of any suit previously bid is invitational;
+
+(b) a fourth-suit bid that is either a reverse or a three-level bid is forcing to game;
+
+(c) a fourth-suit non-reverse at the two level is [default:] forcing for one round, and responder may pass if opener bids two of responder’s first suit, two notrump, or a non-reverse minimum number in one of his own suits { forcing to game [leaf] };
+
+(d) a bid one level above a not-game-forcing fourth-suit bid is natural (five-five or more) and game-forcing (to invite with the same shape, responder bids the fourth suit cheaply twice);
+
+(e) a bid one level above a game-forcing fourth-suit bid is a splinter;
+
+(f) [default]
+
+after one club — one diamond — one heart — ?,
+
+[leaf]
+
+one spade shows spades and is similar to a one-over-one response, two spades is an artificial fourth-suit bid { one spade is a fourth-suit bid but may be weak
+
+
+
+   After opener’s one-notrump rebid:
+
+(a) responder’s rebid of the cheapest two of an unbid minor is artificial, forcing, and promising at least game-invitational strength (opener’s priorities over such a bid are: show three-card fit for responder’s original suit, show four-card length in the unbid major, show a minimum with the cheapest other bid, show a maximum descriptively with anything else; responder’s next bid is forcing unless it is two of his original suit, two notrump, or a raise to three of the major just bid by opener);
+
+(b) responder’s rebid of three of the cheapest unbid minor is weak.
+
+(c) four clubs is Gerber.
+
+
+
+   After a one-level suit response and opener’s simple same-suit rebid:
+
+(a) a third-suit bid that is a reverse or a three-level bid is forcing to game;
+
+(b) a third-suit non-reverse at the two level is forcing for one round, and responder may pass if opener bids two of responder’s first suit or three of opener’s suit;
+
+(c) a non-reverse jump to three of a third suit is natural (five-five or more) and game-forcing (to invite with the same shape, responder bids two and then three of the third suit);
+
+(d) a bid one level above a game-forcing third-suit bid is a splinter.
+
+
+
+   After a one-level new-suit response and opener’s rebid-promising reverse, any rebid by responder is forcing to game except two of his original suit and the cheaper of a fourth-suit bid and two notrump.
+
+   After a one-level new-suit response and opener’s (game-forcing) jump-shift, responder bids naturally.
+
+   After opener’s raise of a one-level major-suit response to two:
+
+(a) a reraise and two notrump are invitational and nonforcing;
+
+(b) three of opener’s minor is forcing for one round;
+
+(c) one heart — one spade — two spades — three hearts is forcing to game (similar to after a response of two of a minor; with only invitational strength, responder must either choose a different game-try or bid one notrump originally).
+
+
+
+   After a one-level new-suit response and opener’s two-notrump rebid:
+
+(a) responder’s three-club rebid is artificial, and opener bids three diamonds unless he has three-card support for responder’s major (responder’s next bid up to and including three of his original suit is nonforcing; otherwise, responder’s next bid is a signoff if that is possible; otherwise, it is a choice of games if that is possible; otherwise, it is a checkback for an eight-card major-suit fit if possible; otherwise, it converts the three-club rebid into a natural bid in the minor three diamonds over two notrump would not have shown);
+
+(b) [default]
+
+responder’s three-diamond rebid shows a fit for opener’s minor
+
+[leaf]
+
+shows diamonds.
+
+
+(c) for clubs is Gerber.
+
+
+   After a one-notrump response and opener’s reverse, responder’s rebids of two notrump, three of opener’s first-bid suit, and three of a suit ranking below opener’s original suit are nonforcing.
+
+   After a one-level new-suit response, a responder’s rebid of four of opener’s minor is:
+
+(a) a splinter after opener’s simple new-suit rebid;
+
+(b) natural and forcing after opener’s simple or jump same-suit rebid.
+
+
+
+   Passed-Hand Situations: When responder is a passed hand, a third-suit or fourth-suit bid is not forcing unless it is a reverse.
+
+
+
+V. Competitive-Bidding Methods
+
+   This section describes agreements about auctions in which our side makes the first bid and the opponents do something other than pass.
+
+
+A. Competition After Our Preempt
+
+   When our preemptive opening is doubled:
+(a) Responder’s redouble is strength-showing, temporarily suggests playing for a penalty, and creates a force to the next level of opener’s suit.
+
+(b) [default]
+
+Responder’s simple new-suit bid below game is forcing, but lead-directional (presumably with a fit).
+
+[leaf]
+
+
+nonforcing.
+
+(c) [default]
+
+Responder’s jump new-suit bid below game is forcing, fit-showing, lead-directional.
+
+[leaf]
+
+forcing, fit-showing, suggesting length.
+
+
+
+   When our preemptive opening is overcalled:
+
+(a)[default]
+
+Responder’s simple new-suit bid below game is forcing, suggesting length (can be raised).
+
+[leaf]
+
+nonforcing.
+
+(b) Responder’s jump new-suit bid below game is forcing and fit-showing.
+
+
+
+   When our weak two-bid is overcalled, responder’s competitive two-notrump response is forcing and similar to the same bid made noncompetitively.
+
+   When responder raises a preempt to game, whether competitively or not, and an opponent bids, opener may not bid but may double (indicating maximum defensive potential).
+
+   When responder raises a preempt below game, whether competitively or not, and an opponent overcalls, opener may not bid and there is no special agreement over whether he may double.
+
+
+
+B. Competition After Our Two-Club Opening
+
+   If two clubs is overcalled, responder’s double shows double-negative strength and a pass is forcing. Opener’s double of the overcall shows a balanced hand.
+
+   There is no agreement about responder’s actions after two clubs is doubled.
+
+   After a negative response to two clubs and an overcall,
+(a) opener’s pass is forcing;
+
+(b) opener’s double is for penalty.
+
+
+
+C. Competition After Our One-Notrump Opening
+
+   After competition following our one-notrump opening:
+(a) A double of a natural two- or three-level overcall is negative, of a higher bid is for penalty.
+
+(b) Over a two-level overcall: lebensohl [two notrump is a puppet to three clubs and responder’s rebid below three of overcaller’s suit is nonforcing; a direct bid of three of an underranking suit is forcing] applies, with “fast denies stopper” for cue-bid and three-notrump direct responses versus responder’s rebids following a two-notrump response. An artificial action is treated as though it had been a natural bid in an anchor suit indicated.
+
+(c) A below-game new-suit jump is forcing.
+
+(d) A redouble of an artificial double is strength-showing.
+
+(e) A double of an artificial bid suggests a penalty double of the escape.
+
+(f) After any penalty suggestion: the opening side is forced to two notrump, below-game new-suit bids are forcing, raises and two notrump are not forcing.
+
+(g) A bid in a suit shown by an artificial defense indicates at least a game-invitation and is forcing to two notrump.
+
+(h) Bids in suits not indicated (although possibly bid) by an artificial action have the same meaning as if the interference had been a natural bid in an indicated suit [for example, one notrump — (two hearts, showing spades) — three hearts is equivalent to one notrump — (two spades, natural) — three hearts].
+
+(i) one notrump — (overcall) — pass — (pass) — double is for takeout, but one notrump — (pass) — pass — (overcall) — double is for penalty.
+
+
+
+   After one notrump — (pass) — two clubs — (double) — ?, opener should determine his action by first evaluating his club holding (bid if especially weak, pass if average, redouble if especially strong). [default] { take his normal action had intervenor passed when that action is a major-suit bid (otherwise examine his club holding). [leaf] }
+
+   After a two-level transfer response to one notrump is doubled [e.g., one notrump — (pass) — two hearts = spades — (double) — ?], opener should
+
+(a) superaccept (bid above two of the suit indicated by responder) with any of the same, or roughly the same, set of hands that would have been suitable for superacceptance had intervenor passed;
+
+(b) accept (or, if appropriate, superaccept) the transfer with at least three-card support for the suit indicated by responder;
+
+(c) redouble rather than pass with significant length and strength in the suit bid.
+
+
+
+
+
+D. Competition After Our Major-Suit Opening
+(See also section F., below)
+
+   In responding to a major-suit opening over a takeout double
+(a) a one-spade response is forcing (by an unpassed hand);
+
+(b) a two-level new-suit response is not forcing;
+
+(c) two notrump shows a game-invitational or stronger raise of the major (direct jump-raises are preemptive);
+
+(d) a jump-shift is preemptive;
+
+(e) a double jump-shift is a splinter raise;
+
+(f) a redouble shows any other hand-type with 10-plus HCP.
+
+
+
+   In responding to a major-suit opening over an overcall:
+
+(a) a double is negative through three spades;
+
+(b) two notrump is natural (invitational) and nonforcing (jump or not);
+
+(c) over a simple overcall, a cue-bid shows a raise with game-invitational or greater strength, and a jump cue-bid is a splinter (direct jump-raises are preemptive);
+
+(d) four-notrump is Key-Card Blackwood (jump or not);
+
+(e) [default]
+
+a jump-shift is preemptive.
+
+[leaf]
+
+fit-showing.
+
+
+
+   In responding to a major-suit opening over an artificial action:
+   Over a Michaels cue-bid (other major plus a minor):
+
+(a) a bid in a minor is nonforcing;
+
+(b) a virtual cue-bid in overcaller’s anchor major is a game-invitational-plus raise.
+
+
+   Over a bid showing two fixed suits:
+
+(a) a bid in the remaining suit is nonforcing;
+
+(b) the cheapest cue-bid (actual or virtual) is a game-invitational or stronger raise;
+
+(c) the second-cheapest cue-bid is a one-round force with the remaining suit.
+
+
+
+   After one of a major — (pass) — one notrump — (overcall) — ?: a double by opener is for takeout, a double by responder (after two passes) is for penalty
+
+
+
+E. Competition After Our Minor-Suit Opening
+(See also section F., below)
+
+   After our minor-suit opening and a takeout double:
+(a) a one-level new-suit response is forcing (by an unpassed hand);
+
+(b) one diamond — (double) — two clubs is not forcing;
+
+(c) two notrump shows a game-invitational or stronger raise of opener’s suit (direct jump-raises are preemptive);
+
+(d) a direct single raise is natural, similar to a single major-suit raise;
+
+(e) a jump-shift is preemptive;
+
+(f) a double jump-shift is a splinter raise;
+
+(g) a redouble shows any hand with 10-plus HCP that is not suitable for a raise or a new-suit bid.
+
+
+
+   After our minor-suit opening and an overcall:
+
+(a) a double is negative through three spades;
+
+(b) two notrump is natural (invitational) and nonforcing (jump or not);
+
+(c) over a simple overcall, a cue-bid shows a raise with game-invitational or greater strength, and a jump cue-bid is a splinter (direct jump-raises are preemptive);
+
+(d) a jump-shift is preemptive.
+
+
+
+   In responding to a minor-suit opening over an artificial action:
+   Over a Michaels cue-bid (both majors):
+
+(a) a bid in the unbid minor is nonforcing;
+
+(b) [default:]
+
+the cheapest virtual cue-bid shows a game-invitational or stronger action in the unbid minor; the second-cheapest virtual cue-bid shows a game-invitational or stronger raise of opener’s minor
+
+[leaf]
+
+any virtual cue-bid is a stopper-showing raise of opener’s minor
+
+
+   Over another bid showing two fixed suits:
+
+(a) a response in the remaining suit is nonforcing;
+
+(b) the cheapest cue-bid (actual or virtual) shows at least game-invitational strength and the remaining suit; the second-cheapest cue-bid (actual or virtual) shows a game-invitational or stronger raise of opener’s minor.
+
+
+
+
+
+F. Competition After Any Suit One-Bid
+
+   A simple new-suit response over an overcall is forcing (by an unpassed hand). If at the two level, it is forcing to the next level of opener’s suit.
+
+   Negative doubles: A negative double at the one level or when there is exactly one unbid major guarantees at least four cards in any unbid major (opener may rebid in a three-card suit there in a pinch); otherwise, that requirement is only tentative (opener should not rebid in a three-card suit). When responder’s negative double guarantees length in an unbid major, opener’s bids in that suit function as would raises in the corresponding noncompetitive auction. After one club — (one of a major) — double — (pass) — ?, opener’s two-diamond rebid does not show extra values.
+
+   Support and related doubles and redoubles: After a major-suit one-level response and a sandwich double or overcall below two of responder’s suit, opener’s redouble or double (even of a natural or artificial one notrump) shows a three-card fit for responder’s suit. After a one-diamond response, opener’s double of a sandwich one-spade overcall shows four hearts.
+
+   Maximal overcall doubles: After a simple overcall in the suit ranking one below the opened suit, a single raise by responder, and a single raise by advancer, a double is an artificial game-try. [e.g., one spade -- (two hearts) -- two spades -- (three hearts) -- double]
+
+   After a redouble:
+(a) [default]
+
+After one of a suit — (double) — redouble — (bid) — ?, opener’s pass is forcing everywhere.
+
+[leaf]
+
+through the two level.
+
+(b) [default]
+
+After one of a suit — (double) — redouble — (pass) — pass — (bid)— ?, responder’s pass is forcing everywhere.
+
+[leaf]
+
+through the two level.
+
+
+
+
+
+VI. Defensive-Bidding Methods
+
+   This section describes agreements about auctions in which the opponents makes the first bid.
+
+
+A. Initial Defensive-Action Requirements
+
+   Generally, the BWS requirements for initial constructive defensive actions (takeout doubles and overcalls) are moderate, but two-level overcalls are sound. The vulnerability somewhat affects the minimum strength required.
+
+   The requirements for initial preemptive defensive actions (jump overcalls; the weak version of two-suited actions) are possibly light.
+
+ A Q x x x  x x x  Q x x x  x
+
+is a minimum one-spade overcall of one club with neither side vulnerable.
+
+ A x x x  A x x x  Q x x x  x
+
+is a minimum takeout double of one club with neither side vulnerable.
+
+   BWS [default:] does not use minimum equal-level conversions (minELC), in which doubler’s same-level suit bids over a suit advance may be based on minimum high-card strength (with appropriate shape).
+
+{ [leaf:] minELC is used when doubler of a major-suit opening converts a club advance to the same number of diamonds and
+(1) advancer has bid at the two level or competitively at the three level; or
+
+(2) doubler is a passed hand. }
+
+
+
+ A K Q 10 x  A K x  Q x x x  x
+
+is slightly too strong for a one-spade overcall of one club with neither side vulnerable.
+   The normal simple overcall maximum is 18 HCP with 5-3-3-2 distribution or the equivalent after trading off high cards for shape.
+
+   A direct-position one-notrump overcall shows a strong 15 to 18 points, regardless of the suit opened.
+
+   In reopening-position, a one-notrump overcall shows 10-14 (by a passed hand, 10 to a maximum non-opening), a two-notrump overcall 18-19, regardless of the suit opened.
+
+   An unpassed-hand’s cue-bid in opener’s suit, in either direct or reopening position, shows either a weakish or a very strong hand with
+
+(a) both majors if the cue-bid is in a minor, or
+
+(b) the unbid major and an unspecified minor if the cue-bid is in a major. The same bid by a passed hand shows a strength range consistent with security and the initial pass.
+
+
+
+   A direct two-notrump overcall of a suit one-bid shows either a weakish or a very strong hand with length in the two lowest unbid suits. By a passed hand, the strength is limited by failure to open; a one-notrump overcall by a passed hand shows a similar hand-type but less playing strength.
+
+   A jump cue-bid is:
+
+(a) natural in direct position in opener’s minor;
+
+(b) asking for a stopper for three notrump (suggesting a solid suit elsewhere) in direct position in opener’s major and in reopening position.
+
+
+
+   A single jump-overcall of a suit opening in direct position is preemptive, in reopening position has a strength range roughly equal to the value of one king and shows at least an opening bid with at least a strong six-card suit (by a passed hand, shows a similar hand limited by context).
+
+   Special-situation defenses:
+
+   Against a natural preempt:
+
+(a) A double of an opening through four spades is for takeout.
+
+(b) A four-notrump overcall:
+
+(1) of four spades shows a non-spade two-suiter;
+
+(2) of four hearts shows minors;
+
+(3) of four of a minor is natural.
+
+(c) A strength-showing jump in a new suit is natural, except when the jump is to four of a minor, in which case it shows that minor and the unbid major.
+
+(d) A three-level cue-bid asks for a stopper for notrump.
+
+(e) A four-level cue-bid shows majors over a minor, other major plus unspecified minor over a major.
+
+
+   Against two hearts Flannery: defensive meanings as against a weak two hearts.
+   Against two diamonds Flannery: double shows high cards, two hearts for takeout of hearts.
+   Against two diamonds used as a weak-two in either major: double shows general strength.
+   Against strong, artificial one club or two clubs, or a matching weak, artificial one-diamond or two-diamond response: double shows majors, notrump shows minors.
+   Against Namyats: double of opening (or of the next-bid relay response) for takeout of opener’s real suit; delayed double for penalty.
+   Against transfer and unspecified preempts: double shows strength but does not create a force.
+   Against two-suited pre-empts: double, a bid in the other suit shown, and a delayed double all for takeout.
+   Against natural one-notrump openings: Cappelletti (two clubs = unspecified one-suiter; two diamonds = majors; two of a major = that major plus an unspecified minor) in both direct and reopening positions. Double, for penalty, shows at least as strong a hand in direct position, may be as light as opener’s minimum in reopening position (except against a mini notrump).
+   Against a limited, natural two-bid (e.g., a Precision two-club opening showing long clubs and a minimum opening): as against a weak two-bid in the same suit.
+   An undiscussed auction-entry double of an artificial suit bid shows that suit (and whichever interpretation makes the most sense among penalty, value-showing and lead-directional).
+
+   Actions in sandwich position:
+   Over an opposing opening bid and one-over-one response:
+
+(a) one notrump, two or more of opener’s suit, or two of responder’s suit is natural;
+
+(b) two notrump shows the unbid suits;
+
+(c) three of responder’s suit asks for a stopper in that suit for three notrump (suggesting a solid suit elsewhere).
+
+
+
+   Over an opposing opening and one-notrump response:
+
+(a) double is takeout of opener’s suit;
+
+(b) a two-level cue-bid is similar to that bid directly over the opening bid;
+
+(c) two notrump shows the two lowest unbid suits.
+
+
+
+   Over an opposing opening and two-over-one response:
+
+(a) a cue-bid in opener’s suit or two notrump is takeout;
+
+(b) [default]
+
+a cue-bid in responder’s suit is natural.
+
+
+[leaf]
+
+takeout.
+
+
+
+   As far as basic meanings of defensive actions are concerned, an opposing sequence of a one-bid and a strong jump-shift should be treated similarly to a one-bid and a two-over-one response. However, that approach does not apply when the jump-shift is weak.
+
+   When the opponents raise a one-bid to two, there are no special system agreements other than those listed here:
+
+(a) a cue-bid shows majors over a minor, unbid major plus unspecified minor over a major;
+
+(b) [default]
+
+a jump overcall is preemptive or sacrifice-suggestive.
+
+
+[leaf]
+
+value-showing.
+
+
+
+   In these situations, actions by the sandwich-position intervenor have the same fundamental meanings as if made in direct position over responder’s call as an opening bid:
+
+(a) preemptive opening plus raise;
+
+(b) one-bid plus constructive jump-raise;
+
+(c) one-bid plus preemptive jump-raise.
+
+
+
+   A double of one of these opposing artificial raises of a one-bid via a different-suit bid is for takeout of opener’s suit if the raise is marked T (with a leaf of lead-directional if it is also marked l), or lead-directional and/or sacrifice-oriented if the raise is marked L (with a leaf of takeout of opener’s suit if it is also marked t):
+   game-forcing splinter L
+   non-game-forcing splinter Lt
+   range-showing game-force L
+   range-showing game-invitational raise Tl
+   range-showing weak (i.e., single) raise T
+   passed-hand fit-showing device T
+   other, not individually discussed, artificial raise Lt
+
+   After an opposing weak two-bid and (forcing) two-notrump response, an action by the sandwiched intervenor is analogous to the same action taken directly over the opening bid.
+
+   After an opposing preempt and a new-suit response (jump or not), a double shows the two unbid suits. [default] { when the response is forcing, double is takeout of opener’s suit. [leaf] }
+   After an artificial semi-positive or positive response to a strong, artificial opening, a double shows the suit doubled.
+
+   After (one notrump; strong) — pass — (two clubs; Stayman) — ?, a double shows clubs, strength unspecified.
+
+   After (one notrump; weak) — pass — (two clubs) — ?, a double shows general strength.
+
+   After an opposing two-level transfer response to one notrump (whether the opening is weak or strong):
+
+(a) double shows the suit doubled;
+
+(b) a bid of the indicated suit is for takeout of that suit.
+
+
+
+
+
+B. After Our Double of a One-Bid
+
+   A one-notrump advance of a takeout double shows 7-10 points and a stopper in opener’s suit, regardless of vulnerability and suit opened.
+
+   A cue-bid advance of a takeout double shows at least game interest and creates a force until either a suit is bid twice or game is reached.
+
+   A noncompetitive raise of a noncompetitive one-level advance of a takeout double indicates four-card support and approximately a four-HCP range beginning one ace above a minimum double. When (only) the advance is competitive, the minimum strength for the raise is one ace above minimum. [default] { one queen above minimum. [leaf] } When (only) the raise is competitive, the minimum strength requirement is one queen above a minimum. When both the advance and the raise are competitive, the minimum strength requirement is the takeout-double minimum.
+
+   After a noncompetitive advance, doubler’s strength-showing cue-bid does not promise another bid if advancer bids no higher than two of his original suit, but the cue-bid promises another bid if advancer bids higher than that (but below game). That cue-bid may be used with four-card support for advancer’s major suit in a hand too strong for a direct single raise.
+
+   After doubler’s strength-showing new-suit bid, advancer may correct without showing any high-card values, but only to the next level of his own suit or to an unbid suit that underranks it, and advancer’s simple notrump bid guarantees a stopper in opener’s suit.
+
+   Among advancer’s actions over responder’s redouble:
+(a) a new-suit jump is preemptive;
+
+(b) when the suit opened is a major, one notrump is for escape, and a cue-bid is constructive (forcing for one round).
+
+
+
+   Among advancer’s actions over responder’s new-suit bid:
+
+(a) a double is for penalty;
+
+(b) a non-jump cue-bid in opener’s suit is natural;
+
+(c) a cue-bid in responder’s suit is artificial and forcing.
+
+
+
+   Among advancer’s actions over responder’s raise: a double is responsive (for takeout or showing general values, depending on level).
+
+
+
+C. After Our Suit Overcall of a One-Bid
+
+After our simple overcall of a one-bid:
+
+
+(a) [default]
+
+A new-suit bid by an unpassed advancer is natural and nonforcing in all cases.
+
+[leaf]
+
+natural and forcing.
+
+[leaf]
+
+always natural, but forcing only after a two-level overcall.
+
+(b1) [default]
+
+When new-suit advances are forcing, a cue-bid guarantees a fit, a jump cue-bid is a mixed (i.e., semi-preemptive) raise that shows at least one defensive trick, a new-suit bid followed by a same-suit rebid is invitational, and a new-suit jump is a fit-jump.
+
+[leaf]
+
+weakish.
+
+(b2) When new-suit advances are nonforcing, a cue-bid may be either a strong raise or a prelude to a forcing bid in a new suit, a jump cue-bid is a mixed (i.e., semi-preemptive) raise that shows at least one defensive trick, a new-suit bid followed by a same-suit rebid is weakish, and a new-suit jump is invitational.
+
+(c1) [default]
+
+When a new-suit advance would have been forcing over responder’s pass, if that opponent should bid, the new-suit advance is nonforcing.
+
+[leaf]
+
+forcing.
+
+(d) [default]
+
+Over a bid by responder, a jump below-game new-suit advance of an overcall is a fit-jump.
+
+[leaf]
+
+invitational.
+
+[leaf]
+
+preemptive.
+
+(e) Single raise similar to single raise of major-suitone-bid; direct jump-raises preemptive.
+
+
+
+   A one-notrump advance of an overcall shows 8-11 points and a stopper in opener’s suit, regardless of vulnerability and suit opened; two notrump is similar, 12-13 points (less after a two-level overcall).
+
+   Among advancer’s actions when responder bids a new suit:
+
+(a) a double shows length in the unbid suit plus a tolerance for overcaller’s suit;
+
+(b) a cue-bid in opener’s suit is similar to one had responder passed;
+
+(c) a cue-bid in responder’s suit is a strong raise of overcaller’s suit;
+
+(d) a simple bid in the unbid suit is nonforcing (default; see c1 above).
+
+
+
+   Among advancer’s actions when responder raises opener: a double is not for penalty (for takeout or showing general values, depending on level).
+
+   After (suit opening) - simple overcall - (single raise) - single raise - (same-suit rebid) - ?, a double is a game-try when (and only when) there is no new-suit bid available below three of the overcalled suit.
+
+   Among advancer’s actions after responder’s negative double: a redouble shows strength.
+
+
+
+D. After Our One-Notrump Overcall
+
+   Advancer’s methods after either a direct- or reopening-position one-notrump overcall are the same as responder’s after a one-notrump opening.
+
+
+E. After We Reopen a One-Bid
+
+   In advancing a reopening single-jump overcall, two notrump and a new-suit bid are forcing for one round. After a reopening simple suit overcall and a new-suit bid by opener, a cue-bid in opener’s first suit is forcing and artificial.
+
+
+F. When the Opener has Preempted
+
+   In advancing a takeout double of a weak two-bid (or the equivalent), lebensohl applies (two notrump is a marionette to three clubs [opener bids above three clubs only with significant extra strength], after which advancer can pass or bid lower than three of opener’s suit to show a weak hand; direct non-jump three-level new-suit advances show moderate values). A direct natural three-notrump advance strongly suggests that strain (bidding two notrump first is more tentative about notrump). A direct unbid-major-suit inquiry cue-bid suggests that doubler, if not replying in a major, not bid notrump without a full stopper in opener’s suit (bidding two notrump first suggests that doubler can return to notrump with no help in opener’s suit. [default] { with only a partial stopper in opener’s suit. [leaf] } A jump to three spades over a double of two hearts is invitaertional and shows at least five spades (bidding two notrump first makes a three-spade rebid forcing).
+
+   In advancing either a direct-position or a reopening-position two-notrump overcall (showing strong-notrump values) of either a weak two-bid or an opening treated equivalently:
+(a) if the opening was in a major, all three-level suit bids are transfers to the next higher-ranking suit (three spades shows clubs), with a transfer into the suit of the opening functioning as Stayman;
+
+(b) if the opening was in a minor, three clubs is Stayman [by default, Smolen is not used], three diamonds and three hearts are transfers to the next higher suit, three spades shows the other minor.
+
+
+
+
+
+G. After Our Sandwich-Position Action
+
+   After a sandwich-position double of a new-suit response:
+(a) advancer’s cue-bid in opener’s suit is natural;
+
+(b) advancer’s cue-bid in responder’s suit [default:] is forcing and promises another bid below game. { followus the usual BWS defensive cue-bid rule. [leaf] }
+
+
+
+   After a sandwich-position one-notrump overcall, advancer uses the same bidding structure as responder to a one-notrump opening.
+
+
+
+H. Delayed Auction Entry
+
+   If a player who passed over the opening bid next
+(a) bids two of opener’s minor to overcall a one-notrump response or rebid, that is natural;
+
+(b) doubles a one-notrump response, one-notrump rebid, or simple rebid in opener’s suit, that is for penalty.
+
+
+
+
+
+VII. Bridge World Standard Defense
+
+1. Opening Leads
+
+(A) Against suit contracts
+
+
+(1) Honor leads: ace from ace-king; top from a sequence; highest equal from an interior sequence
+
+
+(2) Spot-card leads: third highest from even length; lowest from odd length
+
+
+(3) Alarm-clock leads (to suggest an unusual situation, such as a ruff possibility): fourth highest from five or six cards; fifth highest from seven cards
+
+
+(B) Against notrump contracts
+
+
+(1) Honor leads: ace requests unblock or count signal; queen requests jack; highest equal from non-ace sequences and interior sequences
+
+
+(2) Spot-card leads: fourth highest; second highest from weak suits
+
+
+
+2. Later Leads
+
+
+(A) Against suit contracts
+
+
+(1) Honor leads: king from ace-king; otherwise, highest equal from sequences and interior sequences
+
+(2) Spot-card leads in opening leader’s suit: high from remaining doubleton; low from remaining tripleton
+
+
+(3) Spot-card leads in a new suit: third highest from even length; lowest from odd length
+
+
+(B) Against notrump contracts
+
+
+(1) Honor leads: highest equal from sequences and interior sequences
+
+
+(2) Spot-card leads in opening leader’s suit: original fourth highest
+
+
+(3) Spot-card leads in a new suit: attitude
+
+
+
+3. Signaling Techniques (How to Send Messages)
+
+
+(A) Attitude signals: low discourages; high encourages
+
+
+(B) Count signals: high even; low odd [Exception: in the trump suit, upside-down count]
+
+
+(C) What a count signal shows: present count
+
+
+(D) Suit-preference signals: high prefers higher suit; low prefers lower suit
+
+
+
+4. Signal Meanings (When to Send Which Message)
+
+
+(A) When following to partner’s lead: attitude (discouraging signal suggests the ability to support the obvious shift), but
+
+(1) suit-preference when a high honor is led and dummy has a singleton and can trump, and
+
+(2) count at trick one when not beating dummy’s card or finessing and dummy’s highest is the jack or lower or the equivalent
+
+
+(B) When following to declarer’s or dummy’s lead: count
+
+
+(C) When playing trumps: count, but suit-preference when there is a clear issue for the defense
+
+
+(D) When discarding:
+
+
+(1) from sequences and interior sequences with significant trick-taking ability: highest equal
+
+
+(2) first discard in a particular suit: attitude
+
+
+(3) second discard in a particular suit: count
+
+
+(4) discard relating to a different suit: suit-preference
+
+
+(E) When splitting honors as second hand: king from ace-king; otherwise highest equal
+
+
+(F) Throughout the defense:
+
+
+(1) Special situations where count takes precedence: at trick one against a suit slam, after a king-lead
+
+
+(2) In general: unusual play shows unusual holding or requests unusual play
+
+ 
+
+
+HOME  Encyclopedia  Newsletter  Laws  Products  Services  Reviews  Tournaments  Blog  Training Practice Links HELP
+Contacts: Sales  Support  Reviews  Q&A    Disclaimer    Privacy    © 2005 BridgeHands   Updated 01/22/11
