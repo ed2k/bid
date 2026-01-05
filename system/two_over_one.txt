@@ -1,0 +1,621 @@
+
+2/1 Introduction - Also see 2/1 Bridge Books
+
+Many advancing bridge players enjoy the benefits of the 2/1system.  One appealing aspect of the 2/1system is that a large portion of the Standard American bidding system is identical to 2/1 bidding.   You will need to modify your basic approach on a few bids – those where your partner opened in a higher-level suit than your suit with two-level response, as 1C – 2C.  Such a bid by responder promises an opening hand with a “good” 12+ points.  We will learn a new stopgap bid covers certain hands with invitational values, the forcing Notrump.  This fundamental change allows 2/1 players to quickly identify game going and slam invitational hands using low level bids, a concept referred to as “slow shows, fast denies” (extra values).  Reflecting on this concept, it seems reasonable to bid slowly with extra values – bidding is a communication process and it is important to tell the whole story rather than prematurely jump into a contract without fully discussing the attributes of the partnership assets.  Consistent with this approach, 2/1 players have numerous conventions to obstruct the opponent’s bidding with weak, preemptive bids.
+
+2/1 Background
+
+Where did the 2/1 systems originate and what was its original purpose?  In the 1950's, the Italian Blue Team dominated the world of bridge in major international tournaments.  The Italians, who were also excellent card players, used a potent system based on a strong artificial club system. Teams from other countries identified the need for better methods to compete with dated systems such as Standard American.  Alvin Roth and Tobias Stone developed a comprehensive system which employed a new gadget – the Forcing Notrump bid by responder.  Edgar Kaplan and Alfred Sheinwold. followed with their own system, capitalizing on some of the best features of the Roth-Stone constructive bidding structure.   Features from the Roth-Stone system were also adapted to the 2/1 system we know today. The Roth-Stone system featured 5-card majors, the Forcing Notrump response to the 1 Heart or 1 Spade opening bid. 
+
+Some of the Roth-Stone methods were easily adopted to fit in the Standard American system.  Among these, the principal features were 5-card majors, negative doubles, and the Forcing Notrump response to a major suit opening.  At that time, the Western United States predominantly played 4-card majors while on the Eastern United States players typically adhered to the 5-card majors, finding it easy to incorporate the Forcing Notrump methods – their methods became known as 'Eastern Scientific.'
+
+In the 1970's, the partnership of Richard and Rhoda Walsh, John Swanson, and Paul Soloway developed a variant of Eastern Scientific system that incorporated a “two over one” (2/1) game forcing response by an unpassed hand (and no interference).  The new system was originally known as Walsh, sometimes referred to as 'Western Roth-Stone' based on its California origination. Over time, the Walsh system was commonly referred to as 2/1 Game Force.
+
+Max Hardy was the first professional player to thoroughly describe the 2/1 system and published several books on the system.   Later, the prolific bridge writer Mike Lawrence published his works on the 2/1 system.  Over time, other notable bridge experts have published books on aspects of 2/1, including Marty Bergen, Paul Thurston, and others.  Variations to 2/1 methods are also described in periodicals as ‘Bridge World Standard.’
+
+Over time, the benefits of the 2/1 system were noted by other tourney players.  Of today’s leading duplicate players who use natural bidding, the majority play some version of the 2/1 system.  Your ability to play 2/1 will increase the number of potential partners willing to play with you.  Even if you do not choose to play 2/1, many of your opponents are using 2/1; having a working knowledge of their methods will help you with your bidding and play.
+
+Let’s start of by taking a peek at the basic 2/1 bidding strategy:
+
+1) Find an 8+ major card “golden fit” using methods similar to those used by Standard American players.  However, when the responder makes a two-level bid in a lower ranking suit than the opener, the bid signifies the responder has 12+ points and is making a game forcing bid.
+
+2) Discover notrump stoppers without a golden fit – most players also use a “temporizing” Notrump response as a prelude to show a modest trump fit with the opener.  When the responder makes a 1 Notrump bid in response to opener’s 1H or 1S bid, the response promises a wide range response of 5+ to 12 points – this bid is forcing for one round
+
+3) Consider an alternative minor suit contract.  Since the partners require additional strength to make game in a minor, these contracts are considered as a last resort when major suit or Notrump contracts are not appropriate.
+
+4) The 1 Notrump and 2 Notrump bids, usually 15-17 and 20-21 points precisely describe opener’s strength and shape, identical to the Standard American treatment.
+
+5) 2/1 emphasizes finding major suit fit at a low level with methods such as “slow shows, fast denies” bids by responder.  Many 2/1 players have extended this approach through their methods.  For instance, responses to opener’s bid include:
+
+a. Opener's raise of responder's major suit response usually shows 4-card support.
+
+b. Responder’s 1 Notrump response by an unpassed hand to opener’s 1H or 1S opening is forcing for one round.  This treatment is at the core of the 2/1 system.
+
+c. Responder’s 2/1 response by an unpassed hand forms a game-forcing auction. This “slow shows-fast denies” approach allows the partners to conserve space, preventing unnecessary jumps to force game.  Thus, avoiding fast arrival preserves precious bidding space to explore slam.
+
+Basic 2/1 Bids 
+
+The 2/1 game forcing auction applies to responders first bid.  Early in our bridge career we learned to bid game when our combined partnership assets are 25-26 or more points.  Ideally, these assets will sustain 10 tricks in a major or 9 tricks in Notrump.  Again, a fundamental construct of the 2/1 system is the philosophy is to quickly identify and communicate game-going partnership values without consuming excessive bidding space.  With responder hands that are 10-12 points (or a questionable 13 points with several queens and Jacks), consider the Forcing Notrump bid discussed in the next Chapter.
+
+The basic rules for 2/1 game forcing auctions are:
+
+1)  When partner opens 1H or 1S, you bid 2 of a lower suit (2C, 2D, 2H if 1S).  Typically, responder’s suit is a 5+ cards long.  On some occasions, responder’s suit contains 4 cards, and on rare occasions the responder may need to make a 2/1 minor suit response with a 3-4-3-3 distribution.  Here are the 6 game forcing bids:
+
+a.       1H – 2C
+
+b.       1H – 2D
+
+c.        1S – 2C            Could be as few as 3 Clubs, holding 3=4=3=3 distribution
+
+d.        1S – 2D
+
+e.        2S – 2H            Responder also promises 5+ hearts
+
+f.         1D – 2C           Agreed by most 2/1 players as game forcing (at least 4 minor) 
+ 
+
+2) The responder makes a two level game forcing bid in a lower suit with 12+ “good” points.
+
+Thus, the 2/1 system requires a bidding mechanism to describe responder hands that have “in-between” values: those holdings in the 10-12 point range. Recall that using Standard American bidding, responder could make a two over one bid showing invitational values – not so with the 2/1 system.  As we will see later, the responders Forcing One Notrump bid covers the range of 5+ to12 points to address this need.
+
+3) By the way, auctions that are not 2/1 game forcing auctions include:
+
+A)  The 2 level bidder is a  passed hand (since responder's pass limited the hand to 12 or less)
+
+P  – 1H;
+2C
+
+P  – 1S;
+2H
+
+B) The opponents have made an intervening bid:
+
+1H – (1S) – 2C;   Most 2/1 players advocate “systems off” when an opponent
+                        makes an intervening bid. 
+
+1H – (X) – 2D
+
+1H/S – (any) – 3C/D;  Responder jump bids are typically preemptive,
+                                depending on partnership agreement
+
+1S – (2D) – 2H
+
+1H – (P) – 2C – (2D);   2/1 game force is still on here, since the 2/1
+                                 auction was established before the opponent bid
+
+C)  Simple raises
+
+i.   1H – 2H;
+
+ii.  1D – 2D;     Most 2/1 players treat the raise of a minor with a
+                     conventional treatment (Inverted Minors) – refer to 2/1 Module 2.
+
+D) Jump responses and jump shifts
+
+i. 1S – 3S;      invitational or preemptive, depending on partnership agreement
+
+ii. 1H – 2S;      weak or strong, depending on partnership agreement
+
+iii. 1D – 2H;      similar scenario as above
+
+E) Notrump response
+
+i. 1H – 1N;      Forcing Notrump auctions are distinct – refer to the
+chapter discussing Forcing Notrump auctions
+
+ii. 1S – 2N;      most play this as a conventional bid, as Jacoby 2NT
+
+8)  Partnership dependent: 1D – 2C
+
+A. Most 2/1 players agree responder’s 2C bid is game forcing.  However, some play repeated minor suit rebids signifies a signoff attempt below game.
+
+Exercise:  For each question assume opener opened in an unspecified major and decide whether or not to make a game-forcing 2 level bid:
+
+1)      A K 3 2   K 10 2   K J 3 2   3 2
+
+2)      3 2   3 2   J 2   A K J 5 4 3 2
+
+3)      A Q 3 2   A 2   A Q 4 3 2   3 2
+
+4)      4 3 2   A Q 2   A Q J   A K 3 2 
+
+5)      A K 2   2   K Q J 4 3 2   4 3 2
+
+6)      A J 3 2   3 2   Q 5 4 3 2   K 2
+
+7)      3 2   4 3 2   A Q 3 2   K Q 3 2
+
+8)      4 3 2   K Q 2   K 3 2   A 4 3 2 
+
+9)      2   2   A K Q 4 3 2   K Q J 10 2
+
+10)    Why are these bidding scenarios not game forcing?
+
+a.      P – 1S;  2H                b. 1H – (2C) – 2D                c. 1S – 3S;
+
+Answers:  On some of these hands, the 2/1 bidders would use conventional responses we have not discussed.  This exercise is only to determine if a 2/1 bid is appropriate.  Later we will learn specific conventions that apply to some of these hands.
+
+1)   A K 3 2   K 10 2   K J 3 2   3 2  - With 14 points, responder should make a game forcing bid in response to major suit.  The 2D response is game forcing, showing responder’s side suit.
+
+2)  3 2   3 2   J 2   A K J 5 4 3 2  - With 9 high card points, the responder cannot make a 2 level bid.  Later, we shall discuss the two bidding styles to describe this type of hand (as 1S – 1N; 2H – 3C, or 1S – 3C)
+
+3)  A Q 3 2   A 2   A Q 4 3 2   3 2 - With 14 points, we want to force game.  First bid 2C as a temporizing bid, supporting Spades later if opened.  Many 2/1 players would use the Jacoby 2NT convention in response to opener’s 1S bid, a convention discussed in another lesson.
+
+4)  4 3 2   A Q 2   A Q J   A K 3 2 - With 20 points, responder forces game bidding 2C. If opener bid 1H, we plan to support the suit later.  While responder is interested in exploring slam, the 2C bid is at least game forcing so responder need not worry about opener passing. 
+
+5)  A K 2   2   K Q J 4 3 2   4 3 2  - With 13 points, the responder commits to partnership to game, bidding 2D for starters.  We will avoid the merits of conventional bids at this time (Jacoby 2NT or Splinter bids).
+
+6)  A J 3 2   3 2   Q 5 4 3 2   K 2  - With 10 points, responder cannot make a game forcing bid if opener bid 1S.  Depending on partnership methods, responder either raises the bidding to 3S or makes a conventional response to show extra support (Bergen or Hardy Raise).  If opener bid 1H, responder bids 1S in an attempt to locate a partnership fit – responder’s raise in a new suit is one-round forcing.  Stay tuned for detailed discussions about raises.
+
+7)  3 2   4 3 2   A Q 3 2   K Q 3 2  -  With 11 points, the responder cannot make a 2/1 game forcing bid. We will learn about the 1NT forcing bid in the next chapter.
+
+8)  4 3 2   K Q 2   K 3 2   A 4 3 2  -  With 12 points, responder is nearing game values.  However, responder should not make a game forcing 2/1 bid with these values, particularly with a flat 3=3=3=4 distribution and spread values.
+
+9)  2   2   A K Q 4 3 2   K Q J 10 2  -  With 15 points, responder should bid 2D as a game forcing bid looking to find the best contract in follow-up bidding.
+
+10) 
+a.    P – 1S;  2H            Responder is a passed hand – not game forcing but promises a rebid
+b.  1H – (2C) – 2D       Opponent made an intervening bid – not game forcing but promises a rebid
+c.   1S – 3S;                 Suit raises, jump or otherwise, are not forcing; opener may pass a limit raise
+ 
+
+Forcing Notrump
+
+As we previously discussed, the 2/1 bid by responder is game forcing.  Yet after the opener bids 1H or 1S (unpassed hand), the responder needs a method to describe hands such as those with 10 – 11 and “bad” 12 point hands.   The Forcing Notrump allows the responder to make an interim “catch all” bid with a greater range of values than the 3 point range associated with most bids. 
+
+The range of responder’s Forcing Notrump is 5+ (good) to 12- (bad) points.  As its name suggests, the bid is forcing one round, assume responder is not a passed hand; some play “semi forcing” bids, which will be discussed later.  The Forcing Norump bid requires partner to further to describe features of the opener’s hand – recall opener’s range is very large: 12 – 22 points.  Of course, responder can still make a natural bid of 1S with 4+ Spades over opener’s 1H bid.
+
+Here are some of the responder’s benefits of the Forcing Notrump approach:
+
+1.      Better describe balanced hands with invitational strength
+
+2.      Precisely show a weak hand with a long suit
+
+3.      Belatedly show modest fit with opener after learning more of combined assets
+
+4.      Steer clear of many questionable 2/1 bids with only invitational values
+
+5.      Find a low-level part score when partners do not have a fit. 
+
+When partner opens 1S, the responder has a limited number of options which we respond in this sequence:
+
+1.      Pass, with less than a good 5 or 6 point hand
+
+2.      Raise opener’s Spade suit, with 3+ in opener’s major
+
+3.      Bid a new suit at the 2 level or higher.  If responder’s bid is at the 2 level,
+       the 2/1 response is game forcing.
+
+4.      Respond in Notrump, when we cannot make one of the above bids. 
+
+Note that when the opener specifically bids 1S, responder’s 1 Notrump bid does not promise any Spades – with 6-11 points and no Spade support, the responder must use the Forcing Notrump as a “catch-all” bid.
+
+When partner opens 1H, the responder has the opportunity to bid 1S in addition to the above guidelines.  Thus, should responder bid 1N in response to 1H, the responder typically holds at least 2 Hearts (otherwise, with bidding 1S with 4+ Spades since 3=1=4=5 and 3=1=5=4 hands are rare).
+
+If partner is a passed hand, partner’s 1 Notrump response is not forcing; many players choice to play responder’s bid as “semi-forcing.”
+
+Above we noted that opener must have 6+ cards in major to rebid the suit when responder bids a Forcing Notrump (but not so with a 2/1 bid), or needs 17+ HCP to reverse from 1H to 2S.  Assuming opener does not to open 1N with a 5 card major, the rebid is:
+
+More likely 2-3 in Minor
+(rounded suit shape - bad)
+
+1H – 1N; 2C  
+
+Less likely 2-3 in Minor
+(pointed suit shape - good)
+
+1S – 1N; 2D
+
+In-between
+(same color suits - ok)
+
+1H – 1N; 2D
+or
+1S – 1N; 2C
+
+Let’s assume the responder bids the Forcing 1 Notrump.  This shows at least a good 5 point hand up to a bad 12 point hand.  Here is a listing of Opener’s rebids:
+
+If auction begins 1S – 1N;
+
+Opener’s Rebid
+
+HCP Strength
+
+Length in Suit/s
+
+2C/D – Non-forcing
+
+12 -18
+
+3+
+
+2H – Non-forcing
+
+ 12 – 18
+
+ 4+
+
+2S – Non-forcing
+
+ 12 – 15
+
+Promises 6+
+(or 5 with "100 honors”)
+
+2N - Invitational
+
+17 – 18 Standard*
+(some play exactl HCP)
+
+5-3-3-2 shape
+
+ 3C/D – Forcing Jump Shift
+
+19 – 21
+
+4+ Game Forcing
+
+3H – Forcing
+        Jump Shift
+
+19+
+
+4+ Game Forcing
+
+3S - Invitational
+
+16 – 17
+
+Promises 6+
+(or 5 with 100 honors”)
+
+3N - Forcing
+
+19
+
+5-3-3-2 shape
+ 
+
+4S
+
+12+
+14+
+
+8+ Spades
+7+ Spades
+
+If auction begins 1H – 1N;
+
+2S – Forcing 1 Round
+
+17+
+
+4+ Spades
+(Hearts longer than Spades)
+
+Here are typical Opener rebids used after the Forcing 1 Notrump bidding:
+ 
+
+1S – 1N;
+
+Rebid
+
+1.         A Q 8 6 4   Q 4   K J 3   753  
+
+2C
+
+2.         A K 10 8 6   K 8 4   J 2   K J 5  
+
+2C
+
+3.         A K 9 6 3   J 7   A K 4   K 10 9 6
+
+2C
+
+4.         A J 8 7 3 2   9 5   3   A K J 8
+
+2C
+
+5.         8 7 5 3 2   A 5   A Q J 3   5   
+
+2D
+
+6.         Q 10 9 3 2   A K 10   7 5 3   K 4
+
+2D
+
+7.         A Q 4 3 2   K 10 9 3   K 5   K 4
+
+2H
+
+8.         K Q 10 8 6   A J 10 9 3   7   7 2
+
+2H
+
+9.         A 10 7 6 5 4   A 6   J 4   K J 5
+
+2S
+
+10.       A Q 9 7 6   K J 4   A Q   Q 10 9
+
+2N
+
+11.       A J 10 8 7   K Q   K J 6   A 9 8
+
+2N
+
+12.       A K J 5 2   9   A 6   K Q 10 9 5
+
+3C
+
+13.       A K 10 5 4   A J 3   10   A K 3 2
+
+3C
+
+14.       A K J 9 2   A Q 10 9 5   -   K Q 6
+
+3H
+
+15.       A Q J 8 6   A K Q 7   A 8   J 4
+
+3H
+
+16.       A Q J 10 9 4   3 2   A Q   K 5 4
+
+3S
+
+17.       A K Q 6 5 4 3   K 8 6  10 7   9
+
+3S
+
+18.       A K Q 10 7   K Q 3   9 3   K J 9
+
+3N
+
+Note: If auction begins:
+
+ 
+1H – 1N;
+
+ 
+
+19.      A Q 8 7   A Q 5 4 3   8 6   9 2
+
+2C  (cannot reverse without 17+)
+
+ 
+
+Responder Rebids after making a Forcing Notrump
+and Opener’s 2 level Suit Bid
+
+Opener’s Rebid
+
+Responder’s Hand
+
+Responder’s Rebid
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+2 of Minor Suit
+
+ 
+
+2 of Major Suit
+(non-reverse)
+
+ 
+
+5 – 8 HCP, no better bid
+
+ 
+
+Pass
+
+ 
+
+ 
+
+2+ in Opener’s Major Suit with 5 – 10 HCP, or
+3+ in Opener’s Major Suit
+with shape & 2 trick source
+
+ 
+
+2 in Opener’s Major Suit
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+No Opener fit but
+10 – 12 HCP w/stoppers
+
+ 
+
+2N
+
+ 
+
+ 
+
+ 
+
+4-5+ Opener’s Minor Suit
+
+10-12 HCP playing points
+
+ 
+
+ 
+
+3 in Opener’s Minor Suit
+
+ 
+
+ 
+
+3 in Opener’s Major Suit
+10-12 playing points
+
+ 
+
+3+ in Opener’s Major Suit
+
+ 
+
+ 
+
+ 
+
+5 – 9 points and
+5-6+ card suit
+
+ 
+
+New Suit at 2 Level
+(signoff)
+
+ 
+
+ 
+
+5 – 11 points and
+
+Good 6+ card suit
+
+ 
+
+New Suit at 3 Level – nonjump (signoff)
+
+ 
+
+ 
+
+10 – 11 points and
+Good 6+ card suit
+
+ 
+
+New Suit at 3 Level – jump (invitational)
+ 
+
+
+Note: Bidding the “Impossible 2S” (1H – 1N; 2x – 2S) is an artificial/conventional bid.
+Typical partnership agreements use this specialized call to show difficult-to-bid invitational hands; one method instructs opener to bid 2N, after which responder shows a good 5+ card minor with 10-12 playing points (1H – 1N; 2D – 3C would be a signoff)
+Here are typical Responder rebids used after the Forcing 1 Notrump bidding:
+
+1S – 1N;
+2C - ?     
+
+Rebid
+
+1.         5   K J 3   9 7 5 3 2   J 9 5 2   
+
+Pass
+
+2.         4   9 7 3 2   K Q 7 5 3 2   10 8
+
+2D
+
+3.         -   K J 7 6 3 2   Q 5 4 2   7 4 3
+
+2H
+
+4.         9 7   A 5 4 2   K J 8 5   J 9 7
+
+2S
+
+5.         10 4   K Q 7 2   K J 9 5   Q 6 3
+
+2N
+
+6.         8   A Q 3   10 9 3   K Q 9 7 6
+
+3C
+
+7.         3 2  A 7   K Q 10 9 5 3   J 3 2
+
+3D
+
+8.         Q 8 6   7 5 3   K Q 9 2   A 10 4
+
+3S 
+
+ 
+
+ 
+
+1S – 1N;
+2D –  ?    
+
+ 
+
+9.         9  J 9 5 4 3   A 5 2   Q 8 7 6
+
+Pass
+
+10.       -   K Q 8 7 3 2   9 7 5   8 5 4 2
+
+2H
+
+11.       Q 9   J 9 4   8 7 3 2   A Q 9 4
+
+2S
+
+12.       3   J 7 5   A Q 9 7 3   A 10 9
+
+3D
+
+ 	 
+1S – 1N;
+2H – ?     
+
+ 
+
+13.       -   9 8 2   A 9 7 3 2   Q 6 4 3
+
+Pass
+
+14.       3 2   5 4   10 6 5 3   A Q 8 7 6
+
+2S
+
+15.       K   5 4   10 6 5 3 2   A Q 8 7 6
+
+2S
+
+16.       8   J 7 2   A Q J 9   K J 9 8 5
+
+2N
+
+17.       9 6   K Q 10 6   K J 9 5   5 3 2
+
+3H
+
+18.       K Q 4   5   7 6 5 2   A J 10 9 3
+
+3S
+
+
+ 
+
+HOME  Encyclopedia  Newsletter  Laws  Products  Services  Reviews  Tournaments  Blog  Training Practice Links HELP
+Contacts: Sales  Support  Reviews  Q&A    Disclaimer    Privacy    © 2005 BridgeHands   Updated 01/22/11
