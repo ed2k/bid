@@ -143,5 +143,30 @@ class TestPrecision(unittest.TestCase):
         # S: AKJ2 H: KQ32 D: A32 C: 32 (8+5+4 = 17 HCP)
         self.assertBid("SAKJ2 HKQ32 DA32 C32", "X", history_1nt)
 
+    def test_slam_bidding(self):
+        # 1. Gerber (4C) after 1NT
+        history_1nt = [Call(CallType.BID, 1, Strain.NT), Call(CallType.PASS)]
+        # S: AKQJ H: KQJ D: 432 C: 432 (9+6=15 HCP). 10+15=25. Slam? 
+        # Requirement in DSL is 13+ and ACES: ASK.
+        # S: AKQ H: AKQ D: 432 C: 432 (9+9=18 HCP, 3334). No 4M.
+        self.assertBid("SAKQ HAKQ D432 C432", "4C", history_1nt)
+
+        # 2. Quantitative 4NT after 1NT (10-12)
+        # Responder needs 21-22 balanced.
+        # S: AKQJ H: AKQJ D: KQJ C: 2 (10+10+6=26 HCP) -> Too strong? 6NT directly.
+        # S: AKQ H: AKQ D: KQJ2 C: 32 (9+9+6=24 HCP).
+        # DSL says 21-22.
+        # S: AKJ H: AKJ D: KQJ C: 5432 (8+8+6=22 HCP, 3334).
+        self.assertBid("SAKJ HAKJ DKQJ C5432", "4NT", history_1nt)
+
+        # 3. Ace Asking 4NT (after 1C-1S)
+        history_1c_1s = [Call(CallType.BID, 1, Strain.CLUBS), Call(CallType.PASS),
+                         Call(CallType.BID, 1, Strain.SPADES), Call(CallType.PASS)]
+        # Opener 1C (16+), Resp 1S (8+ 5S). 
+        # Opener Rebid 4NT (18+ Ace Ask)
+        # S: AKQ2 H: AKQ2 D: DQJ C: 2 (9+9+3=21 HCP)
+        self.assertBid("SAKQ2 HAKQ2 DQJ C2", "4NT", history_1c_1s)
+
+
 if __name__ == "__main__":
     unittest.main()

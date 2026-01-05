@@ -141,6 +141,8 @@ OPEN 3S:
 1NT - 2C:
   HCP: 7-12
 
+
+
 # 1NT - 2H/2S: To Play (Weak)
 1NT - 2H:
   HCP: 0-7
@@ -234,6 +236,74 @@ OPEN 3S:
 1D - 1NT:
   HCP: 6-10
   SHAPE: BALANCED
+
+# ==========================================
+# SLAM BIDDING
+# ==========================================
+
+# --- Quantitative 4NT ---
+# 1NT - 4NT: Quantitative (Invite to 6NT)
+# Opener 10-12. Responder needs ~21-22 total for 33.
+# So Responder needs ~11-12+ to invite? No, 1NT is 10-12.
+# Standard Quant is when sum is ~32-33.
+# If Opener 10-12, Responder needs 21+.
+1NT - 4NT:
+  HCP: 21-22
+  SHAPE: BALANCED
+
+# 2NT - 4NT: Quantitative
+# Opener 22-23. Responder needs ~10-11 for 33.
+2NT - 4NT:
+  HCP: 10-11
+  SHAPE: BALANCED
+
+# 4NT - PASS (Opener Minimum)
+1NT - 4NT - PASS:
+  HCP: 10-11
+
+2NT - 4NT - PASS:
+  HCP: 22
+
+# 4NT - 6NT (Opener Maximum)
+1NT - 4NT - 6NT:
+  HCP: 12
+
+2NT - 4NT - 6NT:
+  HCP: 23
+
+# --- Gerber (4C) after NT ---
+# 1NT - 4C: Gerber Ace Ask
+1NT - 4C:
+  HCP: 13-20
+
+# 2NT - 4C: Gerber Ace Ask
+2NT - 4C:
+  HCP: 13-20
+
+# --- 4NT Ace Asking (Blackwood/Beta) ---
+# 1C (Strong) sequences leading to 4NT
+# 1C - 1S (Positive) - 4NT
+1C - 1S - 4NT:
+  HCP: 18+
+
+# Responses (Standard 0314 assumed as placeholder or Beta)
+# Beta: 1st=0-2, 2nd=3, 3rd=4, 4th=5.
+# Let's implement Beta as per Text (Line 533)
+# 1st step (5C) = 0-2 Controls
+1C - 1S - 4NT - 5C:
+  CONTROLS: 0-2
+
+# 2nd step (5D) = 3 Controls
+1C - 1S - 4NT - 5D:
+  CONTROLS: 3
+
+# 3rd step (5H) = 4 Controls
+1C - 1S - 4NT - 5H:
+  CONTROLS: 4
+
+# 4th step (5S) = 5 Controls
+1C - 1S - 4NT - 5S:
+  CONTROLS: 5
 
 # ==========================================
 # DEFENSIVE BIDDING (Opponent Opened Suit)
