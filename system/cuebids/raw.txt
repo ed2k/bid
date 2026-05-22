@@ -1,0 +1,46 @@
+Known cuebids raw descriptions
+
+1) Michaels cuebid (single-suit opening context)
+- A cuebid overcall when opponents have bid only one suit shows a 5-5 two-suiter (or more distributional).
+- Over minor opening: shows both majors.
+- Over major opening: shows other major plus an unspecified minor.
+- Common strength notes in sources: around 8+ to 14+ points depending on system/style.
+
+2) Cuebid response to overcall (quality ask)
+- After partner overcalls, a cuebid of opener's suit is forcing and asks overcaller to further describe overcall quality/strength.
+
+3) Western / Jump cuebid
+- Jump cuebid asks partner to bid notrump with a stopper in opponents' suit.
+- Typically shows a strong hand with a solid or self-sufficient side suit.
+
+4) Control cuebid in slam auctions
+- New suit rebid after fit/agreement can be a control cuebid for slam cooperation.
+- Often interpreted as showing first- or second-round control and game/slam forcing intent.
+
+5) Cuebid as Stayman substitute after NT interference
+- When 1NT systems are disrupted by overcall/interference, cuebid can replace Stayman-like game-forcing inquiry.
+
+6) Cuebid with no stopper opposite opponent suit
+- In competitive auctions, cuebid can show values without a good 5-card suit and lacking stopper in opponents' suit.
+- Some methods use cuebid instead of 1NT for these no-stopper hands.
+
+7) Strong takeout cuebid
+- In higher-level competitive auctions, cuebid can be defined as strong takeout rather than natural.
+
+8) Precision family cuebids
+- Alpha cuebid / support-asking style (step responses by controls).
+- Beta cuebid / control-asking style.
+- Used in strong-club structures with artificial step meanings.
+
+9) Trump cuebid / cue raise
+- Competitive cue raise can show support with invitational-or-better values.
+- Some notes describe trump cuebids as slam-interest actions after fit is set.
+
+10) Michaels vs weak two in major (GIB note)
+- Over weak two in a major, bidding 4 of that same major can show stronger both-minor hand.
+- 4NT can show weaker both-minor hand.
+
+11) Re-cuebid continuation
+- In two-suiter structures, if responder does not choose one promised suit, advancer may cuebid again to clarify/insist.
+
+12) Drury bid is an artificial bridge convention used by a "passed hand" (a player who previously passed) to invite game after their partner opens the bidding in a major suit ( 1H or 1S)  in the third or fourth seat.

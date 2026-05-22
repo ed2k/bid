@@ -79,5 +79,11 @@ class Engine:
             
         return constraints
 
+    def explain_auction(self, auction: List[Call], dealer_seat_index: int) -> Dict[int, HandConstraints]:
+        dealer_seat = Seat(dealer_seat_index)
+        # Use SOUTH as default my_seat; doesn't affect calculation as both sides use self.system
+        estimates = self.estimate_deal(auction, Seat.SOUTH, dealer_seat, self.system, self.system)
+        return {s.value: const for s, const in estimates.items()}
+
     def format_estimate(self, constraints: HandConstraints) -> str:
         return str(constraints)

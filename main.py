@@ -1,3 +1,4 @@
+import os
 from bid.translator import SystemTranslator
 from bid.engine import Engine
 from bid.models import Hand, Call, CallType, Strain
@@ -30,7 +31,8 @@ def main():
     print("=== Bridge Bidding Framework Demo ===")
     
     # 2. Parse System
-    dsl_path = "bid/system/gib.dsl"
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    dsl_path = os.path.join(current_dir, "system", "gib.dsl")
     print(f"Parsing System from {dsl_path}...")
     
     with open(dsl_path, "r") as f:

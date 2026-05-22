@@ -1,3 +1,4 @@
+import os
 import unittest
 from bid.translator import SystemTranslator
 from bid.engine import Engine
@@ -6,7 +7,7 @@ from bid.models import Hand, Call, CallType, Strain
 class TestBlueClubSlam(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        dsl_path = "bid/system/blue_club.dsl"
+        dsl_path = os.path.join(os.path.dirname(__file__), "..", "system", "blue_club.dsl")
         with open(dsl_path, "r") as f:
             dsl_text = f.read()
         translator = SystemTranslator()

@@ -1,5 +1,5 @@
 import re
-from typing import List, Dict
+from typing import List, Dict, Optional
 from bid.models import Call, CallType, Suit, Strain
 from bid.constraints import HandConstraints
 from bid.system import Rule, BiddingSystem
@@ -9,8 +9,9 @@ class SystemTranslator:
         print("DEBUG: SystemTranslator Moving Steps Logic Outside")
         pass
 
-    def parse(self, text: str) -> BiddingSystem:
-        system = BiddingSystem("ParsedSystem")
+    def parse(self, text: str, system: Optional[BiddingSystem] = None, is_common: bool = False) -> BiddingSystem:
+        if system is None:
+            system = BiddingSystem("ParsedSystem")
         lines = text.strip().split('\n')
         
         current_rule_data = None
@@ -23,7 +24,7 @@ class SystemTranslator:
             # Look for rule start: "OPEN 1NT:" or "RESPONSE 1NT:"
             if line.endswith(':'):
                 if current_rule_data:
-                    self._add_rule_from_data(system, current_rule_data)
+                    self._add_rule_from_data(system, current_rule_data, is_common=is_common)
                 
                 heading = line[:-1]
                 if '-' in heading:
@@ -46,7 +47,16 @@ class SystemTranslator:
                     'controls': (0, 12),
                     'shape': {},
                     'balanced': None,
-                    'priority': 10
+                    'priority': 10,
+                    'bid_class': None,
+                    'cuebid_type': None,
+                    'cue_target': None,
+                    'forcing': None,
+                    'convention': None,
+                    'priority_bonus': 0,
+                    'passed_hand': None,
+                    'partner_passed_hand': None,
+                    'opener_seat': None
                 }
             elif current_rule_data:
                 if line.startswith('HCP:'):
@@ -89,6 +99,32 @@ class SystemTranslator:
                         current_rule_data['balanced'] = True
                     elif val == 'UNBALANCED':
                         current_rule_data['balanced'] = False
+                elif line.startswith('BID_CLASS:'):
+                    current_rule_data['bid_class'] = line.split(':')[1].strip()
+                elif line.startswith('CUEBID_TYPE:'):
+                    current_rule_data['cuebid_type'] = line.split(':')[1].strip()
+                elif line.startswith('CUE_TARGET:'):
+                    current_rule_data['cue_target'] = line.split(':')[1].strip()
+                elif line.startswith('FORCING:'):
+                    current_rule_data['forcing'] = line.split(':')[1].strip()
+                elif line.startswith('CONVENTION:'):
+                    current_rule_data['convention'] = line.split(':')[1].strip()
+                elif line.startswith('PRIORITY_BONUS:'):
+                    current_rule_data['priority_bonus'] = int(line.split(':')[1].strip())
+                elif line.startswith('PASSED_HAND:'):
+                    val = line.split(':')[1].strip().upper()
+                    current_rule_data['passed_hand'] = (val == 'TRUE')
+                elif line.startswith('PARTNER_PASSED_HAND:'):
+                    val = line.split(':')[1].strip().upper()
+                    current_rule_data['partner_passed_hand'] = (val == 'TRUE')
+                elif line.startswith('OPENER_SEAT:'):
+                    val = line.split(':')[1].strip()
+                    seats = set()
+                    if '1' in val: seats.add(0)
+                    if '2' in val: seats.add(1)
+                    if '3' in val: seats.add(2)
+                    if '4' in val: seats.add(3)
+                    current_rule_data['opener_seat'] = seats
                 elif line.startswith('LEN'):
                     parts = line.split(':')
                     suit_str = parts[0].split()[1]
@@ -104,10 +140,10 @@ class SystemTranslator:
                     current_rule_data['shape'][suit] = (mn, mx)
 
         if current_rule_data:
-            self._add_rule_from_data(system, current_rule_data)
+            self._add_rule_from_data(system, current_rule_data, is_common=is_common)
         return system
 
-    def _add_rule_from_data(self, system: BiddingSystem, data: Dict):
+    def _add_rule_from_data(self, system: BiddingSystem, data: Dict, is_common: bool = False):
         call = self._parse_call(data['bid'])
         
         constraints = HandConstraints(
@@ -125,6 +161,9 @@ class SystemTranslator:
         )
         
         trig_type = data['trigger']
+        passed_hand = data.get('passed_hand')
+        partner_passed_hand = data.get('partner_passed_hand')
+        opener_seats = data.get('opener_seat')
         
         # Parse sequence steps ONCE here
         steps = []
@@ -143,6 +182,33 @@ class SystemTranslator:
             # print(f"DEBUG TRANS: Rule {data['bid']} Steps={[(str(c), d) for c,d in steps]} Shape={data['shape']}")
         
         def trigger(history: List[Call]) -> bool:
+            if passed_hand is not None:
+                if len(history) < 4:
+                    is_passed = False
+                else:
+                    first_turn_idx = len(history) % 4
+                    is_passed = (history[first_turn_idx].type == CallType.PASS)
+                if is_passed != passed_hand:
+                    return False
+
+            if partner_passed_hand is not None:
+                partner_seat = (len(history) + 2) % 4
+                if len(history) <= partner_seat:
+                    is_partner_passed = False
+                else:
+                    is_partner_passed = (history[partner_seat].type == CallType.PASS)
+                if is_partner_passed != partner_passed_hand:
+                    return False
+
+            if opener_seats is not None:
+                first_bid_idx = -1
+                for idx, c in enumerate(history):
+                    if c.type == CallType.BID:
+                        first_bid_idx = idx
+                        break
+                if first_bid_idx not in opener_seats:
+                    return False
+
             if trig_type == 'OPEN':
                 return len(history) == 0 or (len(history) < 4 and all(c.type == CallType.PASS for c in history))
             
@@ -200,11 +266,36 @@ class SystemTranslator:
 
             return False 
             
-        prio = 10
+        prio = data.get('priority', 10)
+        prio += data.get('priority_bonus', 0)
+        
         if data['balanced']: prio += 5
         if call.level == 1 and call.strain == Strain.NT: prio = 20
         
-        rule = Rule(prio, trigger, constraints, call, description=f"{trig_type} {data['bid']}")
+        metadata = {
+            'bid_class': data.get('bid_class'),
+            'cuebid_type': data.get('cuebid_type'),
+            'cue_target': data.get('cue_target'),
+            'forcing': data.get('forcing'),
+            'convention': data.get('convention'),
+            'priority_bonus': data.get('priority_bonus'),
+            'passed_hand': data.get('passed_hand'),
+            'partner_passed_hand': data.get('partner_passed_hand'),
+            'opener_seat': data.get('opener_seat')
+        }
+        metadata = {k: v for k, v in metadata.items() if v is not None}
+        
+        rule = Rule(
+            prio, 
+            trigger, 
+            constraints, 
+            call, 
+            description=f"{trig_type} {data['bid']}",
+            metadata=metadata,
+            trigger_type=trig_type,
+            sequence_history=data.get('sequence', []),
+            is_common=is_common
+        )
         system.add_rule(rule)
 
     def _parse_call(self, s: str) -> Call:

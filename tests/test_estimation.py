@@ -1,3 +1,4 @@
+import os
 import unittest
 from bid.translator import SystemTranslator
 from bid.engine import Engine
@@ -7,14 +8,16 @@ from bid.system import BiddingSystem
 class TestDealEstimation(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # Load Blue Club for My System
-        with open("bid/system/blue_club.dsl", "r") as f:
-            blue_dsl = f.read()
         translator = SystemTranslator()
+        # Load Blue Club for My System
+        blue_path = os.path.join(os.path.dirname(__file__), "..", "system", "blue_club.dsl")
+        with open(blue_path, "r") as f:
+            blue_dsl = f.read()
         cls.blue_system = translator.parse(blue_dsl)
         
         # Load GIB for Opponent System (Simulating simple natural-ish)
-        with open("bid/system/gib.dsl", "r") as f:
+        gib_path = os.path.join(os.path.dirname(__file__), "..", "system", "gib.dsl")
+        with open(gib_path, "r") as f:
             gib_dsl = f.read()
         cls.gib_system = translator.parse(gib_dsl)
         

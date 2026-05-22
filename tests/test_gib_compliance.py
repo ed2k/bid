@@ -1,3 +1,4 @@
+import os
 import unittest
 from bid.translator import SystemTranslator
 from bid.engine import Engine
@@ -7,7 +8,7 @@ from bid.system import BiddingSystem
 class TestGIBCompliance(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        dsl_path = "bid/system/gib.dsl"
+        dsl_path = os.path.join(os.path.dirname(__file__), "..", "system", "gib.dsl")
         with open(dsl_path, "r") as f:
             dsl_text = f.read()
         translator = SystemTranslator()

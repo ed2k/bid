@@ -1,3 +1,4 @@
+import os
 import random
 from bid.models import Hand
 from bid.translator import SystemTranslator
@@ -9,7 +10,7 @@ def run_coverage_verification(num_hands=1000):
     print(f"Running coverage verification on {num_hands} random hands...")
     
     # Load System
-    dsl_path = "system/precision.dsl"
+    dsl_path = os.path.join(os.path.dirname(__file__), "..", "system", "precision.dsl")
     try:
         with open(dsl_path, "r") as f:
             dsl_text = f.read()
