@@ -1,0 +1,30 @@
+https://www.larryco.com/bridge-articles/serious-3nt
+
+Serious 3NT
+SERIOUS 3NT
+This convention, developed by Eric Rodwell, uses an artificial 3NT bid when a major-suit fit has been established. If it is impossible to want to play 3NT (this requires lots of partnership discussion and work) and it is obvious that the major is trumps, then there are 2 ways to control bid. One is to just make a control bid (such as: 1-3-4). The alternative is to bid an artificial "serious" 3NT. As first written, the control-bid (4) showed a mild slam try, while the artificial 3NT showed a better hand ("serious" slam interest).
+
+In later versions (sometimes called "Non-Serious 3NT"), the meanings are inverted. I don't recommend this convention to any but the most serious and long-term partnerships. Most experts use it, because it is so helpful with the game versus slam decision.
+
+Here is an example of a "serious" or "non-serious" situation. Your partner opens 1 and you bid Jacoby 2NT. Your partner bids 3 which shows shortness.
+
+You would sign off in 4 with:
+
+ KQ5
+♥ AKJ6
+♦ 876
+♣ 432.
+
+You would make a mild try (assuming the original version of the convention) by control-bidding 4 with:
+
+ QJ5
+♥ AQ76
+♦ 54
+♣ KQJ6.
+
+You would make a serious try (assuming the original version) by bidding an artificial 3NT with:
+
+ A54
+♥ KQ106
+♦ AK32
+♣ 32.
