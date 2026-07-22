@@ -1,0 +1,122 @@
+Slam Bidding--General
+Most players are familiar with general HCP guidelines such as :
+
+Small Slams: 31-33 HCP
+Grand Slams: 35-37 HCP
+
+These are approximate and surely depend on distribution. At notrump, you usually need to be towards the high end of the ranges above (especially if both hands are balanced). With a long running suit, you might make 6NT with fewer HCP. For suit slams, you could easily get by on less than 31 HCP with lots of shape (voids, singletons, long suits).
+
+Those HCP numbers are just basic guidelines. Finding a trump fit (or notrump) is a starting point. Once you think you are in the slam zone (not always easy to determine), it is usually a good idea to check for aces. Thus, the Blackwood convention. Blackwood is used to make sure you never bid a slam missing 2 aces (or RKC to make sure you are not off 2 keycards).
+
+Not all slam investigations lend themselves to Blackwood. There are two major handtypes that are unsuitable for Blackwood.
+
+VOIDS
+If you have a void, you should not use Blackwood. For example, Opener holds:
+
+A K J 7 6 4 2
+--
+K 3 2
+K Q 3
+
+You open 1 and partner makes a limit raise to 3. You expect to be in the slam zone (no, you won't have 31 HCP--but your distribution tells you that slam is a possibility). But, this is not a Blackwood hand. Suppose you use Blackwood and partner shows 1 ace. Now what? If you jump to 6, you could be facing:
+
+Q 10 9 3
+A K 4 2
+Q 5
+7 4 2
+
+Oops. This is not a good slam--off 2 cashing aces.
+
+But, what if partner's "one-ace" hand were:
+
+Q 10 9 3
+K 4 3 2
+A 5
+J 4 2 ?
+
+Now, slam is laydown. So, Blackwood should not be used with voids. What should you do with a void when interested in slam? Control-bid. More on this to follow towards the end of this article.
+
+SUITS OFF 2 QUICK TRICKS
+If you have a side suit where you could be off the first two tricks (such as Qxx, or Jx), you shouldn't use Blackwood. For example, Opener holds:
+
+A K J 7 6 4 2
+A K Q
+3 2
+3
+
+Again, you open 1 and partner makes a limit raise to 3. Again you expect to be in the slam zone. This is not a Blackwood hand. Let's suppose you use Blackwood and partner shows 1 ace. Now what? If you jump to 6, you could be facing:
+
+Q 10 9 3
+J 3 2
+Q 5 4
+A Q 5
+
+You are in a slam off the ace-king of diamonds--no good. But, what if partner's "one-ace" hand were:
+
+Q 10 9 3
+J 3 2
+A K 6 4
+4 2 ?
+
+Now, slam is laydown. So, Blackwood should not be used when you have a suit off two quick losers. Just like with voids, the solution for these non-Blackwood hands lies in cue-bidding.
+
+
+"Cue" Bidding
+
+First, let's explain what a cue-bid is. The term "cue-bid" is a bit misleading. If the opponents open 1 and you bid 2, that is a Michaels Cue-bid, showing hearts and a minor. This has nothing to do with a "cue-bid" for slam bidding. I prefer to use the new term (thanks to Bridge World magazine) which is "control-bid" (more specific than the term "cue-bid"). When looking for a slam, we show a control. A "control" is an ace or a king (or, if in a suit contract, a void or a singleton). Think of a control this way: "If we have a control, the opponents can not take the first 2 tricks in that suit." We use control-bids when we have agreed on a trump suit and are moving towards slam.
+
+Example:
+
+A K J 7 6 4 2
+A K Q
+3 2
+3
+
+You open 1 and partner bids 3 (invitational). We saw above, that Blackwood is useless. Instead, you "control-bid" 4, to show that you are interested in slam, and have a club control. In this case, your "control" is a singleton. You know that the opponents cannot cash 2 club tricks. You are worried that they may be able to take the ace-king of diamonds. Your partner will now control-bid 4 for you, if he has a control in that suit. If he has:
+
+Q 10 9 3
+J 3 2
+Q 5 2
+A Q 5
+
+...he will hear your 4 control-bid, and will have nothing to contribute. He will bid 4--he has no control in either red suit.
+
+If instead, responder held:
+
+Q 10 9 3
+J 3 2
+A K 6 4
+4 2
+
+...he would control-bid 4, and opener would know there are no suits off the first two tricks. Opener could then use Blackwood to make sure two aces weren't missing.
+
+When is a new suit a control-bid?
+
+A good rule of thumb is :
+
+Below 3-of-your major, there are no control-bids. Above 3-of-your-major, once a fit has been found (a suit has been raised), a new suit is a control-bid (ace, king, void, or singleton).
+
+Example of NOT a control-bid:
+
+1	2		
+3*			
+*Not a control-bid. This says nothing about the ace or king (nor length) in clubs. Most partnerships use it as some sort of "naturalish" game try. It is not a slam try.
+
+Example of a control-bid:
+
+1	3		
+4*			
+This shows a control in diamonds (and denies a club control). Bid controls in order (up-the-line) whether they are first or second round control.
+
+
+
+Those are the basics of slam bidding. There are many issues to explore for more experienced players.
+
+Advanced Topics:
+
+Should you learn other slam-related conventions and how should they be played? (Splinter Bids, Serious 3NT, Kickback, Gerber, Asking Bids, etc.).
+Should you ever use control-bids just to see if partner is interested in slam?
+If so, is it always mandatory to show a control? (In other words, can you bypass showing a control and sign off in game if you have a dead minimum?).
+Can you ever control-bid on the 3 level?
+What if a control-bid is doubled? What do redoubles mean (by the control- bidder himself or by the partner of the control-bidder)?
+What if the partner of the Blackwooder has a void. How does he show it? Should/can he always show it?
