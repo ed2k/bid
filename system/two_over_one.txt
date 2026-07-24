@@ -617,5 +617,108 @@ Pass
 
  
 
-HOME  Encyclopedia  Newsletter  Laws  Products  Services  Reviews  Tournaments  Blog  Training Practice Links HELP
-Contacts: Sales  Support  Reviews  Q&A    Disclaimer    Privacy    © 2005 BridgeHands   Updated 01/22/11
+Two over one
+# WBF Convention Card
+Green
+Country: /
+Event: /
+Players: Lia the bot
+
+## SYSTEM SUMMARY : Two over one
+
+## GENERAL APPROACH AND STYLE
+Better minor
+15-17 NT | 2 over 1 GF
+2♣ : Kokish : 22-23 BAL of GF any
+2♦/2♥ /2♠ : weak, (3)6-10
+
+## Conventions
+Semi forcing NT : 1M-1NT may be a limit raise with 3 cards
+Jacoby 2NT : 1M-2NT is GF with 4M
+Gerber on 1NT and 2NT openings
+
+## SPECIAL FORCING PASS SEQUENCES
+
+## IMPORTANT NOTES THAT DON'T FIT ELSEWHERE
+
+
+#LEADS AND SIGNALS
+
+## OPENING LEADS STYLE
+|Lead |in Partner's Suit
+Suit |3rd/5th |3rd/5th 
+NT |4th |4th
+Subseq |Attitude |Attitude
+Other: 
+
+##  LEADS
+Lead |Vs.Suit |Vs. NT 
+Ace |AK |AK 
+King |KQ |KQ 
+Queen |QJ |QJ/AQJ
+Jack |(H)JT |(H)JT
+10 |10x, 109, HT9 |10xx, 109, HT9
+9 |9x |9xx
+Hi-x |xxXx,Xx |xXxx(x),Xxx
+Lo-x |xxXx,xxX,xxxxX |HxxX(x) 
+
+## SIGNALS IN ORDER OF PRIORITY
+|Partner's Lead |Declarer's Lead |Discarding
+Suit:1st |Standard count |Standard count |Standard count (in long
+2nd |Preferential |Preferential | (merge with above)  suits/discouraging suits)
+3rd | | |Preferential
+NT: 1st |Standard count |Standard count |Standard count (in long
+2nd |Preferential |Preferential| (merge with above)  suits/discouraging suits)
+3rd |||Preferential
+Signals (including Trumps): Preferential in trump
+Attitude in rare situations on the ace lead.
+
+## DOUBLES
+### TAKEOUT DOUBLES(Style;Responses;Reopening)
+Agressives take out doubles
+Negative, responsive double up to 4♠ 
+
+## SPECIAL,ARTIFICIAL AND COMPETITIVE DOUBLES/REDOUBLES 
+Support doubles/redoubles mandatory below 2M
+
+
+#DEFENSIVE AND COMPETITIVE BIDDING 
+## OVERCALLS(Style; Responses; 1/2level; Reopening)
+Constructive overcalls Lead in Partner's Suit
+New suit is forcing Suit 3rd/5th 3rd/5th Green
+Reopening:same range than overcall NT 4th 4th Country: /
+
+
+## 1NT OVERCALL (2nd/4th Live; Responses; Reopening)
+16-18 overcall 
+11-14 reopening 
+
+## JUMP OVERCALLS(Style; Responses; Unusual NT) 
+Natural preempt 9 9x 9xx
+2NT shows two lowest suits, 55
+leaping michaels
+Reopening: Minimal opening, good suit, natural
+
+## DIRECT and JUMP CUE BIDS ( Style; Responses; Reopening)
+direct cue-bid : michael 1m-2m : 5 +5 , 1M-2M ♠ ♥ : 5M’+5m 
+Jumping cue : gambling asking for stopper
+
+## VS. NT(vs. Strong/Weak; Reopening;PH) 
+X  → penalty behind, one minor in reopening position.
+2♣ landy  
+2 other natural
+
+## VS.PREEMPTS( Doubles; Cue-bids; Jumps; NT bids)
+Lebensohl facing double 
+Leaping michaels 
+
+## VS. ARTIFICIAL STRONG OPENINGS 
+/
+
+## OVER OPPONENTS' TAKE OUT DOUBLE
+XX shows values, looking for penalty
+new suit 2/1 is NF
+
+
+
+
