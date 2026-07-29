@@ -1,0 +1,322 @@
+https://www.bridgebum.com/splinters.php
+
+The Basics
+A splinter bid is a way of agreeing partner’s suit, limiting your hand, and showing a shortage in a specific side suit, all at the same time. That’s a lot of information to be conveyed in one bid, and it needs to be since a splinter takes up a great deal of bidding space.
+
+You can use splinters in numerous situations. Essentially, any jump in a new suit to one level higher than needed to make a natural bid in the named suit is a splinter.
+
+
+
+Agreeing Opener’s Suit with Your First Bid
+The most common splinter situation occurs when partner opens with a major and you make a double jump with 4+ card support:
+
+
+1S - 4C
+1S - 4D
+1S - 4H
+1H - 3S
+1H - 4C
+1H - 4D
+Let’s check that this follows the rule set out above: partner opens One Spade and you can bid Two Clubs, natural and forcing. A jump to Three Clubs also traditionally shows clubs, although you can choose to play it as either weak, invitational or strong. You might also choose to use a jump to Three Clubs as Bergen, showing a specific type of invitational spade raise.
+
+What you do not need is a jump to Four Clubs also to show some type of hand with long clubs. Similarly with double jumps is any other suit in response to a one-level, major-suit opening by partner.
+
+So, exactly what sort of hand do you need to make a splinter bid? Suppose partner opens One Spade. On which of the following hands should you jump to Four Diamonds?
+
+
+Hand A
+S K 9 7 2
+H A 7 5 3
+D 4
+C J 10 8 3
+Hand B
+S K J 7 2
+H A 7 5 3
+D 4
+C K 10 5 3
+Hand C
+S A Q 7 2
+H A K Q 3
+D 4
+C Q 10 5 3
+Hand A is not quite strong enough to insist on game. With eight losers, you should make a limit raise to Three Spades (or use Bergen if that is your method for inviting game in opener’s suit).
+
+Hand B is perfect for a Four Diamond splinter if partner opens either major. It has seven losers (i.e. enough for a raise to game, but a raise only to game). Having a fairly accurate picture of your hand, partner will be well-placed to judge whether to stop in game or advance towards slam.
+
+Hand C fits the two distributional requirements for a splinter bid, but it is too strong. Suppose you jump to Four Diamonds and partner bids Four Spades. Do you bid again?
+
+Partner might have either of these hands:
+
+
+Hand D
+S K J 8 6 3
+H 7 5
+D A K J
+C 7 6 2
+Hand E
+S K J 8 6 3
+H 7 5
+D 9 6 3
+C A K J
+If you bid on and partner holds Hand D, you might or might not manage to stop at the five-level, but even eleven tricks will be too high if the defenders can either take three clubs tricks or cash two top clubs and take a ruff. Perhaps you guess to pass Four Spades, but now partner holds Hand E and he makes 12 easy tricks in game.
+
+Limiting a splinter bid to the values for game, and game only (say a seven-loser hand with around 9-12 HCP), partner knows not only that he needs a suitable holding in the splinter suit, but also some extra values in order to make slam. Start, instead, with your forcing game raise (i.e. a Jacoby 2NT for most pairs these days). This leaves you more room to exchange information before one of you has to decide whether to venture beyond the relative safety of game in your agreed major.
+
+Let’s now see how we might assess various hands from opener’s seat.
+
+
+
+Responding to a Splinter Bid
+The ideal holding opposite partner’s singleton is A-x-x-(x) or three or more low cards. It may seem obvious to say it, but partner will hold length in the two unbid suits, so you can expect honors in those suits will fit well with partner’s hand. Consider the following hands after the auction starts 1S - 4D:
+
+
+Hand F
+S K Q 8 6 3
+H A 5
+D 7 6 2
+C A K 6
+Hand G
+S K Q 8 6 3
+H A 5
+D A K 6
+C 7 6 2
+If the auction had began 1S - 4S (or even 1S - 2NT or 1S - 3S if you play either of those sequences as game-forcing spade raises), you would be faced with a guess as to whether to stop in game or investigate slam. Clearly, there is a danger that if you get to the five-level the defenders will be able to cash three tricks in your weak minor.
+
+Now, suppose that the auction has begun 1S - 4D. Holding Hand F, you can confidently investigate slam. With Hand G, you will sign off in game and expect not to have missed anything. Partner’s hand will be something like:
+
+
+S A 10 8 4
+H K Q 4
+D 8
+C Q 9 5 4 3
+Opposite Hand F, the defenders can cash their one diamond trick and you are then a big favorite to make the rest. Holding Hand G, you will be held to ten tricks if the defenders can either take three fast tricks in clubs or score two high-card winners and a ruff.
+
+
+
+Splinter Bids Facing a Minor-Suit Opening
+Similar rules apply when partner opens a minor, although you should be much more wary depending on your system requirements for a minor-suit opening. (You may guarantee four-card suit when you open One Diamond, in which case One Club may be opened on a doubleton, or you may open either minor with a three-card holding. In either case, raises of the minor must be more robust.) Even so, you can still raise a minor-suit via a splinter bid.
+
+Suppose partner opens One Diamond and your hand is:
+
+
+S A J 3
+H 5
+D K Q 10 9 6
+C K 10 7 6
+Depending on your system, perhaps you can make an inverted (forcing) raise to Two Diamonds. If not, then you will have to start with a Two Club response. It is still quite possible that you will reach the best contract after starting this way, but is not a splinter jump to Three Hearts by far the most accurate description of your hand? (Note that because you will often reach an eleven-trick game after a splinter bid in support of a minor, your hand should be a little stronger than it needs to be opposite a major-suit opening.)
+
+Consider each of these hands for opener after the auction begins 1D - 3H:
+
+
+Hand H
+S K Q 9 2
+H A 7 3
+D J 8 5 4
+C Q 3
+Hand I
+S K 9 2
+H K Q 10 7
+D A 8 5 4
+C 9 3
+Hand J
+S K Q 2
+H 8 7 4 2
+D A J 8 4
+C A 3
+Holding Hand H, with only one heart stopper opposite partner’s known shortage and a distinct lack of aces, how do you rate your chances of making 3NT? Not good, are they? Opposite a good diamond raise with values in both black suits, though, Five Diamonds is likely to be a much better spot despite your weak trumps.
+
+With Hand I, your heart values rate to be next to useless in a high diamond contract. You will be guaranteed at least two heart tricks on the expected lead against notrumps, though, so bidding 3NT rates to be the best action this time. Having already warned you about his shortage, partner should not worry that the defenders can lead that suit profitably.
+
+Although only a balanced 14-count, Hand J has slam-suitability written all over it. Knowing that partner has short hearts means that you are effectively playing with a 30-point deck. Your honors in the black suits, opposite partner’s known length, also rate to be useful in a slam contract. You should start with a Four Club cue-bid (setting diamonds as trumps and showing some slam interest).
+
+
+
+Can Opener Make a Splinter Bid?
+Yes, and the same rules apply.
+
+If a jump in a suit is natural and forcing, then a double jump shows a shortage in the bid suit and a good fit for partner. Of course, responder has only promised 6-7 HCP, so opener needs a much better hand than 10-12 points to commit his side to game.
+
+You open One Heart on the hand below and partner responds One Spade:
+
+
+S A J 7 6
+H A K 7 5 3
+D 5
+C A Q 6
+Jumping to Four Spades would tell partner you have a super hand with good spade support. Wouldn’t it be nice if you could also tell him about the singleton diamond on the way, though? Is that possible?
+
+Let’s think things through: Two Diamonds would be natural and although highly encouraging and rarely passed, it is not 100% forcing. To force to game and show diamonds, you would have to jump to Three Diamonds. What this means, though, is that there is no possible hand on which you need a jump to the four-level to show any sort of heart-diamond two-suiter. A Four Diamond bid is, therefore, available for use as a splinter.
+
+Remember that partner has only responded, so you need an excellent hand for this four-level splinter bid. The two very similar hands below illustrate how partner might take advantage of the additional information provided by opener’s splinter bid:
+
+
+Hand K
+S K Q 8 5 3
+H 6
+D 8 7 4 3
+C K 6 2
+Hand L
+S K Q 8 5 3
+H 6
+D K 6 2
+C 8 7 4 3
+Holding Hand K, the news that partner has four-card spade support and at most one diamond is enough for you to realize that your hand has great potential, despite not many points. What high cards you do have rate to be working overtime, as your CK will surely be opposite honors in that suit. Looking at the two hands together, you can see that twelve tricks are likely to be made in some comfort despite only a combined 26 points. Cue-bidding your CK should be enough to encourage partner to carry you the rest of the way to slam.
+
+When you hold Hand L, though, the information that partner is short in diamonds is bad news. Your DK is wasted, and you have no help to bolster partner's honors in either of the suits where he will hold length. Bid 4S quickly. If things don’t break too badly, you will hopefully make game at least.
+
+
+
+Splintering in an Opponent’s Suit
+A good partnership rule to have is that any jump into a new suit in a competitive auction is fit-showing. (We will be discussing fit jumps in more detail in a future article.) The exception is a jump in the opponent’s suit, when it is a splinter. For example:
+
+
+You
+—
+1S
+?
+LHO
+—
+2D
+
+Partner
+1H
+2H
+
+RHO
+Pass
+Pass
+
+
+S A J 7 5 3
+H K 10 5
+D 5
+C A J 6 2
+A cue-bid of Three Diamonds here would be a general force, perhaps looking for a stopper to get to 3NT. You could just raise to Four Hearts, but you have nice controls and a decent fit for partner’s rebid suit, so jumping to Four Diamonds to show your shortage might light a fire under partner. Suppose his hand is something like:
+
+
+S 6
+H A Q J 9 6 3
+D J 8 4 2
+C K Q
+He was not exactly enthralled by your One Spade response. (A singleton in partner’s main suit is usually a poor holding.) When you show a good raise to game in hearts with a diamond shortage, though, his hand is significantly improved. Once again, despite only 26 HCP, you are well on your way to reaching an excellent slam.
+
+
+
+Mini-Splinters
+As many of the hands we have already seen in this article demonstrate, it is not just how many points you hold but how the hands fit together that often makes the different between bidding game or slam. The same is also true when deciding whether to go on to game or to stop in a partscore.
+
+Suppose you hold one of these hands:
+
+
+Hand M
+S K Q 8 5 3
+H Q 7
+D 8 7 4 3
+C 9 6
+Hand N
+S K Q 8 5 3
+H 8 7 4 3
+D Q 7
+C 9 6
+Partner opens One Club and you respond One Spade. If partner now raises to Three Spades, you have a close decision whether to pass or bid on. Either could be right. What will matter is how the hands fit.
+
+Let’s see how partner might have made things easier for you. Suppose his hand is:
+
+
+S A 10 9 4
+H K 6 2
+D 9
+C A K J 4 3
+Opposite Hand M, you clearly want to play in Four Spades. You would expect to make at least ten tricks and often eleven.
+
+When you have Hand N, though, game is on the heart finesse at best and will go down on some layouts even when the HA is onside.
+
+Partner can help your decision making by using a mini-splinter. Since 1C - 1S - 2D and 1C - 1S - 2H are reverse bids and therefore forcing, you never need jumps to Three Diamonds or Three Hearts as natural bids. Thus, these bids can be used to show invitational raises to Three Spades with a shortage in the bid suit.
+
+Now things are easy. Holding Hand M, you can confidently bid game when partner jumps to Three Diamonds but stop in a partscore when his singleton is in hearts.
+
+
+
+Splintering as Opener in Support of Partner’s Minor
+You open One Spade and partner responds Two Clubs. Good news, he not only has a decent hand but he has bid a suit you like.
+
+
+S A K 7 5 4
+H K 7 4
+D 5
+C K Q 7 5
+You might immediately be thinking of slam potential. Depending on your methods, you may be able to make a forcing raise (1S - 2C - 3C). If Three Clubs would be non-forcing for you, then the hand becomes even more difficult to bid. The problem is that you want to show your support without going past the relative safety of 3NT.
+
+Partner might have any of these hands:
+
+
+Hand O
+S J 2
+H Q J 5 2
+D A 8 4
+C A J 6 3
+Hand P
+S Q 2
+H A 8 4
+D J 8 4
+C A J 9 5 3
+Hand Q
+S J 2
+H Q 10 2
+D A Q J
+C J 10 9 3 2
+Playing splinter bids, you can tell partner so much more about your hand:
+
+
+You
+1S
+3D
+LHO
+Pass
+
+Partner
+2C
+
+RHO
+Pass
+
+Whatever basic system you play, a change of suit at the two-level after a 2/1 response is best played as at least a one-round force. That means that jumps to the three-level are no longer needed as natural bids. Ergo, they are splinters: your jump to Three Diamonds in the auction shown tells partner about your club fit and your diamond shortage all at the same time.
+
+Holding Hand O, partner will immediately realize that 3NT might be in danger on a diamond lead, and he will guide you safely to Five Clubs, which is likely to be an easy make.
+
+With Hand P, partner will recognize the slam potential of his hand. You have only a combined 27 HCP, but with J-x-x diamonds facing your shortage, taking twelve tricks in a club contract should prove straightforward.
+
+Hand Q is the opposite side of the coin. With so many wasted diamond values facing your shortage, even game in clubs might be problematic. Not that 3NT is completely assured either, but that is surely where you would choose to play this combination.
+
+
+
+Singleton Honors
+As a general rule, you should try to avoid making a splinter bid if your singleton is a high honor. To see why, think back to our discussions above: the partner of the splinter bidder often evaluates his hand on the basis of fitting honors opposite his partner’s long suits. Take a look at this hand:
+
+
+S A Q 7 6 4
+H A K 3
+D 9 7 4
+C K 5
+If you open One Spade and partner jumps to Four Diamonds, do you not now think you have an excellent hand? You would probably advance with Blackwood and confidently bid a slam when partner shows up with two key cards.
+
+As you can see, there is a considerable difference between these two possible hands for partner:
+
+
+Hand R
+S K J 8 3 2
+H Q J 7
+D 8
+C A 6 5 2
+Hand S
+S K J 8 3 2
+H Q J 7
+D A
+C 10 6 5 2
+Opposite Hand R, the opponents can cash their diamond winner and you can then virtually claim your twelve tricks.
+
+If partner holds Hand S, though, you will need to find the CA onside in order to make your slam. With this hand, you should prefer a Jacoby 2NT response (showing a game-forcing raise in spades) to a splinter bid.
+
+Yes, it was unlucky that partner did not hold a fourth heart so that you could discard a club: that would have been much more useful than the fifth trump. The difference between bidding a 100% slam and one that needs a winning finesse is, of course, enormous.
+
+A singleton king is an even worse holding than a singleton ace. If partner holds three or four low cards then your king will be completely useless to him. If he holds the ace, then he will have a discard available to him, but that discard will often be of little use. Even worse, if his has some strong holding such as A-Q J-x in the suit, your king is extremely valuable in terms of the trick-taking potential of his hand. If you splinter in the suit, though, he will downgrade his hand, expecting his queen and jack to be of little value facing a low singleton.
