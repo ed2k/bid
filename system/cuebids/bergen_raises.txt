@@ -1,0 +1,318 @@
+https://www.bridgebum.com/bergen_raises.php
+
+Bergen raises are a form of major-suit raise when playing 5-card majors. After a 1H or 1S opening, responses of 3/// show different types of 4-card support.
+
+
+Responses to 1
+I use the acronym "CLAP" to remember Bergen raises: "Constructive, Limit And Preemptive."
+
+
+3  	A "Constructive" raise, showing 7-10 points and exactly 4-card trump support.
+Example:
+Q32
+AT54
+9
+JT876
+
+
+3  	A "Limit" raise, showing 10-12 points and exactly 4-card trump support.
+Example:
+KJ4
+AJT2
+JT93
+T9
+
+
+3  	A "Preemptive" raise, showing 0-6 points and exactly 4-card trump support.
+Example:
+A32
+J643
+T973
+93
+
+
+3  	An "ambiguous splinter" raise. An unbalanced, game-forcing raise promising 12+ points and 4-card trump support, with an undisclosed singleton or void. With a balanced game-forcing raise, use the Jacoby 2NT convention instead.
+Example:
+J32
+KQ93
+AKT87
+2
+
+Partner is expected to bid 3NT as an artificial relay, after which responder will show his singleton/void suit at the 4-level. A 4C rebid by responder shows club shortness, 4D shows diamond shortness, and 4H shows spade shortness.
+
+
+
+
+Responses to 1
+
+3  	A "Constructive" raise, showing 7-10 points and exactly 4-card trump support.
+Example:
+QJ32
+KJ4
+92
+J976
+
+
+3  	A "Limit" raise, showing 10-12 points and exactly 4-card trump support.
+Example:
+AQ54
+J32
+KJ92
+43
+
+
+3  	An "ambiguous splinter" raise. An unbalanced, game-forcing raise promising 12+ points and 4-card trump support, with an undisclosed singleton or void. With a balanced game-forcing raise, use the Jacoby 2NT convention instead.
+Example:
+AQ72
+J643
+5
+AKT4
+
+Partner is expected to bid 3S as an artificial relay, after which responder will show his singleton/void. A 3NT rebid by responder shows club shortness, 4C shows diamond shortness and 4H shows heart shortness.
+
+
+3  	A "Preemptive" raise, showing 0-6 points and exactly 4-card trump support.
+Example:
+KT98
+6543
+T973
+2
+
+
+Bergen raises are based on the Law of Total Tricks, which suggests that the partnership should bid to its number of total trumps. With a nine-card fit, for example, the partnership should bid to the 3-level.
+
+Note that Bergen raises are commonly off by a passed hand. If partner opens 1/ in 3rd or 4th seat, then Drury is often used for conventional responses instead.
+
+
+
+Openers Rebids After a 3 Response ("Constructive" Raise)
+
+3  	This is typically played as a help suit game try, showing game interest with 4+ diamonds and 14-16 points. (Alternatively, it can be played as a short suit game try, showing a diamond singleton or void and interest in game.) Responder is expected to sign off in 3/ with minimum values, or bid 4/ with maximum values.
+
+
+West			East
+AT		S8652	
+HAQ873		KT92	
+DAJT8		KQ4	
+C63		T7	
+
+West    
+1
+3 (2)
+
+North    
+Dbl
+Pass
+
+East    
+3 (1)
+4 (3)
+
+South    
+Pass
+All Pass
+
+3 is a constructive raise, showing 7-10 points and 4-card support.
+3 is a game try.
+4 places the final contract. Responder likes his diamond honors after hearing 3.
+3  	If the agreed suit is hearts, then this is a signoff bid. If the agreed suit is spades, then this is typically played a help suit game try, showing game interest with 4+ hearts and 14-16 points. (Refer to the description of 3.)
+
+Opener			Responder
+KT93		SAJ5
+HAKJ43		QT52
+DJ8		95
+CT5		9763
+
+Opener
+1
+3 (2)
+
+Responder
+3 (1)
+Pass
+
+3 is a constructive raise, showing 7-10 points and 4-card support.
+3 is a signoff.
+3  	If the agreed suit is spades, then this is a signoff bid. If the agreed suit is hearts, then this is typically played as a strong and natural bid, showing 4+ spades and interest in slam. Responder is expected to do something intelligent at his next turn (sign off in 4, cue-bid an ace, etc.).
+
+
+Opener			Responder
+AK843		SQJ52
+HA932		KQ5
+DJ5		8762
+CT9		53
+
+Opener
+1
+3 (2)
+
+Responder
+3 (1)
+Pass
+
+3 is a constructive raise, showing 7-10 points and 4-card support.
+3 is a signoff. Note that it would be a mistake to bid 3, which would show game interest and 14-16 points.
+
+
+Openers Rebids After a 3 Response ("Limit" Raise)
+
+3  	If the agreed suit is hearts, then this is a signoff bid. If the agreed suit is spades, then this is typically played a "help suit game try", showing game interest with 4+ hearts and 14-16 points. (Refer to the description of 3.)
+
+3  	If the agreed suit is spades, then this is a signoff bid. If the agreed suit is hearts, then this is typically played as a strong and natural bid, showing 4+ spades and interest in slam.
+
+
+Opener's Rebids After 1 - 3 ("Preemptive" Raise)
+
+Pass  	Shows less than 18 points.
+
+4   	Shows 18+ points in an uncontested auction. In competition, however, this may be a sacrifice.
+
+Opener			Responder
+83		ST52
+HAKQ32		J654
+DJ87		5
+CAT9		Q7654
+
+Opener
+1
+Pass
+
+Responder
+3 (1)
+
+
+3 is a preemptive raise, showing 0-6 points and 4-card support.
+
+
+Opener's Rebids After 1 - 3 (Game-Forcing Raise)
+3 is an unbalanced, game-forcing raise with a singleton or void. Opener can sign off in 4S with a minimum and no interest in slam. If opener is interested in slam, however, he can bid 3 as a relay bid asking for responder's short suit. The purpose of these "ambiguous splinters" is to avoid giving the defenders too much information when opener wants to sign off in game.
+
+
+3  	Artificial relay. Responder is expected to bid his singleton or void at the 4-level:
+
+3NT - Club singleton/void
+4 - Diamond singleton/void
+4 - Heart singleton/void
+
+Opener			Responder
+AK843		SQJ52
+HA5		KQ42
+DT987		5
+CKQ		A965
+
+Opener
+1
+3 (2)
+
+Responder
+3 (1)
+4 (3)
+
+3 is an unbalanced game-forcing raise.
+3 asks responder to disclose his short suit.
+4 shows a singleton or void in diamonds.
+At this point, opener likes his hand because he can envision all his diamond losers getting ruffed in dummy. He can proceed with Blackwood or whatever slam methods the partnership uses.
+
+
+
+Opener's Rebids After 1 - 3 ("Preemptive" Raise)
+
+Pass  	Shows less than 18 points.
+
+4  	Shows 18+ points in an uncontested auction. In competition, however, this may be a sacrifice.
+
+Opener			Responder
+AKQ843		ST952
+HAK32		Q5
+DJ8		9762
+CT		653
+
+Opener
+1
+4 (2)
+
+Responder
+3 (1)
+Pass
+
+3 is a preemptive raise, showing 0-6 points and 4-card support.
+4 is a good bet with 17 HCP and extra shape. Note that in standard bidding methods, the auction might simply go 1 - Pass - Pass - Pass.
+
+
+Opener's Rebids After 1 - 3 (Game-Forcing Raise)
+3 is an unbalanced, game-forcing raise with a singleton or void. Opener can sign off in 4H with a minimum and no interest in slam. If opener is interested in slam, however, he can bid 3NT as a relay bid asking for responder's short suit. The purpose of these "ambiguous splinters" is to avoid giving the defenders too much information when opener wants to sign off in game.
+
+
+3NT  	Artificial relay. Responder is expected to bid his singleton or void at the 4-level:
+
+4 - Club singleton/void
+4 - Diamond singleton/void
+4 - Spade singleton/void
+
+Opener			Responder
+A5		SKQ42
+HAK843		QJ52
+DKJT9		5
+CT5		A983
+
+Opener
+1
+3NT (2)
+4(4)
+
+Responder
+3 (1)
+4 (3)
+Pass
+
+3 is an unbalanced game-forcing raise.
+3NT asks responder to disclose his short suit.
+4 shows a singleton or void in diamonds.
+4 is a signoff. Opener has 15 HCP but wasted values in diamonds.
+
+
+In Competition
+Bergen raises are on over an opposing double, but are otherwise off.
+
+
+
+Pros and Cons
+
+The Pros
+The primary benefits of Bergen raises are that:
+
+
+Opener receives more detailed information than if playing standard limit raises.
+
+The partnership reaches the 3-level faster than if playing limit raises; this "fast" arrival may preempt the opponents. The Law of Total Tricks (also popularized by Marty Bergen) says that a pair should usually bid up to the 3-level when holding a combined 9+ trumps.
+
+Good 4/ games are occasionally reached when responder makes a preemptive raise.
+
+
+The Cons
+Now, for the cons. A few experts have gone on record citing the potential drawbacks of Bergen raises.
+
+Bobby Wolff:1
+
+I would not recommend Bergen Raises for any level players. Deciding whether to bid on is a guess at best, with luck, of course. The disadvantage of Bergen is that it gives lead directing opportunities, both positive and negative to the opponents and also sometimes allows the defense an extra round of bidding to calibrate their assets for bidding themselves. To me it is an established fact that the more partnerships tell each other about their hands, the better good opponents judge what to do.
+Mike Lawrence:2
+
+I consider Bergen raises to be a waste of time. They take up way too many bids that have other useful meanings. Also, they give the opponents extra chances to enter the bidding on hands they might not be able to. They can make lead directing doubles of the 3C / 3D bids or they can choose to make takeout doubles if they prefer that. In fact, they might be able to make some kind of Michaels bid over the 1H – 3D sequence, if it shows a limit raise, that would not be available after 1H – 3H.
+Eric Rodwell:3
+
+I think Bergen raises have a lot of merit but I am not sure that 1S, Pass, 3S preemptive seems to come up that much or be all that effective. Most of the time that I have 3 high with four spades they don’t pass over the 1S opening. I am content to play 1-3 as a four-trump limit raise, or perhaps to play 1-3 as a mixed raise, or constructive raise as he calls it. The thing is, I like 2/1 game forcing but I don’t like 2/1 game forcing except when the suit is rebid. Therefore, every one of these artificial three-level suit jumps... means I can’t make an invitational jump shift, which is what I like to play. I like to play 1S, Pass, 3C as invitational with clubs. So perhaps 1-3 as limit, select one of the other bids to be a mixed raise, and then just bid a forcing notrump or something with a preemptive raise — that way you can have the best of both worlds.
+Lastly, a real-world example. Check out my article with an obvious title, A Bergen Disaster.
+
+
+
+Origins
+Bergen raises were created by American expert Marty Bergen. See also my interview with Marty Bergen as well.
+
+What I've written above is just a primer. You can buy Marty's complete booklet on Bergen Raises directly from his website, which I like because he autographs everything. Mention BRIDGEBUM to get a special deal on books: buy 1 hardcover, get 2 softcovers free.
+
+
+
+References
+
+1, 2 Robinson, Steve. Bergen Raises by Steve Robinson.
+3Ashton, Glen. Bridgematters: The Eric Rodwell Interview.
