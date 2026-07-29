@@ -1,68 +1,26 @@
-import os
-import random
-from bid.models import Hand
-from bid.translator import SystemTranslator
-from bid.engine import Engine
-from bid.models import Call, CallType
-from collections import Counter
+from tests.test_bidding_gaps import BiddingGapDetector
 
 def run_coverage_verification(num_hands=1000):
-    print(f"Running coverage verification on {num_hands} random hands...")
+    print(f"Running multi-system coverage and gap verification ({num_hands} deals per system)...")
+    detector = BiddingGapDetector()
+    report = detector.generate_full_report(num_deals=num_hands)
     
-    # Load System
-    dsl_path = os.path.join(os.path.dirname(__file__), "..", "system", "precision.dsl")
-    try:
-        with open(dsl_path, "r") as f:
-            dsl_text = f.read()
-    except FileNotFoundError:
-        print(f"Error: Could not find {dsl_path}")
-        return
-
-    translator = SystemTranslator()
-    system = translator.parse(dsl_text)
-    engine = Engine(system)
+    print("\n" + "="*60)
+    print("        MULTI-SYSTEM BIDDING GAP REPORT")
+    print("="*60)
     
-    results = []
-    missed_opportunities = []
-    
-    for _ in range(num_hands):
-        hand = Hand.random()
-        # Empty history for opening bid
-        bid = engine.get_bid([], hand)
+    for sys_name, data in report.items():
+        op_gaps = data['opening_gaps']
+        print(f"\nSystem: {sys_name}")
+        print(f"  Opening Bid Gaps (HCP>=12 or 11+5card/Rule20): {len(op_gaps)}")
+        if op_gaps:
+            for i, g in enumerate(op_gaps[:3]):
+                print(f"    Sample {i+1}: {g['hand']} (HCP: {g['hcp']})")
         
-        results.append(str(bid))
-        
-        if str(bid) == "PASS":
-            # Check for missed opportunities (HCP > 11)
-            # Standard Precision usually opens most 11+ hands
-            if hand.hcp >= 11:
-                missed_opportunities.append(hand)
-
-    # Analysis
-    counts = Counter(results)
-    
-    print("\n=== Opening Bid Distribution ===")
-    for bid, count in counts.most_common():
-        percentage = (count / num_hands) * 100
-        print(f"{bid}: {count} ({percentage:.1f}%)")
-        
-    print(f"\nTotal Opened: {num_hands - counts['PASS']} ({(1 - counts['PASS']/num_hands)*100:.1f}%)")
-    print(f"Total Passed: {counts['PASS']} ({counts['PASS']/num_hands*100:.1f}%)")
-    
-    print("\n=== Missed Opportunities (Passed with 11+ HCP) ===")
-    if missed_opportunities:
-        print(f"Found {len(missed_opportunities)} hands with 11+ HCP that Passed.")
-        # Show top 5 examples
-        for i, hand in enumerate(missed_opportunities[:5]):
-            print(f"{i+1}. {hand} (HCP: {hand.hcp})")
-            
-        print("\nDistribution of Missed HCP:")
-        missed_hcp = [h.hcp for h in missed_opportunities]
-        hcp_counts = Counter(missed_hcp)
-        for hcp in sorted(hcp_counts.keys()):
-            print(f"HCP {hcp}: {hcp_counts[hcp]} hands")
-    else:
-        print("Great! No hands with 11+ HCP were passed.")
+        print("  Response Gaps (Responder 6+ HCP):")
+        for op_bid, resp_gaps in data['response_gaps'].items():
+            print(f"    After {op_bid}: {len(resp_gaps)} missed responses")
 
 if __name__ == "__main__":
     run_coverage_verification()
+
