@@ -93,6 +93,23 @@ OPEN 3S:
   HCP: 8+
   LEN S: 5+
 
+# Opener Splinter rebid after 1C - 1S (4+ Spades, 5+ Hearts, Club shortness 0-1, 16+ HCP)
+1C - 1S - 4C:
+  CONVENTION: Opener_Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 16+
+  LEN H: 5+
+  LEN S: 4+
+  LEN C: 0-1
+  SHAPE: UNBALANCED
+
+# Responder Sign-off in 4S after Opener Splinter 1C - 1S - 4C (minimum / wasted club values)
+1C - 1S - 4C - 4S:
+  CONVENTION: Splinter_Signoff
+  PRIORITY_BONUS: 10
+  LEN S: 4+
+
 # 1C - 1NT: Positive Balanced (8-13 HCP)
 # Text: "8-13 HCP, balanced (5 in minor okay but not major)"
 1C - 1NT:

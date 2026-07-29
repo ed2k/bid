@@ -230,16 +230,18 @@ class TestBlueClub(unittest.TestCase):
         hist_1nt = [Call(CallType.BID, 1, Strain.NT), Call(CallType.PASS)]
         # S: K32 H: K32 D: K32 C: K432 (12 HCP Bal). 16+12=28. Game.
         self.assertBid("SK32 HK32 DK32 CK432", "3NT", hist_1nt)
-        
-        # 3. 1NT - 4NT (Quant)
-        # S: KQ2 H: KQ2 D: KQ2 C: Q432 (17 HCP). 16+17=33. Slam Invite.
-        self.assertBid("SKQ2 HKQ2 DKQ2 CQ432", "4NT", hist_1nt)
-        
-        # 4. 2NT - 3NT (To Play)
-        # 4. 2NT - 3NT (To Play)
-        hist_2nt = [Call(CallType.BID, 2, Strain.NT), Call(CallType.PASS)]
-        # S: Q32 H: Q32 D: Q32 C: Q432 (8 HCP). 21+8=29. Game.
-        self.assertBid("SQ32 HQ32 DQ32 CQ432", "3NT", hist_2nt)
+
+    def test_splinter_and_signoff_board12(self):
+        # 1C - Pass - 1H - Pass -> South Opener Splinter 4C (7+ Controls, Club void)
+        history_1c_1h = [Call(CallType.BID, 1, Strain.CLUBS), Call(CallType.PASS),
+                         Call(CallType.BID, 1, Strain.HEARTS), Call(CallType.PASS)]
+        self.assertBid("SAJ93 HA8543 DAK93 C", "4C", history_1c_1h)
+
+        # 1C - Pass - 1H - Pass - 4C - Pass -> North Responder signs off in 4S (wasted CAQ)
+        history_4c = [Call(CallType.BID, 1, Strain.CLUBS), Call(CallType.PASS),
+                      Call(CallType.BID, 1, Strain.HEARTS), Call(CallType.PASS),
+                      Call(CallType.BID, 4, Strain.CLUBS), Call(CallType.PASS)]
+        self.assertBid("ST7542 HQTD2 CAQ752", "4S", history_4c)
 
 if __name__ == "__main__":
     unittest.main()

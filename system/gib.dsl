@@ -245,6 +245,23 @@ OPEN 2NT:
   HCP: 6+
   LEN S: 4+
 
+# Opener Splinter rebid after 1H - 1S (4+ Spades, 5+ Hearts, Club shortness 0-1, 16+ HCP)
+1H - 1S - 4C:
+  CONVENTION: Opener_Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 16+
+  LEN H: 5+
+  LEN S: 4+
+  LEN C: 0-1
+  SHAPE: UNBALANCED
+
+# Responder Sign-off in 4S after Opener Splinter 1H - 1S - 4C (minimum / wasted club values)
+1H - 1S - 4C - 4S:
+  CONVENTION: Splinter_Signoff
+  PRIORITY_BONUS: 10
+  LEN S: 4+
+
 # 1H - 2C: 2/1 Game Force
 1H - 2C:
   HCP: 12+

@@ -4,10 +4,13 @@
 # OPENING BIDS
 # ==========================================
 
-# 1C: Strong (17+ Unbal or 18+ Bal)
+# 1C: Strong (17+ Unbal or 18+ Bal or 7+ Controls)
 # Top Priority
 OPEN 1C:
   HCP: 17+
+
+OPEN 1C:
+  CONTROLS: 7+
 
 # 4C: Weak 6-11, 8+ Clubs
 OPEN 4C:
@@ -113,6 +116,23 @@ OPEN 1NT:
 1C - 1H:
   HCP: 6+
   CONTROLS: 0-2
+
+# Opener Splinter rebid after 1C - 1H (4+ Spades, 5+ Hearts, Club shortness 0-1, 7+ Controls or 16+ HCP)
+1C - 1H - 4C:
+  CONVENTION: Opener_Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  CONTROLS: 7+
+  LEN H: 5+
+  LEN S: 4+
+  LEN C: 0-1
+  SHAPE: UNBALANCED
+
+# Responder Sign-off in 4S after Opener Splinter 1C - 1H - 4C (minimum / wasted club values)
+1C - 1H - 4C - 4S:
+  CONVENTION: Splinter_Signoff
+  PRIORITY_BONUS: 10
+  LEN S: 4+
 
 # 1C - 1S: 3 Controls (Game Force)
 1C - 1S:

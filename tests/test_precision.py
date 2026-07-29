@@ -168,6 +168,17 @@ class TestPrecision(unittest.TestCase):
         # S: AKQ2 H: AKQ2 D: DQJ C: 2 (9+9+3=21 HCP)
         self.assertBid("SAKQ2 HAKQ2 DQJ C2", "4NT", history_1c_1s)
 
+    def test_splinter_and_signoff_board12(self):
+        # 1C - Pass - 1S - Pass -> South Opener Splinter 4C
+        history_1c_1s = [Call(CallType.BID, 1, Strain.CLUBS), Call(CallType.PASS),
+                         Call(CallType.BID, 1, Strain.SPADES), Call(CallType.PASS)]
+        self.assertBid("SAJ93 HA8543 DAK93 C", "4C", history_1c_1s)
+
+        # 1C - Pass - 1S - Pass - 4C - Pass -> North Responder signs off in 4S (wasted CAQ)
+        history_4c = [Call(CallType.BID, 1, Strain.CLUBS), Call(CallType.PASS),
+                      Call(CallType.BID, 1, Strain.SPADES), Call(CallType.PASS),
+                      Call(CallType.BID, 4, Strain.CLUBS), Call(CallType.PASS)]
+        self.assertBid("ST7542 HQTD2 CAQ752", "4S", history_4c)
 
 if __name__ == "__main__":
     unittest.main()

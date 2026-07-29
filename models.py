@@ -204,13 +204,14 @@ class Hand:
         }
         
         for item in items:
-            # Check if using Suit + Ranks format (e.g. "SAK43")
-            if item[0] in suits and len(item) > 1:
-                # Iterate over rest of chars as ranks
+            # Check if using Suit + Ranks format (e.g. "SAK43" or "C")
+            if item[0] in suits:
+                if len(item) == 1:
+                    # Void suit (e.g. "C" with no ranks)
+                    continue
                 current_suit = suits[item[0]]
                 for r_char in item[1:]:
                     if r_char not in ranks:
-                         # Fallback or error? ignore
                          continue
                     cards.append(Card(current_suit, ranks[r_char]))
             else:
@@ -218,7 +219,7 @@ class Hand:
                 suit_char = item[-1] 
                 rank_str = item[:-1]
                 
-                if suit_char in suits:
+                if suit_char in suits and rank_str in ranks:
                     cards.append(Card(suits[suit_char], ranks[rank_str]))
                 else:
                     raise ValueError(f"Unknown card format: {item}")

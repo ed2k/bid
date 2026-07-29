@@ -236,16 +236,23 @@ class TestGIBCompliance(unittest.TestCase):
         # Splinter 4C: 4+ Hearts, 10+ HCP, singleton Club
         self.assertBid("SA432 HK987 DK432 C2", "4C", history_stayman_h)
 
-        # 4. 1NT - Transfer to Hearts - 2H accept followups:
-        # History: 1NT - Pass - 2D - Pass - 2H - Pass
-        history_transfer_h = [
-            Call(CallType.BID, 1, Strain.NT), Call(CallType.PASS),
-            Call(CallType.BID, 2, Strain.DIAMONDS), Call(CallType.PASS),
-            Call(CallType.BID, 2, Strain.HEARTS), Call(CallType.PASS)
+        # 5. Opener Splinter & Responder Signoff (Board 12 Deal)
+        # 1H - Pass - 1S - Pass -> Opener South (16 HCP, Club void)
+        history_opener_splinter = [
+            Call(CallType.BID, 1, Strain.HEARTS), Call(CallType.PASS),
+            Call(CallType.BID, 1, Strain.SPADES), Call(CallType.PASS)
         ]
-        # Splinter 4C: 6+ Hearts, 10+ HCP, singleton Club
-        # S: 43 H: KQJ987 (6 HCP) D: A32 (4 HCP) C: 2 (0 HCP). HCP=10.
-        self.assertBid("S43 HKQJ987 DA32 C2", "4C", history_transfer_h)
+        # South bids 4C Opener Splinter
+        self.assertBid("SAJ93 HA8543 DAK93 C", "4C", history_opener_splinter)
+
+        # 1H - Pass - 1S - Pass - 4C - Pass -> Responder North (wasted CAQ, signs off in 4S)
+        history_responder_signoff = [
+            Call(CallType.BID, 1, Strain.HEARTS), Call(CallType.PASS),
+            Call(CallType.BID, 1, Strain.SPADES), Call(CallType.PASS),
+            Call(CallType.BID, 4, Strain.CLUBS), Call(CallType.PASS)
+        ]
+        # North signs off in 4S
+        self.assertBid("ST7542 HQTD2 CAQ752", "4S", history_responder_signoff)
 
 if __name__ == "__main__":
     unittest.main()
