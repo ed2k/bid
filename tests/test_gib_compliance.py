@@ -216,6 +216,16 @@ class TestGIBCompliance(unittest.TestCase):
         # 1S - 4H: 4+ Spades, singleton Heart (0-1), 10-14 HCP
         self.assertBid("SK987 H2 DAK32 CK432", "4H", history_1s)
 
+        # Exact hands from system/cuebids/splinter.txt:
+        # Hand A: SK972 HA753 D4 CJ1083 (8 HCP) -> Too weak for Splinter, raises to 2S
+        self.assertBid("SK972 HA753 D4 CJ1083", "2S", history_1s)
+
+        # Hand B: SKJ72 HA753 D4 CK1053 (11 HCP) -> Perfect game-only Splinter 4D
+        self.assertBid("SKJ72 HA753 D4 CK1053", "4D", history_1s)
+
+        # Hand C: SAQ72 HAKQ3 D4 CQ1053 (17 HCP) -> Too strong for Splinter, bids 2C (2/1 GF)
+        self.assertBid("SAQ72 HAKQ3 D4 CQ1053", "2C", history_1s)
+
         # 3. 1NT - Stayman - 2H rebid followups:
         # History: 1NT - Pass - 2C - Pass - 2H - Pass
         history_stayman_h = [
