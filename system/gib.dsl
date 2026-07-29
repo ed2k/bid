@@ -74,6 +74,52 @@ OPEN 2NT:
   LEN S: 4+
   LEN H: 0-3
 
+# Splinters after Stayman
+1NT - 2C - 2H - 4C:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10+
+  LEN H: 4+
+  LEN C: 0-1
+  SHAPE: UNBALANCED
+
+1NT - 2C - 2H - 4D:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10+
+  LEN H: 4+
+  LEN D: 0-1
+  SHAPE: UNBALANCED
+
+1NT - 2C - 2S - 4C:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10+
+  LEN S: 4+
+  LEN C: 0-1
+  SHAPE: UNBALANCED
+
+1NT - 2C - 2S - 4D:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10+
+  LEN S: 4+
+  LEN D: 0-1
+  SHAPE: UNBALANCED
+
+1NT - 2C - 2S - 4H:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10+
+  LEN S: 4+
+  LEN H: 0-1
+  SHAPE: UNBALANCED
+
 # Jacoby Transfer to Hearts: 1NT - 2D
 1NT - 2D:
   LEN H: 5+
@@ -83,6 +129,34 @@ OPEN 2NT:
 1NT - 2D - 2H:
   LEN H: 2+ 
 
+# Splinters after Transfer to Hearts (6+ Hearts)
+1NT - 2D - 2H - 3S:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10+
+  LEN H: 6+
+  LEN S: 0-1
+  SHAPE: UNBALANCED
+
+1NT - 2D - 2H - 4C:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10+
+  LEN H: 6+
+  LEN C: 0-1
+  SHAPE: UNBALANCED
+
+1NT - 2D - 2H - 4D:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10+
+  LEN H: 6+
+  LEN D: 0-1
+  SHAPE: UNBALANCED
+
 # Jacoby Transfer to Spades: 1NT - 2H
 1NT - 2H:
   LEN S: 5+
@@ -91,6 +165,34 @@ OPEN 2NT:
 # Opener Accept Transfer
 1NT - 2H - 2S:
   LEN S: 2+
+
+# Splinters after Transfer to Spades (6+ Spades)
+1NT - 2H - 2S - 4C:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10+
+  LEN S: 6+
+  LEN C: 0-1
+  SHAPE: UNBALANCED
+
+1NT - 2H - 2S - 4D:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10+
+  LEN S: 6+
+  LEN D: 0-1
+  SHAPE: UNBALANCED
+
+1NT - 2H - 2S - 4H:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10+
+  LEN S: 6+
+  LEN H: 0-1
+  SHAPE: UNBALANCED
 
 # Minor Suit Stayman: 1NT - 2S
 1NT - 2S:
@@ -103,6 +205,34 @@ OPEN 2NT:
 # ==========================================
 
 # --- Responses to 1H ---
+
+# 1H Splinters (4+ Hearts, Shortness 0-1, Game Forcing / Slam Interest)
+1H - 3S:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10-14
+  LEN H: 4+
+  LEN S: 0-1
+  SHAPE: UNBALANCED
+
+1H - 4C:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10-14
+  LEN H: 4+
+  LEN C: 0-1
+  SHAPE: UNBALANCED
+
+1H - 4D:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10-14
+  LEN H: 4+
+  LEN D: 0-1
+  SHAPE: UNBALANCED
 
 # 1H - 1NT: Forcing (Semi-forcing)
 1H - 1NT:
@@ -132,6 +262,34 @@ OPEN 2NT:
   LEN H: 3+
 
 # --- Responses to 1S ---
+
+# 1S Splinters (4+ Spades, Shortness 0-1, Game Forcing / Slam Interest)
+1S - 4C:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10-14
+  LEN S: 4+
+  LEN C: 0-1
+  SHAPE: UNBALANCED
+
+1S - 4D:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10-14
+  LEN S: 4+
+  LEN D: 0-1
+  SHAPE: UNBALANCED
+
+1S - 4H:
+  CONVENTION: Splinter
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 10-14
+  LEN S: 4+
+  LEN H: 0-1
+  SHAPE: UNBALANCED
 
 # 1S - 1NT: Forcing
 1S - 1NT:

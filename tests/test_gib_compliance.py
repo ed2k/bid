@@ -193,5 +193,49 @@ class TestGIBCompliance(unittest.TestCase):
         # S:43(2) H:KQTJ92(6) D:432(3) C:43(2) = 13 cards.
         self.assertBid("S43 HKQTJ92 D432 C43", "2H") # HCP: 6. 6H. Unbal.
 
+    def test_splinters(self):
+        # 1. 1H opening responses:
+        history_1h = [Call(CallType.BID, 1, Strain.HEARTS), Call(CallType.PASS)]
+        
+        # 1H - 4C: 4+ Hearts, singleton Club (0-1), 10-14 HCP
+        # S: A432 (4 HCP) H: K987 (3 HCP) D: K432 (3 HCP) C: 2 (0 HCP). HCP=10.
+        self.assertBid("SA432 HK987 DK432 C2", "4C", history_1h)
+        
+        # 1H - 4D: 4+ Hearts, singleton Diamond (0-1), 10-14 HCP
+        self.assertBid("SA432 HK987 D2 CK432", "4D", history_1h)
+
+        # 1H - 3S: 4+ Hearts, singleton Spade (0-1), 10-14 HCP
+        self.assertBid("S2 HK987 DAK32 CK432", "3S", history_1h)
+
+        # 2. 1S opening responses:
+        history_1s = [Call(CallType.BID, 1, Strain.SPADES), Call(CallType.PASS)]
+        
+        # 1S - 4C: 4+ Spades, singleton Club (0-1), 10-14 HCP
+        self.assertBid("SK987 HA432 DK432 C2", "4C", history_1s)
+
+        # 1S - 4H: 4+ Spades, singleton Heart (0-1), 10-14 HCP
+        self.assertBid("SK987 H2 DAK32 CK432", "4H", history_1s)
+
+        # 3. 1NT - Stayman - 2H rebid followups:
+        # History: 1NT - Pass - 2C - Pass - 2H - Pass
+        history_stayman_h = [
+            Call(CallType.BID, 1, Strain.NT), Call(CallType.PASS),
+            Call(CallType.BID, 2, Strain.CLUBS), Call(CallType.PASS),
+            Call(CallType.BID, 2, Strain.HEARTS), Call(CallType.PASS)
+        ]
+        # Splinter 4C: 4+ Hearts, 10+ HCP, singleton Club
+        self.assertBid("SA432 HK987 DK432 C2", "4C", history_stayman_h)
+
+        # 4. 1NT - Transfer to Hearts - 2H accept followups:
+        # History: 1NT - Pass - 2D - Pass - 2H - Pass
+        history_transfer_h = [
+            Call(CallType.BID, 1, Strain.NT), Call(CallType.PASS),
+            Call(CallType.BID, 2, Strain.DIAMONDS), Call(CallType.PASS),
+            Call(CallType.BID, 2, Strain.HEARTS), Call(CallType.PASS)
+        ]
+        # Splinter 4C: 6+ Hearts, 10+ HCP, singleton Club
+        # S: 43 H: KQJ987 (6 HCP) D: A32 (4 HCP) C: 2 (0 HCP). HCP=10.
+        self.assertBid("S43 HKQJ987 DA32 C2", "4C", history_transfer_h)
+
 if __name__ == "__main__":
     unittest.main()
