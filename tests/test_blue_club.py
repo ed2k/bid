@@ -243,5 +243,14 @@ class TestBlueClub(unittest.TestCase):
                       Call(CallType.BID, 4, Strain.CLUBS), Call(CallType.PASS)]
         self.assertBid("ST7542 HQTD2 CAQ752", "4S", history_4c)
 
+        # Grand Slam Auction (North 2 working values SK HKQ)
+        self.assertBid("SKT754 HKQ D2 C98752", "4NT", history_4c)
+        history_4nt = history_4c + [Call(CallType.BID, 4, Strain.NT), Call(CallType.PASS)]
+        self.assertBid("SAJ93 HA8543 DAK93 C", "5C", history_4nt)
+        history_5c = history_4nt + [Call(CallType.BID, 5, Strain.CLUBS), Call(CallType.PASS)]
+        self.assertBid("SKT754 HKQ D2 C98752", "5NT", history_5c)
+        history_5nt = history_5c + [Call(CallType.BID, 5, Strain.NT), Call(CallType.PASS)]
+        self.assertBid("SAJ93 HA8543 DAK93 C", "7S", history_5nt)
+
 if __name__ == "__main__":
     unittest.main()

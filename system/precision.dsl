@@ -104,10 +104,56 @@ OPEN 3S:
   LEN C: 0-1
   SHAPE: UNBALANCED
 
-# Responder Sign-off in 4S after Opener Splinter 1C - 1S - 4C (minimum / wasted club values)
+# RKCB 4NT after Opener Splinter 1C - 1S - 4C (MAJOR_HCP 8+ working values)
+1C - 1S - 4C - 4NT:
+  CONVENTION: RKCB
+  PRIORITY_BONUS: 15
+  MAJOR_HCP: 8+
+  LEN S: 5+
+
+# Opener RKCB response to 4NT: 5C (3 keycards: SA, HA, DA)
+1C - 1S - 4C - 4NT - 5C:
+  CONVENTION: RKCB_Response_03
+  PRIORITY_BONUS: 10
+  ACES: 3
+
+# Responder 5NT Grand Slam Ask
+1C - 1S - 4C - 4NT - 5C - 5NT:
+  CONVENTION: GrandSlam_Ask
+  PRIORITY_BONUS: 10
+  MAJOR_HCP: 8+
+
+# Opener 7S Grand Slam bid
+1C - 1S - 4C - 4NT - 5C - 5NT - 7S:
+  CONVENTION: GrandSlam_Bid
+  PRIORITY_BONUS: 10
+  HCP: 16+
+  LEN S: 4+
+  LEN H: 5+
+
+# Responder Cuebid after Opener Splinter (MAJOR_HCP 6-7 working values)
+1C - 1S - 4C - 4H:
+  BID_CLASS: CUEBID
+  CUEBID_TYPE: ControlCue
+  CUE_TARGET: AGREED_SUIT
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 10
+  MAJOR_HCP: 6-7
+  LEN S: 4+
+
+# Opener Slam jump after 1C - 1S - 4C - 4H
+1C - 1S - 4C - 4H - 6S:
+  CONVENTION: Slam_Jump
+  PRIORITY_BONUS: 5
+  HCP: 16+
+  LEN S: 4+
+  LEN H: 5+
+
+# Responder Sign-off in 4S after Opener Splinter 1C - 1S - 4C (wasted club values / MAJOR_HCP 0-5)
 1C - 1S - 4C - 4S:
   CONVENTION: Splinter_Signoff
-  PRIORITY_BONUS: 10
+  PRIORITY_BONUS: 5
+  MAJOR_HCP: 0-5
   LEN S: 4+
 
 # 1C - 1NT: Positive Balanced (8-13 HCP)

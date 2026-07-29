@@ -4,6 +4,7 @@ from bid.models import Hand, Suit
 class HandConstraints:
     def __init__(self, 
                  hcp_min: int = 0, hcp_max: int = 37,
+                 major_hcp_min: int = 0, major_hcp_max: int = 37,
                  tp_min: int = 0, tp_max: int = 50,
                  controls_min: int = 0, controls_max: int = 12,
                  length_min: Dict[Suit, int] = None,
@@ -13,6 +14,8 @@ class HandConstraints:
                  balanced: Optional[bool] = None):
         self.hcp_min = hcp_min
         self.hcp_max = hcp_max
+        self.major_hcp_min = major_hcp_min
+        self.major_hcp_max = major_hcp_max
         self.tp_min = tp_min
         self.tp_max = tp_max
         self.controls_min = controls_min
@@ -25,6 +28,9 @@ class HandConstraints:
 
     def matches(self, hand: Hand) -> bool:
         if not (self.hcp_min <= hand.hcp <= self.hcp_max):
+            return False
+
+        if not (self.major_hcp_min <= hand.major_hcp <= self.major_hcp_max):
             return False
         
         if not (self.tp_min <= hand.total_points <= self.tp_max):

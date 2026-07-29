@@ -76,6 +76,10 @@ class Hand:
     def hcp(self) -> int:
         return sum(c.hcp for c in self.cards)
 
+    @property
+    def major_hcp(self) -> int:
+        return sum(c.hcp for c in self.by_suit[Suit.HEARTS]) + sum(c.hcp for c in self.by_suit[Suit.SPADES])
+
     def length(self, suit: Suit) -> int:
         return len(self.by_suit[suit])
 

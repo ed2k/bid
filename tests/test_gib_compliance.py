@@ -245,14 +245,30 @@ class TestGIBCompliance(unittest.TestCase):
         # South bids 4C Opener Splinter
         self.assertBid("SAJ93 HA8543 DAK93 C", "4C", history_opener_splinter)
 
-        # 1H - Pass - 1S - Pass - 4C - Pass -> Responder North (wasted CAQ, signs off in 4S)
-        history_responder_signoff = [
+        # 1H - Pass - 1S - Pass - 4C - Pass
+        history_after_4c = [
             Call(CallType.BID, 1, Strain.HEARTS), Call(CallType.PASS),
             Call(CallType.BID, 1, Strain.SPADES), Call(CallType.PASS),
             Call(CallType.BID, 4, Strain.CLUBS), Call(CallType.PASS)
         ]
-        # North signs off in 4S
-        self.assertBid("ST7542 HQTD2 CAQ752", "4S", history_responder_signoff)
+        # North 1 (wasted CAQ) signs off in 4S
+        self.assertBid("ST7542 HQTD2 CAQ752", "4S", history_after_4c)
+
+        # 6. Grand Slam Auction (North 2 working values SK HKQ)
+        # North 2 RKCB 4NT
+        self.assertBid("SKT754 HKQ D2 C98752", "4NT", history_after_4c)
+
+        # South 5C (3 keycards)
+        history_4nt = history_after_4c + [Call(CallType.BID, 4, Strain.NT), Call(CallType.PASS)]
+        self.assertBid("SAJ93 HA8543 DAK93 C", "5C", history_4nt)
+
+        # North 5NT (Grand Slam Ask)
+        history_5c = history_4nt + [Call(CallType.BID, 5, Strain.CLUBS), Call(CallType.PASS)]
+        self.assertBid("SKT754 HKQ D2 C98752", "5NT", history_5c)
+
+        # South 7S (Grand Slam)
+        history_5nt = history_5c + [Call(CallType.BID, 5, Strain.NT), Call(CallType.PASS)]
+        self.assertBid("SAJ93 HA8543 DAK93 C", "7S", history_5nt)
 
 if __name__ == "__main__":
     unittest.main()

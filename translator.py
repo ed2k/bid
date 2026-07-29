@@ -43,6 +43,7 @@ class SystemTranslator:
                     'sequence': sequence_history,
                     'bid': bid_str,
                     'hcp': (0, 37),
+                    'major_hcp': (0, 37),
                     'tp': (0, 50),
                     'controls': (0, 12),
                     'shape': {},
@@ -59,7 +60,18 @@ class SystemTranslator:
                     'opener_seat': None
                 }
             elif current_rule_data:
-                if line.startswith('HCP:'):
+                if line.startswith('MAJOR_HCP:'):
+                    val = line.split(':')[1].strip()
+                    if '-' in val:
+                        mn, mx = map(int, val.split('-'))
+                        current_rule_data['major_hcp'] = (mn, mx)
+                    elif '+' in val:
+                        mn = int(val.replace('+', ''))
+                        current_rule_data['major_hcp'] = (mn, 37)
+                    else:
+                        mn = int(val)
+                        current_rule_data['major_hcp'] = (mn, mn)
+                elif line.startswith('HCP:'):
                     val = line.split(':')[1].strip()
                     if '-' in val:
                         mn, mx = map(int, val.split('-'))
@@ -149,6 +161,8 @@ class SystemTranslator:
         constraints = HandConstraints(
             hcp_min=data['hcp'][0],
             hcp_max=data['hcp'][1],
+            major_hcp_min=data['major_hcp'][0],
+            major_hcp_max=data['major_hcp'][1],
             tp_min=data['tp'][0],
             tp_max=data['tp'][1],
             controls_min=data['controls'][0],
