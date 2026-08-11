@@ -1,0 +1,14 @@
+The Cappelletti convention (also called Hamilton) is a defensive bidding system used in contract bridge to compete or interfere after an opponent opens 1 No-Trump (1NT). It allows your partnership to show single-suited or two-suited hands at a low level while keeping a penalty double for strong hands.
+
+Basic Cappelletti Overcalls Over 1NT
+Double: Penalty-oriented, showing a strong hand with roughly 15+ high-card points (HCP).
+2 Clubs (2♣): Artificial, showing any single-suited hand (usually a 6+ card suit) with about 11–14 HCP.
+2 Diamonds (2♦): Shows both major suits (at least 5-4 or 4-5 distribution in hearts and spades).
+2 Hearts (2♥): Shows hearts and an unspecified minor suit (at least 5-5 distribution).
+2 Spades (2♠): Shows spades and an unspecified minor suit (at least 5-5 distribution).
+2 No-Trump (2NT): Shows both minor suits (at least 5-5 distribution in clubs and diamonds).
+
+Responses and Follow-ups
+Over a 2♣ Overcall: Partner normally bids an artificial 2♦ relay. The overcaller then passes if diamonds is their long suit, or bids their actual long suit (hearts, spades, or clubs).
+Over 2♦ (Both Majors): Partner (advancer) chooses their preferred major by bidding 2♥ or 2♠.
+Over 2♥ or 2♠ (Major + Minor): Partner passes with fit in the major, or bids an artificial 3-club/next-step command if they want the partner to clarify or correct to their minor suit.
