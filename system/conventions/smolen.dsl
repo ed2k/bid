@@ -1,0 +1,12 @@
+# SMOLEN (5-4 Majors after 1NT - 2C - 2D)
+1NT - 2C - 2D - 3H:
+  CONVENTION: Smolen
+  FORCING: GAME_FORCING
+  LEN S: 5+
+  LEN H: 4
+
+1NT - 2C - 2D - 3S:
+  CONVENTION: Smolen
+  FORCING: GAME_FORCING
+  LEN H: 5+
+  LEN S: 4

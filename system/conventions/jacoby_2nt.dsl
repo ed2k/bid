@@ -1,0 +1,20 @@
+# Jacoby 2NT (Game Forcing Major Raise)
+1H - 2NT:
+  CONVENTION: Jacoby_2NT
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 13+
+  LEN H: 4+
+  LEN C: 2+
+  LEN D: 2+
+  LEN S: 2+
+
+1S - 2NT:
+  CONVENTION: Jacoby_2NT
+  FORCING: GAME_FORCING
+  PRIORITY_BONUS: 5
+  HCP: 13+
+  LEN S: 4+
+  LEN C: 2+
+  LEN D: 2+
+  LEN H: 2+

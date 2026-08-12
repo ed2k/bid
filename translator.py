@@ -1,13 +1,60 @@
+import os
 import re
 from typing import List, Dict, Optional
 from bid.models import Call, CallType, Suit, Strain
 from bid.constraints import HandConstraints
 from bid.system import Rule, BiddingSystem
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 class SystemTranslator:
     def __init__(self):
         print("DEBUG: SystemTranslator Moving Steps Logic Outside")
         pass
+
+    def load_convention(self, convention_name: str, system: Optional[BiddingSystem] = None, is_common: bool = False) -> BiddingSystem:
+        if system is None:
+            system = BiddingSystem("ConventionSystem")
+        
+        norm_name = convention_name.strip().lower().replace(" ", "_")
+        system.enable_convention(norm_name)
+
+        possible_paths = [
+            os.path.join(BASE_DIR, 'system', 'conventions', f"{norm_name}.dsl"),
+            os.path.join(BASE_DIR, 'system', 'cuebids', f"{norm_name}.dsl"),
+            os.path.join(BASE_DIR, 'system', 'conventions', f"{convention_name}.dsl"),
+            os.path.join(BASE_DIR, 'system', 'cuebids', f"{convention_name}.dsl"),
+            convention_name if os.path.isabs(convention_name) else os.path.join(BASE_DIR, convention_name)
+        ]
+
+        found_path = None
+        for p in possible_paths:
+            if os.path.exists(p):
+                found_path = p
+                break
+
+        if found_path:
+            with open(found_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            return self.parse(content, system=system, is_common=is_common)
+        return system
+
+    def load_system_with_conventions(self, dsl_path: str, convention_options: Optional[List[str]] = None) -> BiddingSystem:
+        if not os.path.isabs(dsl_path):
+            dsl_path = os.path.join(BASE_DIR, dsl_path)
+            
+        with open(dsl_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        system_name = os.path.basename(dsl_path).split('.')[0].upper()
+        system = BiddingSystem(system_name)
+        self.parse(content, system=system)
+        
+        if convention_options:
+            for conv in convention_options:
+                self.load_convention(conv, system=system)
+                
+        return system
 
     def parse(self, text: str, system: Optional[BiddingSystem] = None, is_common: bool = False) -> BiddingSystem:
         if system is None:
@@ -15,11 +62,31 @@ class SystemTranslator:
         lines = text.strip().split('\n')
         
         current_rule_data = None
+        in_conventions_block = False
         
         for line in lines:
             line = line.split('#')[0].strip()
             if not line:
                 continue
+
+            if line.upper() == 'CONVENTIONS:':
+                if current_rule_data:
+                    self._add_rule_from_data(system, current_rule_data, is_common=is_common)
+                    current_rule_data = None
+                in_conventions_block = True
+                continue
+
+            if in_conventions_block:
+                if line.startswith('-'):
+                    conv_name = line[1:].strip()
+                    self.load_convention(conv_name, system=system, is_common=is_common)
+                    continue
+                elif line.endswith(':'):
+                    in_conventions_block = False
+                else:
+                    conv_name = line.strip()
+                    self.load_convention(conv_name, system=system, is_common=is_common)
+                    continue
 
             # Look for rule start: "OPEN 1NT:" or "RESPONSE 1NT:"
             if line.endswith(':'):

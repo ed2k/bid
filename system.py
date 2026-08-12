@@ -32,6 +32,16 @@ class BiddingSystem:
     def __init__(self, name: str):
         self.name = name
         self.rules: List[Rule] = []
+        self.enabled_conventions: List[str] = []
+
+    def enable_convention(self, convention_name: str):
+        norm_name = convention_name.strip().lower().replace(" ", "_")
+        if norm_name not in self.enabled_conventions:
+            self.enabled_conventions.append(norm_name)
+
+    def has_convention(self, convention_name: str) -> bool:
+        norm_name = convention_name.strip().lower().replace(" ", "_")
+        return norm_name in self.enabled_conventions
 
     def add_rule(self, rule: Rule):
         # Override strategy:
@@ -55,3 +65,4 @@ class BiddingSystem:
             if rule.applies(history, hand):
                 return rule
         return None
+
