@@ -313,11 +313,13 @@ class SystemTranslator:
         system.add_rule(rule)
 
     def _parse_call(self, s: str) -> Call:
-        if s == 'PASS': return Call(CallType.PASS)
-        if s == 'X': return Call(CallType.DOUBLE)
-        if s == 'XX': return Call(CallType.REDOUBLE)
+        s_upper = s.upper()
+        if s_upper in ('PASS', 'P'): return Call(CallType.PASS)
+        if s_upper in ('X', 'DBL', 'DOUBLE'): return Call(CallType.DOUBLE)
+        if s_upper in ('XX', 'RDBL', 'REDOUBLE'): return Call(CallType.REDOUBLE)
         
         level = int(s[0])
         strain_str = s[1:]
         strains = {'C': Strain.CLUBS, 'D': Strain.DIAMONDS, 'H': Strain.HEARTS, 'S': Strain.SPADES, 'NT': Strain.NT}
         return Call(CallType.BID, level, strains[strain_str])
+

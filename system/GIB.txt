@@ -351,4 +351,58 @@ New suit double jump   18+ total points, void in suit bid.
 3M   18+ total points, balanced.
 4M   To play, nothing extra to show.
 
-© 2018-2026 Bridge Base On Line LLC • About • Privacy • Terms and Conditions • Support • Robot Convention Card
+Active Conventions:
+- Weak natural 2D
+- Weak natural 2M
+- Soloway Jump Shifts
+- Inviting Jump Shifts
+- Checkback
+- New Minor Forcing
+- NMF after 2NT rebid
+- 1M-3M inviting
+- 1NT opening NT style
+- 1NT opening range 15-17
+- 1NT opening shape 5422
+- 1NT opening shape 5 major
+- 1NT opening shape 6 minor
+- 1N-3C transfer to diamonds
+- SMOLEN
+- Transfers if RHO doubles
+- Transfers if RHO bids clubs
+- Super acceptance after NT
+- Extended acceptance after NT
+- Texas
+- Blackwood 0314
+- Gerber
+- Exclusion
+- King ask by 5NT
+- DOPI
+- ROPI
+- Fourth suit game force
+- Strength Lawrence structure
+- Lebensohl after double
+- Grand Slam Force (red text)
+- Michaels Cuebid
+- Minor Direct Jump Cuebid Gambling
+- Cappelletti
+- Responsive double
+- Support double redouble
+- Two suit takeout double
+- Reverse drury
+- Forcing 1NT
+- 1X-(1Y)-2Z strong
+- Count signals
+- 1m opening allows 5M
+- 1X-(Y)-2Z forcing
+- Cue bid
+- Inverted minors
+- Jacoby 2NT
+- Mixed raise
+- Natural 3N entering style
+- Quantitative 4NT
+- Splinter
+- Unusual 1NT
+- Unusual 2NT
+- Unusual 3NT
+- Unusual 4NT (red text)
+- Unusual vs. Unusual (red text)

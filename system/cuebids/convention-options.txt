@@ -1,413 +1,641 @@
 General system type: 2/1GF - 2/1 Game Force (GIB)
 
+Active Conventions ([x]):
+- Weak natural 2D
+- Weak natural 2M
+- Soloway Jump Shifts
+- Inviting Jump Shifts
+- Checkback
+- New Minor Forcing
+- NMF after 2NT rebid
+- 1M-3M inviting
+- 1NT opening NT style
+- 1NT opening range 15-17
+- 1NT opening shape 5422
+- 1NT opening shape 5 major
+- 1NT opening shape 6 minor
+- 1N-3C transfer to diamonds
+- SMOLEN
+- Transfers if RHO doubles
+- Transfers if RHO bids clubs
+- Super acceptance after NT
+- Extended acceptance after NT
+- Texas
+- Blackwood 0314
+- Gerber
+- Exclusion
+- King ask by 5NT
+- DOPI
+- ROPI
+- Fourth suit game force
+- Strength Lawrence structure
+- Lebensohl after double
+- Grand Slam Force (red text)
+- Michaels Cuebid
+- Minor Direct Jump Cuebid Gambling
+- Cappelletti
+- Responsive double
+- Support double redouble
+- Two suit takeout double
+- Reverse drury
+- Forcing 1NT
+- 1X-(1Y)-2Z strong
+- Count signals
+- 1m opening allows 5M
+- 1X-(Y)-2Z forcing
+- Cue bid
+- Inverted minors
+- Jacoby 2NT
+- Mixed raise
+- Natural 3N entering style
+- Quantitative 4NT
+- Splinter
+- Unusual 1NT
+- Unusual 2NT
+- Unusual 3NT
+- Unusual 4NT (red text)
+- Unusual vs. Unusual (red text)
+
+
 Column 1
 2D opening
 
 [ ] Benjamin 2D
+    2D opening showing 8 playing tricks in any suit (Acol style), forcing for 1 round.
 
 [ ] Flannery
+    2D opening showing 11-15 HCP with exactly 4 spades and 5 hearts (4-5-x-x shape).
 
 [ ] French 2D
+    2D opening showing weak two in diamonds (6+ D, 6-10 HCP) or a strong forcing variant.
 
 [ ] Multi
+    Multi 2D opening showing a weak two in either major (6-card major, 6-10 HCP) or strong options.
 
 [ ] Precision 2D
+    2D opening showing 11-15 HCP with short diamonds (0-1 D) and 4-4-4-1 or 4-4-0-5 shape.
 
 [ ] Strong natural 2D
+    2D opening showing 22+ HCP or 8.5+ trick hand, natural and game-forcing.
 
 [x] Weak natural 2D
+    2D opening showing 6-10 HCP and a 6-card diamond suit.
 
 [ ] Wilkosz
+    2D opening showing 7-11 HCP with 5-5 distribution in two suits (at least one major).
 
 2M opening
 
 [ ] Polish two suiters
+    2H/2S opening showing 5-5 in the major and another suit (5-10 HCP).
 
 [ ] Strong natural 2M
+    2H/2S opening showing 22+ HCP or 8.5+ trick hand, natural game force.
 
 [x] Weak natural 2M
+    2H/2S opening showing 6-10 HCP and a 6-card major suit.
 
 Jump shifts level 2
 
 [ ] Reverse Flannery 2H
+    1S-2H jump response showing 5+ hearts, 4 spades, and 9-11 HCP.
 
 [ ] Reverse Flannery 2S
+    1H-2S jump response showing 5+ spades, 4 hearts, and 9-11 HCP.
 
 [x] Soloway Jump Shifts
+    Level 2 jump shift showing 17+ HCP (strong single-suiter, 17+ with support, balanced 17-18, or strong 5-4).
 
 [ ] Soloway Jump Shifts Extended
+    Soloway jump shifts with extended artificial step continuations.
 
 [ ] Strong jump shifts 2
+    Level 2 jump shift showing 17+ HCP, game-forcing (or forcing 1 round).
 
 [ ] Weak Jump shifts 2
+    Level 2 jump shift showing 0-9 HCP with a 6+ card suit (preemptive).
 
 Jump shifts level 3
 
 [ ] Bergen
+    3C/3D responses to 1M opening showing 4-card trump support (3C=constructive 7-9 or limit 10-12, 3D=limit 10-12 or constructive 7-9).
 
 [ ] Reverse Bergen
+    Inverted Bergen raises where 3C = Limit raise (10-12 HCP, 4 trumps) and 3D = Constructive raise (7-9 HCP, 4 trumps).
 
 [x] Inviting Jump Shifts
+    Level 3 jump shift showing 9-11 HCP with a good 6+ card suit (invitational to game).
 
 [ ] Mini Splinter
+    Level 3 jump shift showing 4+ trump support and shortness (singleton/void) with 8-10 HCP.
 
 [ ] Strong jump shifts 3
+    Level 3 jump shift showing 17+ HCP and game-forcing values with a strong suit.
 
 [ ] Weak Jump shifts 3
+    Level 3 jump shift showing 0-8 HCP with a 6-7 card suit (preemptive).
 
 CheckBack (pro) option
 
 [x] Checkback
+    2C rebid after 1X-1Y-1NT to inquire about opener's 3-card major support or 4-card unbid major.
 
 [x] New Minor Forcing
+    Rebid of unbid minor at 2-level after 1X-1Y-1NT/2NT (forcing 1 round) asking opener for major fit/shape.
 
 [x] NMF after 2NT rebid
+    New Minor Forcing used after opener rebids 2NT (18-19 HCP balanced).
 
 [ ] NMF by passed hand
+    New Minor Forcing available for a player who passed initially.
 
 [ ] Roudi
+    Artificial 2C rebid after 1X-1Y-1NT; opener responds in steps to show strength (minimum vs maximum) and major support.
 
 [ ] Two Way New Minor Forcing
+    2C is invitational checkback; 2D is game-forcing checkback after 1X-1Y-1NT.
 
 [ ] TWNMF by passed hand
+    Two Way New Minor Forcing available for a passed hand.
 
 1D opening
 
 [ ] 1D opening with 4 cards
+    1D opening guarantees at least 4 diamonds.
 
 [ ] 1D opening with 5 cards
+    1D opening guarantees at least 5 diamonds.
 
 1M-3M sequence
 
 [ ] 1M-3M blocking
+    1M-3M direct raise is weak/preemptive (0-6 HCP with 4-card support).
 
 [x] 1M-3M inviting
+    1M-3M direct raise is invitational (10-12 HCP with 3 or 4-card support).
 
 
 Column 2
 1NT opening or NT style
 
 [ ] 1NT opening natural
+    Standard natural 1NT opening.
 
 [x] 1NT opening NT style
+    GIB / 2/1 style balanced NT opening requirements.
 
 [ ] 1NT opening range 12-14
+    Weak 1NT opening showing 12-14 HCP.
 
 [ ] 1NT opening range 13-15
+    Medium 1NT opening showing 13-15 HCP.
 
 [ ] 1NT opening range 14-16
+    Medium-strong 1NT opening showing 14-16 HCP.
 
 [x] 1NT opening range 15-17
+    Strong 1NT opening showing 15-17 HCP.
 
 [ ] 1NT opening shape 4441
+    Permits opening 1NT with a 4-4-4-1 distribution (singleton A/K/Q).
 
 [x] 1NT opening shape 5422
+    Permits opening 1NT with a 5-4-2-2 distribution.
 
 [x] 1NT opening shape 5 major
+    Permits opening 1NT with a 5-card major suit.
 
 [x] 1NT opening shape 6 minor
+    Permits opening 1NT with a 6-card minor suit.
 
 [ ] 1N-2S Minor Suit Stayman
+    2S response over 1NT asks opener for 4+ card minor suit.
 
 [ ] 1N-2N transfer to clubs
+    2NT response over 1NT transfers to 3C.
 
 [ ] 1N-2N transfer to diamonds
+    2NT response over 1NT transfers to 3D.
 
 [x] 1N-3C transfer to diamonds
+    3C response over 1NT transfers to diamonds.
 
 [ ] 1N-3C Puppet Stayman
+    3C response over 1NT asks opener for a 5-card major or 4-card major.
 
 [ ] 1N-3D majors
+    3D response over 1NT shows 5-5 or 5-4 in the majors (GF).
 
 [ ] 1N-3D minors
+    3D response over 1NT shows 5-5 in the minors.
 
 [ ] 1N-3D natural
+    3D response over 1NT is natural (game-invitational/forcing).
 
 [ ] 1N-3D splinter
+    3D response over 1NT is a splinter showing diamond shortness and minor/slam interest.
 
 [ ] 1N-3M splinter
+    3H/3S response over 1NT is a splinter showing major shortness.
 
 [ ] 5431 after 1NT
+    Response structure after 1NT opening to show 5-4-3-1 distribution.
 
 [ ] Garbage Stayman
+    2C Stayman with 0-7 HCP planning to pass any response by opener (2D, 2H, 2S).
 
 [x] SMOLEN
+    After 1NT-2C-2D, responder bids 3-level in 4-card major (3H=5S/4H, 3S=5H/4S) to let 1NT opener play the 5-card major.
 
 [x] Transfers if RHO doubles
+    System stays on or stolen-bid transfers apply when RHO doubles 1NT.
 
 [x] Transfers if RHO bids clubs
+    Transfers apply when RHO overcalls 2C over 1NT.
 
 2NT opening or NT style
 
 [ ] 2N-3C Puppet Stayman
+    3C over 2NT asks opener for a 5-card major or 4-card major.
 
 [ ] 2N-3S transfer to clubs
+    3S over 2NT transfers to 4C.
 
 [ ] 2N-4C transfer to diamonds
+    4C over 2NT transfers to 4D.
 
 [ ] Minor Suit Stayman after 2NT
+    Inquiry bid over 2NT to uncover 4+ card minor suit fits.
 
 [ ] Minor Suit Transfers after 2NT
+    Transfers to minor suits after a 2NT opening.
 
 [ ] Minor Suit Slam Try after 2NT
+    Bids showing minor suit length and slam interest after 2NT.
 
 [ ] Niemeijer
+    Complete response structure over 2NT combining Stayman, transfers, and minor suit probes.
 
 Other NT options
 
 [ ] 1NT opening allows less 1HCP
+    Allows opening 1NT with 1 HCP less than standard range (e.g. 14 HCP).
 
 [ ] Extended Stayman
+    Continuations after 2C Stayman to reveal exact 4-3-3-3 shape or major sub-types.
 
 [x] Super acceptance after NT
+    Opener jumps (e.g. 1NT-2H-3S) with 4-card trump support and maximum HCP.
 
 [x] Extended acceptance after NT
+    Detailed super-acceptance steps showing specific suit controls or doubletons.
 
 [x] Texas
+    Texas Transfers (4C/4D transfer to 4H/4S over 1NT/2NT).
+
 
 Column 3
 Ace ask
 
 [ ] Blackwood 0123
+    4NT asks aces: 5C=0, 5D=1, 5H=2, 5S=3.
 
 [x] Blackwood 0314
+    RKCB 0314 variant: 5C=0/3, 5D=1/4 keycards, 5H=2 keycards without trump Q, 5S=2 keycards with trump Q.
 
 [ ] Blackwood 1430
+    RKCB 1430 variant: 5C=1/4, 5D=0/3 keycards, 5H=2 keycards without trump Q, 5S=2 keycards with trump Q.
 
 [ ] Kickback 0123
+    Keycard ask in suit 1 step above trumps (e.g. 4H asks when spades agreed) with 0123 responses.
 
 [ ] Kickback 0314
+    Keycard ask in suit 1 step above trumps with 0314 responses.
 
 [ ] Kickback 1430
+    Keycard ask in suit 1 step above trumps with 1430 responses.
 
 [ ] Crosswood 0123
+    Keycard ask using 4 of agreed trump suit (or designated suit) with 0123 responses.
 
 [ ] Crosswood 0314
+    Keycard ask using 4 of agreed trump suit with 0314 responses.
 
 [ ] Crosswood 1430
+    Keycard ask using 4 of agreed trump suit with 1430 responses.
 
 [x] Gerber
+    4C bid asks for aces (5C=0, 5D=1, 5H=2, 5S=3).
 
 [ ] Gerber only for NT openings
+    4C Gerber applies exclusively after natural NT openings/rebids.
 
 [ ] Blackwood without K and Q
+    Basic 4NT ace ask without keycard or king/queen continuations.
 
 [x] Exclusion
+    Exclusion RKCB: Jump in void suit asks for keycards excluding the void suit's ace.
 
 King ask
 
 [x] King ask by 5NT
+    5NT bid after keycard response asks for number of kings (or specific kings).
 
 [ ] King ask by 5NT inviting
+    5NT promises all keycards + trump Q, inviting grand slam.
 
 [ ] King ask by available bid
+    Cheapest available bid after RKCB response asks for specific kings.
 
 After the intervention to the ask
 
 [ ] DEPO
+    Double = Even keycards (0/2), Pass = Odd keycards (1/3) under opponent interference over 4NT.
 
 [x] DOPI
+    Double = 0 keycards, Pass = 1 keycard (step bids follow for 2, 3, etc.) under opponent interference.
 
 [x] ROPI
+    Redouble = 0 keycards, Pass = 1 keycard when RHO doubles 4NT keycard ask.
 
 Fourth suit option
 
 [ ] Fourth suit
+    Bidding 4th suit is forcing 1 round (11+ HCP), not automatically game forcing.
 
 [x] Fourth suit game force
+    Bidding 4th suit is artificial and game forcing (12+ HCP).
 
 After a 2/1 game-forcing response
 
 [ ] Shape Bergen structure
+    Opener rebids focus primarily on clarifying exact distribution.
 
 [x] Strength Lawrence structure
+    Opener rebids focus primarily on clarifying point range (minimum vs maximum).
 
 1NT opening and opps' overcall
 
 [ ] Lebensohl after 1NT
+    2NT response over opponent's 2-level overcall of 1NT is artificial relay to 3C.
 
 [ ] Rubensohl after 1NT
+    Transfer responses starting at 2NT over opponent's 2-level overcall of 1NT.
 
 Minor opening and opp weak two
 
 [ ] Lebensohl after 1m
+    2NT after opponent's weak two jump overcall of 1m is artificial relay to 3C.
 
 [ ] Rubensohl after 1m
+    Transfer responses over opponent's weak two jump overcall of 1m.
 
 Weak two opening and double
 
 [x] Lebensohl after double
+    2NT after partner's takeout double of weak two is artificial relay to 3C to separate weak from invitational hands.
 
 [ ] Rubensohl after double
+    Transfer responses after partner's takeout double of weak two.
 
 5NT
 
 [ ] 5NT pick a slam
+    5NT bid asks partner to choose the best 6-level slam contract (6NT or suit slam).
 
 [x] Grand Slam Force (red text)
+    5NT bid asks partner to bid 7 in agreed trump suit if holding 2 of top 3 trumps (A, K, Q).
+
 
 Column 4
 Michaels
 
 [x] Michaels Cuebid
+    Direct cuebid of 1-level opening (1m-2m = both majors; 1M-2M = other major + unspecified minor, 5-5+, 8+ HCP).
 
 [ ] Leaping Michaels
+    Jump cuebid over weak 2 opening (e.g. (2H)-4C = 5+C and 5+S, 15+ HCP) showing 5-5+ GF values.
 
 [ ] Non-Leaping Michaels
+    Jump cuebid over 2-level/3-level preempts showing 5-5 two-suiter with strong values.
 
 Major Direct Jump Cuebid
 
 [ ] Major Direct Jump Cuebid Gambling
+    Jump cuebid over 1M shows a solid minor suit without outside stoppers.
 
 [ ] Major Direct Jump Cuebid Minor
+    Jump cuebid over 1M shows a specific minor or 5-5 minor hand.
 
 [ ] Major Direct Jump Cuebid Strong
+    Jump cuebid over 1M shows a strong 5-5 game-forcing hand.
 
 Minor Direct Jump Cuebid
 
 [x] Minor Direct Jump Cuebid Gambling
+    Jump cuebid over 1m (1C-3C / 1D-3D) shows a solid minor or gambling hand.
 
 [ ] Minor Direct Jump Cuebid Majors
+    Jump cuebid over 1m shows 5-5 in the majors with 15+ HCP.
 
 [ ] Minor Direct Jump Cuebid Preempt
+    Jump cuebid over 1m is preemptive with a long minor suit.
 
 Defense after 1NT
 
 [x] Cappelletti
+    Overcall system vs 1NT (Dbl=penalty 15+, 2C=single suit, 2D=both majors, 2H=H+minor, 2S=S+minor, 2NT=both minors).
 
 [ ] Landy
+    2C overcall over 1NT shows 5-4+ or 4-5+ in both majors (9-15 HCP).
 
 [ ] Multi-Landy
+    Overcall vs 1NT (2C=majors, 2D=single major, 2H=5+H & 4+ minor, 2S=5+S & 4+ minor).
 
 Doubles
 
 [ ] Maximal Doubles
+    Game-try double after opponents compete over 1M-2M raise (e.g. 1H-P-2H-3D; Dbl=game try).
 
 [x] Responsive double
+    Double by advancer after opener bids, partner doubles, and responder raises (shows remaining suits, 4-4 in majors/minors).
 
 [ ] Snapdragon Double
+    Double of 4th suit in competitive auction showing 5+ cards in 4th suit and tolerance for partner's suit.
 
 [x] Support double redouble
+    Double/Redouble by opener shows exactly 3-card support for responder's major.
 
 [x] Two suit takeout double
+    Double showing two specific suits or 5-4/5-5 two-suiters in competitive situations.
 
 Drury situation
 
 [ ] Drury
+    2C response by passed hand after partner's 3rd/4th seat 1M opening to check if opening is full value (2D=full opening).
 
 [x] Reverse drury
+    2C response by passed hand is 3+ trump support game try (10-12 HCP); opener rebids 2M with weak opening or other bid with full opening.
 
 1NT after 1M opening
 
 [x] Forcing 1NT
+    1NT response to 1M is artificial and forcing 1 round (6-12 HCP), standard in 2/1 GF.
 
 [ ] Semi forcing 1NT
+    1NT response to 1M is semi-forcing (6-11 HCP); opener can pass with 5-3-3-2 minimum (12-13 HCP).
 
 1X-1Y-2Z with jump
 
 [x] 1X-(1Y)-2Z strong
+    Jump shift by responder in competitive auction is strong and forcing (16+ HCP).
 
 [ ] 1X-(1Y)-2Z weak
+    Jump shift by responder in competitive auction is weak/preemptive (0-9 HCP, 6+ card suit).
 
 Leading
 
 [x] Count signals
+    High-low = even number of cards; low-high = odd number of cards.
 
 [ ] Inverted count signals (red text)
+    Low-high = even number of cards; high-low = odd number.
 
 [ ] Lavinthal from void
+    Suit preference discard when playing on partner's void lead.
 
 [ ] Lavinthal on ace
+    Suit preference signal given on partner's lead of an Ace.
 
 [ ] Lavinthal to void (red text)
+    Suit preference lead directed to partner's void suit.
 
 [ ] Mark on queen (red text)
+    Queen lead requests specific defense action (unblock or count).
 
 [ ] Mark on king (red text)
+    King lead requests specific defense action (count or attitude).
 
 [ ] Reverse Smith Echo
+    High card in declarer's first led suit encourages initial opening lead.
 
 [ ] Smith Echo
+    High card played in declarer's first suit led signals attitude towards opening lead.
+
 
 Column 5 (Conventions)
 Conventions
 
 [x] 1m opening allows 5M
+    Permits opening 1C/1D with a 5-card major under specific system rules (e.g. 5-3-3-2).
 
 [ ] (1X)-1Y-(1Z)-2Z natural
+    2Z in competitive 4-player auction is natural and non-forcing.
 
 [x] 1X-(Y)-2Z forcing
+    New suit at 2-level after opponent's overcall is forcing 1 round (10+ HCP).
 
 [ ] 2N-3C-3N both majors
+    Rebid of 3NT after 2NT-3C Stayman shows 5-5 in the majors.
 
 [ ] 4NT opening
+    Opening 4NT bid (Acol/Gambling minor suit or specific ask).
 
 [ ] BROMAD
+    Bergen Raise Over Mandatory Action Doubles (raises over opponent's takeout double).
 
 [ ] Collante
+    Specialty defensive overcall system.
 
 [x] Cue bid
+    Control cuebidding for slam or direct cuebidding to show support/forcing hand.
 
 [ ] Fit showing jumps
+    Jump response in competitive auction shows 4+ trump support and 5+ quality side suit.
 
 [ ] Fitted 2NT
+    2NT bid in competitive auctions showing limit raise or better with trump fit.
 
 [ ] Gambling
+    3NT opening showing a solid 7+ card minor suit without outside aces or kings.
 
 [ ] Gazzilli
+    2C rebid by opener after 1M-1X (1NT/1S) showing natural clubs or any 16+ HCP strong hand.
 
 [ ] Ghestem
+    Defensive two-suiter overcalls over 1-level openings (Cuebid=highest+lowest, 2NT=two lowest, 3C=two highest).
 
 [ ] Imposible 2S
+    Artificial 2S rebid in specific auctions (e.g. 1m-1H-1NT-2S) showing GF checkback/minor fit without 4 spades.
 
 [x] Inverted minors
+    1m-2m is strong/invitational forcing (10+ HCP, 4+ fit); 1m-3m is weak/preemptive (0-6 HCP, 5+ fit).
 
 [x] Jacoby 2NT
+    Artificial 2NT response to 1M opening showing 4+ trump support and game-forcing values (13+ HCP).
 
 [ ] Jordan Truscott 2NT
+    2NT response after opponent doubles partner's 1M opening shows limit raise+ with 4+ trumps.
 
 [ ] Jordan Truscott 2NT defence
+    Defensive counter-measures when opponents use Jordan Truscott 2NT.
 
 [ ] Kokish Relay
+    2C - 2D - 2H rebid forces 2S relay, after which 2NT shows 25-27 HCP balanced.
 
 [x] Mixed raise
+    Jump response showing 4-card trump support with 6-8 HCP (constructive/preemptive hybrid).
 
 [ ] Namyats
+    4C/4D opening transfers to 4H/4S showing strong 8.5-9 trick 7+ card major.
 
 [x] Natural 3N entering style
+    Overcalling 3NT over opponent's 1-level opening as natural (16-18 HCP with stopper).
 
 [ ] Ogust
+    2NT response over weak 2 opening asking opener to describe suit quality and hand strength (3C=bad/bad, 3D=good suit/bad hand, 3H=bad suit/good hand, 3S=good suit/good hand, 3NT=top honors).
 
 [x] Quantitative 4NT
+    Non-forcing 4NT invitation to 6NT (pass with minimum, bid 6NT with maximum).
 
 [ ] Raptor 1NT
+    1NT overcall over 1m/1M showing 4 cards in unbid major and 5 cards in a minor (10-15 HCP).
 
 [ ] Rodrigue
+    Specialty defensive bidding convention.
 
 [ ] Scrambling 2NT
+    2NT bid in competitive auctions asking partner to pick best fit among remaining unbid suits.
 
 [x] Splinter
+    Jump bid in a new suit showing 4+ card trump support, shortness (singleton/void), and GF values (13-16 HCP).
 
 [ ] Support 1NT
+    1NT bid showing major suit support in competitive auctions.
 
 [ ] Surplus pass
+    Tactical pass or passing with extra values in competitive auctions.
 
 [ ] Two way game tries
+    After 1M-2M raise, 2NT is short suit game try while 3-level bids are long suit game tries (or vice versa).
 
 [x] Unusual 1NT
+    1NT overcall showing a two-suited hand (or specific minors/low suits).
 
 [x] Unusual 2NT
+    Direct 2NT overcall over 1-level opening showing lower two unbid suits (usually 5-5+).
 
 [x] Unusual 3NT
+    3NT opening or overcall showing lower two suits (or solid minor / preemptive).
 
 [x] Unusual 4NT (red text)
+    4NT bid in competitive auction showing two lowest unbid suits or specific minors at 5-level.
 
 [x] Unusual vs. Unusual (red text)
+    Defense over opponent's Unusual 2NT (lower cuebid = lower suit, higher cuebid = higher suit).
 
 [ ] Walsh style
+    Response style over 1D opening where responder bypasses 4-card diamond suit to bid a 4-card major unless holding GF hand.
 
 [ ] WJ 1C_1D allows majors
-
-[ ] Not defined
-
-[ ] Not defined
+    Wspólny Język (Polish Club) rule allowing 1C/1D openings with 4-card majors.
