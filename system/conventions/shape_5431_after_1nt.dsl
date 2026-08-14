@@ -1,0 +1,6 @@
+# 5431 Shape Showing Responses after 1NT
+1NT - 3C:
+  CONVENTION: Show_5431
+  FORCING: GAME_FORCING
+  HCP: 10+
+  SHAPE: UNBALANCED

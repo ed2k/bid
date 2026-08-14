@@ -46,5 +46,28 @@ OPEN 1H:
         michaels_rules = [r for r in system.rules if r.metadata.get('convention') == 'Michaels_Cuebid']
         self.assertGreater(len(michaels_rules), 0)
 
+    def test_all_convention_options_from_file_loadable(self):
+        import os
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        options_file = os.path.join(base_dir, "system", "cuebids", "convention-options.txt")
+        
+        with open(options_file, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+            
+        options = []
+        for line in lines:
+            line_s = line.strip()
+            if line_s.startswith("[x]") or line_s.startswith("[ ]"):
+                options.append(line_s[3:].strip())
+                
+        self.assertEqual(len(options), 172)
+        
+        for opt in options:
+            system = BiddingSystem("TestSystem")
+            self.translator.load_convention(opt, system)
+            norm = opt.strip().lower().replace(" ", "_")
+            self.assertTrue(system.has_convention(norm), f"Failed to enable convention: {opt}")
+
 if __name__ == '__main__':
     unittest.main()
+

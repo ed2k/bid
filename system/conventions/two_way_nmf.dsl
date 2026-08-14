@@ -1,0 +1,20 @@
+# Two-Way New Minor Forcing (2C Invitational, 2D Game Forcing)
+1C - 1H - 1NT - 2C:
+  CONVENTION: Two_Way_NMF_Inv
+  FORCING: ONE_ROUND
+  HCP: 10-11
+
+1C - 1H - 1NT - 2D:
+  CONVENTION: Two_Way_NMF_GF
+  FORCING: GAME_FORCING
+  HCP: 12+
+
+1D - 1S - 1NT - 2C:
+  CONVENTION: Two_Way_NMF_Inv
+  FORCING: ONE_ROUND
+  HCP: 10-11
+
+1D - 1S - 1NT - 2D:
+  CONVENTION: Two_Way_NMF_GF
+  FORCING: GAME_FORCING
+  HCP: 12+

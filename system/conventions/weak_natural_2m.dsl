@@ -1,0 +1,12 @@
+# Weak Natural 2M (6-10 HCP, 6+ Major)
+OPEN 2H:
+  CONVENTION: Weak_Natural_2M
+  HCP: 6-10
+  LEN H: 6+
+  SHAPE: UNBALANCED
+
+OPEN 2S:
+  CONVENTION: Weak_Natural_2M
+  HCP: 6-10
+  LEN S: 6+
+  SHAPE: UNBALANCED

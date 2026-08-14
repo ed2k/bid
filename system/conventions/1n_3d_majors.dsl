@@ -1,0 +1,9 @@
+# Option: 1N-3D majors
+# Description: 3D response over 1NT shows 5-5 or 5-4 in the majors (GF).
+
+# 1NT - 3D Responses (Majors / Minors / Natural / Splinter)
+1NT - 3D:
+  CONVENTION: 1NT_3D_Majors_Or_Minors
+  FORCING: GAME_FORCING
+  HCP: 10+
+  LEN D: 5+

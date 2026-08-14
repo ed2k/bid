@@ -1,0 +1,12 @@
+# Forcing 1NT Response to 1M (6-12 HCP)
+1H - 1NT:
+  CONVENTION: Forcing_1NT
+  FORCING: ONE_ROUND
+  HCP: 6-12
+  LEN H: 0-2
+
+1S - 1NT:
+  CONVENTION: Forcing_1NT
+  FORCING: ONE_ROUND
+  HCP: 6-12
+  LEN S: 0-2
