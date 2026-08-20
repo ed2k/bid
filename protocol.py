@@ -133,7 +133,6 @@ class ConventionProtocol:
     def create_strategic_gambling() -> 'ConventionProtocol':
         """Strategic concealment / pooling convention."""
         proto = ConventionProtocol("GamblingPool")
-        # Pool solid minor running suit vs weak minor into single direct jump to 3NT
         proto.add_step(ProtocolStep(
             name="Gambling_3NT",
             op_type=ProtocolOpType.POOL,
@@ -143,6 +142,108 @@ class ConventionProtocol:
                 (7, 13): Call(CallType.BID, 3, Strain.NT)
             },
             description="Direct 3NT to conceal intermediate stoppers from defense"
+        ))
+        return proto
+
+    @staticmethod
+    def create_texas_transfer() -> 'ConventionProtocol':
+        """Texas Transfer 4D->4H, 4H->4S over 1NT/2NT with 6+ major."""
+        proto = ConventionProtocol("TexasTransfer")
+        proto.add_step(ProtocolStep(
+            name="Texas_Transfer_4D",
+            op_type=ProtocolOpType.TRANSFER,
+            trigger_sequence=[Call(CallType.BID, 1, Strain.NT), Call(CallType.BID, 4, Strain.DIAMONDS)],
+            target_feature="is_balanced",
+            call_mapping={
+                True: Call(CallType.BID, 4, Strain.HEARTS),
+                False: Call(CallType.BID, 4, Strain.HEARTS)
+            },
+            description="Accept Texas transfer to 4H"
+        ))
+        return proto
+
+    @staticmethod
+    def create_reverse_drury() -> 'ConventionProtocol':
+        """Reverse Drury: 2C by passed hand over 1M showing 10-11 HCP with 3+ card support."""
+        proto = ConventionProtocol("ReverseDrury")
+        proto.add_step(ProtocolStep(
+            name="Reverse_Drury_Rebid",
+            op_type=ProtocolOpType.ENCODE,
+            trigger_sequence=[Call(CallType.BID, 1, Strain.HEARTS), Call(CallType.BID, 2, Strain.CLUBS)],
+            target_feature="hcp",
+            call_mapping={
+                (12, 14): Call(CallType.BID, 2, Strain.HEARTS), # Subminimum signoff
+                (15, 21): Call(CallType.BID, 4, Strain.HEARTS)  # Full opening game bid
+            },
+            description="Opener confirms or declines game invitation after Drury 2C"
+        ))
+        return proto
+
+    @staticmethod
+    def create_michaels_cuebid() -> 'ConventionProtocol':
+        """Michaels Cuebid: 2m over 1m showing 5-5 in both majors."""
+        proto = ConventionProtocol("MichaelsCuebid")
+        proto.add_step(ProtocolStep(
+            name="Michaels_Response",
+            op_type=ProtocolOpType.COMMAND,
+            trigger_sequence=[Call(CallType.BID, 1, Strain.CLUBS), Call(CallType.BID, 2, Strain.CLUBS)],
+            target_feature="heart_len",
+            call_mapping={
+                (3, 13): Call(CallType.BID, 2, Strain.HEARTS),
+                (0, 2): Call(CallType.BID, 2, Strain.SPADES)
+            },
+            description="Partner picks preferred major after Michaels cuebid"
+        ))
+        return proto
+
+    @staticmethod
+    def create_unusual_2nt() -> 'ConventionProtocol':
+        """Unusual 2NT: 2NT over 1M showing 5-5 in lowest two unbid suits."""
+        proto = ConventionProtocol("Unusual2NT")
+        proto.add_step(ProtocolStep(
+            name="Unusual_2NT_Response",
+            op_type=ProtocolOpType.COMMAND,
+            trigger_sequence=[Call(CallType.BID, 1, Strain.HEARTS), Call(CallType.BID, 2, Strain.NT)],
+            target_feature="diamond_len",
+            call_mapping={
+                (3, 13): Call(CallType.BID, 3, Strain.DIAMONDS),
+                (0, 2): Call(CallType.BID, 3, Strain.CLUBS)
+            },
+            description="Partner picks minor after Unusual 2NT"
+        ))
+        return proto
+
+    @staticmethod
+    def create_cappelletti() -> 'ConventionProtocol':
+        """Cappelletti over 1NT: 2C=one suiter, 2D=both majors, 2H=hearts+minor, 2S=spades+minor."""
+        proto = ConventionProtocol("Cappelletti")
+        proto.add_step(ProtocolStep(
+            name="Cappelletti_2D_Response",
+            op_type=ProtocolOpType.COMMAND,
+            trigger_sequence=[Call(CallType.BID, 1, Strain.NT), Call(CallType.BID, 2, Strain.DIAMONDS)],
+            target_feature="heart_len",
+            call_mapping={
+                (3, 13): Call(CallType.BID, 2, Strain.HEARTS),
+                (0, 2): Call(CallType.BID, 2, Strain.SPADES)
+            },
+            description="Partner passes or bids longer major over Cappelletti 2D"
+        ))
+        return proto
+
+    @staticmethod
+    def create_smolen() -> 'ConventionProtocol':
+        """Smolen: after 1NT - 2C - 2D, jump to 3M with 5 in the OTHER major."""
+        proto = ConventionProtocol("Smolen")
+        proto.add_step(ProtocolStep(
+            name="Smolen_Transfer",
+            op_type=ProtocolOpType.TRANSFER,
+            trigger_sequence=[Call(CallType.BID, 1, Strain.NT), Call(CallType.BID, 2, Strain.CLUBS), Call(CallType.BID, 2, Strain.DIAMONDS), Call(CallType.BID, 3, Strain.SPADES)],
+            target_feature="is_balanced",
+            call_mapping={
+                True: Call(CallType.BID, 4, Strain.HEARTS),
+                False: Call(CallType.BID, 4, Strain.HEARTS)
+            },
+            description="Opener with 3-card heart support converts Smolen 3S to 4H"
         ))
         return proto
 

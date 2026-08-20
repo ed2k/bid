@@ -85,13 +85,18 @@ cd bid
 Run the multi-iteration self-improving pipeline directly from CLI:
 
 ```bash
-PYTHONPATH=.. python3 main.py --iterations 3 --states 8 --deals 20
+PYTHONPATH=.. python3 main.py --iterations 10 --duration 120 --states 8 --deals 25
 ```
 
-Options:
-- `--iterations`: Number of continuous improvement cycles (default: 3).
-- `--states`: Number of ambiguous/rare states to sample & refine per cycle (default: 8).
-- `--deals`: Number of benchmark deals for evaluation (default: 20).
+### Finding the Best Bidding System (World Championship Tournament)
+
+Run a multi-board round-robin tournament (evaluating competing archetypes like Precision Strong Club, Modern 2/1 GF, SAYC, and Autonomous Evolved AI) to find the champion system:
+
+```bash
+PYTHONPATH=.. python3 main.py --tournament --boards 50
+```
+
+The champion bidding system code is automatically persisted to `system/champion_system.dsl`.
 
 ---
 
