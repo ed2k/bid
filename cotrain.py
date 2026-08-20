@@ -1,5 +1,5 @@
 from typing import Dict, List, Tuple, Any
-from bid.models import Seat, Hand, Call, CallType
+from bid.models import Seat, Hand, Call, CallType, Strain
 from bid.decision_net import DecisionNet
 from bid.sampling import Deal, PartialState, RBMBMCSampler
 from bid.pidm import PIDMEngine
@@ -66,13 +66,41 @@ class CoTrainer:
 
     def evaluate_partnership(self,
                              test_deals: List[Deal],
-                             fast_engine: PIDMEngine) -> float:
+                             fast_engine: PIDMEngine) -> Dict[str, float]:
         """
-        Evaluates the NS partnership performance over a set of test deals.
-        Returns average partnership duplicate points / utility.
+        Evaluates the NS partnership performance over a set of test deals against native DDS.
+        Returns a dict containing:
+        - avg_score: average partnership duplicate points
+        - avg_par: average theoretical DDS par score
+        - avg_regret: score - par (0 = perfect par)
+        - par_accuracy: % of boards where score >= par
+        - makable_game_reached: % of makable games found
         """
+        from bid.dds import DDSolver
         total_score = 0.0
+        total_par = 0.0
+        par_hits = 0
+        makable_games = 0
+        games_reached = 0
+
         for deal in test_deals:
+            # Calculate native DDS Par
+            par_score, par_contract = DDSolver.calculate_par(deal, deal.vuln)
+            total_par += par_score
+
+            # Check if 4M or 3NT is makable via DDS
+            dd_table = DDSolver.solve_dd_table(deal)
+            ns_can_make_game = (
+                dd_table.get((Strain.SPADES, Seat.NORTH), 0) >= 10 or
+                dd_table.get((Strain.SPADES, Seat.SOUTH), 0) >= 10 or
+                dd_table.get((Strain.HEARTS, Seat.NORTH), 0) >= 10 or
+                dd_table.get((Strain.HEARTS, Seat.SOUTH), 0) >= 10 or
+                dd_table.get((Strain.NT, Seat.NORTH), 0) >= 9 or
+                dd_table.get((Strain.NT, Seat.SOUTH), 0) >= 9
+            )
+            if ns_can_make_game:
+                makable_games += 1
+
             # Simulate auction from dealer
             history: List[Call] = []
             curr = deal.dealer
@@ -87,4 +115,28 @@ class CoTrainer:
             score = fast_engine.evaluate_terminal_deal(deal, history, Seat.SOUTH, deal.dealer, deal.vuln)
             total_score += score
 
-        return total_score / len(test_deals) if test_deals else 0.0
+            if score >= par_score:
+                par_hits += 1
+
+            p_state = PartialState(Seat.SOUTH, deal.hands[Seat.SOUTH], history, deal.dealer, deal.vuln)
+            contract = p_state.get_contract()
+            if contract:
+                lvl, strain, decl, _ = contract
+                if decl in (Seat.NORTH, Seat.SOUTH):
+                    if (strain in (Strain.SPADES, Strain.HEARTS) and lvl >= 4) or (strain == Strain.NT and lvl >= 3) or (lvl >= 5):
+                        if ns_can_make_game:
+                            games_reached += 1
+
+        n = len(test_deals) if test_deals else 1
+        avg_score = total_score / n
+        avg_par = total_par / n
+        par_accuracy = (par_hits / n) * 100.0
+        game_conversion = (games_reached / max(1, makable_games)) * 100.0 if makable_games else 100.0
+
+        return {
+            "avg_score": avg_score,
+            "avg_par": avg_par,
+            "avg_regret": avg_score - avg_par,
+            "par_accuracy": par_accuracy,
+            "game_conversion": game_conversion
+        }

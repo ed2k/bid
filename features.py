@@ -194,6 +194,36 @@ class BridgeFeatures:
         opp_bids = bids_by_seat[opp1] + bids_by_seat[opp2]
         features["opponents_bid"] = any(c.type == CallType.BID for c in opp_bids)
 
+        # Opponent last call and contract analysis
+        opp_calls_all = [c for c in history if (history.index(c) % 4) in ((my_seat.value + 1) % 4, (my_seat.value + 3) % 4)]
+        last_opp_bid = None
+        for c in reversed(history):
+            # Check if call was by opponent
+            caller_idx = history.index(c) % 4
+            caller_seat = Seat((dealer.value + history.index(c)) % 4)
+            if caller_seat in (opp1, opp2) and c.type == CallType.BID:
+                last_opp_bid = c
+                break
+
+        features["opp_last_call"] = str(last_opp_bid) if last_opp_bid else "NONE"
+        features["opp_contract_level"] = last_opp_bid.level if last_opp_bid else 0
+        features["opp_is_in_game"] = False
+        if last_opp_bid:
+            lvl = last_opp_bid.level
+            st = last_opp_bid.strain
+            if (lvl >= 4 and st in (Strain.HEARTS, Strain.SPADES)) or (lvl >= 3 and st == Strain.NT) or (lvl >= 5):
+                features["opp_is_in_game"] = True
+
+        # Vulnerability relations
+        my_vuln = Vulnerability.is_vulnerable(vuln, my_seat)
+        opp_vuln = Vulnerability.is_vulnerable(vuln, opp1)
+        features["is_favorable_vuln"] = (not my_vuln) and opp_vuln
+        features["is_equal_non_vuln"] = (not my_vuln) and (not opp_vuln)
+
+        # Balancing seat (2 consecutive passes after an opponent bid)
+        features["is_balancing"] = (passes_since_last_bid == 2) and (last_bid_seat in (opp1, opp2))
+        features["is_competitive"] = features["opponents_bid"] and not features["is_opening"]
+
         return features
 
     @staticmethod

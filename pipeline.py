@@ -12,6 +12,7 @@ from bid.cotrain import CoTrainer
 from bid.experience import StratifiedDealGenerator, ExperienceBuffer, PrioritizedExperience
 from bid.protocol import ConventionProtocol, ProtocolStep, ProtocolOpType, ValueOfInformationEvaluator
 from bid.invention import BidInventionEngine
+from bid.diagnostics import ParDiagnosticEngine, BiddingFlawType
 
 def run_continuous_improvement_pipeline(num_iterations: int = 15,
                                        duration_seconds: Optional[float] = 120.0,
@@ -56,12 +57,19 @@ def run_continuous_improvement_pipeline(num_iterations: int = 15,
     benchmark_deals.append(StratifiedDealGenerator.generate_stratified_deal(Seat.NORTH, hcp_stratum=(16, 18)))
     benchmark_deals.append(StratifiedDealGenerator.generate_stratified_deal(Seat.SOUTH, hcp_stratum=(0, 4)))
 
-    # Evaluate Baseline
+    # Evaluate Baseline against native DDS Par
     t0 = time.time()
-    baseline_score = cotrainer.evaluate_partnership(benchmark_deals, fast_engine)
+    baseline_metrics = cotrainer.evaluate_partnership(benchmark_deals, fast_engine)
+    baseline_score = baseline_metrics["avg_score"]
+    baseline_par = baseline_metrics["avg_par"]
+    baseline_acc = baseline_metrics["par_accuracy"]
+    baseline_conv = baseline_metrics["game_conversion"]
     baseline_time = (time.time() - t0) * 1000 / len(benchmark_deals)
 
-    print(f"📊 Baseline Partnership Avg Score: {baseline_score:+.1f} pts | Decision Latency: {baseline_time:.2f} ms/deal\n")
+    print(f"📊 Baseline Partnership Avg Score : {baseline_score:+.1f} pts (Theoretical Par: {baseline_par:+.1f} pts)")
+    print(f"   • DDS Par Accuracy Target      : {baseline_acc:.1f}% (Boards matching/exceeding Par)")
+    print(f"   • Makable Game Conversion      : {baseline_conv:.1f}% of makable games found")
+    print(f"   • Decision Latency             : {baseline_time:.2f} ms/deal\n")
 
     history_log = []
     iteration = 0
@@ -338,52 +346,93 @@ def run_continuous_improvement_pipeline(num_iterations: int = 15,
         engine.models = cotrainer.models
         cotrainer.models[Seat.SOUTH].save_dsl(dsl_output_path)
 
-        # Iteration Benchmark Evaluation
+        # Iteration Benchmark Evaluation against native DDS Par
         t_eval = time.time()
-        iter_score = cotrainer.evaluate_partnership(benchmark_deals, fast_engine)
+        iter_metrics = cotrainer.evaluate_partnership(benchmark_deals, fast_engine)
+        iter_score = iter_metrics["avg_score"]
+        iter_par = iter_metrics["avg_par"]
+        iter_acc = iter_metrics["par_accuracy"]
+        iter_conv = iter_metrics["game_conversion"]
         iter_latency = (time.time() - t_eval) * 1000 / len(benchmark_deals)
         iter_duration = time.time() - iter_start
 
         improvement = iter_score - baseline_score
         print(f"\n  📈 Iteration {iteration} Results:")
         print(f"     • Partnership Avg Score : {iter_score:+.1f} pts ({improvement:+.1f} pts vs baseline)")
+        print(f"     • DDS Par Accuracy      : {iter_acc:.1f}% (Theoretical Par: {iter_par:+.1f} pts)")
+        print(f"     • Makable Game Reached  : {iter_conv:.1f}% of makable games found")
         print(f"     • Decision Latency      : {iter_latency:.2f} ms/deal")
         print(f"     • Total Conflict Nodes  : {s_nodes + n_nodes}")
         print(f"     • Round Execution Time  : {iter_duration:.2f}s (Cumulative: {time.time() - pipeline_start:.1f}s)\n")
 
+        # Diagnostic Defect Analysis against native DDS
+        diagnostics = []
+        for d_idx, deal in enumerate(benchmark_deals, 1):
+            hist = []
+            curr = deal.dealer
+            while True:
+                ps = PartialState(curr, deal.hands[curr], hist, deal.dealer, deal.vuln)
+                if ps.is_auction_over() or len(hist) >= 20: break
+                c, _ = fast_engine.decide(ps, cotrainer.models)
+                hist.append(c)
+                curr = Seat((curr.value + 1) % 4)
+            b_score = fast_engine.evaluate_terminal_deal(deal, hist, Seat.SOUTH, deal.dealer, deal.vuln)
+            diag = ParDiagnosticEngine.diagnose_board(d_idx, deal, hist, b_score)
+            diagnostics.append(diag)
+
+        flaw_counts = {}
+        for d in diagnostics:
+            if d.flaw_type != BiddingFlawType.OPTIMAL_PAR:
+                flaw_counts[d.flaw_type.value] = flaw_counts.get(d.flaw_type.value, 0) + 1
+
+        flaws_summary = ", ".join(f"{k}: {v}" for k, v in flaw_counts.items()) if flaw_counts else "None (All Boards Optimal!)"
+        print(f"     • 🔍 Bidding Diagnostics: {flaws_summary}")
+
+        # Targeted Remediation: Synthesize corrective rules for diagnosed flaws
+        corrective_rules = ParDiagnosticEngine.generate_corrective_rules_for_diagnostics(diagnostics)
+        if corrective_rules:
+            for r in corrective_rules:
+                cotrainer.models[Seat.NORTH].add_rule(r)
+                cotrainer.models[Seat.SOUTH].add_rule(r)
+            print(f"     • 🔧 Targeted Remedies  : Applied {len(corrective_rules)} corrective rules for competitive defense & game maximization")
+
         history_log.append({
             "iteration": iteration,
             "score": iter_score,
+            "par": iter_par,
+            "par_accuracy": iter_acc,
+            "game_conversion": iter_conv,
             "improvement": improvement,
             "latency_ms": iter_latency,
             "conflict_nodes": s_nodes + n_nodes,
             "adopted_feature": adopted_feature,
-            "voi": voi_val
+            "voi": voi_val,
+            "flaws": flaws_summary
         })
 
     # Summary Report
     total_elapsed = time.time() - pipeline_start
-    print("=" * 85)
-    print(" 🏁 SUSTAINED CONTINUOUS IMPROVEMENT SUMMARY")
+    print("=" * 95)
+    print(" 🏁 SUSTAINED CONTINUOUS IMPROVEMENT SUMMARY (DDS BENCHMARK EVALUATION)")
     print(f"    Total Runtime: {total_elapsed:.2f}s | Completed Iterations: {len(history_log)}")
-    print("=" * 85)
-    print(f" {'Iter':<5} | {'Avg Score':<11} | {'Improvement':<13} | {'Latency':<11} | {'Nodes':<6} | {'Adopted Protocol'}")
-    print("-" * 85)
-    print(f" {'Base':<5} | {baseline_score:<+11.1f} | {'0.0 pts':<13} | {baseline_time:<7.2f} ms | {'0':<6} | (Initial Baseline)")
+    print("=" * 95)
+    print(f" {'Iter':<5} | {'Avg Score':<11} | {'DDS Par':<10} | {'Par Acc %':<10} | {'Game Conv':<10} | {'Gain vs Base':<13} | {'Adopted Protocol'}")
+    print("-" * 95)
+    print(f" {'Base':<5} | {baseline_score:<+11.1f} | {baseline_par:<+10.1f} | {baseline_acc:<9.1f}% | {baseline_conv:<9.1f}% | {'0.0 pts':<13} | (Initial Baseline)")
     for h in history_log:
-        print(f" {h['iteration']:<5} | {h['score']:<+11.1f} | {h['improvement']:<+9.1f} pts | {h['latency_ms']:<7.2f} ms | {h['conflict_nodes']:<6} | {h['adopted_feature']}")
-    print("=" * 85)
+        print(f" {h['iteration']:<5} | {h['score']:<+11.1f} | {h['par']:<+10.1f} | {h['par_accuracy']:<9.1f}% | {h['game_conversion']:<9.1f}% | {h['improvement']:<+9.1f} pts | {h['adopted_feature']}")
+    print("=" * 95)
 
     final_score = history_log[-1]["score"] if history_log else baseline_score
-    print(f"🎉 Net Partnership Gain: {final_score - baseline_score:+.1f} points after {len(history_log)} continuous iterations!")
+    print(f"🎉 Net Partnership Gain: {final_score - baseline_score:+.1f} points (Par Accuracy: {history_log[-1]['par_accuracy']:.1f}%) after {len(history_log)} continuous iterations!")
 
-    print("\n" + "=" * 85)
+    print("\n" + "=" * 95)
     print(" 💾 FINAL IMPROVED BIDDING SYSTEM CODE PERSISTED TO DISK")
-    print("=" * 85)
+    print("=" * 95)
     print(f" • Output File : {dsl_output_path}")
     print(f" • Total Rules : {len(cotrainer.models[Seat.SOUTH].rules)} rules")
     print(f" • ID3 Nodes   : {s_nodes + n_nodes} local exception trees attached")
-    print("=" * 85 + "\n")
+    print("=" * 95 + "\n")
 
     return {
         "baseline_score": baseline_score,

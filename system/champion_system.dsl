@@ -1,359 +1,68 @@
-# ==========================================
-# IMPROVED BIDDING SYSTEM: Apex_Omega_Precision
-# Generated via Continuous Self-Improvement Pipeline
-# ==========================================
+# Auto-Generated Bridge Bidding System DSL: Singularity_Ultra_Precision
+# Optimized with Strategic Defense, Sacrifice Protocols, and Native Bo Haglund DDSolver
 
-# --- Active Rules & Conventions ---
-
-RULE AOP_1C_STRONG:
-  CALL: 1C
-  PRIORITY: 36
-  CONDITION: is_opening == True
-  CONDITION: hcp >= 16
-
-RULE AOP_RESP_1D_NEG:
-  CALL: 1D
-  PRIORITY: 28
-  CONDITION: partner_last_call == 1C
-  CONDITION: hcp <= 7
-
-RULE AOP_RESP_1H_POS:
-  CALL: 1H
-  PRIORITY: 31
-  CONDITION: partner_last_call == 1C
-  CONDITION: hcp >= 8
-  CONDITION: heart_len >= 5
-
-RULE AOP_RESP_1S_POS:
-  CALL: 1S
-  PRIORITY: 31
-  CONDITION: partner_last_call == 1C
-  CONDITION: hcp >= 8
-  CONDITION: spade_len >= 5
-
-RULE AOP_RESP_1NT_POS:
-  CALL: 1NT
-  PRIORITY: 29
-  CONDITION: partner_last_call == 1C
-  CONDITION: hcp >= 8
-  CONDITION: hcp <= 13
-  CONDITION: is_balanced == True
-
-RULE AOP_RESP_2C_POS:
-  CALL: 2C
-  PRIORITY: 27
-  CONDITION: partner_last_call == 1C
-  CONDITION: hcp >= 8
-  CONDITION: club_len >= 5
-
-RULE AOP_RESP_2D_POS:
-  CALL: 2D
-  PRIORITY: 27
-  CONDITION: partner_last_call == 1C
-  CONDITION: hcp >= 8
-  CONDITION: diamond_len >= 5
-
-RULE AOP_RESP_3NT_POS:
-  CALL: 3NT
-  PRIORITY: 32
-  CONDITION: partner_last_call == 1C
-  CONDITION: hcp >= 14
-  CONDITION: is_balanced == True
-
-RULE AOP_REBID_1H:
-  CALL: 1H
-  PRIORITY: 27
-  CONDITION: partner_last_call == 1D
-  CONDITION: heart_len >= 4
-  CONDITION: hcp >= 16
-
-RULE AOP_REBID_1S:
-  CALL: 1S
-  PRIORITY: 27
-  CONDITION: partner_last_call == 1D
-  CONDITION: spade_len >= 4
-  CONDITION: hcp >= 16
-
-RULE AOP_REBID_1NT:
-  CALL: 1NT
-  PRIORITY: 25
-  CONDITION: partner_last_call == 1D
-  CONDITION: is_balanced == True
-  CONDITION: hcp >= 16
-  CONDITION: hcp <= 18
-
-RULE AOP_REBID_2NT:
-  CALL: 2NT
-  PRIORITY: 26
-  CONDITION: partner_last_call == 1D
-  CONDITION: is_balanced == True
-  CONDITION: hcp >= 19
-  CONDITION: hcp <= 21
-
-RULE AOP_REBID_3NT:
-  CALL: 3NT
-  PRIORITY: 28
-  CONDITION: partner_last_call == 1D
-  CONDITION: is_balanced == True
-  CONDITION: hcp >= 22
-
-RULE AOP_1NT_MINI:
-  CALL: 1NT
-  PRIORITY: 25
-  CONDITION: is_opening == True
-  CONDITION: hcp >= 14
-  CONDITION: hcp <= 16
-  CONDITION: is_balanced == True
-
-RULE AOP_1NT_RESP_3NT:
-  CALL: 3NT
-  PRIORITY: 22
-  CONDITION: partner_last_call == 1NT
-  CONDITION: is_balanced == True
-  CONDITION: hcp >= 10
-
-RULE AOP_OPEN_2NT:
-  CALL: 2NT
-  PRIORITY: 29
-  CONDITION: is_opening == True
-  CONDITION: hcp >= 20
-  CONDITION: hcp <= 21
-  CONDITION: is_balanced == True
-
-RULE AOP_2NT_RESP_3NT:
-  CALL: 3NT
-  PRIORITY: 23
-  CONDITION: partner_last_call == 2NT
-  CONDITION: hcp >= 4
-
-RULE AOP_OPEN_FLANNERY_2D:
-  CALL: 2D
-  PRIORITY: 24
-  CONDITION: is_opening == True
-  CONDITION: hcp >= 11
-  CONDITION: hcp <= 15
-  CONDITION: heart_len == 5
-  CONDITION: spade_len == 4
-
-RULE AOP_FLANNERY_RESP_2H:
-  CALL: 2H
-  PRIORITY: 22
-  CONDITION: partner_last_call == 2D
-  CONDITION: heart_len >= 3
-  CONDITION: hcp <= 10
-
-RULE AOP_FLANNERY_RESP_4H:
-  CALL: 4H
-  PRIORITY: 25
-  CONDITION: partner_last_call == 2D
-  CONDITION: heart_len >= 3
-  CONDITION: hcp >= 11
-
-RULE AOP_1H_LIM:
-  CALL: 1H
-  PRIORITY: 20
-  CONDITION: is_opening == True
-  CONDITION: hcp >= 11
-  CONDITION: hcp <= 15
-  CONDITION: heart_len >= 5
-
-RULE AOP_1S_LIM:
-  CALL: 1S
-  PRIORITY: 20
-  CONDITION: is_opening == True
-  CONDITION: hcp >= 11
-  CONDITION: hcp <= 15
-  CONDITION: spade_len >= 5
-
-RULE AOP_1D_LIM:
-  CALL: 1D
-  PRIORITY: 15
-  CONDITION: is_opening == True
-  CONDITION: hcp >= 11
-  CONDITION: hcp <= 15
-  CONDITION: diamond_len >= 2
-
-RULE AOP_BERGEN_3C_H:
-  CALL: 3C
-  PRIORITY: 23
-  CONDITION: partner_last_call == 1H
-  CONDITION: heart_len >= 4
-  CONDITION: hcp >= 10
-  CONDITION: hcp <= 11
-
-RULE AOP_BERGEN_3C_S:
-  CALL: 3C
-  PRIORITY: 23
-  CONDITION: partner_last_call == 1S
-  CONDITION: spade_len >= 4
-  CONDITION: hcp >= 10
-  CONDITION: hcp <= 11
-
-RULE AOP_BERGEN_3D_H:
-  CALL: 3D
-  PRIORITY: 23
-  CONDITION: partner_last_call == 1H
-  CONDITION: heart_len >= 4
-  CONDITION: hcp >= 6
-  CONDITION: hcp <= 9
-
-RULE AOP_BERGEN_3D_S:
-  CALL: 3D
-  PRIORITY: 23
-  CONDITION: partner_last_call == 1S
-  CONDITION: spade_len >= 4
-  CONDITION: hcp >= 6
-  CONDITION: hcp <= 9
-
-RULE AOP_JACOBY_2NT_H:
-  CALL: 2NT
-  PRIORITY: 25
-  CONDITION: partner_last_call == 1H
-  CONDITION: heart_len >= 4
-  CONDITION: hcp >= 12
-
-RULE AOP_JACOBY_2NT_S:
-  CALL: 2NT
-  PRIORITY: 25
-  CONDITION: partner_last_call == 1S
-  CONDITION: spade_len >= 4
-  CONDITION: hcp >= 12
-
-RULE AOP_ACCEPT_4H_MAX:
-  CALL: 4H
-  PRIORITY: 26
-  CONDITION: partner_last_call in ['3C', '3H']
-  CONDITION: heart_len >= 5
-  CONDITION: hcp >= 13
-
-RULE AOP_ACCEPT_4S_MAX:
-  CALL: 4S
-  PRIORITY: 26
-  CONDITION: partner_last_call in ['3C', '3S']
-  CONDITION: spade_len >= 5
-  CONDITION: hcp >= 13
-
-RULE AOP_RESP_2H:
-  CALL: 2H
-  PRIORITY: 18
-  CONDITION: partner_last_call == 1H
-  CONDITION: heart_len >= 3
-  CONDITION: hcp >= 6
-  CONDITION: hcp <= 9
-
-RULE AOP_RESP_4H:
-  CALL: 4H
-  PRIORITY: 24
-  CONDITION: partner_last_call == 1H
-  CONDITION: heart_len >= 4
-  CONDITION: hcp >= 12
-
-RULE AOP_RESP_2S:
-  CALL: 2S
-  PRIORITY: 18
-  CONDITION: partner_last_call == 1S
-  CONDITION: spade_len >= 3
-  CONDITION: hcp >= 6
-  CONDITION: hcp <= 9
-
-RULE AOP_RESP_4S:
-  CALL: 4S
-  PRIORITY: 24
-  CONDITION: partner_last_call == 1S
-  CONDITION: spade_len >= 4
-  CONDITION: hcp >= 12
-
-RULE AOP_2C_PREC:
-  CALL: 2C
-  PRIORITY: 21
-  CONDITION: is_opening == True
-  CONDITION: hcp >= 11
-  CONDITION: hcp <= 15
-  CONDITION: club_len >= 6
-
-RULE AOP_WEAK_2H:
-  CALL: 2H
-  PRIORITY: 19
-  CONDITION: is_opening == True
-  CONDITION: heart_len == 6
-  CONDITION: hcp >= 6
-  CONDITION: hcp <= 10
-  CONDITION: is_balanced == False
-
-RULE AOP_WEAK_2S:
-  CALL: 2S
-  PRIORITY: 19
-  CONDITION: is_opening == True
-  CONDITION: spade_len == 6
-  CONDITION: hcp >= 6
-  CONDITION: hcp <= 10
-  CONDITION: is_balanced == False
-
-RULE AOP_PREEMPT_3C:
-  CALL: 3C
-  PRIORITY: 22
-  CONDITION: is_opening == True
-  CONDITION: club_len >= 7
-  CONDITION: hcp >= 6
-  CONDITION: hcp <= 10
-
-RULE AOP_PREEMPT_3D:
-  CALL: 3D
-  PRIORITY: 22
-  CONDITION: is_opening == True
-  CONDITION: diamond_len >= 7
-  CONDITION: hcp >= 6
-  CONDITION: hcp <= 10
-
-RULE AOP_PREEMPT_3H:
-  CALL: 3H
-  PRIORITY: 23
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 7
-  CONDITION: hcp >= 6
-  CONDITION: hcp <= 10
-
-RULE AOP_PREEMPT_3S:
-  CALL: 3S
-  PRIORITY: 23
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 7
-  CONDITION: hcp >= 6
-  CONDITION: hcp <= 10
-
-RULE AOP_SLAM_6H:
-  CALL: 6H
-  PRIORITY: 28
-  CONDITION: partner_last_call in ['1H', '2H', '3H', '4H']
-  CONDITION: heart_len >= 5
-  CONDITION: hcp >= 18
-
-RULE AOP_SLAM_6S:
-  CALL: 6S
-  PRIORITY: 28
-  CONDITION: partner_last_call in ['1S', '2S', '3S', '4S']
-  CONDITION: spade_len >= 5
-  CONDITION: hcp >= 18
-
-RULE AOP_SLAM_6NT:
-  CALL: 6NT
-  PRIORITY: 28
-  CONDITION: partner_last_call in ['1NT', '2NT', '3NT']
-  CONDITION: is_balanced == True
-  CONDITION: hcp >= 17
-
-RULE AOP_GRAND_7H:
-  CALL: 7H
-  PRIORITY: 34
-  CONDITION: partner_last_call in ['4H', '6H']
-  CONDITION: heart_len >= 5
-  CONDITION: hcp >= 22
-  CONDITION: controls >= 8
-
-RULE AOP_GRAND_7S:
-  CALL: 7S
-  PRIORITY: 34
-  CONDITION: partner_last_call in ['4S', '6S']
-  CONDITION: spade_len >= 5
-  CONDITION: hcp >= 22
-  CONDITION: controls >= 8
+RULE SUP_1C_STRONG                    PRIORITY 37 ACTION 1C    WHEN is_opening == True, hcp >= 16
+RULE SUP_REBID_6S_OVER_1S             PRIORITY 37 ACTION 6S    WHEN partner_last_call == 1S, spade_len >= 3, hcp >= 20
+RULE SUP_REBID_6H_OVER_1H             PRIORITY 37 ACTION 6H    WHEN partner_last_call == 1H, heart_len >= 3, hcp >= 20
+RULE SUP_REBID_6NT_OVER_1NT           PRIORITY 37 ACTION 6NT   WHEN partner_last_call == 1NT, is_balanced == True, hcp >= 20
+RULE SUP_SACRIFICE_4S_OVER_4H         PRIORITY 36 ACTION 4S    WHEN opp_last_call in ['4H', '3H'], spade_len >= 5, is_vulnerable == False
+RULE SUP_SACRIFICE_5C_OVER_4M         PRIORITY 35 ACTION 5C    WHEN opp_last_call in ['4H', '4S'], club_len >= 6, is_vulnerable == False
+RULE SUP_SACRIFICE_5D_OVER_4M         PRIORITY 35 ACTION 5D    WHEN opp_last_call in ['4H', '4S'], diamond_len >= 6, is_vulnerable == False
+RULE SUP_REBID_4S_OVER_1S             PRIORITY 34 ACTION 4S    WHEN partner_last_call == 1S, spade_len >= 3, hcp >= 16
+RULE SUP_REBID_4H_OVER_1H             PRIORITY 34 ACTION 4H    WHEN partner_last_call == 1H, heart_len >= 3, hcp >= 16
+RULE SUP_RESP_3NT_POS                 PRIORITY 33 ACTION 3NT   WHEN partner_last_call == 1C, hcp >= 14, is_balanced == True
+RULE SUP_REBID_3NT_OVER_POS           PRIORITY 33 ACTION 3NT   WHEN partner_last_call in ['1NT', '2C', '2D'], hcp >= 16
+RULE SUP_RESP_1H_POS                  PRIORITY 32 ACTION 1H    WHEN partner_last_call == 1C, hcp >= 8, heart_len >= 5
+RULE SUP_RESP_1S_POS                  PRIORITY 32 ACTION 1S    WHEN partner_last_call == 1C, hcp >= 8, spade_len >= 5
+RULE SUP_REBID_3NT_OVER_1S            PRIORITY 31 ACTION 3NT   WHEN partner_last_call == 1S, spade_len <= 2, hcp >= 16
+RULE SUP_REBID_3NT_OVER_1H            PRIORITY 31 ACTION 3NT   WHEN partner_last_call == 1H, heart_len <= 2, hcp >= 16
+RULE SUP_RESP_1NT_POS                 PRIORITY 30 ACTION 1NT   WHEN partner_last_call == 1C, hcp >= 8, hcp <= 13, is_balanced == True
+RULE SUP_OPEN_2NT                     PRIORITY 29 ACTION 2NT   WHEN is_opening == True, hcp >= 20, hcp <= 21, is_balanced == True
+RULE SUP_2NT_RESP_6NT                 PRIORITY 29 ACTION 6NT   WHEN partner_last_call == 2NT, is_balanced == True, hcp >= 12
+RULE SUP_RESP_1D_NEG                  PRIORITY 28 ACTION 1D    WHEN partner_last_call == 1C, hcp <= 7
+RULE SUP_RESP_2C_POS                  PRIORITY 28 ACTION 2C    WHEN partner_last_call == 1C, hcp >= 8, club_len >= 5
+RULE SUP_RESP_2D_POS                  PRIORITY 28 ACTION 2D    WHEN partner_last_call == 1C, hcp >= 8, diamond_len >= 5
+RULE SUP_REBID_3NT                    PRIORITY 28 ACTION 3NT   WHEN partner_last_call == 1D, is_balanced == True, hcp >= 22
+RULE SUP_SLAM_6H                      PRIORITY 28 ACTION 6H    WHEN partner_last_call in ['1H', '2H', '3H', '4H'], heart_len >= 5, hcp >= 18
+RULE SUP_SLAM_6S                      PRIORITY 28 ACTION 6S    WHEN partner_last_call in ['1S', '2S', '3S', '4S'], spade_len >= 5, hcp >= 18
+RULE SUP_REBID_1H                     PRIORITY 27 ACTION 1H    WHEN partner_last_call == 1D, heart_len >= 4, hcp >= 16
+RULE SUP_REBID_1S                     PRIORITY 27 ACTION 1S    WHEN partner_last_call == 1D, spade_len >= 4, hcp >= 16
+RULE SUP_1NT_RESP_4NT_QUANT           PRIORITY 27 ACTION 4NT   WHEN partner_last_call == 1NT, is_balanced == True, hcp >= 15, hcp <= 16
+RULE SUP_REBID_2NT                    PRIORITY 26 ACTION 2NT   WHEN partner_last_call == 1D, is_balanced == True, hcp >= 19, hcp <= 21
+RULE SUP_SPLINTER_4C_H                PRIORITY 26 ACTION 4C    WHEN partner_last_call == 1H, heart_len >= 4, club_len <= 1, hcp >= 11, hcp <= 14
+RULE SUP_SPLINTER_4D_H                PRIORITY 26 ACTION 4D    WHEN partner_last_call == 1H, heart_len >= 4, diamond_len <= 1, hcp >= 11, hcp <= 14
+RULE SUP_SPLINTER_4C_S                PRIORITY 26 ACTION 4C    WHEN partner_last_call == 1S, spade_len >= 4, club_len <= 1, hcp >= 11, hcp <= 14
+RULE SUP_SPLINTER_4D_S                PRIORITY 26 ACTION 4D    WHEN partner_last_call == 1S, spade_len >= 4, diamond_len <= 1, hcp >= 11, hcp <= 14
+RULE SUP_ACCEPT_4H_MAX                PRIORITY 26 ACTION 4H    WHEN partner_last_call in ['3C', '3H'], heart_len >= 5, hcp >= 13
+RULE SUP_ACCEPT_4S_MAX                PRIORITY 26 ACTION 4S    WHEN partner_last_call in ['3C', '3S'], spade_len >= 5, hcp >= 13
+RULE SUP_REBID_1NT                    PRIORITY 25 ACTION 1NT   WHEN partner_last_call == 1D, is_balanced == True, hcp >= 16, hcp <= 18
+RULE SUP_1NT_MINI                     PRIORITY 25 ACTION 1NT   WHEN is_opening == True, hcp >= 14, hcp <= 16, is_balanced == True
+RULE SUP_FLANNERY_RESP_4H             PRIORITY 25 ACTION 4H    WHEN partner_last_call == 2D, heart_len >= 3, hcp >= 11
+RULE SUP_JACOBY_2NT_H                 PRIORITY 25 ACTION 2NT   WHEN partner_last_call == 1H, heart_len >= 4, hcp >= 12
+RULE SUP_JACOBY_2NT_S                 PRIORITY 25 ACTION 2NT   WHEN partner_last_call == 1S, spade_len >= 4, hcp >= 12
+RULE SUP_COMPETITIVE_TAKEOUT_DBL      PRIORITY 25 ACTION X     WHEN is_competitive == True, hcp >= 12, heart_len >= 3, spade_len >= 3
+RULE SUP_OPEN_FLANNERY_2D             PRIORITY 24 ACTION 2D    WHEN is_opening == True, hcp >= 11, hcp <= 15, heart_len == 5, spade_len == 4
+RULE SUP_RESP_4H                      PRIORITY 24 ACTION 4H    WHEN partner_last_call == 1H, heart_len >= 4, hcp >= 12
+RULE SUP_RESP_4S                      PRIORITY 24 ACTION 4S    WHEN partner_last_call == 1S, spade_len >= 4, hcp >= 12
+RULE SUP_BALANCING_1NT                PRIORITY 24 ACTION 1NT   WHEN is_balancing == True, hcp >= 11, is_balanced == True
+RULE SUP_2NT_RESP_3NT                 PRIORITY 23 ACTION 3NT   WHEN partner_last_call == 2NT, hcp >= 4, hcp <= 11
+RULE SUP_BERGEN_3C_H                  PRIORITY 23 ACTION 3C    WHEN partner_last_call == 1H, heart_len >= 4, hcp >= 10, hcp <= 11
+RULE SUP_BERGEN_3C_S                  PRIORITY 23 ACTION 3C    WHEN partner_last_call == 1S, spade_len >= 4, hcp >= 10, hcp <= 11
+RULE SUP_BERGEN_3D_H                  PRIORITY 23 ACTION 3D    WHEN partner_last_call == 1H, heart_len >= 4, hcp >= 6, hcp <= 9
+RULE SUP_BERGEN_3D_S                  PRIORITY 23 ACTION 3D    WHEN partner_last_call == 1S, spade_len >= 4, hcp >= 6, hcp <= 9
+RULE SUP_PREEMPT_3H                   PRIORITY 23 ACTION 3H    WHEN is_opening == True, heart_len >= 7, hcp >= 6, hcp <= 10
+RULE SUP_PREEMPT_3S                   PRIORITY 23 ACTION 3S    WHEN is_opening == True, spade_len >= 7, hcp >= 6, hcp <= 10
+RULE SUP_BALANCING_1S                 PRIORITY 23 ACTION 1S    WHEN is_balancing == True, spade_len >= 5, hcp >= 8
+RULE SUP_BALANCING_1H                 PRIORITY 23 ACTION 1H    WHEN is_balancing == True, heart_len >= 5, hcp >= 8
+RULE SUP_1NT_RESP_3NT                 PRIORITY 22 ACTION 3NT   WHEN partner_last_call == 1NT, is_balanced == True, hcp >= 10, hcp <= 14
+RULE SUP_FLANNERY_RESP_2H             PRIORITY 22 ACTION 2H    WHEN partner_last_call == 2D, heart_len >= 3, hcp <= 10
+RULE SUP_PREEMPT_3C                   PRIORITY 22 ACTION 3C    WHEN is_opening == True, club_len >= 7, hcp >= 6, hcp <= 10
+RULE SUP_PREEMPT_3D                   PRIORITY 22 ACTION 3D    WHEN is_opening == True, diamond_len >= 7, hcp >= 6, hcp <= 10
+RULE SUP_2C_PREC                      PRIORITY 21 ACTION 2C    WHEN is_opening == True, hcp >= 11, hcp <= 15, club_len >= 6
+RULE SUP_1H_LIM                       PRIORITY 20 ACTION 1H    WHEN is_opening == True, hcp >= 11, hcp <= 15, heart_len >= 5
+RULE SUP_1S_LIM                       PRIORITY 20 ACTION 1S    WHEN is_opening == True, hcp >= 11, hcp <= 15, spade_len >= 5
+RULE SUP_WEAK_2H                      PRIORITY 19 ACTION 2H    WHEN is_opening == True, heart_len == 6, hcp >= 6, hcp <= 10, is_balanced == False
+RULE SUP_WEAK_2S                      PRIORITY 19 ACTION 2S    WHEN is_opening == True, spade_len == 6, hcp >= 6, hcp <= 10, is_balanced == False
+RULE SUP_RESP_2H                      PRIORITY 18 ACTION 2H    WHEN partner_last_call == 1H, heart_len >= 3, hcp >= 6, hcp <= 9
+RULE SUP_RESP_2S                      PRIORITY 18 ACTION 2S    WHEN partner_last_call == 1S, spade_len >= 3, hcp >= 6, hcp <= 9
+RULE SUP_1D_LIM                       PRIORITY 15 ACTION 1D    WHEN is_opening == True, hcp >= 11, hcp <= 15, diamond_len >= 2
