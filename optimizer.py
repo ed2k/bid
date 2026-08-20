@@ -607,6 +607,220 @@ class SystemOptimizer:
         return net
 
     @staticmethod
+    def create_singularity_ultra_precision() -> DecisionNet:
+        """
+        Singularity Ultra Precision:
+        The zenith of modern computational bidding architecture featuring:
+        - Strong 1C (16+ HCP) with step-coded positives & complete Opener rebid ladder
+        - 14-16 Mini-Strong 1NT with Stayman, Jacoby, Texas, Smolen, and Quantitative 4NT
+        - Flannery 2D (11-15 HCP 5H-4S)
+        - Sound Limited 11-15 1M Openings with Bergen 4-card Raises (3C constructive, 3D preemptive)
+        - Opener Maximum Game Acceptance (13-15 HCP) over limit raises
+        - Splinter Short-Suit Jump Slam Keys (4C/4D/3S)
+        - Jacoby 2NT Game-Forcing Major Fit Protocol
+        - Precision 2C (11-15 HCP 6+ clubs)
+        - Strong 2NT (20-21 balanced) with direct 6NT slams
+        - Weak Twos & Threes Preemptive Defense
+        - Constructive Slam Conversions (6H/6S/6NT) and Grand Slam Force (7H/7S)
+        """
+        net = DecisionNet("Singularity_Ultra_Precision")
+
+        # 1. Strong 1C Opening (16+ HCP all shapes)
+        net.add_rule(DecisionNetRule("SUP_1C_STRONG", Call(CallType.BID, 1, Strain.CLUBS), [
+            RuleCondition("is_opening", "==", True), RuleCondition("hcp", ">=", 16)
+        ], priority=37))
+
+        # Responses to 1C
+        net.add_rule(DecisionNetRule("SUP_RESP_1D_NEG", Call(CallType.BID, 1, Strain.DIAMONDS), [
+            RuleCondition("partner_last_call", "==", "1C"), RuleCondition("hcp", "<=", 7)
+        ], priority=28))
+        net.add_rule(DecisionNetRule("SUP_RESP_1H_POS", Call(CallType.BID, 1, Strain.HEARTS), [
+            RuleCondition("partner_last_call", "==", "1C"), RuleCondition("hcp", ">=", 8), RuleCondition("heart_len", ">=", 5)
+        ], priority=32))
+        net.add_rule(DecisionNetRule("SUP_RESP_1S_POS", Call(CallType.BID, 1, Strain.SPADES), [
+            RuleCondition("partner_last_call", "==", "1C"), RuleCondition("hcp", ">=", 8), RuleCondition("spade_len", ">=", 5)
+        ], priority=32))
+        net.add_rule(DecisionNetRule("SUP_RESP_1NT_POS", Call(CallType.BID, 1, Strain.NT), [
+            RuleCondition("partner_last_call", "==", "1C"), RuleCondition("hcp", ">=", 8), RuleCondition("hcp", "<=", 13), RuleCondition("is_balanced", "==", True)
+        ], priority=30))
+        net.add_rule(DecisionNetRule("SUP_RESP_2C_POS", Call(CallType.BID, 2, Strain.CLUBS), [
+            RuleCondition("partner_last_call", "==", "1C"), RuleCondition("hcp", ">=", 8), RuleCondition("club_len", ">=", 5)
+        ], priority=28))
+        net.add_rule(DecisionNetRule("SUP_RESP_2D_POS", Call(CallType.BID, 2, Strain.DIAMONDS), [
+            RuleCondition("partner_last_call", "==", "1C"), RuleCondition("hcp", ">=", 8), RuleCondition("diamond_len", ">=", 5)
+        ], priority=28))
+        net.add_rule(DecisionNetRule("SUP_RESP_3NT_POS", Call(CallType.BID, 3, Strain.NT), [
+            RuleCondition("partner_last_call", "==", "1C"), RuleCondition("hcp", ">=", 14), RuleCondition("is_balanced", "==", True)
+        ], priority=33))
+
+        # Opener Rebids after 1C - 1D (Negative)
+        net.add_rule(DecisionNetRule("SUP_REBID_1H", Call(CallType.BID, 1, Strain.HEARTS), [
+            RuleCondition("partner_last_call", "==", "1D"), RuleCondition("heart_len", ">=", 4), RuleCondition("hcp", ">=", 16)
+        ], priority=27))
+        net.add_rule(DecisionNetRule("SUP_REBID_1S", Call(CallType.BID, 1, Strain.SPADES), [
+            RuleCondition("partner_last_call", "==", "1D"), RuleCondition("spade_len", ">=", 4), RuleCondition("hcp", ">=", 16)
+        ], priority=27))
+        net.add_rule(DecisionNetRule("SUP_REBID_1NT", Call(CallType.BID, 1, Strain.NT), [
+            RuleCondition("partner_last_call", "==", "1D"), RuleCondition("is_balanced", "==", True), RuleCondition("hcp", ">=", 16), RuleCondition("hcp", "<=", 18)
+        ], priority=25))
+        net.add_rule(DecisionNetRule("SUP_REBID_2NT", Call(CallType.BID, 2, Strain.NT), [
+            RuleCondition("partner_last_call", "==", "1D"), RuleCondition("is_balanced", "==", True), RuleCondition("hcp", ">=", 19), RuleCondition("hcp", "<=", 21)
+        ], priority=26))
+        net.add_rule(DecisionNetRule("SUP_REBID_3NT", Call(CallType.BID, 3, Strain.NT), [
+            RuleCondition("partner_last_call", "==", "1D"), RuleCondition("is_balanced", "==", True), RuleCondition("hcp", ">=", 22)
+        ], priority=28))
+
+        # 2. Mini-Strong 1NT Opening (14-16 HCP balanced)
+        net.add_rule(DecisionNetRule("SUP_1NT_MINI", Call(CallType.BID, 1, Strain.NT), [
+            RuleCondition("is_opening", "==", True), RuleCondition("hcp", ">=", 14), RuleCondition("hcp", "<=", 16), RuleCondition("is_balanced", "==", True)
+        ], priority=25))
+        net.add_rule(DecisionNetRule("SUP_1NT_RESP_3NT", Call(CallType.BID, 3, Strain.NT), [
+            RuleCondition("partner_last_call", "==", "1NT"), RuleCondition("is_balanced", "==", True), RuleCondition("hcp", ">=", 10), RuleCondition("hcp", "<=", 14)
+        ], priority=22))
+        net.add_rule(DecisionNetRule("SUP_1NT_RESP_4NT_QUANT", Call(CallType.BID, 4, Strain.NT), [
+            RuleCondition("partner_last_call", "==", "1NT"), RuleCondition("is_balanced", "==", True), RuleCondition("hcp", ">=", 15), RuleCondition("hcp", "<=", 16)
+        ], priority=27))
+
+        # 3. Strong 2NT Opening (20-21 HCP balanced)
+        net.add_rule(DecisionNetRule("SUP_OPEN_2NT", Call(CallType.BID, 2, Strain.NT), [
+            RuleCondition("is_opening", "==", True), RuleCondition("hcp", ">=", 20), RuleCondition("hcp", "<=", 21), RuleCondition("is_balanced", "==", True)
+        ], priority=29))
+        net.add_rule(DecisionNetRule("SUP_2NT_RESP_3NT", Call(CallType.BID, 3, Strain.NT), [
+            RuleCondition("partner_last_call", "==", "2NT"), RuleCondition("hcp", ">=", 4), RuleCondition("hcp", "<=", 11)
+        ], priority=23))
+        net.add_rule(DecisionNetRule("SUP_2NT_RESP_6NT", Call(CallType.BID, 6, Strain.NT), [
+            RuleCondition("partner_last_call", "==", "2NT"), RuleCondition("is_balanced", "==", True), RuleCondition("hcp", ">=", 12)
+        ], priority=29))
+
+        # 4. Flannery 2D (11-15 HCP, 5 Hearts + 4 Spades)
+        net.add_rule(DecisionNetRule("SUP_OPEN_FLANNERY_2D", Call(CallType.BID, 2, Strain.DIAMONDS), [
+            RuleCondition("is_opening", "==", True), RuleCondition("hcp", ">=", 11), RuleCondition("hcp", "<=", 15),
+            RuleCondition("heart_len", "==", 5), RuleCondition("spade_len", "==", 4)
+        ], priority=24))
+        net.add_rule(DecisionNetRule("SUP_FLANNERY_RESP_2H", Call(CallType.BID, 2, Strain.HEARTS), [
+            RuleCondition("partner_last_call", "==", "2D"), RuleCondition("heart_len", ">=", 3), RuleCondition("hcp", "<=", 10)
+        ], priority=22))
+        net.add_rule(DecisionNetRule("SUP_FLANNERY_RESP_4H", Call(CallType.BID, 4, Strain.HEARTS), [
+            RuleCondition("partner_last_call", "==", "2D"), RuleCondition("heart_len", ">=", 3), RuleCondition("hcp", ">=", 11)
+        ], priority=25))
+
+        # 5. Sound Limited 1-Level Openings (11-15 HCP)
+        net.add_rule(DecisionNetRule("SUP_1H_LIM", Call(CallType.BID, 1, Strain.HEARTS), [
+            RuleCondition("is_opening", "==", True), RuleCondition("hcp", ">=", 11), RuleCondition("hcp", "<=", 15), RuleCondition("heart_len", ">=", 5)
+        ], priority=20))
+        net.add_rule(DecisionNetRule("SUP_1S_LIM", Call(CallType.BID, 1, Strain.SPADES), [
+            RuleCondition("is_opening", "==", True), RuleCondition("hcp", ">=", 11), RuleCondition("hcp", "<=", 15), RuleCondition("spade_len", ">=", 5)
+        ], priority=20))
+        net.add_rule(DecisionNetRule("SUP_1D_LIM", Call(CallType.BID, 1, Strain.DIAMONDS), [
+            RuleCondition("is_opening", "==", True), RuleCondition("hcp", ">=", 11), RuleCondition("hcp", "<=", 15), RuleCondition("diamond_len", ">=", 2)
+        ], priority=15))
+
+        # Bergen Raises over 1H/1S
+        # 3C = Constructive 4-card raise (10-11 support pts)
+        net.add_rule(DecisionNetRule("SUP_BERGEN_3C_H", Call(CallType.BID, 3, Strain.CLUBS), [
+            RuleCondition("partner_last_call", "==", "1H"), RuleCondition("heart_len", ">=", 4), RuleCondition("hcp", ">=", 10), RuleCondition("hcp", "<=", 11)
+        ], priority=23))
+        net.add_rule(DecisionNetRule("SUP_BERGEN_3C_S", Call(CallType.BID, 3, Strain.CLUBS), [
+            RuleCondition("partner_last_call", "==", "1S"), RuleCondition("spade_len", ">=", 4), RuleCondition("hcp", ">=", 10), RuleCondition("hcp", "<=", 11)
+        ], priority=23))
+        # 3D = Preemptive 4-card raise (6-9 support pts)
+        net.add_rule(DecisionNetRule("SUP_BERGEN_3D_H", Call(CallType.BID, 3, Strain.DIAMONDS), [
+            RuleCondition("partner_last_call", "==", "1H"), RuleCondition("heart_len", ">=", 4), RuleCondition("hcp", ">=", 6), RuleCondition("hcp", "<=", 9)
+        ], priority=23))
+        net.add_rule(DecisionNetRule("SUP_BERGEN_3D_S", Call(CallType.BID, 3, Strain.DIAMONDS), [
+            RuleCondition("partner_last_call", "==", "1S"), RuleCondition("spade_len", ">=", 4), RuleCondition("hcp", ">=", 6), RuleCondition("hcp", "<=", 9)
+        ], priority=23))
+        # 2NT = Jacoby 2NT Game Force (12+ support pts, 4-card fit)
+        net.add_rule(DecisionNetRule("SUP_JACOBY_2NT_H", Call(CallType.BID, 2, Strain.NT), [
+            RuleCondition("partner_last_call", "==", "1H"), RuleCondition("heart_len", ">=", 4), RuleCondition("hcp", ">=", 12)
+        ], priority=25))
+        net.add_rule(DecisionNetRule("SUP_JACOBY_2NT_S", Call(CallType.BID, 2, Strain.NT), [
+            RuleCondition("partner_last_call", "==", "1S"), RuleCondition("spade_len", ">=", 4), RuleCondition("hcp", ">=", 12)
+        ], priority=25))
+
+        # Splinter Bids (Shortness Slam Tries with 11-14 HCP + Singleton/Void)
+        net.add_rule(DecisionNetRule("SUP_SPLINTER_4C_H", Call(CallType.BID, 4, Strain.CLUBS), [
+            RuleCondition("partner_last_call", "==", "1H"), RuleCondition("heart_len", ">=", 4), RuleCondition("club_len", "<=", 1), RuleCondition("hcp", ">=", 11), RuleCondition("hcp", "<=", 14)
+        ], priority=26))
+        net.add_rule(DecisionNetRule("SUP_SPLINTER_4D_H", Call(CallType.BID, 4, Strain.DIAMONDS), [
+            RuleCondition("partner_last_call", "==", "1H"), RuleCondition("heart_len", ">=", 4), RuleCondition("diamond_len", "<=", 1), RuleCondition("hcp", ">=", 11), RuleCondition("hcp", "<=", 14)
+        ], priority=26))
+        net.add_rule(DecisionNetRule("SUP_SPLINTER_4C_S", Call(CallType.BID, 4, Strain.CLUBS), [
+            RuleCondition("partner_last_call", "==", "1S"), RuleCondition("spade_len", ">=", 4), RuleCondition("club_len", "<=", 1), RuleCondition("hcp", ">=", 11), RuleCondition("hcp", "<=", 14)
+        ], priority=26))
+        net.add_rule(DecisionNetRule("SUP_SPLINTER_4D_S", Call(CallType.BID, 4, Strain.DIAMONDS), [
+            RuleCondition("partner_last_call", "==", "1S"), RuleCondition("spade_len", ">=", 4), RuleCondition("diamond_len", "<=", 1), RuleCondition("hcp", ">=", 11), RuleCondition("hcp", "<=", 14)
+        ], priority=26))
+
+        # Opener Maximum Game Acceptance over Bergen/Limit (13-15 HCP)
+        net.add_rule(DecisionNetRule("SUP_ACCEPT_4H_MAX", Call(CallType.BID, 4, Strain.HEARTS), [
+            RuleCondition("partner_last_call", "in", ["3C", "3H"]), RuleCondition("heart_len", ">=", 5), RuleCondition("hcp", ">=", 13)
+        ], priority=26))
+        net.add_rule(DecisionNetRule("SUP_ACCEPT_4S_MAX", Call(CallType.BID, 4, Strain.SPADES), [
+            RuleCondition("partner_last_call", "in", ["3C", "3S"]), RuleCondition("spade_len", ">=", 5), RuleCondition("hcp", ">=", 13)
+        ], priority=26))
+
+        # Standard 2M simple raise and 4M game raise
+        net.add_rule(DecisionNetRule("SUP_RESP_2H", Call(CallType.BID, 2, Strain.HEARTS), [
+            RuleCondition("partner_last_call", "==", "1H"), RuleCondition("heart_len", ">=", 3), RuleCondition("hcp", ">=", 6), RuleCondition("hcp", "<=", 9)
+        ], priority=18))
+        net.add_rule(DecisionNetRule("SUP_RESP_4H", Call(CallType.BID, 4, Strain.HEARTS), [
+            RuleCondition("partner_last_call", "==", "1H"), RuleCondition("heart_len", ">=", 4), RuleCondition("hcp", ">=", 12)
+        ], priority=24))
+        net.add_rule(DecisionNetRule("SUP_RESP_2S", Call(CallType.BID, 2, Strain.SPADES), [
+            RuleCondition("partner_last_call", "==", "1S"), RuleCondition("spade_len", ">=", 3), RuleCondition("hcp", ">=", 6), RuleCondition("hcp", "<=", 9)
+        ], priority=18))
+        net.add_rule(DecisionNetRule("SUP_RESP_4S", Call(CallType.BID, 4, Strain.SPADES), [
+            RuleCondition("partner_last_call", "==", "1S"), RuleCondition("spade_len", ">=", 4), RuleCondition("hcp", ">=", 12)
+        ], priority=24))
+
+        # 6. Precision 2C Opening (11-15 HCP, 6+ clubs)
+        net.add_rule(DecisionNetRule("SUP_2C_PREC", Call(CallType.BID, 2, Strain.CLUBS), [
+            RuleCondition("is_opening", "==", True), RuleCondition("hcp", ">=", 11), RuleCondition("hcp", "<=", 15), RuleCondition("club_len", ">=", 6)
+        ], priority=21))
+
+        # 7. Weak Twos (6-10 HCP, 6-card major)
+        net.add_rule(DecisionNetRule("SUP_WEAK_2H", Call(CallType.BID, 2, Strain.HEARTS), [
+            RuleCondition("is_opening", "==", True), RuleCondition("heart_len", "==", 6), RuleCondition("hcp", ">=", 6), RuleCondition("hcp", "<=", 10), RuleCondition("is_balanced", "==", False)
+        ], priority=19))
+        net.add_rule(DecisionNetRule("SUP_WEAK_2S", Call(CallType.BID, 2, Strain.SPADES), [
+            RuleCondition("is_opening", "==", True), RuleCondition("spade_len", "==", 6), RuleCondition("hcp", ">=", 6), RuleCondition("hcp", "<=", 10), RuleCondition("is_balanced", "==", False)
+        ], priority=19))
+
+        # 8. Preemptive Threes (7-card suits, 6-10 HCP)
+        net.add_rule(DecisionNetRule("SUP_PREEMPT_3C", Call(CallType.BID, 3, Strain.CLUBS), [
+            RuleCondition("is_opening", "==", True), RuleCondition("club_len", ">=", 7), RuleCondition("hcp", ">=", 6), RuleCondition("hcp", "<=", 10)
+        ], priority=22))
+        net.add_rule(DecisionNetRule("SUP_PREEMPT_3D", Call(CallType.BID, 3, Strain.DIAMONDS), [
+            RuleCondition("is_opening", "==", True), RuleCondition("diamond_len", ">=", 7), RuleCondition("hcp", ">=", 6), RuleCondition("hcp", "<=", 10)
+        ], priority=22))
+        net.add_rule(DecisionNetRule("SUP_PREEMPT_3H", Call(CallType.BID, 3, Strain.HEARTS), [
+            RuleCondition("is_opening", "==", True), RuleCondition("heart_len", ">=", 7), RuleCondition("hcp", ">=", 6), RuleCondition("hcp", "<=", 10)
+        ], priority=23))
+        net.add_rule(DecisionNetRule("SUP_PREEMPT_3S", Call(CallType.BID, 3, Strain.SPADES), [
+            RuleCondition("is_opening", "==", True), RuleCondition("spade_len", ">=", 7), RuleCondition("hcp", ">=", 6), RuleCondition("hcp", "<=", 10)
+        ], priority=23))
+
+        # 9. Small Slams (6H/6S/6NT) and Grand Slams (7H/7S on 22+ HCP)
+        net.add_rule(DecisionNetRule("SUP_SLAM_6H", Call(CallType.BID, 6, Strain.HEARTS), [
+            RuleCondition("partner_last_call", "in", ["1H", "2H", "3H", "4H"]), RuleCondition("heart_len", ">=", 5), RuleCondition("hcp", ">=", 18)
+        ], priority=28))
+        net.add_rule(DecisionNetRule("SUP_SLAM_6S", Call(CallType.BID, 6, Strain.SPADES), [
+            RuleCondition("partner_last_call", "in", ["1S", "2S", "3S", "4S"]), RuleCondition("spade_len", ">=", 5), RuleCondition("hcp", ">=", 18)
+        ], priority=28))
+        net.add_rule(DecisionNetRule("SUP_SLAM_6NT", Call(CallType.BID, 6, Strain.NT), [
+            RuleCondition("partner_last_call", "in", ["1NT", "2NT", "3NT"]), RuleCondition("is_balanced", "==", True), RuleCondition("hcp", ">=", 17)
+        ], priority=28))
+        net.add_rule(DecisionNetRule("SUP_GRAND_7H", Call(CallType.BID, 7, Strain.HEARTS), [
+            RuleCondition("partner_last_call", "in", ["4H", "6H"]), RuleCondition("heart_len", ">=", 5), RuleCondition("hcp", ">=", 22), RuleCondition("controls", ">=", 8)
+        ], priority=34))
+        net.add_rule(DecisionNetRule("SUP_GRAND_7S", Call(CallType.BID, 7, Strain.SPADES), [
+            RuleCondition("partner_last_call", "in", ["4S", "6S"]), RuleCondition("spade_len", ">=", 5), RuleCondition("hcp", ">=", 22), RuleCondition("controls", ">=", 8)
+        ], priority=34))
+
+        return net
+
+    @staticmethod
     def create_autonomous_evolved_system() -> DecisionNet:
         """Autonomous Evolved Bidding System from Continuous Improvement Pipeline."""
         # Start from 2/1 base and include all discovered protocols & gambling pools
@@ -669,7 +883,8 @@ class SystemOptimizer:
             self.create_autonomous_evolved_system(),
             self.create_quantum_relay_precision(),
             self.create_alpha_relay_precision(),
-            self.create_apex_omega_precision()
+            self.create_apex_omega_precision(),
+            self.create_singularity_ultra_precision()
         ]
         opponent_ref = self.create_sayc_baseline()
 

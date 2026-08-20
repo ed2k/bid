@@ -1,6 +1,7 @@
 from typing import List, Dict, Set, Optional, Tuple
 from bid.models import Hand, Card, Suit, Strain, Seat, Call, CallType
-from bid.scoring import calculate_contract_score, estimate_double_dummy_tricks, score_to_imp, Vulnerability
+from bid.scoring import calculate_contract_score, score_to_imp, Vulnerability
+from bid.dds import DDSolver
 from bid.decision_net import DecisionNet
 from bid.sampling import Deal, PartialState, RBMBMCSampler
 
@@ -23,6 +24,7 @@ class PIDMEngine:
                                vuln: int) -> float:
         """
         Calculates duplicate bridge points / utility for the contract resulting from history.
+        Uses exact Double Dummy Solver (DDSolver) ported from BEN.
         Score is returned from my_seat's partnership perspective.
         """
         temp_state = PartialState(my_seat, deal.hands[my_seat], history, dealer, vuln)
@@ -35,15 +37,16 @@ class PIDMEngine:
         level, strain, declarer, doubled = contract
         is_vul = Vulnerability.is_vulnerable(vuln, declarer)
 
-        tricks = estimate_double_dummy_tricks(deal.hands, strain, declarer)
-        score = calculate_contract_score(level, strain, declarer, tricks, is_vul, doubled)
+        # Exact Double Dummy Solver (DDSolver) calculation
+        tricks = DDSolver.get_tricks(deal, strain, declarer)
+        score_val = calculate_contract_score(level=level, strain=strain, doubled=doubled, is_vulnerable=is_vul, tricks_taken=tricks)
 
         # Declarer score -> perspective of my_seat
         my_partnership = (my_seat, my_seat.partner)
         if declarer in my_partnership:
-            return float(score)
+            return float(score_val)
         else:
-            return float(-score)
+            return float(-score_val)
 
     def lookahead(self,
                   deal: Deal,

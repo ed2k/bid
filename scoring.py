@@ -1,4 +1,13 @@
-from typing import Optional, Dict, Tuple
+#!/usr/bin/env python3
+"""
+Duplicate Bridge Scoring Engine for Bid.
+Directly ported from BEN (../ben/src/scoring.py).
+Provides official ACBL / WBF contract score calculation, undertrick penalties,
+vulnerability modifiers, overtrick bonuses, and IMP conversions.
+"""
+
+import functools
+from typing import Optional, Dict, Tuple, List
 from bid.models import Suit, Strain, Seat, Rank, Hand, Call, CallType
 
 class Vulnerability:
@@ -19,220 +28,195 @@ class Vulnerability:
             return seat in (Seat.EAST, Seat.WEST)
         return False
 
-# IMP conversion table (difference in duplicate points -> IMPs)
-IMP_TABLE = [
-    (15, 0),
-    (45, 1),
-    (85, 2),
-    (125, 3),
-    (165, 4),
-    (215, 5),
-    (265, 6),
-    (315, 7),
-    (365, 8),
-    (425, 9),
-    (495, 10),
-    (595, 11),
-    (745, 12),
-    (895, 13),
-    (1095, 14),
-    (1295, 15),
-    (1495, 16),
-    (1745, 17),
-    (1995, 18),
-    (2245, 19),
-    (2495, 20),
-    (2995, 21),
-    (3495, 22),
-    (3995, 23),
-    (float('inf'), 24)
-]
+TRICK_VAL = {'C': 20, 'D': 20, 'H': 30, 'S': 30, 'N': 30}
 
-def score_to_imp(diff: int) -> int:
-    """Convert points difference to International Match Points (IMPs)."""
-    sign = 1 if diff >= 0 else -1
-    abs_diff = abs(diff)
-    for threshold, imp in IMP_TABLE:
-        if abs_diff <= threshold:
-            return sign * imp
-    return sign * 24
-
-def calculate_contract_score(level: int,
-                             strain: Strain,
-                             declarer_seat: Seat,
-                             tricks_taken: int,
-                             vulnerable: bool,
-                             doubled: int = 0) -> int:
+def score(contract: str, is_vulnerable: bool, n_tricks: int) -> int:
     """
-    Calculate duplicate bridge score from declarer's perspective.
-    level: 1 to 7
-    strain: Suit / NT
-    tricks_taken: 0 to 13
-    vulnerable: True if declarer side is vulnerable
-    doubled: 0 = undoubled, 1 = doubled (X), 2 = redoubled (XX)
+    Computes exact duplicate bridge score for a contract.
+    contract format: '1N', '4H', '4SX', '3NXX', 'Pass'
+    Direct port from BEN (../ben/src/scoring.py).
     """
-    contract_tricks = level + 6
-    diff = tricks_taken - contract_tricks
-
-    # Passed out or invalid level
-    if level <= 0:
+    if contract.lower() in ("pass", "p", ""):
         return 0
 
-    if diff >= 0:
-        # Contract Made!
-        # 1. Trick score
-        if strain in (Strain.CLUBS, Strain.DIAMONDS):
-            base_per_trick = 20
-        elif strain in (Strain.HEARTS, Strain.SPADES):
-            base_per_trick = 30
-        else: # NT
-            base_per_trick = 30 # first trick is 40
+    level = int(contract[0])
+    strain = contract[1].upper()
+    doubled = 'X' in contract and 'XX' not in contract
+    redoubled = 'XX' in contract
 
-        if strain == Strain.NT:
-            base_trick_score = 40 + (level - 1) * 30
+    target = 6 + level
+
+    if n_tricks >= target:
+        # Contract Made
+        base_score = level * TRICK_VAL.get(strain, 30)
+        if strain == 'N':
+            base_score += 10
+        bonus = 0
+
+        # Doubles and redoubles
+        if redoubled:
+            base_score *= 4
+            bonus += 100
+        elif doubled:
+            base_score *= 2
+            bonus += 50
+
+        # Game bonus
+        if base_score < 100:
+            bonus += 50
         else:
-            base_trick_score = level * base_per_trick
+            bonus += 500 if is_vulnerable else 300
 
-        if doubled == 1:
-            trick_score = base_trick_score * 2
-        elif doubled == 2:
-            trick_score = base_trick_score * 4
-        else:
-            trick_score = base_trick_score
-
-        # 2. Game / Partscore bonus
-        if trick_score >= 100:
-            game_bonus = 500 if vulnerable else 300
-        else:
-            game_bonus = 50
-
-        # 3. Slam bonus
-        slam_bonus = 0
+        # Slam bonus
         if level == 6:
-            slam_bonus = 750 if vulnerable else 500
+            bonus += 750 if is_vulnerable else 500
         elif level == 7:
-            slam_bonus = 1500 if vulnerable else 1000
+            bonus += 1500 if is_vulnerable else 1000
 
-        # 4. Insult bonus (for making doubled/redoubled contract)
-        insult_bonus = 0
-        if doubled == 1:
-            insult_bonus = 50
-        elif doubled == 2:
-            insult_bonus = 100
+        n_overtricks = n_tricks - target
+        if redoubled:
+            overtrick_score = n_overtricks * (400 if is_vulnerable else 200)
+        elif doubled:
+            overtrick_score = n_overtricks * (200 if is_vulnerable else 100)
+        else:
+            overtrick_score = n_overtricks * TRICK_VAL.get(strain, 30)
 
-        # 5. Overtricks
-        overtrick_score = 0
-        overtricks = diff
-        if overtricks > 0:
-            if doubled == 0:
-                if strain in (Strain.CLUBS, Strain.DIAMONDS):
-                    overtrick_score = overtricks * 20
-                else:
-                    overtrick_score = overtricks * 30
-            elif doubled == 1:
-                rate = 200 if vulnerable else 100
-                overtrick_score = overtricks * rate
-            elif doubled == 2:
-                rate = 400 if vulnerable else 200
-                overtrick_score = overtricks * rate
-
-        total = trick_score + game_bonus + slam_bonus + insult_bonus + overtrick_score
-        return total
-
+        return base_score + overtrick_score + bonus
     else:
-        # Contract Defeated (Down)
-        undertricks = -diff
-        if doubled == 0:
-            rate = 100 if vulnerable else 50
-            return - (undertricks * rate)
-        elif doubled == 1: # Doubled
-            if vulnerable:
-                # 200 for 1st, 300 for subsequent
-                total_down = 200 + (undertricks - 1) * 300
+        # Contract Failed
+        n_undertricks = target - n_tricks
+        if is_vulnerable:
+            if redoubled:
+                undertrick_values = [400] + [600] * 12
+            elif doubled:
+                undertrick_values = [200] + [300] * 12
             else:
-                # 100 for 1st, 200 for 2nd and 3rd, 300 for 4th+
-                if undertricks == 1:
-                    total_down = 100
-                elif undertricks == 2:
-                    total_down = 300
-                elif undertricks == 3:
-                    total_down = 500
-                else:
-                    total_down = 500 + (undertricks - 3) * 300
-            return -total_down
-        else: # Redoubled
-            # Twice doubled penalty
-            if vulnerable:
-                total_down = (200 + (undertricks - 1) * 300) * 2
+                undertrick_values = [100] * 13
+        else:
+            if redoubled:
+                undertrick_values = [200, 400, 400] + [600] * 10
+            elif doubled:
+                undertrick_values = [100, 200, 200] + [300] * 10
             else:
-                if undertricks == 1:
-                    total_down = 200
-                elif undertricks == 2:
-                    total_down = 600
-                elif undertricks == 3:
-                    total_down = 1000
-                else:
-                    total_down = (500 + (undertricks - 3) * 300) * 2
-            return -total_down
+                undertrick_values = [50] * 13
+
+        return -sum(undertrick_values[:n_undertricks])
+
+def diff_to_imps(diff: int) -> int:
+    """
+    Converts points difference to International Match Points (IMPs).
+    Standard WBF scale ported from BEN.
+    """
+    abs_diff = abs(diff)
+
+    if abs_diff <= 10:
+        return 0
+    elif abs_diff <= 40:
+        return 1
+    elif abs_diff <= 80:
+        return 2
+    elif abs_diff <= 120:
+        return 3
+    elif abs_diff <= 160:
+        return 4
+    elif abs_diff <= 210:
+        return 5
+    elif abs_diff <= 260:
+        return 6
+    elif abs_diff <= 310:
+        return 7
+    elif abs_diff <= 360:
+        return 8
+    elif abs_diff <= 420:
+        return 9
+    elif abs_diff <= 490:
+        return 10
+    elif abs_diff <= 590:
+        return 11
+    elif abs_diff <= 740:
+        return 12
+    elif abs_diff <= 890:
+        return 13
+    elif abs_diff <= 1090:
+        return 14
+    elif abs_diff <= 1290:
+        return 15
+    elif abs_diff <= 1490:
+        return 16
+    elif abs_diff <= 1740:
+        return 17
+    elif abs_diff <= 1990:
+        return 18
+    elif abs_diff <= 2240:
+        return 19
+    elif abs_diff <= 2490:
+        return 20
+    elif abs_diff <= 2990:
+        return 21
+    elif abs_diff <= 3490:
+        return 22
+    elif abs_diff <= 3990:
+        return 23
+    else:
+        return 24
+
+def score_to_imp(diff: int) -> int:
+    """Signed IMP conversion."""
+    sign = 1 if diff >= 0 else -1
+    return sign * diff_to_imps(diff)
+
+def contract_scores_by_trick(contract: str, is_vulnerable: bool) -> List[int]:
+    """Returns a list of length 14 containing scores for taking 0..13 tricks."""
+    return [score(contract, is_vulnerable, t) for t in range(14)]
 
 def estimate_double_dummy_tricks(hands: Dict[Seat, Hand], strain: Strain, declarer: Seat) -> int:
+    """Estimates double dummy tricks from hands using DDSolver."""
+    from bid.sampling import Deal
+    deal = Deal(hands, dealer=declarer)
+    from bid.dds import DDSolver
+    return DDSolver.get_tricks(deal, strain, declarer)
+
+def calculate_contract_score(*args, **kwargs) -> int:
     """
-    Fast Double Dummy Trick Estimator using bridge heuristics:
-    HCP fit, combined partnership suit lengths, stoppers, and shape synergy.
+    Flexible wrapper for duplicate contract score calculation.
+    Supports:
+      calculate_contract_score(level, strain, declarer, tricks, is_vul, doubled)
+      calculate_contract_score(level=4, strain=Strain.HEARTS, doubled=0, is_vulnerable=False, tricks_taken=10)
     """
-    partner = declarer.partner
-    decl_hand = hands[declarer]
-    part_hand = hands[partner]
+    level = kwargs.get("level", 1)
+    strain = kwargs.get("strain", Strain.NT)
+    doubled = kwargs.get("doubled", 0)
+    is_vul = kwargs.get("is_vulnerable", False)
+    tricks = kwargs.get("tricks_taken", 0)
 
-    opp1 = Seat((declarer.value + 1) % 4)
-    opp2 = Seat((declarer.value + 3) % 4)
-    opp1_hand = hands[opp1]
-    opp2_hand = hands[opp2]
+    if len(args) >= 1:
+        level = args[0]
+    if len(args) >= 2:
+        strain = args[1]
+    if len(args) == 5:
+        # (level, strain, declarer, tricks, is_vul)
+        tricks = args[3]
+        is_vul = args[4]
+    elif len(args) == 6:
+        # (level, strain, declarer, tricks, is_vul, doubled)
+        tricks = args[3]
+        is_vul = args[4]
+        doubled = args[5]
+    elif len(args) == 4:
+        # (level, strain, tricks, is_vul)
+        tricks = args[2]
+        is_vul = args[3]
 
-    ns_hcp = decl_hand.hcp + part_hand.hcp
-    ew_hcp = opp1_hand.hcp + opp2_hand.hcp
-
-    if strain == Strain.NT:
-        # Baseline from HCP: 20 HCP = 7 tricks, 25 HCP = 9 tricks, 29 HCP = 10 tricks, 33 HCP = 12 tricks
-        base = (ns_hcp - 20) * 0.4 + 7.0
-        # Long suit running potential in NT: 5+ cards with honors
-        long_suit_bonus = 0.0
-        for s in Suit:
-            combined_len = decl_hand.length(s) + part_hand.length(s)
-            if combined_len >= 8:
-                long_suit_bonus += 0.5 * (combined_len - 7)
-        # Stopper penalty: void or weak doubleton in opponent long suit
-        stopper_penalty = 0.0
-        for s in Suit:
-            combined_hcp = sum(c.hcp for c in decl_hand.by_suit[s] + part_hand.by_suit[s])
-            opp_len = opp1_hand.length(s) + opp2_hand.length(s)
-            if opp_len >= 8 and combined_hcp < 3:
-                stopper_penalty += 0.5
-
-        tricks = base + long_suit_bonus - stopper_penalty
-    else:
-        # Trump contract
-        trump_suit = Suit(strain.value)
-        combined_trump = decl_hand.length(trump_suit) + part_hand.length(trump_suit)
-        trump_hcp = sum(c.hcp for c in decl_hand.by_suit[trump_suit] + part_hand.by_suit[trump_suit])
-
-        # Base tricks from HCP & Fit
-        # 20 HCP + 8 fit = ~7.5 tricks, 25 HCP + 8 fit = ~9.5 tricks, 26 HCP + 8 fit = 10 tricks
-        base = (ns_hcp - 20) * 0.35 + 7.0
-        fit_bonus = max(0, combined_trump - 7) * 0.75
-
-        # Ruffing / distributional power (singletons / voids in side suits)
-        ruff_bonus = 0.0
-        if combined_trump >= 8:
-            for s in Suit:
-                if s != trump_suit:
-                    short_side = min(decl_hand.length(s), part_hand.length(s))
-                    if short_side == 0:
-                        ruff_bonus += 1.0
-                    elif short_side == 1:
-                        ruff_bonus += 0.5
-
-        tricks = base + fit_bonus + ruff_bonus
-
-    estimated = int(round(max(0, min(13, tricks))))
-    return estimated
+    strain_map = {
+        Strain.CLUBS: 'C',
+        Strain.DIAMONDS: 'D',
+        Strain.HEARTS: 'H',
+        Strain.SPADES: 'S',
+        Strain.NT: 'N'
+    }
+    c_str = f"{level}{strain_map.get(strain, 'N')}"
+    if doubled == 1:
+        c_str += "X"
+    elif doubled == 2:
+        c_str += "XX"
+    return score(c_str, is_vul, tricks)

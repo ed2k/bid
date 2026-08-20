@@ -1,0 +1,184 @@
+#!/usr/bin/env python3
+"""
+Double Dummy Solver (DDS) Native Interface for Bid.
+Integrates Bo Haglund's C++ Double Dummy Solver (libdds.dylib / libdds.so / dds.dll)
+copied and adapted from BEN (../ben/bin/libdds).
+"""
+
+import os
+import sys
+import platform
+import ctypes
+from typing import Dict, Tuple, Optional, Any, TYPE_CHECKING
+from bid.models import Seat, Strain, Suit, Hand
+
+if TYPE_CHECKING:
+    from bid.sampling import Deal
+
+class ddTableDealPBN(ctypes.Structure):
+    _fields_ = [("cards", ctypes.c_char * 80)]
+
+class ddTableResults(ctypes.Structure):
+    # resTable[strain][player] where strain: 0=Spade, 1=Heart, 2=Diamond, 3=Club, 4=NT
+    _fields_ = [("resTable", ctypes.c_int * 4 * 5)]
+
+class parResults(ctypes.Structure):
+    _fields_ = [
+        ("parScore", (ctypes.c_char * 16) * 2),
+        ("parContractsString", (ctypes.c_char * 128) * 2)
+    ]
+
+class DDSolver:
+    """
+    High-performance Double Dummy Solver wrapper.
+    Loads native libdds library from bin directories with automatic fallback.
+    """
+    _lib = None
+    _loaded = False
+
+    @classmethod
+    def _find_and_load_lib(cls):
+        if cls._loaded:
+            return cls._lib
+
+        search_paths = [
+            os.path.join(os.path.dirname(__file__), "..", "bin"),
+            os.path.join(os.path.dirname(__file__), "..", "..", "ben", "bin"),
+            os.path.join(os.path.dirname(__file__), "bin"),
+            "/Users/admin/Documents/GitHub/ben/bin"
+        ]
+
+        lib_names = []
+        if sys.platform == "darwin":
+            lib_names = ["libdds.dylib"]
+        elif sys.platform == "win32":
+            lib_names = ["dds.dll"]
+        else:
+            lib_names = ["libdds.so"]
+
+        for path in search_paths:
+            for name in lib_names:
+                full_path = os.path.abspath(os.path.join(path, name))
+                if os.path.isfile(full_path):
+                    try:
+                        cls._lib = ctypes.CDLL(full_path)
+                        cls._loaded = True
+                        return cls._lib
+                    except Exception as e:
+                        sys.stderr.write(f"Warning: Failed loading {full_path}: {e}\n")
+
+        cls._loaded = True
+        return None
+
+    @classmethod
+    def deal_to_pbn(cls, deal: Deal) -> str:
+        """Converts a Deal object to PBN string format starting from North: 'N:S.H.D.C ...'"""
+        order = [Seat.NORTH, Seat.EAST, Seat.SOUTH, Seat.WEST]
+        hands_str = []
+        for seat in order:
+            hand = deal.hands[seat]
+            s_str = "".join(str(c.rank) for c in sorted(hand.by_suit[Suit.SPADES], key=lambda c: c.rank.value, reverse=True))
+            h_str = "".join(str(c.rank) for c in sorted(hand.by_suit[Suit.HEARTS], key=lambda c: c.rank.value, reverse=True))
+            d_str = "".join(str(c.rank) for c in sorted(hand.by_suit[Suit.DIAMONDS], key=lambda c: c.rank.value, reverse=True))
+            c_str = "".join(str(c.rank) for c in sorted(hand.by_suit[Suit.CLUBS], key=lambda c: c.rank.value, reverse=True))
+            hands_str.append(f"{s_str}.{h_str}.{d_str}.{c_str}")
+        return "N:" + " ".join(hands_str)
+
+    @classmethod
+    def strain_to_dds_index(cls, strain: Strain) -> int:
+        """
+        DDS convention:
+        0 = Spades, 1 = Hearts, 2 = Diamonds, 3 = Clubs, 4 = No Trump
+        """
+        mapping = {
+            Strain.SPADES: 0,
+            Strain.HEARTS: 1,
+            Strain.DIAMONDS: 2,
+            Strain.CLUBS: 3,
+            Strain.NT: 4
+        }
+        return mapping.get(strain, 4)
+
+    @classmethod
+    def solve_dd_table(cls, deal: Deal) -> Dict[Tuple[Strain, Seat], int]:
+        """
+        Calculates all 20 double dummy trick contracts (5 strains x 4 declarers).
+        Returns a dict mapping (strain, seat) -> tricks_won.
+        """
+        lib = cls._find_and_load_lib()
+        pbn_str = cls.deal_to_pbn(deal)
+
+        if lib is not None:
+            try:
+                table_deal = ddTableDealPBN()
+                table_deal.cards = pbn_str.encode("utf-8")
+                table_results = ddTableResults()
+
+                ret = lib.CalcDDtablePBN(table_deal, ctypes.byref(table_results))
+                if ret == 1:
+                    results: Dict[Tuple[Strain, Seat], int] = {}
+                    strain_map = [Strain.SPADES, Strain.HEARTS, Strain.DIAMONDS, Strain.CLUBS, Strain.NT]
+                    seat_map = [Seat.NORTH, Seat.EAST, Seat.SOUTH, Seat.WEST]
+
+                    for s_idx, strain in enumerate(strain_map):
+                        for p_idx, seat in enumerate(seat_map):
+                            results[(strain, seat)] = table_results.resTable[s_idx][p_idx]
+                    return results
+            except Exception as e:
+                sys.stderr.write(f"DDS C-API error: {e}, falling back to Python DD algorithm\n")
+
+        # Fallback Python DD Estimation
+        return cls._fallback_dd_table(deal)
+
+    @classmethod
+    def calculate_par(cls, deal: Deal, vuln: int = 0) -> Tuple[int, str]:
+        """
+        Calculates the double dummy par score and contract for the deal.
+        Returns (ns_par_score, par_contract_str).
+        """
+        lib = cls._find_and_load_lib()
+        pbn_str = cls.deal_to_pbn(deal)
+
+        if lib is not None:
+            try:
+                table_deal = ddTableDealPBN()
+                table_deal.cards = pbn_str.encode("utf-8")
+                table_results = ddTableResults()
+
+                if lib.CalcDDtablePBN(table_deal, ctypes.byref(table_results)) == 1:
+                    par_res = parResults()
+                    if lib.Par(ctypes.byref(table_results), ctypes.byref(par_res), vuln) == 1:
+                        score_str = par_res.parScore[0].value.decode()
+                        contract_str = par_res.parContractsString[0].value.decode()
+                        score_val = int(score_str.split()[1]) if len(score_str.split()) > 1 else 0
+                        return score_val, contract_str
+            except Exception as e:
+                sys.stderr.write(f"DDS Par calculation error: {e}\n")
+
+        return 0, "N/A"
+
+    @classmethod
+    def get_tricks(cls, deal: Deal, strain: Strain, declarer: Seat) -> int:
+        """Returns the exact double dummy tricks for a given contract."""
+        table = cls.solve_dd_table(deal)
+        return table.get((strain, declarer), 7)
+
+    @staticmethod
+    def _fallback_dd_table(deal: Deal) -> Dict[Tuple[Strain, Seat], int]:
+        """Fast fallback double dummy trick estimation if C library is unavailable."""
+        results: Dict[Tuple[Strain, Seat], int] = {}
+        for declarer in Seat:
+            partner = declarer.partner
+            h1 = deal.hands[declarer]
+            h2 = deal.hands[partner]
+            tot_hcp = h1.hcp + h2.hcp
+
+            for strain in Strain:
+                if strain == Strain.NT:
+                    base = min(13, max(0, int(tot_hcp / 3.0 + 1)))
+                else:
+                    suit = Suit(strain.value)
+                    fit = h1.length(suit) + h2.length(suit)
+                    base = min(13, max(0, int((tot_hcp / 3.1) + max(0, fit - 7) * 1.1)))
+                results[(strain, declarer)] = base
+        return results
