@@ -235,7 +235,7 @@ class DecisionNetLearner:
             groups[key][1].append(call)
 
         for key, (X, y) in groups.items():
-            if len(X) >= 2:
+            if len(X) >= 1:
                 tree = ID3DecisionTree(max_depth=4)
                 tree.fit(X, y)
                 decision_net.attach_refinement(key, tree)

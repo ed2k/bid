@@ -178,3 +178,51 @@ class DecisionNet:
             node.refinement_classifier = v.refinement_classifier
             new_net.intersection_nodes[k] = node
         return new_net
+
+    def export_dsl(self) -> str:
+        """Exports the current refined DecisionNet rules and attached ID3 exception trees to DSL code."""
+        lines = [
+            f"# ==========================================",
+            f"# IMPROVED BIDDING SYSTEM: {self.name}",
+            f"# Generated via Continuous Self-Improvement Pipeline",
+            f"# ==========================================\n",
+            "# --- Active Rules & Conventions ---"
+        ]
+
+        for r in self.rules:
+            if r.is_negative:
+                continue
+            call_str = str(r.call)
+            lines.append(f"\nRULE {r.rule_id}:")
+            lines.append(f"  CALL: {call_str}")
+            lines.append(f"  PRIORITY: {r.priority}")
+            for c in r.conditions:
+                lines.append(f"  CONDITION: {c.key} {c.op} {c.value}")
+            if r.description:
+                lines.append(f"  # {r.description}")
+
+        if self.intersection_nodes:
+            lines.append("\n\n# --- Refined ID3 Exception Trees (Speedup Learning Splits) ---")
+            for key, node in self.intersection_nodes.items():
+                lines.append(f"\nINTERSECTION {' ^ '.join(key)}:")
+                if node.refinement_classifier is not None and hasattr(node.refinement_classifier, "root"):
+                    root = node.refinement_classifier.root
+                    if root is not None:
+                        if root.is_leaf:
+                            lines.append(f"  RESOLVED_CALL: {root.prediction}")
+                        else:
+                            lines.append(f"  SPLIT_FEATURE: {root.feature_name}")
+                            lines.append(f"  THRESHOLD: {root.threshold}")
+                            if root.left_child and root.left_child.prediction:
+                                lines.append(f"    IF <= {root.threshold} -> {root.left_child.prediction}")
+                            if root.right_child and root.right_child.prediction:
+                                lines.append(f"    IF >  {root.threshold} -> {root.right_child.prediction}")
+
+        return "\n".join(lines) + "\n"
+
+    def save_dsl(self, filepath: str) -> None:
+        """Saves the refined bidding system DSL to a file on disk."""
+        dsl_content = self.export_dsl()
+        with open(filepath, "w") as f:
+            f.write(dsl_content)
+
