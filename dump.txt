@@ -1,7 +1,7 @@
 Error code=-4
 
 Deal data:
-trump=N
+trump=C
 first=N
 index1=0 index2=0 remainCards=24604
 index1=0 index2=1 remainCards=16396

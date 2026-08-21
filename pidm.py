@@ -76,6 +76,42 @@ class PIDMEngine:
         else:
             return float(-score_val)
 
+    def _rollout_to_terminal(self,
+                             deal: Deal,
+                             history: List[Call],
+                             models: Dict[Seat, DecisionNet],
+                             my_seat: Seat,
+                             dealer: Seat,
+                             vuln: int) -> float:
+        """
+        Completes the auction greedily (no branching): each seat plays Pass when
+        legal-preferred or its lowest-ranked modeled bid, then evaluates the
+        terminal contract with exact DDS tricks.
+        """
+        hist = list(history)
+        curr = Seat((dealer.value + len(hist)) % 4)
+        while len(hist) < 32:
+            ps = PartialState(curr, deal.hands[curr], hist, dealer, vuln)
+            if ps.is_auction_over():
+                break
+            model = models.get(curr)
+            if model is not None:
+                acts = model.actions(deal.hands[curr], hist, curr, dealer, vuln)
+            else:
+                acts = {Call(CallType.PASS)}
+            if Call(CallType.PASS) in acts:
+                act = Call(CallType.PASS)
+            else:
+                bids = sorted((a for a in acts if a.type == CallType.BID),
+                              key=lambda c: (c.level, c.strain.value))
+                if bids:
+                    act = bids[0]
+                else:
+                    act = sorted(acts, key=lambda c: c.type.name)[0]
+            hist.append(act)
+            curr = Seat((curr.value + 1) % 4)
+        return self.evaluate_terminal_deal(deal, hist, my_seat, dealer, vuln)
+
     def lookahead(self,
                   deal: Deal,
                   history: List[Call],
@@ -86,10 +122,14 @@ class PIDMEngine:
                   depth: int = 0) -> float:
         """
         Recursively simulates future auction calls using nested player models.
+        At the depth cap, finishes with a greedy rollout so non-terminal states
+        get a real DDS-based value instead of 0.0.
         """
         temp_state = PartialState(my_seat, deal.hands[my_seat], history, dealer, vuln)
-        if temp_state.is_auction_over() or depth >= self.max_lookahead_depth:
+        if temp_state.is_auction_over():
             return self.evaluate_terminal_deal(deal, history, my_seat, dealer, vuln)
+        if depth >= self.max_lookahead_depth:
+            return self._rollout_to_terminal(deal, history, models, my_seat, dealer, vuln)
 
         next_seat = temp_state.current_turn
         next_hand = deal.hands[next_seat]
