@@ -1,5 +1,5 @@
 # ==========================================
-# IMPROVED BIDDING SYSTEM: ImprovedSystem_v11
+# IMPROVED BIDDING SYSTEM: ImprovedSystem_v10
 # Generated via Continuous Self-Improvement Pipeline
 # ==========================================
 
@@ -437,6 +437,7 @@ RULE ASK_4NT_ACES:
   PRIORITY: 29
   CONDITION: partner_last_call == 3NT
   CONDITION: hcp >= 15
+  # Blackwood-style ace ask over 3NT
 
 RULE BW_RESP_C:
   CALL: 5C
@@ -444,6 +445,7 @@ RULE BW_RESP_C:
   CONDITION: partner_last_call == 4NT
   CONDITION: ace_count == 0
   CONDITION: ace_count <= 0
+  # Ace response 0
 
 RULE BW_RESP_D:
   CALL: 5D
@@ -451,6 +453,7 @@ RULE BW_RESP_D:
   CONDITION: partner_last_call == 4NT
   CONDITION: ace_count == 1
   CONDITION: ace_count <= 1
+  # Ace response 1
 
 RULE BW_RESP_H:
   CALL: 5H
@@ -458,78 +461,25 @@ RULE BW_RESP_H:
   CONDITION: partner_last_call == 4NT
   CONDITION: ace_count == 2
   CONDITION: ace_count <= 2
+  # Ace response 2
 
 RULE BW_RESP_S:
   CALL: 5S
   PRIORITY: 31
   CONDITION: partner_last_call == 4NT
   CONDITION: ace_count == 3
-
-RULE SIGNOFF_5NT_NOACE:
-  CALL: 5NT
-  PRIORITY: 32
-  CONDITION: my_last_call == 4NT
-  CONDITION: partner_last_call == 5C
-
-RULE ASK_5NT_KINGS:
-  CALL: 5NT
-  PRIORITY: 33
-  CONDITION: my_last_call == 4NT
-  CONDITION: partner_last_call in ['5D', '5H', '5S']
-  CONDITION: hcp >= 16
-  # King ask after ace show, 16+
+  # Ace response 3
 
 RULE PLACE_6NT_ACES:
   CALL: 6NT
   PRIORITY: 32
   CONDITION: my_last_call == 4NT
   CONDITION: partner_last_call in ['5D', '5H', '5S']
-  CONDITION: hcp <= 15
-  # Place 6NT, no king ask
+  # Place 6NT with an ace shown
 
-RULE KW_RESP_0_6C:
-  CALL: 6C
-  PRIORITY: 34
-  CONDITION: partner_last_call == 5NT
-  CONDITION: my_last_call in ['5D', '5H', '5S']
-  CONDITION: king_count == 0
-  # 0 kings
-
-RULE KW_RESP_1_6D:
-  CALL: 6D
-  PRIORITY: 34
-  CONDITION: partner_last_call == 5NT
-  CONDITION: my_last_call in ['5D', '5H', '5S']
-  CONDITION: king_count == 1
-  # 1 king
-
-RULE KW_RESP_2_6H:
-  CALL: 6H
-  PRIORITY: 34
-  CONDITION: partner_last_call == 5NT
-  CONDITION: my_last_call in ['5D', '5H', '5S']
-  CONDITION: king_count >= 2
-  # 2+ kings
-
-RULE GRAND_7NT_TWO_K:
-  CALL: 7NT
-  PRIORITY: 36
-  CONDITION: my_last_call == 5NT
-  CONDITION: partner_last_call in ['6H', '6S']
-  CONDITION: hcp >= 17
-  # 7NT with 2+ kings shown
-
-RULE GRAND_7NT_ONE_K:
-  CALL: 7NT
-  PRIORITY: 36
-  CONDITION: my_last_call == 5NT
-  CONDITION: partner_last_call == 6D
-  CONDITION: hcp >= 19
-  # 7NT with 1 king, huge hand
-
-RULE PLACE_6NT_AFTER_K_ASK:
-  CALL: 6NT
-  PRIORITY: 30
-  CONDITION: my_last_call == 5NT
-  CONDITION: partner_last_call in ['6C', '6D', '6H']
-  # Settle in 6NT after king info
+RULE SIGNOFF_5NT_NOACE:
+  CALL: 5NT
+  PRIORITY: 32
+  CONDITION: my_last_call == 4NT
+  CONDITION: partner_last_call == 5C
+  # Sign off in 5NT with no ace shown

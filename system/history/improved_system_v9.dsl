@@ -1,5 +1,5 @@
 # ==========================================
-# IMPROVED BIDDING SYSTEM: ImprovedSystem_v11
+# IMPROVED BIDDING SYSTEM: ImprovedSystem_v9
 # Generated via Continuous Self-Improvement Pipeline
 # ==========================================
 
@@ -397,6 +397,7 @@ RULE SLAM_REBID_3D:
   CONDITION: partner_last_call in ['1H', '1S']
   CONDITION: diamond_len >= 6
   CONDITION: hcp >= 17
+  # Opener: strong 6-diamond rebid
 
 RULE SLAM_FIT_6D:
   CALL: 6D
@@ -404,6 +405,7 @@ RULE SLAM_FIT_6D:
   CONDITION: partner_last_call == 3D
   CONDITION: diamond_len >= 2
   CONDITION: hcp >= 12
+  # Slam drive with diamond fit
 
 RULE SLAM_FIT_3NT_D:
   CALL: 3NT
@@ -411,6 +413,14 @@ RULE SLAM_FIT_3NT_D:
   CONDITION: partner_last_call == 3D
   CONDITION: is_balanced == True
   CONDITION: hcp >= 11
+  # 3NT over partner strong 3D
+
+RULE SLAM_DRIVE_6NT:
+  CALL: 6NT
+  PRIORITY: 26
+  CONDITION: partner_last_call in ['2NT', '3NT']
+  CONDITION: hcp >= 14
+  # Drive 6NT over partner's strong NT
 
 RULE FW_2NT_FORCE_H:
   CALL: 2NT
@@ -418,6 +428,7 @@ RULE FW_2NT_FORCE_H:
   CONDITION: partner_last_call == 1H
   CONDITION: heart_len >= 3
   CONDITION: hcp >= 11
+  # Forcing raise of 1H
 
 RULE FW_2NT_FORCE_S:
   CALL: 2NT
@@ -425,111 +436,11 @@ RULE FW_2NT_FORCE_S:
   CONDITION: partner_last_call == 1S
   CONDITION: spade_len >= 3
   CONDITION: hcp >= 11
+  # Forcing raise of 1S
 
 RULE FW_2NT_DECLINE:
   CALL: 3NT
   PRIORITY: 20
   CONDITION: partner_last_call == 2NT
   CONDITION: hcp <= 12
-
-RULE ASK_4NT_ACES:
-  CALL: 4NT
-  PRIORITY: 29
-  CONDITION: partner_last_call == 3NT
-  CONDITION: hcp >= 15
-
-RULE BW_RESP_C:
-  CALL: 5C
-  PRIORITY: 31
-  CONDITION: partner_last_call == 4NT
-  CONDITION: ace_count == 0
-  CONDITION: ace_count <= 0
-
-RULE BW_RESP_D:
-  CALL: 5D
-  PRIORITY: 31
-  CONDITION: partner_last_call == 4NT
-  CONDITION: ace_count == 1
-  CONDITION: ace_count <= 1
-
-RULE BW_RESP_H:
-  CALL: 5H
-  PRIORITY: 31
-  CONDITION: partner_last_call == 4NT
-  CONDITION: ace_count == 2
-  CONDITION: ace_count <= 2
-
-RULE BW_RESP_S:
-  CALL: 5S
-  PRIORITY: 31
-  CONDITION: partner_last_call == 4NT
-  CONDITION: ace_count == 3
-
-RULE SIGNOFF_5NT_NOACE:
-  CALL: 5NT
-  PRIORITY: 32
-  CONDITION: my_last_call == 4NT
-  CONDITION: partner_last_call == 5C
-
-RULE ASK_5NT_KINGS:
-  CALL: 5NT
-  PRIORITY: 33
-  CONDITION: my_last_call == 4NT
-  CONDITION: partner_last_call in ['5D', '5H', '5S']
-  CONDITION: hcp >= 16
-  # King ask after ace show, 16+
-
-RULE PLACE_6NT_ACES:
-  CALL: 6NT
-  PRIORITY: 32
-  CONDITION: my_last_call == 4NT
-  CONDITION: partner_last_call in ['5D', '5H', '5S']
-  CONDITION: hcp <= 15
-  # Place 6NT, no king ask
-
-RULE KW_RESP_0_6C:
-  CALL: 6C
-  PRIORITY: 34
-  CONDITION: partner_last_call == 5NT
-  CONDITION: my_last_call in ['5D', '5H', '5S']
-  CONDITION: king_count == 0
-  # 0 kings
-
-RULE KW_RESP_1_6D:
-  CALL: 6D
-  PRIORITY: 34
-  CONDITION: partner_last_call == 5NT
-  CONDITION: my_last_call in ['5D', '5H', '5S']
-  CONDITION: king_count == 1
-  # 1 king
-
-RULE KW_RESP_2_6H:
-  CALL: 6H
-  PRIORITY: 34
-  CONDITION: partner_last_call == 5NT
-  CONDITION: my_last_call in ['5D', '5H', '5S']
-  CONDITION: king_count >= 2
-  # 2+ kings
-
-RULE GRAND_7NT_TWO_K:
-  CALL: 7NT
-  PRIORITY: 36
-  CONDITION: my_last_call == 5NT
-  CONDITION: partner_last_call in ['6H', '6S']
-  CONDITION: hcp >= 17
-  # 7NT with 2+ kings shown
-
-RULE GRAND_7NT_ONE_K:
-  CALL: 7NT
-  PRIORITY: 36
-  CONDITION: my_last_call == 5NT
-  CONDITION: partner_last_call == 6D
-  CONDITION: hcp >= 19
-  # 7NT with 1 king, huge hand
-
-RULE PLACE_6NT_AFTER_K_ASK:
-  CALL: 6NT
-  PRIORITY: 30
-  CONDITION: my_last_call == 5NT
-  CONDITION: partner_last_call in ['6C', '6D', '6H']
-  # Settle in 6NT after king info
+  # Decline forcing raise

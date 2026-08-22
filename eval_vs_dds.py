@@ -206,12 +206,14 @@ def contract_string(pstate: PartialState) -> str:
 
 def evaluate_system(arena: BiddingArena, name: str, net: DecisionNet, deals: List[Deal],
                     dd_data: List[Tuple[int, str, dict]], run_diagnostics: bool = False,
-                    seed: int = None):
+                    seed: int = None, sds_scorer=None):
     if seed is not None:
         random.seed(seed)
     total_score = 0.0
     total_par = 0.0
     total_imp_loss = 0.0
+    total_sds = 0.0
+    sds_boards = 0
     par_hits = 0
     makable_games = 0
     games_reached = 0
@@ -241,6 +243,12 @@ def evaluate_system(arena: BiddingArena, name: str, net: DecisionNet, deals: Lis
         )
         pstate = PartialState(Seat.SOUTH, deal.hands[Seat.SOUTH], history, deal.dealer, deal.vuln)
         c = pstate.get_contract()
+        if sds_scorer is not None and c:
+            lvl, strain, decl, dbl = c
+            sds_res = sds_scorer.score_contract(deal, lvl, strain, decl, dbl, deal.vuln)
+            sign = 1.0 if decl in (Seat.NORTH, Seat.SOUTH) else -1.0
+            total_sds += sign * sds_res.mean_score
+            sds_boards += 1
         if ns_can_make_game:
             makable_games += 1
             if c:
@@ -268,6 +276,8 @@ def evaluate_system(arena: BiddingArena, name: str, net: DecisionNet, deals: Lis
         "flaws": flaws,
         "worst": sorted(worst)[:3],
         "diagnostics": diagnostics,
+        "avg_score_sds": (total_sds / sds_boards) if sds_boards else 0.0,
+        "sds_boards": sds_boards,
     }
 
 
@@ -277,6 +287,7 @@ def main():
     parser.add_argument("--no-stratified", action="store_true", help="Skip the 6 stratified deals")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--dsl", action="append", default=[], help="Extra DSL files to load")
+    parser.add_argument("--sds", action="store_true", help="Also score contracts with SDS two-hand view")
     args = parser.parse_args()
 
     t0 = time.time()
@@ -311,10 +322,17 @@ def main():
     engine = PIDMEngine(sampler=RBMBMCSampler(sample_size=2, max_iterations=6, timeout_sec=0.06), max_lookahead_depth=1)
     arena = BiddingArena(engine=engine)
 
+    sds_scorer = None
+    if args.sds:
+        from bid.sds import SDSScorer
+        sds_scorer = SDSScorer(num_worlds=20, seed=2024)
+        print("SDS two-hand scoring enabled (20 worlds per played contract)")
+
     results = []
     for name, net in systems:
         t = time.time()
-        res = evaluate_system(arena, name, net, deals, dd_data, run_diagnostics=True)
+        res = evaluate_system(arena, name, net, deals, dd_data, run_diagnostics=True,
+                              sds_scorer=sds_scorer)
         res["elapsed"] = time.time() - t
         results.append(res)
         print(f"  evaluated {name:<28} avg_regret {res['avg_regret']:+7.1f}  ({res['elapsed']:.1f}s)")
@@ -325,11 +343,15 @@ def main():
     print("=" * 118)
     print(" SYSTEM RANKING vs NATIVE DDS PAR (best first)")
     print("=" * 118)
-    print(f" {'#':<3} | {'System':<24} | {'Avg NS Score':<12} | {'Avg DDS Par':<11} | {'Regret':<9} | {'IMP Loss/Bd':<11} | {'Par Acc':<8} | {'Game Conv':<9}")
+    print(f" {'#':<3} | {'System':<24} | {'Avg NS Score':<12} | {'Avg DDS Par':<11} | {'Regret':<9} | {'IMP Loss/Bd':<11} | {'Par Acc':<8} | {'Game Conv':<9}" + (" | {'SDS Score':<10}" if args.sds else ""))
     print("-" * 118)
     for idx, r in enumerate(results, 1):
         crown = "👑" if idx == 1 else "  "
-        print(f" {crown}{idx:<2} | {r['name']:<24} | {r['avg_score']:<+12.1f} | {r['avg_par']:<+11.1f} | {r['avg_regret']:<+9.1f} | {r['avg_imp_loss']:<11.2f} | {r['par_accuracy']:<7.1f}% | {r['game_conversion']:<8.1f}%")
+        line = (f" {crown}{idx:<2} | {r['name']:<24} | {r['avg_score']:<+12.1f} | {r['avg_par']:<+11.1f} | "
+                f"{r['avg_regret']:<+9.1f} | {r['avg_imp_loss']:<11.2f} | {r['par_accuracy']:<7.1f}% | {r['game_conversion']:<8.1f}%")
+        if args.sds:
+            line += f" | {r['avg_score_sds']:+9.1f}"
+        print(line)
     print("-" * 118)
     print(f" Makable NS games in deal set: {results[0]['makable_games']} | Total eval time: {time.time() - t0:.1f}s")
 

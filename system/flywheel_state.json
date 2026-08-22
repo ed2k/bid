@@ -1,0 +1,52 @@
+{
+  "version": 11,
+  "failed": [
+    "curated:BALANCING",
+    "curated:TKO_SHAPE",
+    "curated:FORCE_RAISE_2NT",
+    "diag:COMP",
+    "diag:GAME",
+    "diag:SLAM",
+    "gate:R_RESP_2H:not_opening",
+    "gate:R_RESP_2H:partner",
+    "gate:R_RESP_2S:partner",
+    "gate:R_OPEN_2C_STRONG:not_opening"
+  ],
+  "applied": [
+    {
+      "sig": "gate:R_RESP_2S:not_opening",
+      "name": "GATE_R_RESP_2S_not_opening",
+      "delta": 52.6
+    },
+    {
+      "sig": "curated:OVERCALLS",
+      "name": "OVERCALLS",
+      "delta": 8.3
+    },
+    {
+      "sig": "manual:C_BOTH",
+      "name": "C_BOTH",
+      "delta": -3.0
+    },
+    {
+      "sig": "manual:RAISE_PARTNER_GATES",
+      "name": "RAISE_PARTNER_GATES",
+      "delta": -9.6
+    },
+    {
+      "sig": "manual:SLAM_DRIVE",
+      "name": "SLAM_DRIVE",
+      "delta": 2.4
+    },
+    {
+      "sig": "manual:A_ASK_ONLY",
+      "name": "A_ASK_ONLY",
+      "delta": 0.1
+    },
+    {
+      "sig": "manual:KING_ASK_LADDER",
+      "name": "KING_ASK_LADDER",
+      "delta": 0.0
+    }
+  ]
+}

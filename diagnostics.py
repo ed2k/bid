@@ -21,6 +21,8 @@ class BiddingFlawType(Enum):
     SOFT_DEFENSE = "SOFT_DEFENSE"                 # Opponents bought contract; NS failed to compete/sacrifice
     OVERBID_DOWN = "OVERBID_DOWN"                 # Contract failed when lower partscore made
     MISSED_PENALTY_DOUBLE = "MISSED_PENALTY_DBL"  # Opponents contract went down 2+ undoubled
+    TAKEOUT_PASS = "TAKEOUT_PASS"                 # Passed partner's takeout double holding 10+ HCP
+    LUCKY_MASKED_MISS = "LUCKY_MASKED_MISS"       # Score >= par (often via punishing opponents) but NS underbid
 
 class BiddingDiagnostic:
     def __init__(self,
@@ -68,8 +70,77 @@ class ParDiagnosticEngine:
         temp_state = PartialState(Seat.SOUTH, deal.hands[Seat.SOUTH], history, deal.dealer, deal.vuln)
         contract = temp_state.get_contract()
 
-        # If score matches or exceeds Par, optimal bidding
-        if actual_score >= par_score - 10:
+        # NS makable tricks in all strains (independent of what was bid)
+        max_ns_s = max(dd_table.get((Strain.SPADES, Seat.NORTH), 0), dd_table.get((Strain.SPADES, Seat.SOUTH), 0))
+        max_ns_h = max(dd_table.get((Strain.HEARTS, Seat.NORTH), 0), dd_table.get((Strain.HEARTS, Seat.SOUTH), 0))
+        max_ns_nt = max(dd_table.get((Strain.NT, Seat.NORTH), 0), dd_table.get((Strain.NT, Seat.SOUTH), 0))
+        max_ns_minor = max(
+            dd_table.get((Strain.CLUBS, Seat.NORTH), 0), dd_table.get((Strain.CLUBS, Seat.SOUTH), 0),
+            dd_table.get((Strain.DIAMONDS, Seat.NORTH), 0), dd_table.get((Strain.DIAMONDS, Seat.SOUTH), 0)
+        )
+
+        decl_is_ns = (contract is not None) and (contract[2] in (Seat.NORTH, Seat.SOUTH))
+        decl_is_ew = (contract is not None) and (contract[2] in (Seat.EAST, Seat.WEST))
+
+        def _mk(flaw: BiddingFlawType, severity: float, advice: str) -> BiddingDiagnostic:
+            return BiddingDiagnostic(
+                board_id=board_id,
+                deal=deal,
+                actual_history=history,
+                actual_score=actual_score,
+                par_score=par_score,
+                par_contract=par_contract,
+                flaw_type=flaw,
+                severity_pts=max(0.0, severity),
+                remediation_advice=advice,
+            )
+
+        # ---- Structural checks FIRST: auction-quality flaws that score can mask ----
+
+        # A. Passing partner's takeout double with real values
+        from bid.features import BridgeFeatures
+        for t, call_t in enumerate(history):
+            if call_t.type != CallType.PASS or t == 0:
+                continue
+            hist_before = history[:t]
+            player = Seat((deal.dealer.value + t) % 4)
+            feats = BridgeFeatures.extract_all(deal.hands[player], hist_before, player, deal.dealer, deal.vuln)
+            if feats.get("partner_last_call") == "X" and feats.get("hcp", 0) >= 10:
+                potential = cls._ns_missed_potential(dd_table, contract, actual_score)
+                return _mk(BiddingFlawType.TAKEOUT_PASS,
+                           max(abs(min(regret, 0)), potential, 300),
+                           f"{player.name} passed partner's takeout double holding {feats['hcp']} HCP. "
+                           "Add advancer/response-to-X rules: lift with 5+ suit or bid 2NT with stoppers.")
+
+        # B. Missed slam regardless of score (e.g. lucky penalty masked it)
+        ns_can_slam = max(max_ns_s, max_ns_h, max_ns_nt, max_ns_minor) >= 12
+        if ns_can_slam and (contract is not None and contract[0] < 6):
+            target_slam = "6S" if max_ns_s >= 12 else ("6H" if max_ns_h >= 12 else ("6NT" if max_ns_nt >= 12 else "6m"))
+            potential = cls._ns_missed_potential(dd_table, contract, actual_score)
+            return _mk(BiddingFlawType.MISSED_SLAM,
+                       max(abs(min(regret, 0)), potential),
+                       f"Missed {target_slam} despite score masking. Add Blackwood 4NT / cuebids on 20+ combined HCP and controls.")
+
+        # C. Missed game regardless of score
+        ns_can_game = max_ns_s >= 10 or max_ns_h >= 10 or max_ns_nt >= 9 or max_ns_minor >= 11
+        if ns_can_game and contract is not None and decl_is_ns and contract[0] <= 2:
+            target_game = "4S" if max_ns_s >= 10 else ("4H" if max_ns_h >= 10 else ("3NT" if max_ns_nt >= 9 else "5m"))
+            potential = cls._ns_missed_potential(dd_table, contract, actual_score)
+            return _mk(BiddingFlawType.MISSED_GAME,
+                       max(abs(min(regret, 0)), potential),
+                       f"Underbid Game ({target_game} makable) despite score masking. Synthesize game-forcing continuations & acceptance rules.")
+
+        # D. Own side doubled and set 2+ (unsound competition even when lucky elsewhere)
+        if contract is not None and decl_is_ns and contract[3] >= 1:
+            lvl, strain, decl, dbl = contract
+            tricks_taken = DDSolver.get_tricks(deal, strain, decl)
+            if tricks_taken <= lvl + 4:
+                return _mk(BiddingFlawType.OVERBID_DOWN,
+                           abs(min(regret, -50)) + 100,
+                           "Own doubled contract set 2+. Tighten competitive minimums; do not double for penalties without defensive tricks.")
+
+        # E. Score-based optimal check (now only after structural review)
+        if actual_score >= par_score - 10 and regret >= -10:
             return BiddingDiagnostic(
                 board_id=board_id,
                 deal=deal,
@@ -84,20 +155,8 @@ class ParDiagnosticEngine:
 
         loss = abs(regret)
 
-        # Determine NS makable tricks in all strains
-        max_ns_s = max(dd_table.get((Strain.SPADES, Seat.NORTH), 0), dd_table.get((Strain.SPADES, Seat.SOUTH), 0))
-        max_ns_h = max(dd_table.get((Strain.HEARTS, Seat.NORTH), 0), dd_table.get((Strain.HEARTS, Seat.SOUTH), 0))
-        max_ns_nt = max(dd_table.get((Strain.NT, Seat.NORTH), 0), dd_table.get((Strain.NT, Seat.SOUTH), 0))
-        max_ns_minor = max(
-            dd_table.get((Strain.CLUBS, Seat.NORTH), 0), dd_table.get((Strain.CLUBS, Seat.SOUTH), 0),
-            dd_table.get((Strain.DIAMONDS, Seat.NORTH), 0), dd_table.get((Strain.DIAMONDS, Seat.SOUTH), 0)
-        )
-
-        decl_is_ns = (contract is not None) and (contract[2] in (Seat.NORTH, Seat.SOUTH))
-        decl_is_ew = (contract is not None) and (contract[2] in (Seat.EAST, Seat.WEST))
-
-        # Check 1: Missed Grand / Small Slam
-        if (max_ns_s >= 12 or max_ns_h >= 12 or max_ns_nt >= 12 or max_ns_minor >= 12) and (contract is not None and contract[0] < 6):
+        # Check 1: Missed Grand / Small Slam (score-driven path)
+        if ns_can_slam and (contract is not None and contract[0] < 6):
             target_slam = "6S" if max_ns_s >= 12 else ("6H" if max_ns_h >= 12 else "6NT")
             if max_ns_s >= 13 or max_ns_h >= 13 or max_ns_nt >= 13:
                 target_slam = "7NT / 7M Grand Slam"
@@ -173,6 +232,24 @@ class ParDiagnosticEngine:
         )
 
     @classmethod
+    def _ns_missed_potential(cls, dd_table, contract, actual_score: float) -> float:
+        """Estimates points NS left on the table vs their best makable game/slam."""
+        letters = {Strain.CLUBS: 'C', Strain.DIAMONDS: 'D', Strain.HEARTS: 'H',
+                   Strain.SPADES: 'S', Strain.NT: 'N'}
+        best = 0.0
+        for strain, game_lvl in ((Strain.SPADES, 4), (Strain.HEARTS, 4),
+                                 (Strain.NT, 3), (Strain.DIAMONDS, 5), (Strain.CLUBS, 5)):
+            tricks = max(dd_table.get((strain, Seat.NORTH), 0), dd_table.get((strain, Seat.SOUTH), 0))
+            if tricks < game_lvl + 6:
+                continue
+            lvl = min(7, max(game_lvl, tricks - 6))
+            made = score(f"{lvl}{letters[strain]}", False, tricks)
+            if contract is not None and contract[0] >= lvl and contract[1] == strain:
+                continue
+            best = max(best, made - actual_score)
+        return best
+
+    @classmethod
     def generate_corrective_rules_for_diagnostics(cls, diagnostics: List[BiddingDiagnostic]) -> List[DecisionNetRule]:
         """
         Synthesizes targeted DecisionNet rules based on the diagnosed bidding flaws.
@@ -182,6 +259,35 @@ class ParDiagnosticEngine:
         flaw_counts = {}
         for d in diagnostics:
             flaw_counts[d.flaw_type] = flaw_counts.get(d.flaw_type, 0) + 1
+
+        # 0. If TAKEOUT_PASS detected -> Synthesize advancer/response-to-X rules
+        if flaw_counts.get(BiddingFlawType.TAKEOUT_PASS, 0) > 0:
+            for suit_name, strain in (("Hearts", Strain.HEARTS), ("Spades", Strain.SPADES)):
+                key = f"{strain.name.lower()}_len"
+                rules.append(DecisionNetRule(
+                    f"X_LIFT_2{strain.name[0]}",
+                    Call(CallType.BID, 2, strain),
+                    [RuleCondition("partner_last_call", "==", "X"), RuleCondition("hcp", ">=", 6),
+                     RuleCondition(key, ">=", 4)],
+                    description="Advancer: lift partner's takeout X with 4+ card major",
+                    priority=26
+                ))
+            rules.append(DecisionNetRule(
+                "X_LIFT_3D",
+                Call(CallType.BID, 3, Strain.DIAMONDS),
+                [RuleCondition("partner_last_call", "==", "X"), RuleCondition("hcp", ">=", 11),
+                 RuleCondition("diamond_len", ">=", 5)],
+                description="Advancer: jump to 3D with 5+ diamonds and values over partner's X",
+                priority=27
+            ))
+            rules.append(DecisionNetRule(
+                "X_RESP_2NT",
+                Call(CallType.BID, 2, Strain.NT),
+                [RuleCondition("partner_last_call", "==", "X"), RuleCondition("hcp", ">=", 10),
+                 RuleCondition("is_balanced", "==", True)],
+                description="Advancer: 2NT with stoppers and 10+ HCP over partner's X",
+                priority=25
+            ))
 
         # 1. If SOFT_DEFENSE detected -> Synthesize aggressive competitive & balancing rules
         if flaw_counts.get(BiddingFlawType.SOFT_DEFENSE, 0) > 0:

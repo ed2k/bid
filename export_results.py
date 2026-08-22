@@ -4,6 +4,7 @@ Plays 64 random deals with system/improved_system.dsl and writes a full report
 (hands, auction, DDS tricks/score, DDS par result) to improved_system_64_deals.txt.
 """
 
+import argparse
 import os
 import time
 
@@ -43,8 +44,15 @@ def print_auction(lines, history, dealer):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Export board results vs DDS par to txt")
+    parser.add_argument("--deals", type=int, default=NUM_DEALS)
+    parser.add_argument("--seed", type=int, default=SEED)
+    parser.add_argument("--out", type=str, default=None)
+    args = parser.parse_args()
+    out_path = args.out or f"improved_system_{args.deals}_deals.txt"
+
     t0 = time.time()
-    deals = build_deals(NUM_DEALS, seed=SEED, include_stratified=False)
+    deals = build_deals(args.deals, seed=args.seed, include_stratified=False)
     engine = PIDMEngine(sampler=RBMBMCSampler(sample_size=2, max_iterations=6, timeout_sec=0.06),
                         max_lookahead_depth=1)
     arena = BiddingArena(engine=engine)
@@ -52,8 +60,8 @@ def main():
 
     lines = []
     lines.append("=" * 80)
-    lines.append(f" IMPROVED SYSTEM (v4) — {NUM_DEALS} RANDOM DEALS vs NATIVE DDS PAR")
-    lines.append(f" deal seed {SEED}, MC seed {EVAL_SEED}, generated {time.strftime('%Y-%m-%d %H:%M:%S')}")
+    lines.append(f" IMPROVED SYSTEM — {args.deals} RANDOM DEALS vs NATIVE DDS PAR")
+    lines.append(f" deal seed {args.seed}, MC seed {EVAL_SEED}, generated {time.strftime('%Y-%m-%d %H:%M:%S')}")
     lines.append("=" * 80)
 
     tot_score = tot_par = 0.0
@@ -108,9 +116,9 @@ def main():
     lines.append(f"  Total runtime        : {time.time() - t0:.1f}s")
     lines.append("=" * 80)
 
-    with open(OUT_PATH, "w") as f:
+    with open(out_path, "w") as f:
         f.write("\n".join(lines) + "\n")
-    print(f"Wrote {OUT_PATH} ({len(deals)} boards)")
+    print(f"Wrote {out_path} ({len(deals)} boards)")
     print("\n".join(lines[-12:]))
 
 
