@@ -2,3 +2,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
+
+# debug artifacts
+debug/
+
+# libdds writes error dumps to CWD
+/dump.txt

@@ -205,6 +205,9 @@ class DecisionNet:
             lines.append("\n\n# --- Refined ID3 Exception Trees (Speedup Learning Splits) ---")
             for key, node in self.intersection_nodes.items():
                 lines.append(f"\nINTERSECTION {' ^ '.join(key)}:")
+                if node.refinement_classifier is not None and hasattr(node.refinement_classifier, "call"):
+                    lines.append(f"  RESOLVED_CALL: {node.refinement_classifier.call}")
+                    continue
                 if node.refinement_classifier is not None and hasattr(node.refinement_classifier, "root"):
                     root = node.refinement_classifier.root
                     if root is not None:

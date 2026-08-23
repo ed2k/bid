@@ -18,6 +18,21 @@ if TYPE_CHECKING:
 class ddTableDealPBN(ctypes.Structure):
     _fields_ = [("cards", ctypes.c_char * 80)]
 
+class dealPBN(ctypes.Structure):
+    _fields_ = [("remainCards", ctypes.c_char * 80),
+                ("trump", ctypes.c_int),
+                ("first", ctypes.c_int),
+                ("currentTrickSuit", ctypes.c_int * 3),
+                ("currentTrickRank", ctypes.c_int * 3)]
+
+class futureTricks(ctypes.Structure):
+    _fields_ = [("nodes", ctypes.c_int),
+                ("cards", ctypes.c_int),
+                ("suit", ctypes.c_int * 13),
+                ("rank", ctypes.c_int * 13),
+                ("equals", ctypes.c_int * 13),
+                ("score", ctypes.c_int * 13)]
+
 class ddTableResults(ctypes.Structure):
     # resTable[strain][player] where strain: 0=Spade, 1=Heart, 2=Diamond, 3=Club, 4=NT
     _fields_ = [("resTable", ctypes.c_int * 4 * 5)]
@@ -123,9 +138,11 @@ class DDSolver:
                     for s_idx, strain in enumerate(strain_map):
                         for p_idx, seat in enumerate(seat_map):
                             results[(strain, seat)] = table_results.resTable[s_idx][p_idx]
+                    cls._cleanup_error_dump()
                     return results
             except Exception as e:
                 sys.stderr.write(f"DDS C-API error: {e}, falling back to Python DD algorithm\n")
+                cls._cleanup_error_dump()
 
         # Fallback Python DD Estimation
         return cls._fallback_dd_table(deal)
@@ -182,3 +199,116 @@ class DDSolver:
                     base = min(13, max(0, int((tot_hcp / 3.1) + max(0, fit - 7) * 1.1)))
                 results[(strain, declarer)] = base
         return results
+
+    _pbn_ranks = "23456789TJQKA"
+
+    @classmethod
+    def _cards_to_pbn_suits(cls, cards) -> str:
+        """PBN suit order is S.H.D.C; repo Suit enums are alphabetical."""
+        by_suit = {Suit.SPADES: [], Suit.HEARTS: [], Suit.DIAMONDS: [], Suit.CLUBS: []}
+        for c in cards:
+            r = getattr(c.rank, "value", c.rank)
+            by_suit[c.suit].append(int(r))
+        parts = []
+        for s in (Suit.SPADES, Suit.HEARTS, Suit.DIAMONDS, Suit.CLUBS):
+            ranks = sorted(by_suit[s], reverse=True)
+            parts.append("".join(cls._pbn_ranks[r - 2] for r in ranks) if ranks else "-")
+        return ".".join(parts)
+
+    _dds3_mod = None
+    _dds3_checked = False
+
+    @staticmethod
+    def _cleanup_error_dump():
+        """libdds writes a dump.txt diagnostic to the CWD on solve errors;
+        remove it so debug artifacts never leak into the working tree."""
+        try:
+            p = os.path.join(os.getcwd(), "dump.txt")
+            if os.path.exists(p):
+                os.remove(p)
+        except OSError:
+            pass
+
+    @classmethod
+    def _load_dds3(cls):
+        """
+        Loads the DDS 3.x Python extension (SolverContext API) vendored under
+        BEN's bin directory, preferring a build matching the running Python.
+        """
+        if cls._dds3_checked:
+            return cls._dds3_mod
+        cls._dds3_checked = True
+        try:
+            import threading
+            import glob
+            import importlib.util
+            here = os.path.dirname(os.path.abspath(__file__))
+            roots = [
+                os.path.join(here, "..", "..", "ben", "bin", "dds3-darwin", "dds3"),
+                os.path.join(here, "..", "ben", "bin", "dds3-darwin", "dds3"),
+                "/Users/admin/Documents/GitHub/ben/bin/dds3-darwin/dds3",
+            ]
+            py_tag = f"{sys.version_info.major}{sys.version_info.minor}"
+            for root in roots:
+                if not os.path.isdir(root):
+                    continue
+                sos = sorted(glob.glob(os.path.join(root, "_dds3*.so")),
+                             key=lambda p: (py_tag in p, "arm" in p), reverse=True)
+                for so in sos:
+                    try:
+                        spec = importlib.util.spec_from_file_location("_dds3", so)
+                        mod = importlib.util.module_from_spec(spec)
+                        spec.loader.exec_module(mod)
+                        cls._dds3_mod = mod
+                        print(f"dds3 leaf solver loaded from {so}", file=sys.stderr)
+                        return mod
+                    except ImportError:
+                        continue
+        except Exception:
+            pass
+        return None
+
+    _ctx_local = __import__("threading").local()
+
+    @classmethod
+    def _context(cls):
+        import threading
+        ctx = getattr(cls._ctx_local, "ctx", None)
+        if ctx is None:
+            mod = cls._load_dds3()
+            if mod is None:
+                return None
+            ctx = mod.SolverContext()
+            cls._ctx_local.ctx = ctx
+        return ctx
+
+    @classmethod
+    def solve_position(cls, hands: Dict[Seat, list], trump: int, first: int,
+                       trick: list = None) -> Optional[int]:
+        """
+        Exact double-dummy solve of an in-play position (SDS leaf evaluation).
+        hands: {Seat: list[Card]} remaining cards. trump: DDS strain index
+        (0=S,1=H,2=D,3=C,4=NT). first: seat index on lead. trick: played cards
+        [(seat_index, Card)] on the current trick (<= 3).
+        Returns tricks won by the leader's partnership for the rest of the deal.
+        """
+        mod = cls._load_dds3()
+        if mod is None:
+            return None
+        ctx = cls._context()
+        if ctx is None:
+            return None
+        order = [Seat.NORTH, Seat.EAST, Seat.SOUTH, Seat.WEST]
+        pbn = "N:" + " ".join(cls._cards_to_pbn_suits(hands[s]) for s in order)
+        trick = trick or []
+        # DDS suit order is S,H,D,C while repo enums are C,D,H,S -> reverse
+        ts = tuple(3 - int(c.suit.value) for _, c in trick[:3]) + (0,) * (3 - min(3, len(trick)))
+        tr = tuple(int(getattr(c.rank, "value", c.rank)) for _, c in trick[:3]) + (0,) * (3 - min(3, len(trick)))
+        try:
+            fut = mod.solve_board_pbn(
+                pbn, trump=trump, first=first,
+                current_trick_suit=ts, current_trick_rank=tr,
+                target=-1, solutions=1, mode=2, context=ctx)
+            return int(fut["score"][0])
+        finally:
+            cls._cleanup_error_dump()

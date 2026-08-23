@@ -1,5 +1,5 @@
 # ==========================================
-# IMPROVED BIDDING SYSTEM: ImprovedSystem_v13
+# IMPROVED BIDDING SYSTEM: ImprovedSystem_v12
 # Generated via Continuous Self-Improvement Pipeline
 # ==========================================
 
@@ -170,6 +170,13 @@ RULE GAME_ACCEPT_4S_OVER_3S:
   CONDITION: spade_len >= 4
   CONDITION: hcp >= 13
 
+RULE GAME_ACCEPT_4H_OVER_3H:
+  CALL: 4H
+  PRIORITY: 33
+  CONDITION: partner_last_call in ['2H', '3H']
+  CONDITION: heart_len >= 4
+  CONDITION: hcp >= 13
+
 RULE GAME_ACCEPT_3NT_OVER_2NT:
   CALL: 3NT
   PRIORITY: 32
@@ -224,6 +231,13 @@ RULE GAME_ACCEPT_4S_OVER_3S:
   PRIORITY: 33
   CONDITION: partner_last_call in ['2S', '3S']
   CONDITION: spade_len >= 4
+  CONDITION: hcp >= 13
+
+RULE GAME_ACCEPT_4H_OVER_3H:
+  CALL: 4H
+  PRIORITY: 33
+  CONDITION: partner_last_call in ['2H', '3H']
+  CONDITION: heart_len >= 4
   CONDITION: hcp >= 13
 
 RULE GAME_ACCEPT_3NT_OVER_2NT:
@@ -512,10 +526,3 @@ RULE R_WEAK_2H:
   CONDITION: hcp <= 10
   CONDITION: is_balanced == False
   CONDITION: partner_last_call != NONE
-
-RULE GAME_ACCEPT_4H_OVER_3H:
-  CALL: 4H
-  PRIORITY: 33
-  CONDITION: partner_last_call in ['2H', '3H']
-  CONDITION: heart_len >= 5
-  CONDITION: hcp >= 14

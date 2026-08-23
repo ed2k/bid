@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 13,
   "failed": [
     "curated:BALANCING",
     "curated:TKO_SHAPE",
@@ -10,7 +10,28 @@
     "gate:R_RESP_2H:not_opening",
     "gate:R_RESP_2H:partner",
     "gate:R_RESP_2S:partner",
-    "gate:R_OPEN_2C_STRONG:not_opening"
+    "gate:R_OPEN_2C_STRONG:not_opening",
+    "curated:OVERCALLS",
+    "diag:X",
+    "gate:R_OPEN_2C_STRONG:partner",
+    "gate:R_WEAK_2H:not_opening",
+    "gate:R_WEAK_2S:not_opening",
+    "gate:R_WEAK_2S:partner",
+    "drop:R_1NT",
+    "drop:R_1H",
+    "drop:R_1S",
+    "drop:R_1D",
+    "drop:R_1C_unbalanced",
+    "drop:R_1C_balanced",
+    "tighten:SLAM_EXPLORE_6H",
+    "tighten:GAME_ACCEPT_4S_OVER_3S",
+    "tighten:GAME_ACCEPT_3NT_OVER_2NT",
+    "tighten:R_RESP_4H",
+    "tighten:SLAM_EXPLORE_6S",
+    "loosen:SLAM_EXPLORE_6H",
+    "loosen:GAME_ACCEPT_4H_OVER_3H",
+    "loosen:GAME_ACCEPT_4S_OVER_3S",
+    "loosen:GAME_ACCEPT_3NT_OVER_2NT"
   ],
   "applied": [
     {
@@ -47,6 +68,16 @@
       "sig": "manual:KING_ASK_LADDER",
       "name": "KING_ASK_LADDER",
       "delta": 0.0
+    },
+    {
+      "sig": "gate:R_WEAK_2H:partner",
+      "name": "GATE_R_WEAK_2H_partner",
+      "delta": 97.1
+    },
+    {
+      "sig": "tighten:GAME_ACCEPT_4H_OVER_3H",
+      "name": "TIGHTEN_GAME_ACCEPT_4H_OVER_3H",
+      "delta": 38.0
     }
   ]
 }

@@ -1,5 +1,5 @@
 # ==========================================
-# IMPROVED BIDDING SYSTEM: ImprovedSystem_v13
+# IMPROVED BIDDING SYSTEM: ImprovedSystem_v11
 # Generated via Continuous Self-Improvement Pipeline
 # ==========================================
 
@@ -170,6 +170,13 @@ RULE GAME_ACCEPT_4S_OVER_3S:
   CONDITION: spade_len >= 4
   CONDITION: hcp >= 13
 
+RULE GAME_ACCEPT_4H_OVER_3H:
+  CALL: 4H
+  PRIORITY: 33
+  CONDITION: partner_last_call in ['2H', '3H']
+  CONDITION: heart_len >= 4
+  CONDITION: hcp >= 13
+
 RULE GAME_ACCEPT_3NT_OVER_2NT:
   CALL: 3NT
   PRIORITY: 32
@@ -226,6 +233,13 @@ RULE GAME_ACCEPT_4S_OVER_3S:
   CONDITION: spade_len >= 4
   CONDITION: hcp >= 13
 
+RULE GAME_ACCEPT_4H_OVER_3H:
+  CALL: 4H
+  PRIORITY: 33
+  CONDITION: partner_last_call in ['2H', '3H']
+  CONDITION: heart_len >= 4
+  CONDITION: hcp >= 13
+
 RULE GAME_ACCEPT_3NT_OVER_2NT:
   CALL: 3NT
   PRIORITY: 32
@@ -247,6 +261,14 @@ RULE SLAM_EXPLORE_6H:
   CONDITION: heart_len >= 5
   CONDITION: hcp >= 19
   CONDITION: controls >= 6
+
+RULE R_WEAK_2H:
+  CALL: 2H
+  PRIORITY: 19
+  CONDITION: heart_len == 6
+  CONDITION: hcp >= 6
+  CONDITION: hcp <= 10
+  CONDITION: is_balanced == False
 
 RULE R_WEAK_2S:
   CALL: 2S
@@ -455,6 +477,7 @@ RULE ASK_5NT_KINGS:
   CONDITION: my_last_call == 4NT
   CONDITION: partner_last_call in ['5D', '5H', '5S']
   CONDITION: hcp >= 16
+  # King ask after ace show, 16+
 
 RULE PLACE_6NT_ACES:
   CALL: 6NT
@@ -462,6 +485,7 @@ RULE PLACE_6NT_ACES:
   CONDITION: my_last_call == 4NT
   CONDITION: partner_last_call in ['5D', '5H', '5S']
   CONDITION: hcp <= 15
+  # Place 6NT, no king ask
 
 RULE KW_RESP_0_6C:
   CALL: 6C
@@ -469,6 +493,7 @@ RULE KW_RESP_0_6C:
   CONDITION: partner_last_call == 5NT
   CONDITION: my_last_call in ['5D', '5H', '5S']
   CONDITION: king_count == 0
+  # 0 kings
 
 RULE KW_RESP_1_6D:
   CALL: 6D
@@ -476,6 +501,7 @@ RULE KW_RESP_1_6D:
   CONDITION: partner_last_call == 5NT
   CONDITION: my_last_call in ['5D', '5H', '5S']
   CONDITION: king_count == 1
+  # 1 king
 
 RULE KW_RESP_2_6H:
   CALL: 6H
@@ -483,6 +509,7 @@ RULE KW_RESP_2_6H:
   CONDITION: partner_last_call == 5NT
   CONDITION: my_last_call in ['5D', '5H', '5S']
   CONDITION: king_count >= 2
+  # 2+ kings
 
 RULE GRAND_7NT_TWO_K:
   CALL: 7NT
@@ -490,6 +517,7 @@ RULE GRAND_7NT_TWO_K:
   CONDITION: my_last_call == 5NT
   CONDITION: partner_last_call in ['6H', '6S']
   CONDITION: hcp >= 17
+  # 7NT with 2+ kings shown
 
 RULE GRAND_7NT_ONE_K:
   CALL: 7NT
@@ -497,25 +525,11 @@ RULE GRAND_7NT_ONE_K:
   CONDITION: my_last_call == 5NT
   CONDITION: partner_last_call == 6D
   CONDITION: hcp >= 19
+  # 7NT with 1 king, huge hand
 
 RULE PLACE_6NT_AFTER_K_ASK:
   CALL: 6NT
   PRIORITY: 30
   CONDITION: my_last_call == 5NT
   CONDITION: partner_last_call in ['6C', '6D', '6H']
-
-RULE R_WEAK_2H:
-  CALL: 2H
-  PRIORITY: 19
-  CONDITION: heart_len == 6
-  CONDITION: hcp >= 6
-  CONDITION: hcp <= 10
-  CONDITION: is_balanced == False
-  CONDITION: partner_last_call != NONE
-
-RULE GAME_ACCEPT_4H_OVER_3H:
-  CALL: 4H
-  PRIORITY: 33
-  CONDITION: partner_last_call in ['2H', '3H']
-  CONDITION: heart_len >= 5
-  CONDITION: hcp >= 14
+  # Settle in 6NT after king info

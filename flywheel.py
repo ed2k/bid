@@ -202,8 +202,10 @@ def mutate_bounds(rule: DecisionNetRule, direction: str) -> Optional[DecisionNet
 # ---------------- flywheel ----------------
 
 class Flywheel:
-    def __init__(self, arena, n_deals, pool_cap, rng_seed=123):
+    def __init__(self, arena, n_deals, pool_cap, rng_seed=123, sds_scorer=None, sds_primary=False):
         self.arena = arena
+        self.sds_scorer = sds_scorer
+        self.sds_primary = sds_primary and sds_scorer is not None
         self.rng = random.Random(rng_seed)
         self.train_deals = build_deals(n_deals, seed=TRAIN_SEED)
         self.dd_train = precompute(self.train_deals)
@@ -227,7 +229,8 @@ class Flywheel:
 
     def evl(self, net, deals, dd):
         return evaluate_system(self.arena, "cand", net, deals, dd,
-                               run_diagnostics=True, seed=EVAL_SEED)
+                               run_diagnostics=True, seed=EVAL_SEED,
+                               sds_scorer=self.sds_scorer)
 
     def sig_failed(self, sig) -> bool:
         return sig in self.state["failed"]
@@ -300,8 +303,9 @@ class Flywheel:
         return lines
 
     def run_round(self, round_no: int, current: DecisionNet, cur_train) -> Tuple[DecisionNet, object, List[str]]:
-        print(f"\n{'='*92}\n ROUND {round_no} | train score {cur_train['avg_score']:+.1f} "
-              f"| flaws {dict(cur_train['flaws'])}\n{'='*92}")
+        metric = "avg_score_sds" if self.sds_primary else "avg_score"
+        print(f"\n{'='*92}\n ROUND {round_no} | train {metric} "
+              f"{cur_train[metric]:+.1f} | flaws {dict(cur_train['flaws'])}\n{'='*92}")
         print("   Worst boards:")
         for line in self.flaw_dump(cur_train):
             print(line)
@@ -320,7 +324,7 @@ class Flywheel:
                 cand = current.clone()
                 fn(cand)
                 res = self.evl(cand, self.train_deals, self.dd_train)
-                delta = res["avg_score"] - cur_train["avg_score"]
+                delta = res[metric] - cur_train[metric]
                 tested.append((sig, delta))
                 ok = (delta > 0
                       and res["par_accuracy"] >= cur_train["par_accuracy"] - 5
@@ -345,15 +349,29 @@ class Flywheel:
         return current, cur_train, applied
 
     def validate_and_save(self, original, orig_train, orig_val, current, cur_train, applied):
+        metric = "avg_score_sds" if self.sds_primary else "avg_score"
         final_val = {s: self.evl(current, *self.val_sets[s]) for s in VAL_SEEDS}
-        train_gain = cur_train["avg_score"] - orig_train["avg_score"]
-        print(f"\n   VALIDATION: train {train_gain:+.1f}", end="")
+        train_gain = cur_train[metric] - orig_train[metric]
+        print(f"\n   VALIDATION ({metric}): train {train_gain:+.1f}", end="")
         val_ok = True
         for s in VAL_SEEDS:
-            d = final_val[s]["avg_score"] - orig_val[s]["avg_score"]
+            d = final_val[s][metric] - orig_val[s][metric]
             val_ok = val_ok and d > -5
             print(f" | val{s} {d:+.1f}", end="")
         print()
+
+        sds_delta = None
+        if self.sds_scorer is not None:
+            o = self.evl(original, self.train_deals, self.dd_train)
+            c = self.evl(current, self.train_deals, self.dd_train)
+            sds_delta = c["avg_score_sds"] - o["avg_score_sds"]
+            print(f"   SDS two-hand check: {o['avg_score_sds']:+.1f} -> {c['avg_score_sds']:+.1f} "
+                  f"({sds_delta:+.1f})")
+            if sds_delta < -5:
+                print("   REJECTED: DD gain is luck-based (SDS realistic-info score regressed)")
+                for a in applied:
+                    self.fail(a["sig"])
+                return False
 
         if applied and train_gain > 0 and val_ok:
             v = self.state["version"]
@@ -377,12 +395,22 @@ def main():
     parser.add_argument("--deals", type=int, default=48)
     parser.add_argument("--rounds", type=int, default=3)
     parser.add_argument("--pool-cap", type=int, default=14)
+    parser.add_argument("--sds", action="store_true", help="Gate saves on SDS two-hand score")
+    parser.add_argument("--sds-primary", action="store_true",
+                        help="Hill-climb directly on the SDS two-hand objective")
     args = parser.parse_args()
 
     t0 = time.time()
     engine = PIDMEngine(sampler=RBMBMCSampler(sample_size=2, max_iterations=6, timeout_sec=0.06),
                         max_lookahead_depth=1)
-    fw = Flywheel(BiddingArena(engine=engine), args.deals, args.pool_cap)
+    sds_scorer = None
+    if args.sds or args.sds_primary:
+        from bid.sds import SDSScorer
+        sds_scorer = SDSScorer(num_worlds=20, seed=2024)
+        mode = "SDS-primary hill-climb" if args.sds_primary else "SDS save-gate"
+        print(f"{mode} enabled")
+    fw = Flywheel(BiddingArena(engine=engine), args.deals, args.pool_cap,
+                  sds_scorer=sds_scorer, sds_primary=args.sds_primary)
 
     original = load_decision_net_dsl(TARGET)
     orig_train = fw.evl(original, fw.train_deals, fw.dd_train)
