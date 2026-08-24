@@ -36,56 +36,107 @@ class SDSResult:
 
 
 class SDSScorer:
-    def __init__(self, num_worlds: int = 20, seed: int = 0):
+    """
+    Two-hand contract scoring (PIMC over sampled opponent layouts).
+
+    When `history` and `models` are supplied to score_contract, opponent
+    layouts are not drawn uniformly: a pool of
+    `condition_factor * num_worlds` completions is generated and the
+    `num_worlds` layouts *most consistent with the observed auction* are kept
+    (RBMBMC-style elite selection — Amit & Markovitch applied to scoring,
+    per sds.md WorldSampler extension point).
+    """
+
+    def __init__(self, num_worlds: int = 20, seed: int = 0,
+                 condition_factor: int = 0):
         self.num_worlds = num_worlds
         self.seed = seed
+        self.condition_factor = max(0, condition_factor)
+
+    # ---------- sampling ----------
 
     @staticmethod
-    def sample_worlds(deal, viewer_seats: Tuple[Seat, Seat], num_worlds: int,
-                      rng: random.Random) -> List[Tuple[List[Card], List[Card]]]:
-        """
-        Samples num_worlds assignments of the hidden cards between the two
-        non-viewer seats. Known seats are never touched.
-        Returns list of (cards_seat_a, cards_seat_b) as Card lists.
-        """
-        unknown = [s for s in Seat if s not in viewer_seats]
-        pools = []
-        for s in unknown:
+    def _hidden_cards(deal, viewer_seats):
+        """Remaining card lists for the two non-viewer seats."""
+        out = []
+        for s in Seat:
+            if s in viewer_seats:
+                continue
             cards = []
-            for suit, cards_of_suit in deal.hands[s].by_suit.items():
-                cards.extend(cards_of_suit)
-            pools.append(cards)
+            for suit_cards in deal.hands[s].by_suit.values():
+                cards.extend(suit_cards)
+            out.append((s, cards))
+        return out
 
+    @classmethod
+    def sample_world_dicts(cls, deal, viewer_seats, num_worlds, rng):
+        """Full {Seat: [Card]} worlds; viewer holdings preserved exactly."""
+        hidden = cls._hidden_cards(deal, viewer_seats)
+        (sa, ca), (sb, cb) = hidden
         worlds = []
         for _ in range(num_worlds):
-            combined = pools[0] + pools[1]
-            rng.shuffle(combined)
-            n0 = len(pools[0])
-            worlds.append((combined[:n0], combined[n0:]))
+            pool = list(ca) + list(cb)
+            rng.shuffle(pool)
+            split = len(ca)
+            w = {s: list(deal.hands[s].cards) for s in Seat}
+            w[sa] = pool[:split]
+            w[sb] = pool[split:]
+            worlds.append(w)
         return worlds
 
+    # Backwards-compatible pair API used by older tests.
+    @classmethod
+    def sample_worlds(cls, deal, viewer_seats, num_worlds, rng):
+        unknown = [s for s, _ in cls._hidden_cards(deal, viewer_seats)]
+        worlds = cls.sample_world_dicts(deal, viewer_seats, num_worlds, rng)
+        return [(w[unknown[0]], w[unknown[1]]) for w in worlds]
+
+    # ---------- conditioning ----------
+
+    def _select_consistent(self, deal, viewer_seats, history, models,
+                           num_worlds, rng):
+        from bid.sampling import Deal as _Deal, calculate_inconsistency
+        pool = self.sample_world_dicts(deal, viewer_seats,
+                                       num_worlds * self.condition_factor, rng)
+        scored = []
+        for i, w in enumerate(pool):
+            d = _Deal(hands={s: Hand(list(w[s])) for s in Seat},
+                      dealer=deal.dealer, vuln=deal.vuln)
+            inc = calculate_inconsistency(d, list(history), models,
+                                          deal.dealer, deal.vuln)
+            scored.append((inc, i, w))
+        scored.sort(key=lambda t: (t[0], t[1]))
+        return [w for _, _, w in scored[:num_worlds]], [t[0] for t in scored[:num_worlds]]
+
+    # ---------- scoring ----------
+
     def score_contract(self, deal, level: int, strain: Strain, declarer: Seat,
-                       doubled: int = 0, vuln: int = 0) -> SDSResult:
+                       doubled: int = 0, vuln: int = 0,
+                       history=None, models=None) -> SDSResult:
         from bid.scoring import calculate_contract_score, Vulnerability
 
         dummy = declarer.partner
+        viewers = (declarer, dummy)
         rng = random.Random(self.seed)
-        worlds = self.sample_worlds(deal, (declarer, dummy), self.num_worlds, rng)
+
+        if history and models and self.condition_factor > 0:
+            worlds, incs = self._select_consistent(deal, viewers, history,
+                                                   models, self.num_worlds, rng)
+            mean_inc = sum(incs) / len(incs)
+        else:
+            worlds = self.sample_world_dicts(deal, viewers, self.num_worlds, rng)
+            mean_inc = None
 
         is_vul = Vulnerability.is_vulnerable(vuln, declarer)
         needed = level + 6
-        unknown = [s for s in Seat if s not in (declarer, dummy)]
 
         total_score = 0.0
         makes = 0
         total_tricks = 0
 
-        for cards_a, cards_b in worlds:
-            hands = dict(deal.hands)
-            hands[unknown[0]] = Hand(list(cards_a))
-            hands[unknown[1]] = Hand(list(cards_b))
-            world = type(deal)(hands=hands, dealer=deal.dealer, vuln=deal.vuln)
-
+        for w in worlds:
+            world = type(deal)(hands={s: Hand(list(w[s])) for s in Seat},
+                               dealer=deal.dealer, vuln=deal.vuln)
             tricks = DDSolver.get_tricks(world, strain, declarer)
             total_tricks += tricks
             if tricks >= needed:
@@ -94,8 +145,8 @@ class SDSScorer:
                 level=level, strain=strain, doubled=doubled,
                 is_vulnerable=is_vul, tricks_taken=tricks)
 
-        n = max(1, len(worlds))
-        return SDSResult(total_score / n, makes / n, total_tricks / n, len(worlds))
+        k = max(1, len(worlds))
+        return SDSResult(total_score / k, makes / k, total_tricks / k, len(worlds))
 
 # ======================================================================
 # True play search (sds.md PR1/PR2/PR3 subset)

@@ -143,6 +143,7 @@ def load_decision_net_dsl(path: str) -> DecisionNet:
         if block_rule:
             rid = block_rule.group(1).strip()
             call, prio, conditions = None, 10, []
+            is_neg = False
             i += 1
             while i < len(lines):
                 sub = lines[i].rstrip("\n").strip()
@@ -152,11 +153,14 @@ def load_decision_net_dsl(path: str) -> DecisionNet:
                     call = parse_call(sub.split("CALL:", 1)[1])
                 elif sub.startswith("PRIORITY:"):
                     prio = int(sub.split("PRIORITY:", 1)[1].strip())
+                elif sub.startswith("NEGATIVE:"):
+                    is_neg = sub.split("NEGATIVE:", 1)[1].strip() == "True"
                 elif sub.startswith("CONDITION:"):
                     conditions.append(parse_condition(sub.split("CONDITION:", 1)[1]))
                 i += 1
             if call is not None:
-                net.add_rule(DecisionNetRule(rid, call, conditions, priority=prio))
+                net.add_rule(DecisionNetRule(rid, call, conditions,
+                                             is_negative=is_neg, priority=prio))
             continue
 
         inter = re.match(r"^INTERSECTION\s+(.+?):$", stripped)
@@ -179,19 +183,29 @@ def load_decision_net_dsl(path: str) -> DecisionNet:
     return net
 
 
-def build_deals(num_random: int, seed: int = 42, include_stratified: bool = True) -> List[Deal]:
+def build_deals(num_random: int, seed: int = 42, include_stratified: bool = True,
+                vuln_mode: str = "random") -> List[Deal]:
+    """vuln_mode: 'random' rotates vulnerability across boards (realistic);
+    'none' keeps every board non-vulnerable (legacy behaviour)."""
     import random
     random.seed(seed)
     from bid.models import Suit
-    deals = [Deal.random_deal(dealer=Seat.NORTH) for _ in range(num_random)]
+    vrng = random.Random(seed * 31 + 7)
+
+    def _assign(d):
+        if vuln_mode == "random":
+            d.vuln = vrng.randrange(4)
+        return d
+
+    deals = [_assign(Deal.random_deal(dealer=Seat.NORTH)) for _ in range(num_random)]
     if not include_stratified:
         return deals
-    deals.append(StratifiedDealGenerator.generate_stratified_deal(Seat.SOUTH, suit_stratum=(Suit.SPADES, 8)))
-    deals.append(StratifiedDealGenerator.generate_stratified_deal(Seat.NORTH, suit_stratum=(Suit.HEARTS, 8)))
-    deals.append(StratifiedDealGenerator.generate_stratified_deal(Seat.SOUTH, suit_stratum=(Suit.DIAMONDS, 7)))
-    deals.append(StratifiedDealGenerator.generate_stratified_deal(Seat.SOUTH, hcp_stratum=(22, 25)))
-    deals.append(StratifiedDealGenerator.generate_stratified_deal(Seat.NORTH, hcp_stratum=(16, 18)))
-    deals.append(StratifiedDealGenerator.generate_stratified_deal(Seat.SOUTH, hcp_stratum=(0, 4)))
+    deals.append(_assign(StratifiedDealGenerator.generate_stratified_deal(Seat.SOUTH, suit_stratum=(Suit.SPADES, 8))))
+    deals.append(_assign(StratifiedDealGenerator.generate_stratified_deal(Seat.NORTH, suit_stratum=(Suit.HEARTS, 8))))
+    deals.append(_assign(StratifiedDealGenerator.generate_stratified_deal(Seat.SOUTH, suit_stratum=(Suit.DIAMONDS, 7))))
+    deals.append(_assign(StratifiedDealGenerator.generate_stratified_deal(Seat.SOUTH, hcp_stratum=(22, 25))))
+    deals.append(_assign(StratifiedDealGenerator.generate_stratified_deal(Seat.NORTH, hcp_stratum=(16, 18))))
+    deals.append(_assign(StratifiedDealGenerator.generate_stratified_deal(Seat.SOUTH, hcp_stratum=(0, 4))))
     return deals
 
 
@@ -220,11 +234,13 @@ def evaluate_system(arena: BiddingArena, name: str, net: DecisionNet, deals: Lis
     flaws = Counter()
     worst = []
     diagnostics = []
+    scores = []
 
     for i, deal in enumerate(deals):
         par_score, par_contract, dd_table = dd_data[i]
 
         history, score = arena.play_board(deal, net, net)
+        scores.append(score)
         total_score += score
         total_par += par_score
         regret = score - par_score
@@ -245,7 +261,9 @@ def evaluate_system(arena: BiddingArena, name: str, net: DecisionNet, deals: Lis
         c = pstate.get_contract()
         if sds_scorer is not None and c:
             lvl, strain, decl, dbl = c
-            sds_res = sds_scorer.score_contract(deal, lvl, strain, decl, dbl, deal.vuln)
+            sds_res = sds_scorer.score_contract(deal, lvl, strain, decl, dbl, deal.vuln,
+                                                history=history,
+                                                models={s: net for s in Seat})
             sign = 1.0 if decl in (Seat.NORTH, Seat.SOUTH) else -1.0
             total_sds += sign * sds_res.mean_score
             sds_boards += 1
@@ -278,6 +296,7 @@ def evaluate_system(arena: BiddingArena, name: str, net: DecisionNet, deals: Lis
         "diagnostics": diagnostics,
         "avg_score_sds": (total_sds / sds_boards) if sds_boards else 0.0,
         "sds_boards": sds_boards,
+        "scores": scores,
     }
 
 
@@ -288,6 +307,7 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--dsl", action="append", default=[], help="Extra DSL files to load")
     parser.add_argument("--sds", action="store_true", help="Also score contracts with SDS two-hand view")
+    parser.add_argument("--sds-condition", action="store_true", help="RBMBMC-conditioned SDS worlds (auction-aware sampling)")
     args = parser.parse_args()
 
     t0 = time.time()
@@ -296,19 +316,41 @@ def main():
     print(f"Deals: {len(deals)} ({args.boards} random{strat}, seed {args.seed})")
 
     opt = SystemOptimizer()
+
+    def _sig(net):
+        return tuple(sorted(
+            (r.rule_id, str(r.call),
+             tuple(sorted((c.key, c.op, str(c.value)) for c in r.conditions)))
+            for r in net.rules))
+
+    archetypes = {
+        "SUP (archetype)": opt.create_singularity_ultra_precision(),
+        "AOP (archetype)": opt.create_apex_omega_precision(),
+        "ARP (archetype)": opt.create_alpha_relay_precision(),
+        "QRP (archetype)": opt.create_quantum_relay_precision(),
+        "Modern 2/1 GF": opt.create_modern_2over1(),
+        "Precision StrongClub": opt.create_precision_system(),
+        "SAYC Baseline": opt.create_sayc_baseline(),
+    }
+    archetype_sigs = {name: _sig(n) for name, n in archetypes.items()}
+
     systems: List[Tuple[str, DecisionNet]] = [
         ("Pipeline Baseline", BidInventionEngine().models[Seat.SOUTH]),
-        ("champion_system.dsl", load_decision_net_dsl(os.path.join(SYSTEM_DIR, "champion_system.dsl"))),
         ("improved_system.dsl", load_decision_net_dsl(os.path.join(SYSTEM_DIR, "improved_system.dsl"))),
-        ("SUP (archetype)", opt.create_singularity_ultra_precision()),
-        ("AOP (archetype)", opt.create_apex_omega_precision()),
-        ("ARP (archetype)", opt.create_alpha_relay_precision()),
-        ("QRP (archetype)", opt.create_quantum_relay_precision()),
         ("Autonomous Evolved", opt.create_autonomous_evolved_system()),
-        ("Modern 2/1 GF", opt.create_modern_2over1()),
-        ("Precision StrongClub", opt.create_precision_system()),
-        ("SAYC Baseline", opt.create_sayc_baseline()),
-    ]
+    ] + [(name, archetypes[name]) for name in archetypes]
+    # champion snapshot: skip if byte-equivalent to a listed archetype
+    champ_path = os.path.join(SYSTEM_DIR, "champion_system.dsl")
+    if os.path.exists(champ_path):
+        champ_net = load_decision_net_dsl(champ_path)
+        champ_sig = _sig(champ_net)
+        dup_of = next((n for n, s in archetype_sigs.items() if s == champ_sig), None)
+        if dup_of:
+            print(f"  (champion_system.dsl is identical to {dup_of}; skipping duplicate evaluation)")
+        else:
+            systems.insert(1, ("champion_system.dsl", champ_net))
+    # keep improved_system.dsl first
+    systems.insert(0, systems.pop(next(i for i, (n, _) in enumerate(systems) if "improved_system" in n)))
     for extra in args.dsl:
         systems.append((os.path.basename(extra), load_decision_net_dsl(extra)))
 
@@ -325,8 +367,10 @@ def main():
     sds_scorer = None
     if args.sds:
         from bid.sds import SDSScorer
-        sds_scorer = SDSScorer(num_worlds=20, seed=2024)
-        print("SDS two-hand scoring enabled (20 worlds per played contract)")
+        sds_scorer = SDSScorer(num_worlds=20, seed=2024,
+                               condition_factor=4 if args.sds_condition else 0)
+        mode = "auction-conditioned" if args.sds_condition else "uniform"
+        print(f"SDS two-hand scoring enabled ({mode}, 20 worlds per played contract)")
 
     results = []
     for name, net in systems:
@@ -343,14 +387,18 @@ def main():
     print("=" * 118)
     print(" SYSTEM RANKING vs NATIVE DDS PAR (best first)")
     print("=" * 118)
-    print(f" {'#':<3} | {'System':<24} | {'Avg NS Score':<12} | {'Avg DDS Par':<11} | {'Regret':<9} | {'IMP Loss/Bd':<11} | {'Par Acc':<8} | {'Game Conv':<9}" + (" | {'SDS Score':<10}" if args.sds else ""))
+    hdr = (f" {'#':<3} | {'System':<24} | {'Avg NS Score':<12} | {'Avg DDS Par':<11} | "
+           f"{'Regret':<9} | {'IMP Loss/Bd':<11} | {'Par Acc':<8} | {'Game Conv':<9}")
+    if args.sds:
+        hdr += " | SDS Score"
+    print(hdr)
     print("-" * 118)
     for idx, r in enumerate(results, 1):
         crown = "👑" if idx == 1 else "  "
         line = (f" {crown}{idx:<2} | {r['name']:<24} | {r['avg_score']:<+12.1f} | {r['avg_par']:<+11.1f} | "
                 f"{r['avg_regret']:<+9.1f} | {r['avg_imp_loss']:<11.2f} | {r['par_accuracy']:<7.1f}% | {r['game_conversion']:<8.1f}%")
         if args.sds:
-            line += f" | {r['avg_score_sds']:+9.1f}"
+            line += " | {:+.1f}".format(r['avg_score_sds'])
         print(line)
     print("-" * 118)
     print(f" Makable NS games in deal set: {results[0]['makable_games']} | Total eval time: {time.time() - t0:.1f}s")

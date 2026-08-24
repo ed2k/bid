@@ -140,12 +140,47 @@ class DDSolver:
                             results[(strain, seat)] = table_results.resTable[s_idx][p_idx]
                     cls._cleanup_error_dump()
                     return results
+                sys.stderr.write(f"[dds] CalcDDtablePBN failed rc={ret}; "
+                                 f"using per-contract fallback\n")
+                cls._cleanup_error_dump()
             except Exception as e:
                 sys.stderr.write(f"DDS C-API error: {e}, falling back to Python DD algorithm\n")
                 cls._cleanup_error_dump()
 
-        # Fallback Python DD Estimation
+
+        exact = cls._exact_fallback_table(deal)
+        if exact is not None:
+            return exact
+        sys.stderr.write("[dds] WARNING: heuristic fallback table in use\n")
         return cls._fallback_dd_table(deal)
+
+    @classmethod
+    def _exact_fallback_table(cls, deal):
+        mod = cls._load_dds3()
+        if mod is None:
+            return None
+        ctx = cls._context()
+        if ctx is None:
+            return None
+        try:
+            order = [Seat.NORTH, Seat.EAST, Seat.SOUTH, Seat.WEST]
+            pbn = "N:" + " ".join(cls._cards_to_pbn_suits(deal.hands[s]) for s in order)
+            results: Dict[Tuple[Strain, Seat], int] = {}
+            strains = [Strain.SPADES, Strain.HEARTS, Strain.DIAMONDS,
+                       Strain.CLUBS, Strain.NT]
+            for strain_idx, strain in enumerate(strains):
+                for d_i, decl in enumerate(order):
+                    fut = mod.solve_board_pbn(
+                        pbn, trump=strain_idx, first=d_i,
+                        current_trick_suit=(0, 0, 0),
+                        current_trick_rank=(0, 0, 0),
+                        target=-1, solutions=1, mode=2, context=ctx)
+                    results[(strain, decl)] = int(fut["score"][0])
+            return results
+        except Exception as e:
+            sys.stderr.write(f"[dds] exact fallback error: {e}\n")
+            cls._cleanup_error_dump()
+            return None
 
     @classmethod
     def calculate_par(cls, deal: Deal, vuln: int = 0) -> Tuple[int, str]:
@@ -178,7 +213,11 @@ class DDSolver:
     def get_tricks(cls, deal: Deal, strain: Strain, declarer: Seat) -> int:
         """Returns the exact double dummy tricks for a given contract."""
         table = cls.solve_dd_table(deal)
-        return table.get((strain, declarer), 7)
+        key = (strain, declarer)
+        if key not in table:
+            sys.stderr.write(f"[dds] missing table entry {key}; reporting 0\n")
+            return 0
+        return table[key]
 
     @staticmethod
     def _fallback_dd_table(deal: Deal) -> Dict[Tuple[Strain, Seat], int]:

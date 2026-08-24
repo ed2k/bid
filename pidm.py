@@ -286,12 +286,14 @@ class PIDMEngine:
 
         values: Dict[Call, float] = {}
 
-        for action in actions:
+        for action in sorted(actions, key=str):
             total_u = 0.0
             for world in worlds:
                 u = self.lookahead(world, history + [action], models, my_seat, dealer, vuln, depth=1)
                 total_u += u
             values[action] = total_u / len(worlds)
 
-        best_call = max(values, key=values.get)
-        return best_call, values
+        # deterministic tie-breaks: evaluate/argmax over a stable ordering
+        ranked = sorted(values.items(), key=lambda kv: (-kv[1], str(kv[0])))
+        best_call = ranked[0][0]
+        return best_call, {c: v for c, v in ranked}

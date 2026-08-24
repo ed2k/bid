@@ -146,16 +146,50 @@ class DecisionNet:
                         candidate_calls = inter_node.resolve(features, candidate_calls)
                         break
 
-        # 4. Filter out illegal (insufficient) bids based on auction history
+        # 4. Filter out illegal calls based on auction history
         last_bid: Optional[Call] = None
-        for call in history:
+        last_np: Optional[Tuple[int, Call]] = None   # (seat_index, call)
+        for i, call in enumerate(history):
             if call.type == CallType.BID:
                 last_bid = call
+            if call.type != CallType.PASS:
+                last_np = (i, call)
+
+        # Double/redouble availability (bridge legality):
+        #   DOUBLE  : last non-pass action is an OPPONENT's bid, not already doubled
+        #   REDOUBLE: our side's bid was just doubled by an opponent
+        x_ok = False
+        xx_ok = False
+        if last_np is not None:
+            idx, lc = last_np
+            seat_of_lc = Seat((dealer.value + idx) % 4)
+            opp_of_me = seat_of_lc not in (my_seat, my_seat.partner)
+            if lc.type == CallType.BID:
+                x_ok = opp_of_me
+            elif lc.type == CallType.DOUBLE and opp_of_me:
+                # they doubled our bid -> only we may redouble;
+                # a further double by anyone is illegal
+                j = idx - 1
+                while j >= 0:
+                    pc = history[j]
+                    if pc.type != CallType.PASS:
+                        ps_seat = Seat((dealer.value + j) % 4)
+                        if pc.type == CallType.BID and ps_seat in (
+                                my_seat, my_seat.partner):
+                            xx_ok = True
+                        break
+                    j -= 1
 
         legal_calls: Set[Call] = set()
         for c in candidate_calls:
-            if c.type in (CallType.PASS, CallType.DOUBLE, CallType.REDOUBLE):
+            if c.type == CallType.PASS:
                 legal_calls.add(c)
+            elif c.type == CallType.DOUBLE:
+                if x_ok:
+                    legal_calls.add(c)
+            elif c.type == CallType.REDOUBLE:
+                if xx_ok:
+                    legal_calls.add(c)
             elif c.type == CallType.BID:
                 if last_bid is None:
                     legal_calls.add(c)
@@ -191,7 +225,14 @@ class DecisionNet:
 
         for r in self.rules:
             if r.is_negative:
-                continue
+                lines.append(f"\nRULE {r.rule_id}:")
+                lines.append(f"  CALL: {r.call}")
+                lines.append(f"  PRIORITY: {r.priority}")
+                lines.append("  NEGATIVE: True")
+                for c in r.conditions:
+                    lines.append(f"  CONDITION: {c.key} {c.op} {c.value}")
+                if r.description:
+                    lines.append(f"  # {r.description}")
             call_str = str(r.call)
             lines.append(f"\nRULE {r.rule_id}:")
             lines.append(f"  CALL: {call_str}")

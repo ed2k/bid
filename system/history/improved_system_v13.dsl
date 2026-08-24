@@ -1,5 +1,5 @@
 # ==========================================
-# IMPROVED BIDDING SYSTEM: ImprovedSystem_v19
+# IMPROVED BIDDING SYSTEM: ImprovedSystem_v13
 # Generated via Continuous Self-Improvement Pipeline
 # ==========================================
 
@@ -15,7 +15,6 @@ RULE R_1NT:
 RULE R_1H:
   CALL: 1H
   PRIORITY: 20
-  CONDITION: is_opening == True
   CONDITION: hcp >= 12
   CONDITION: hcp <= 21
   CONDITION: heart_len >= 5
@@ -23,7 +22,6 @@ RULE R_1H:
 RULE R_1S:
   CALL: 1S
   PRIORITY: 20
-  CONDITION: is_opening == True
   CONDITION: hcp >= 12
   CONDITION: hcp <= 21
   CONDITION: spade_len >= 5
@@ -31,7 +29,6 @@ RULE R_1S:
 RULE R_1D:
   CALL: 1D
   PRIORITY: 15
-  CONDITION: is_opening == True
   CONDITION: hcp >= 12
   CONDITION: hcp <= 21
   CONDITION: diamond_len >= 4
@@ -39,7 +36,6 @@ RULE R_1D:
 RULE R_1C_unbalanced:
   CALL: 1C
   PRIORITY: 10
-  CONDITION: is_opening == True
   CONDITION: hcp >= 12
   CONDITION: hcp <= 21
   CONDITION: club_len >= 3
@@ -48,7 +44,6 @@ RULE R_1C_unbalanced:
 RULE R_1C_balanced:
   CALL: 1C
   PRIORITY: 10
-  CONDITION: is_opening == True
   CONDITION: hcp >= 12
   CONDITION: hcp <= 14
   CONDITION: club_len >= 3
@@ -85,6 +80,13 @@ RULE COMP_TAKEOUT_DBL:
   CONDITION: heart_len >= 3
   CONDITION: spade_len >= 3
 
+RULE COMP_1S_OVERCALL:
+  CALL: 1S
+  PRIORITY: 23
+  CONDITION: is_competitive == True
+  CONDITION: hcp >= 9
+  CONDITION: spade_len >= 5
+
 RULE SLAM_EXPLORE_6S:
   CALL: 6S
   PRIORITY: 35
@@ -116,6 +118,13 @@ RULE COMP_TAKEOUT_DBL:
   CONDITION: heart_len >= 3
   CONDITION: spade_len >= 3
 
+RULE COMP_1S_OVERCALL:
+  CALL: 1S
+  PRIORITY: 23
+  CONDITION: is_competitive == True
+  CONDITION: hcp >= 9
+  CONDITION: spade_len >= 5
+
 RULE SLAM_EXPLORE_6S:
   CALL: 6S
   PRIORITY: 35
@@ -146,6 +155,13 @@ RULE COMP_TAKEOUT_DBL:
   CONDITION: hcp >= 12
   CONDITION: heart_len >= 3
   CONDITION: spade_len >= 3
+
+RULE COMP_1S_OVERCALL:
+  CALL: 1S
+  PRIORITY: 23
+  CONDITION: is_competitive == True
+  CONDITION: hcp >= 9
+  CONDITION: spade_len >= 5
 
 RULE GAME_ACCEPT_4S_OVER_3S:
   CALL: 4S
@@ -195,6 +211,13 @@ RULE COMP_TAKEOUT_DBL:
   CONDITION: hcp >= 12
   CONDITION: heart_len >= 3
   CONDITION: spade_len >= 3
+
+RULE COMP_1S_OVERCALL:
+  CALL: 1S
+  PRIORITY: 23
+  CONDITION: is_competitive == True
+  CONDITION: hcp >= 9
+  CONDITION: spade_len >= 5
 
 RULE GAME_ACCEPT_4S_OVER_3S:
   CALL: 4S
@@ -461,6 +484,13 @@ RULE KW_RESP_2_6H:
   CONDITION: my_last_call in ['5D', '5H', '5S']
   CONDITION: king_count >= 2
 
+RULE GRAND_7NT_TWO_K:
+  CALL: 7NT
+  PRIORITY: 36
+  CONDITION: my_last_call == 5NT
+  CONDITION: partner_last_call in ['6H', '6S']
+  CONDITION: hcp >= 17
+
 RULE GRAND_7NT_ONE_K:
   CALL: 7NT
   PRIORITY: 36
@@ -489,433 +519,3 @@ RULE GAME_ACCEPT_4H_OVER_3H:
   CONDITION: partner_last_call in ['2H', '3H']
   CONDITION: heart_len >= 5
   CONDITION: hcp >= 14
-
-RULE GRAND_7NT_TWO_K:
-  CALL: 7NT
-  PRIORITY: 36
-  CONDITION: my_last_call == 5NT
-  CONDITION: partner_last_call in ['6H', '6S']
-  CONDITION: hcp >= 16
-
-RULE COMP_1S_OVERCALL:
-  CALL: 1S
-  PRIORITY: 23
-  CONDITION: is_competitive == True
-  CONDITION: hcp >= 8
-  CONDITION: spade_len >= 4
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  NEGATIVE: True
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_C_WITH_MAJOR_HEA:
-  CALL: 1C
-  PRIORITY: 30
-  NEGATIVE: True
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_C_WITH_MAJOR_HEA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_C_WITH_MAJOR_HEA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_C_WITH_MAJOR_HEA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_D_WITH_MAJOR_SPA:
-  CALL: 1D
-  PRIORITY: 30
-  NEGATIVE: True
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_D_WITH_MAJOR_SPA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_D_WITH_MAJOR_SPA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_D_WITH_MAJOR_SPA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  NEGATIVE: True
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE SELF_REBID_2S:
-  CALL: 2S
-  PRIORITY: 21
-  CONDITION: my_last_call == 1S
-  CONDITION: partner_last_call in ['PASS', 'NONE']
-  CONDITION: spade_len >= 6
-  CONDITION: hcp >= 10
-
-RULE SELF_REBID_3S:
-  CALL: 3S
-  PRIORITY: 21
-  CONDITION: my_last_call == 2S
-  CONDITION: partner_last_call in ['PASS', 'NONE']
-  CONDITION: spade_len >= 6
-  CONDITION: hcp >= 10
-
-RULE SELF_REBID_2H:
-  CALL: 2H
-  PRIORITY: 21
-  CONDITION: my_last_call == 1H
-  CONDITION: partner_last_call in ['PASS', 'NONE']
-  CONDITION: heart_len >= 6
-  CONDITION: hcp >= 10
-
-RULE SELF_REBID_3H:
-  CALL: 3H
-  PRIORITY: 21
-  CONDITION: my_last_call == 2H
-  CONDITION: partner_last_call in ['PASS', 'NONE']
-  CONDITION: heart_len >= 6
-  CONDITION: hcp >= 10
-
-RULE SELF_GAME_4S:
-  CALL: 4S
-  PRIORITY: 33
-  CONDITION: my_last_call in ['1S', '2S', '3S']
-  CONDITION: spade_len >= 6
-  CONDITION: spade_has_ace == True
-  CONDITION: spade_has_king == True
-  CONDITION: spade_has_queen == True
-  CONDITION: hcp >= 11
-
-RULE SELF_GAME_4H:
-  CALL: 4H
-  PRIORITY: 33
-  CONDITION: my_last_call in ['1H', '2H', '3H']
-  CONDITION: heart_len >= 6
-  CONDITION: heart_has_ace == True
-  CONDITION: heart_has_king == True
-  CONDITION: heart_has_queen == True
-  CONDITION: hcp >= 11
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  NEGATIVE: True
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_C_WITH_MAJOR_HEA:
-  CALL: 1C
-  PRIORITY: 30
-  NEGATIVE: True
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_C_WITH_MAJOR_HEA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_C_WITH_MAJOR_HEA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_D_WITH_MAJOR_SPA:
-  CALL: 1D
-  PRIORITY: 30
-  NEGATIVE: True
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_D_WITH_MAJOR_SPA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_D_WITH_MAJOR_SPA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  NEGATIVE: True
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE SELF_REBID_2S:
-  CALL: 2S
-  PRIORITY: 21
-  CONDITION: my_last_call == 1S
-  CONDITION: partner_last_call in ['PASS', 'NONE']
-  CONDITION: spade_len >= 6
-  CONDITION: hcp >= 10
-
-RULE SELF_REBID_3S:
-  CALL: 3S
-  PRIORITY: 21
-  CONDITION: my_last_call == 2S
-  CONDITION: partner_last_call in ['PASS', 'NONE']
-  CONDITION: spade_len >= 6
-  CONDITION: hcp >= 10
-
-RULE SELF_REBID_2H:
-  CALL: 2H
-  PRIORITY: 21
-  CONDITION: my_last_call == 1H
-  CONDITION: partner_last_call in ['PASS', 'NONE']
-  CONDITION: heart_len >= 6
-  CONDITION: hcp >= 10
-
-RULE SELF_REBID_3H:
-  CALL: 3H
-  PRIORITY: 21
-  CONDITION: my_last_call == 2H
-  CONDITION: partner_last_call in ['PASS', 'NONE']
-  CONDITION: heart_len >= 6
-  CONDITION: hcp >= 10
-
-RULE SELF_GAME_4S:
-  CALL: 4S
-  PRIORITY: 33
-  CONDITION: my_last_call in ['1S', '2S', '3S']
-  CONDITION: spade_len >= 6
-  CONDITION: spade_has_ace == True
-  CONDITION: spade_has_king == True
-  CONDITION: spade_has_queen == True
-  CONDITION: hcp >= 11
-
-RULE SELF_GAME_4H:
-  CALL: 4H
-  PRIORITY: 33
-  CONDITION: my_last_call in ['1H', '2H', '3H']
-  CONDITION: heart_len >= 6
-  CONDITION: heart_has_ace == True
-  CONDITION: heart_has_king == True
-  CONDITION: heart_has_queen == True
-  CONDITION: hcp >= 11
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  NEGATIVE: True
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-  # Never open a minor holding a 5-card major
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-  # Never open a minor holding a 5-card major
-
-RULE NO_C_WITH_MAJOR_HEA:
-  CALL: 1C
-  PRIORITY: 30
-  NEGATIVE: True
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-  # Never open a minor holding a 5-card major
-
-RULE NO_C_WITH_MAJOR_HEA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-  # Never open a minor holding a 5-card major
-
-RULE NO_D_WITH_MAJOR_SPA:
-  CALL: 1D
-  PRIORITY: 30
-  NEGATIVE: True
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-  # Never open a minor holding a 5-card major
-
-RULE NO_D_WITH_MAJOR_SPA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-  # Never open a minor holding a 5-card major
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  NEGATIVE: True
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-  # Never open a minor holding a 5-card major
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-  # Never open a minor holding a 5-card major
-
-RULE R_1C_STRONG_BAL:
-  CALL: 1C
-  PRIORITY: 22
-  CONDITION: is_opening == True
-  CONDITION: hcp >= 15
-  CONDITION: is_balanced == True
-  CONDITION: club_len >= 2
-  # Balanced 15+: open longer minor (clubs)
-
-RULE R_1D_STRONG_BAL:
-  CALL: 1D
-  PRIORITY: 22
-  CONDITION: is_opening == True
-  CONDITION: hcp >= 15
-  CONDITION: is_balanced == True
-  CONDITION: diamond_len >= 3
-  CONDITION: club_len <= 3
-  # Balanced 15+, diamonds at least as long
-
-RULE R_2NT_2021:
-  CALL: 2NT
-  PRIORITY: 29
-  CONDITION: is_opening == True
-  CONDITION: hcp >= 20
-  CONDITION: hcp <= 21
-  CONDITION: is_balanced == True
-  # 20-21 balanced: 2NT
-
-RULE MC_OVERCALL_2C:
-  CALL: 2C
-  PRIORITY: 21
-  CONDITION: opp_last_call in ['1C', '1D', '1H', '1S']
-  CONDITION: c_len >= 6
-  CONDITION: hcp >= 11
-  # Competitive 2C with 6-card minor, 11+
-
-RULE MC_OVERCALL_2D:
-  CALL: 2D
-  PRIORITY: 21
-  CONDITION: opp_last_call in ['1C', '1D', '1H', '1S']
-  CONDITION: d_len >= 6
-  CONDITION: hcp >= 11
-  # Competitive 2D with 6-card minor, 11+
-
-RULE MC_RESP_2C_OVER_1D:
-  CALL: 2C
-  PRIORITY: 21
-  CONDITION: partner_last_call == 1D
-  CONDITION: club_len >= 5
-  CONDITION: hcp >= 10
-  # Respond 2C: own 5+ club suit, 10+ HCP
-
-RULE MC_RESP_2D_OVER_1C:
-  CALL: 2D
-  PRIORITY: 21
-  CONDITION: partner_last_call == 1C
-  CONDITION: diamond_len >= 5
-  CONDITION: hcp >= 10
-  # Respond 2D: own 5+ diamond suit, 10+ HCP
-
-RULE MC_REBID_3MINOR:
-  CALL: 3C
-  PRIORITY: 24
-  CONDITION: my_last_call == 2C
-  CONDITION: club_len >= 6
-  CONDITION: hcp >= 12
-  # Rebid 6-card club at 3-level, 12+
-
-RULE MC_REBID_3D:
-  CALL: 3D
-  PRIORITY: 24
-  CONDITION: my_last_call == 2D
-  CONDITION: diamond_len >= 6
-  CONDITION: hcp >= 12
-  # Rebid 6-card diamond at 3-level, 12+
