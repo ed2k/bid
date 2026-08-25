@@ -8,3 +8,7 @@ debug/
 
 # libdds writes error dumps to CWD
 /dump.txt
+
+
+# python venv
+.venv/

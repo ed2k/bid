@@ -131,6 +131,7 @@ Long-running driver implementing the agreed policy:
 - **Automatic champion promotion**: accepted versions challenge the incumbent champion head-to-head over both seat orientations at ≥64 boards; a win (positive IMPs, z ≥ 2) auto-replaces `champion_system.dsl` (old archived to `system/history/champion_v*.dsl`).
 - **Checkpoints & progress**: report + rolling JSON snapshot (`debug/autoloop_progress.json`, gitignored) every `--progress-secs` (default 300s) and on every major event.
 - State/cache shared with flywheel (`flywheel_state.json`: failed-signature cache, version counter, applied log).
+- Session log (latest): screened 17, applied `LOOSEN_NO_C_WITH_MAJOR_HEA` (+58.7 @t96, z-gated) -> v20; **SDS save-gate rejected 2 DD-lucky patches** (`LOOSEN_R_1S`, `LOOSEN_NO_D_WITH_MAJOR_HEA`) — gate working as designed. Champion (SUP snapshot) held on head-to-head (-146 imps, z=-1.5): evolved line still trails solid archetypes directly, consistent with §4 finding 2.
 
 ### 6.7 Solver silent-failure masking + true diagnosis of reported "missed game" board
 
@@ -190,6 +191,28 @@ Two reported cases, one combined fix (`improve_softresp.py`, saved as v19):
 verification-case override per project policy — coverage completeness outranks
 short-term EV here; the autoloop will police regressions on future cycles).
 Watch seed 42 specifically next cycles.
+
+### 6.10 CoT-Bidder prototype — NEW (P0 complete)
+
+LLM-style explainability for the neural path, per `research/cot-bidder.md`:
+- **Trace factory** (`trace_factory.py`): 208 invariant-checked
+  `(position → explanation → bid)` triples from self-play (24 boards). Constraints are factory-guaranteed to hold on true features; corpus invariants re-verified by tests.
+- **Training data is tracked**: `data/traces/traces.jsonl` + provenance manifest
+  (`traces.meta.json`: schema version, seed, boards, n_traces, dsl & corpus sha256)
+  committed to git. Tests verify hash/count on every run; regeneration is
+  deterministic for a given (seed, dsl-hash, code). Policy: track corpora ≤ ~5 MB;
+  larger ones store manifest-only and archive elsewhere.
+- **Constrained-decode reasoner** (`cot_bidder.py`, P0 retrieval back-end):
+  nearest-neighbour transfer of constraint sentences, verified against real features + auction legality before playing. **0 legality violations, 0 hallucinated constraints** (verifier-gated); 89.3% call-level agreement with DecisionNet, 13/16 boards identical.
+- Demo: Board 1 replays the full ace→king verification ladder with per-call constraint sentences (`BW_RESP_H: ace_count==2` …).
+- Interface is final for P1/P2: swap retrieval for a small seq2seq trained on this corpus (supervised now, DD-oracle process refinement later). Truncated-PIMC caveat does not apply (bidding leaves never call mid-trick).
+- **P1 TRAINED & VALIDATED**: `.venv` (py3.12 + torch 2.2.2) → corpus scaled to
+  1,635 traces / 91k tokens / vocab 1,458 (200 boards, sha256-manifested) →
+  tier-S model (6×256 ≈ 5M params) trained 40 epochs (loss 0.32).
+  Val results: exact CoT sequence match 55.2%, final-BID accuracy 70.6%,
+  0 legality violations (verifier-gated decode), deterministic.
+  Training curve shows underfitting → next lever: more boards (trace_factory
+  scales linearly), then M-tier (19M) if plateau.
 
 ## 7. Roadmap (prioritized)
 

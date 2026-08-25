@@ -1,5 +1,5 @@
 {
-  "version": 19,
+  "version": 20,
   "failed": [
     "curated:BALANCING",
     "curated:TKO_SHAPE",
@@ -322,6 +322,32 @@
     [
       "loosen:COMP_1S_OVERCALL",
       "LOOSEN_COMP_1S_OVERCALL"
+    ],
+    "tighten:NO_D_WITH_MAJOR_SPA",
+    "tighten:R_1S",
+    [
+      "loosen:NO_D_WITH_MAJOR_SPA",
+      "LOOSEN_NO_D_WITH_MAJOR_SPA"
+    ],
+    [
+      "loosen:COMP_BALANCING_1NT",
+      "LOOSEN_COMP_BALANCING_1NT"
+    ],
+    [
+      "loosen:R_1S",
+      "LOOSEN_R_1S"
+    ],
+    [
+      "loosen:R_1S",
+      "LOOSEN_R_1S"
+    ],
+    [
+      "loosen:NO_D_WITH_MAJOR_HEA",
+      "LOOSEN_NO_D_WITH_MAJOR_HEA"
+    ],
+    [
+      "loosen:NO_D_WITH_MAJOR_HEA",
+      "LOOSEN_NO_D_WITH_MAJOR_HEA"
     ]
   ],
   "applied": [
@@ -405,8 +431,16 @@
       "sig": "manual:CORE_GUARDS_AND_RESPONSES",
       "name": "CORE_GUARDS_AND_RESPONSES",
       "delta": -22.7
+    },
+    {
+      "sig": [
+        "loosen:NO_C_WITH_MAJOR_HEA",
+        "LOOSEN_NO_C_WITH_MAJOR_HEA"
+      ],
+      "name": "LOOSEN_NO_C_WITH_MAJOR_HEA",
+      "delta": 58.7
     }
   ],
   "champion_swaps": 0,
-  "champion_holds": 2
+  "champion_holds": 3
 }
