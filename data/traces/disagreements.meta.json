@@ -1,0 +1,13 @@
+{
+  "decisions": 383,
+  "forced": 352,
+  "agreements": 9,
+  "disagreements": 22,
+  "arb_system_right": 13,
+  "arb_student_right": 2,
+  "arb_new_call": 7,
+  "rows_written": 22,
+  "elapsed_sec": 157.5,
+  "dsl_sha256": "e23cd28100fd3f9f0d54ee1461dc033d32f3e3b52e3a95585f840b5465e1cb59",
+  "ckpt": "data/cot_model/ckpt.pt"
+}

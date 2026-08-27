@@ -1,0 +1,42 @@
+{
+  "history": [
+    {
+      "ts": "2026-08-26 13:21:41",
+      "dsl_sha256": "e23cd28100fd3f9f0d54ee1461dc033d32f3e3b52e3a95585f840b5465e1cb59",
+      "corpus_sha256": "8926a29fbd4e23766d137530009a97dac25e0a48adea2a49005a9eb2e85dcb79",
+      "boards": 8,
+      "epochs": 2,
+      "candidate": {
+        "exact": 45.4,
+        "bid": 60.7
+      },
+      "incumbent": {
+        "exact": 55.2,
+        "bid": 70.6
+      },
+      "promoted": false,
+      "reason": "new 60.7% vs incumbent 70.6% (tolerance 0.0)",
+      "elapsed_sec": 312.8,
+      "rejected_to": "/Users/admin/Documents/GitHub/bid/data/cot_model/rejected/20260826_132141_ckpt.pt"
+    }
+  ],
+  "last": {
+    "ts": "2026-08-26 13:21:41",
+    "dsl_sha256": "e23cd28100fd3f9f0d54ee1461dc033d32f3e3b52e3a95585f840b5465e1cb59",
+    "corpus_sha256": "8926a29fbd4e23766d137530009a97dac25e0a48adea2a49005a9eb2e85dcb79",
+    "boards": 8,
+    "epochs": 2,
+    "candidate": {
+      "exact": 45.4,
+      "bid": 60.7
+    },
+    "incumbent": {
+      "exact": 55.2,
+      "bid": 70.6
+    },
+    "promoted": false,
+    "reason": "new 60.7% vs incumbent 70.6% (tolerance 0.0)",
+    "elapsed_sec": 312.8,
+    "rejected_to": "/Users/admin/Documents/GitHub/bid/data/cot_model/rejected/20260826_132141_ckpt.pt"
+  }
+}

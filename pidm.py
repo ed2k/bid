@@ -6,7 +6,7 @@ Monte Carlo deal simulation followed by native Double Dummy Solver (DDS)
 trick solving and IMP round-robin scoring.
 """
 
-from typing import List, Dict, Set, Optional, Tuple
+from typing import Any, List, Dict, Set, Optional, Tuple
 from bid.models import Hand, Card, Suit, Strain, Seat, Call, CallType
 from bid.scoring import calculate_contract_score, score_to_imp, Vulnerability
 from bid.dds import DDSolver
@@ -40,9 +40,47 @@ class PIDMEngine:
     """
     def __init__(self,
                  sampler: Optional[RBMBMCSampler] = None,
-                 max_lookahead_depth: int = 4):
+                 max_lookahead_depth: int = 4,
+                 action_prior: Optional[Any] = None,
+                 max_prior_actions: int = 3,
+                 prior_floor: float = 0.05):
+        """
+        action_prior: optional callable (partial_state, actions:set[Call])
+            -> dict[str_call, float weight in 0..1].
+            When set, candidates are PRUNED by policy weight before the
+            expensive Monte-Carlo/DDS evaluation (root decision and nested
+            lookahead branches), cutting the branching factor drastically.
+            Behavior is IDENTICAL to the unguided engine when None.
+        max_prior_actions: how many highest-priority candidates survive.
+        prior_floor: candidates with weight <= floor are dropped first.
+        """
         self.sampler = sampler or RBMBMCSampler(sample_size=3, max_iterations=30, timeout_sec=0.2)
         self.max_lookahead_depth = max_lookahead_depth
+        self.action_prior = action_prior
+        self.max_prior_actions = max_prior_actions
+        self.prior_floor = prior_floor
+
+    def _prune_by_prior(self,
+                        partial_state: PartialState,
+                        actions: Set[Call]) -> List[Call]:
+        """Filter actions by the learned policy prior (safe no-op fallbacks)."""
+        acts = list(actions)
+        if self.action_prior is None or len(acts) <= self.max_prior_actions:
+            return acts
+        try:
+            weights = self.action_prior(partial_state, set(acts)) or {}
+        except Exception:
+            return acts
+        if not isinstance(weights, dict):
+            return acts
+        scored = [(float(weights.get(str(a), 1.0)), a) for a in acts]
+        scored.sort(key=lambda kv: (-kv[0], str(kv[1])))
+        kept = [a for w, a in scored[:self.max_prior_actions]
+                if w > self.prior_floor]
+        if len(kept) < 2:
+            # never let the prior narrow us below a 2-way decision
+            kept = [a for _, a in scored[:max(2, self.max_prior_actions)]]
+        return kept
 
     def evaluate_terminal_deal(self,
                                deal: Deal,
@@ -151,6 +189,10 @@ class PIDMEngine:
         # If multiple actions, evaluate based on whose turn it is
         is_my_side = (next_seat == my_seat or next_seat == my_seat.partner)
         action_values: List[float] = []
+
+        # Policy-guided pruning of nested branching (#5)
+        next_ps = PartialState(next_seat, next_hand, history, dealer, vuln)
+        next_actions = self._prune_by_prior(next_ps, next_actions)
 
         for action in next_actions:
             val = self.lookahead(deal, history + [action], models, my_seat, dealer, vuln, depth + 1)
@@ -279,6 +321,9 @@ class PIDMEngine:
             single_action = next(iter(actions))
             return single_action, {single_action: 0.0}
 
+        # Policy-guided pruning of the root candidate set (#5)
+        actions_kept = self._prune_by_prior(partial_state, actions)
+
         # Multi-candidate path: sample worlds and evaluate via simulation + DDS
         worlds = self.sampler.sample(partial_state, models)
         if not worlds:
@@ -286,7 +331,7 @@ class PIDMEngine:
 
         values: Dict[Call, float] = {}
 
-        for action in sorted(actions, key=str):
+        for action in sorted(actions_kept, key=str):
             total_u = 0.0
             for world in worlds:
                 u = self.lookahead(world, history + [action], models, my_seat, dealer, vuln, depth=1)

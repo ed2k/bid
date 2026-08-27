@@ -30,6 +30,18 @@ SEP_ID = 2
 EOT_ID = 3
 
 
+def pick_device():
+    """Best available backend: Apple MPS > CUDA > CPU."""
+    if not TORCH:
+        return "cpu"
+    if getattr(torch.backends, "mps", None) is not None \
+            and torch.backends.mps.is_available():
+        return "mps"
+    if torch.cuda.is_available():
+        return "cuda"
+    return "cpu"
+
+
 # ---------------- model ----------------
 
 class CausalSelfAttention(nn.Module):
@@ -127,7 +139,7 @@ def load_dataset(path):
             ids, tgt = to_tensor(ex, ds["meta"]["block_size_max"] + 1)
             rows.append((ids[:-1], tgt[1:]))
         out[split] = rows
-    return vocab, out
+    return vocab, out, ds["meta"]
 
 
 # ---------------- train / generate ----------------
@@ -135,22 +147,26 @@ def load_dataset(path):
 def cmd_train(args):
     if not TORCH:
         sys.exit("torch not installed: pip install torch")
-    vocab, splits = load_dataset(args.dataset)
+    vocab, splits, meta = load_dataset(args.dataset)
     V = len(vocab)
-    model = COTModel(V, block_size=args.block)
+    if args.block is None:
+        args.block = int(meta.get("block_size_max", 128))
+    dev = pick_device()
+    model = COTModel(V, block_size=args.block).to(dev)
     opt = __import__("torch").optim.AdamW(model.parameters(), lr=args.lr,
                                           betas=(0.9, 0.95))
     rng = __import__("random").Random(7)
     train = splits["train"]
     print(f"training {sum(p.numel() for p in model.parameters()):,} params "
-          f"on {len(train)} examples | {args.epochs} epochs")
+          f"on {len(train)} examples | {args.epochs} epochs | "
+          f"device={dev} block={args.block}")
     step = 0
     for ep in range(args.epochs):
         rng.shuffle(train)
         for i in range(0, len(train) - args.batch + 1, args.batch):
             batch = train[i:i + args.batch]
-            x = __import__("torch").tensor([b[0] for b in batch])
-            y = __import__("torch").tensor([b[1] for b in batch])
+            x = __import__("torch").tensor([b[0] for b in batch]).to(dev)
+            y = __import__("torch").tensor([b[1] for b in batch]).to(dev)
             _, loss = model(x, y)
             opt.zero_grad(set_to_none=True)
             loss.backward()
@@ -166,44 +182,51 @@ def cmd_train(args):
     print(f"saved {args.out}")
 
 
+def _load_model(vocab_size, args, meta):
+    """Build model on best device, inferring context length from the
+    checkpoint's positional embedding when --block is not given."""
+    dev = pick_device()
+    sd = torch.load(args.ckpt, map_location="cpu")
+    if args.block is None:
+        if "pos_emb.weight" in sd:
+            args.block = int(sd["pos_emb.weight"].shape[0])
+        else:  # pragma: no cover - malformed ckpt fallback
+            args.block = int(meta.get("block_size_max", 128))
+    model = COTModel(vocab_size, block_size=args.block).to(dev)
+    model.load_state_dict(sd)
+    model.to(dev)
+    model.eval()
+    return model
+
+
 def cmd_generate(args):
     if not TORCH:
         sys.exit("torch not installed")
     from cot_bidder import verify_constraints, bid_legal
-    vocab, splits = load_dataset(args.dataset)
+    vocab, splits, meta = load_dataset(args.dataset)
     inv = {i: t for t, i in vocab.items()}
     V = len(vocab)
-    model = COTModel(V, block_size=args.block)
-    model.load_state_dict(__import__("torch").load(args.ckpt,
-                                                   map_location="cpu"))
+    dev = pick_device()
+    model = _load_model(V, args, meta)
     model.eval()
 
-    val = splits["val"]
-    ex = val[args.index % len(val)]
-    prompt = ex[0][:ex[2]] if len(ex) > 2 else ex[0]
-    # rebuild prefix from stored ids up to prefix_len
-    plen = None
+    # prompt = raw state prefix from the val split (rows carry prefix_len)
     ds = json.load(open(args.dataset))
-    for row in ds["train"] + ds["val"]:
-        pass
-    # simpler: use first val example's prefix_len via meta order fallback:
-    idx = 0
-    for row in ds["val"]:
-        if row["ids"] == ex[0]:
-            plen = row.get("prefix_len")
-            break
-    if plen is None:
-        plen = ex[2] if isinstance(ex, tuple) else len(ex[0])
-    prompt = list(ex[0])[:plen]
+    row = ds["val"][args.index % len(ds["val"])]
+    plen = int(row.get("prefix_len") or 0)
+    prompt = list(row["ids"][:plen])
     ids = list(prompt)
     generated = []
     __import__("torch").manual_seed(args.seed)
     for _ in range(args.max_new):
-        x = __import__("torch").tensor([ids[-args.block:]])
+        x = __import__("torch").tensor([ids[-args.block:]]).to(dev)
         with __import__("torch").no_grad():
             logits, _ = model(x)
-        probs = __import__("torch").softmax(logits[0, -1] / args.temp, dim=-1)
-        nxt = int(__import__("torch").multinomial(probs, 1))
+        if args.temp > 0:
+            probs = __import__("torch").softmax(logits[0, -1] / args.temp, dim=-1)
+            nxt = int(__import__("torch").multinomial(probs, 1))
+        else:
+            nxt = int(__import__("torch").argmax(logits[0, -1]))
         if nxt == EOT_ID:
             break
         ids.append(nxt)
@@ -227,13 +250,12 @@ def cmd_evalval(args):
     import random as _r
     if not TORCH:
         sys.exit("torch not installed")
-    vocab, splits = load_dataset(args.dataset)
+    vocab, splits, meta = load_dataset(args.dataset)
     inv = {i: t for t, i in vocab.items()}
     pad = vocab.get(PAD_ID, 0)
     eot = vocab.get(EOT_ID, 3)
-    model = COTModel(len(vocab), block_size=args.block)
-    model.load_state_dict(torch.load(args.ckpt, map_location="cpu"))
-    model.eval()
+    dev = pick_device()
+    model = _load_model(len(vocab), args, meta)
     total = seq_exact = bid_ok = 0
     with torch.no_grad():
         for ex in splits["val"]:
@@ -245,7 +267,7 @@ def cmd_evalval(args):
             x = list(ids[:plen])
             gen_ids = []
             for _ in range(args.max_new):
-                xx = torch.tensor([x[-args.block:]])
+                xx = torch.tensor([x[-args.block:]]).to(dev)
                 logits, _ = model(xx)
                 nxt = int(torch.argmax(logits[0, -1]))
                 if nxt == eot or nxt == pad:
@@ -286,7 +308,8 @@ if __name__ == "__main__":
     tr.add_argument("--epochs", type=int, default=5)
     tr.add_argument("--batch", type=int, default=32)
     tr.add_argument("--lr", type=float, default=3e-4)
-    tr.add_argument("--block", type=int, default=128)
+    tr.add_argument("--block", type=int, default=None,
+                    help="context length (default: dataset block_size_max)")
     tr.add_argument("--log-every", type=int, default=20)
     tr.add_argument("--out", default="data/cot_model/ckpt.pt")
     ge = sub.add_parser("generate")
@@ -296,12 +319,14 @@ if __name__ == "__main__":
     ge.add_argument("--max-new", type=int, default=64)
     ge.add_argument("--temp", type=float, default=0.0)
     ge.add_argument("--seed", type=int, default=7)
-    ge.add_argument("--block", type=int, default=128)
+    ge.add_argument("--block", type=int, default=None,
+                    help="context length (default: dataset block_size_max)")
     ev = sub.add_parser("eval-val")
     ev.add_argument("--dataset", default="data/cot_dataset/dataset.json")
     ev.add_argument("--ckpt", default="data/cot_model/ckpt.pt")
     ev.add_argument("--max-new", type=int, default=48)
-    ev.add_argument("--block", type=int, default=128)
+    ev.add_argument("--block", type=int, default=None,
+                    help="context length (default: dataset block_size_max)")
     args = ap.parse_args()
     if args.cmd == "train":
         cmd_train(args)

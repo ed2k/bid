@@ -20,10 +20,13 @@ CLI:
   PYTHONPATH=.. python3 cot_bidder.py evaluate --boards 16
 """
 
+from __future__ import annotations
+
 import argparse
 import json
 import os
 import sys
+from typing import List
 
 from bid.models import Seat, Suit, Strain, Call, CallType
 from bid.sampling import Deal, PartialState

@@ -1,4 +1,5 @@
 from typing import List, Dict, Tuple, Optional, Set, Any
+import math
 import random
 import time
 from bid.models import Card, Suit, Rank, Hand, Call, CallType, Seat, Strain
@@ -169,6 +170,20 @@ class RBMBMCSampler:
         self.sample_size = sample_size
         self.max_iterations = max_iterations
         self.timeout_sec = timeout_sec
+        # Optional learned soft-consistency scorer (#4). Duck-typed:
+        # expose soft_scorer.penalty(deal, history, dealer) -> float.
+        self.soft_scorer = None
+
+    def _world_score(self, deal, history, models, dealer, vuln, cutoff=None):
+        hard = calculate_inconsistency(deal, history, models, dealer, vuln,
+                                       cutoff=cutoff)
+        if self.soft_scorer is None or not history:
+            return float(hard)
+        try:
+            return float(hard) + self.soft_scorer.penalty(deal, history,
+                                                          dealer)
+        except Exception:
+            return float(hard)
 
     def sample(self,
                partial_state: PartialState,
@@ -193,7 +208,7 @@ class RBMBMCSampler:
         # 1. Initial K random worlds
         for _ in range(K):
             deal = Deal.completion_from_known(known_seat, known_hand, dealer, vuln)
-            score = calculate_inconsistency(deal, history, models, dealer, vuln)
+            score = self._world_score(deal, history, models, dealer, vuln)
             sample.append((score, deal))
 
         # Sort sample by score (lowest inconsistency first)
@@ -208,7 +223,8 @@ class RBMBMCSampler:
 
             iterations += 1
             deal = Deal.completion_from_known(known_seat, known_hand, dealer, vuln)
-            score = calculate_inconsistency(deal, history, models, dealer, vuln, cutoff=max_inconsist)
+            score = self._world_score(deal, history, models, dealer, vuln,
+                                      cutoff=math.floor(max_inconsist))
 
             if score < max_inconsist:
                 # Replace the worst world (last item)

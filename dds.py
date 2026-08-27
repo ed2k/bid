@@ -5,6 +5,8 @@ Integrates Bo Haglund's C++ Double Dummy Solver (libdds.dylib / libdds.so / dds.
 copied and adapted from BEN (../ben/bin/libdds).
 """
 
+from __future__ import annotations
+
 import os
 import sys
 import platform

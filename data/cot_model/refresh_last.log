@@ -1,0 +1,20 @@
+
+=== [train] /Users/admin/Documents/GitHub/bid/.venv/bin/python -u cot_model.py train --dataset /Users/admin/Documents/GitHub/bid/data/cot_dataset/dataset.json --epochs 2 --batch 32 --lr 0.0003 --out /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt
+/Users/admin/Documents/GitHub/bid/.venv/lib/python3.12/site-packages/torch/nn/modules/transformer.py:20: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+training 5,508,096 params on 1472 examples | 2 epochs | device=mps block=88
+  epoch 0 step 20 loss 4.2390
+  epoch 0 step 40 loss 2.5637
+  epoch 1 step 60 loss 1.6518
+  epoch 1 step 80 loss 1.4122
+saved /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt
+
+=== [train] /Users/admin/Documents/GitHub/bid/.venv/bin/python -u cot_model.py train --dataset /Users/admin/Documents/GitHub/bid/data/cot_dataset/dataset.json --epochs 2 --batch 32 --lr 0.0003 --out /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt
+/Users/admin/Documents/GitHub/bid/.venv/lib/python3.12/site-packages/torch/nn/modules/transformer.py:20: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+training 5,508,096 params on 1472 examples | 2 epochs | device=mps block=88
+  epoch 0 step 20 loss 4.2645
+  epoch 0 step 40 loss 2.5812
+  epoch 1 step 60 loss 1.6456
+  epoch 1 step 80 loss 1.4023
+saved /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt
