@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "generator": "trace_factory.py",
-  "created": "2026-08-24 13:11:35",
+  "created": "2026-08-27 10:36:25",
   "seed": 42,
-  "boards": 200,
-  "n_traces": 1635,
+  "boards": 500,
+  "n_traces": 4064,
   "dsl_source": "system/improved_system.dsl",
   "dsl_sha256": "e23cd28100fd3f9f0d54ee1461dc033d32f3e3b52e3a95585f840b5465e1cb59",
-  "corpus_sha256": "8926a29fbd4e23766d137530009a97dac25e0a48adea2a49005a9eb2e85dcb79"
+  "corpus_sha256": "ccf87e1ba07a01ae143f83838324b346e88790d5139d39956b47fcbfdd43146b"
 }

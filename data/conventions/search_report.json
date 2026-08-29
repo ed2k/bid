@@ -1,0 +1,56 @@
+{
+  "ts": "2026-08-27 18:59:28",
+  "base_train": 92.22,
+  "base_val": -33.89,
+  "final_train": 287.78,
+  "gain": 195.56,
+  "accepted": [
+    {
+      "round": 1,
+      "mutation": "retarget[0]is_balanced->king_count",
+      "train_delta": 265.56,
+      "val_delta": 135.56,
+      "z": 0.71,
+      "verdict": "escalate",
+      "rules_added": [
+        "Jacoby_Transfer_Hearts_True_2H",
+        "Jacoby_Transfer_Hearts_False_2H"
+      ],
+      "steps": [
+        {
+          "name": "Jacoby_Transfer_Hearts",
+          "op": "TRANSFER",
+          "feature": "king_count",
+          "mapping": {
+            "True": "2H",
+            "False": "2H"
+          }
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "mutation": "retarget[0]heart_len->hcp",
+      "train_delta": 195.56,
+      "val_delta": 31.67,
+      "z": 0.22,
+      "verdict": "escalate",
+      "rules_added": [
+        "Cappelletti_2D_Response_(3, 13)_2H",
+        "Cappelletti_2D_Response_(0, 2)_2S"
+      ],
+      "steps": [
+        {
+          "name": "Cappelletti_2D_Response",
+          "op": "COMMAND",
+          "feature": "hcp",
+          "mapping": {
+            "(3, 13)": "2H",
+            "(0, 2)": "2S"
+          }
+        }
+      ]
+    }
+  ],
+  "elapsed_sec": 131.7
+}

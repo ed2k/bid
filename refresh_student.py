@@ -39,6 +39,9 @@ REPO_PARENT = os.path.dirname(HERE)
 DSL_PATH = os.path.join(HERE, "system", "improved_system.dsl")
 TRACES = os.path.join(HERE, "data", "traces", "traces.jsonl")
 TRACES_META = os.path.join(HERE, "data", "traces", "traces.meta.json")
+DISAGREEMENTS = os.path.join(HERE, "data", "traces",
+                             "disagreements.jsonl")
+COMBINED = os.path.join(HERE, "data", "traces", "corpus_combined.jsonl")
 DATASET = os.path.join(HERE, "data", "cot_dataset", "dataset.json")
 MODEL_DIR = os.path.join(HERE, "data", "cot_model")
 INCUMBENT = os.path.join(MODEL_DIR, "ckpt.pt")
@@ -89,18 +92,21 @@ def run(stage, cmd, log_path):
 
 
 def parse_eval(text):
-    """Pull (exact_pct, bid_pct) out of cot_model.py eval-val output."""
-    ex = re.search(r"exact sequence match:\s*\d+/\d+\s*\(([\d.]+)%\)", text)
-    bi = re.search(r"BID correct\s*:\s*\d+/\d+\s*\(([\d.]+)%\)", text)
+    """Pull (exact_pct, bid_pct) out of cot_model.py eval-val output.
+    Uses the LAST match so appended/older eval blocks can't shadow us."""
+    ex = re.findall(r"exact sequence match:\s*\d+/\d+\s*\(([\d.]+)%\)", text)
+    bi = re.findall(r"BID correct\s*:\s*\d+/\d+\s*\(([\d.]+)%\)", text)
     if not bi:
         raise ValueError("could not parse eval-val output:\n" + text[-400:])
-    return (float(ex.group(1)) if ex else 0.0), float(bi.group(1))
+    return (float(ex[-1]) if ex else 0.0), float(bi[-1])
 
 
 def eval_ckpt(python, ckpt, log_path):
     """eval-val of one checkpoint against the CURRENT dataset val split."""
     sub_log = log_path + f".eval.{os.path.basename(ckpt)}.txt"
     try:
+        with open(sub_log, "w") as trunc:
+            trunc.write("")  # per-run log, never append stale blocks
         run("eval",
             [python, "-u", "cot_model.py", "eval-val",
              "--dataset", DATASET, "--ckpt", ckpt], sub_log)
@@ -111,6 +117,30 @@ def eval_ckpt(python, ckpt, log_path):
               flush=True)
         return None
 
+
+
+def corpus_sha256():
+    """sha256 of the effective training corpus (base + disagreements)."""
+    h = hashlib.sha256()
+    for src in (TRACES, DISAGREEMENTS if os.path.exists(DISAGREEMENTS)
+                else None):
+        if src and os.path.exists(src):
+            with open(src, "rb") as f:
+                for chunk in iter(lambda: f.read(1 << 16), b""):
+                    h.update(chunk)
+    return h.hexdigest()
+
+
+def dataset_corpus_fresh():
+    """True if dataset.json was built from the current corpus bytes."""
+    if not os.path.exists(DATASET):
+        return False
+    try:
+        with open(DATASET) as f:
+            meta = json.load(f).get("meta", {})
+        return meta.get("corpus_sha256") == corpus_sha256()
+    except Exception:
+        return False
 
 
 def dsl_changed():
@@ -147,22 +177,35 @@ def main():
     t_start = time.time()
 
     # ---- stage 1: corpus freshness --------------------------------------
-    fresh = not args.force and not dsl_changed()
+    need_traces = args.force or dsl_changed()
+    need_dataset = need_traces or not dataset_corpus_fresh()
     boards = args.boards
     if boards is None:
         boards = 200
         if os.path.exists(TRACES_META):
             with open(TRACES_META) as f:
                 boards = int(json.load(f).get("boards", boards))
-    if fresh and os.path.exists(DATASET):
-        print(f"DSL unchanged since last corpus build "
-              f"(sha {sha256_file(DSL_PATH)[:12]}...) - skipping regeneration.")
+    if not need_traces and not need_dataset:
+        print(f"corpus + dataset fresh "
+              f"(dsl {sha256_file(DSL_PATH)[:12]}…, "
+              f"corpus {corpus_sha256()[:12]}…) - skipping regeneration.")
     else:
-        run("traces", [python, "-u", "trace_factory.py",
-                       "--boards", str(boards), "--seed", str(args.seed),
-                       "--out", TRACES], log_path)
-        run("dataset", [python, "-u", "build_cot_dataset.py", TRACES],
-            log_path)
+        if need_traces:
+            run("traces", [python, "-u", "trace_factory.py",
+                           "--boards", str(boards), "--seed", str(args.seed),
+                           "--out", TRACES], log_path)
+        # merge base corpus + mined disagreement rows -> effective corpus
+        if os.path.exists(DISAGREEMENTS):
+            with open(COMBINED, "wb") as w:
+                for src in (TRACES, DISAGREEMENTS):
+                    with open(src, "rb") as r:
+                        shutil.copyfileobj(r, w)
+            print(f"merged corpus: {TRACES} + {DISAGREEMENTS} -> {COMBINED}")
+            run("dataset", [python, "-u", "build_cot_dataset.py", COMBINED],
+                log_path)
+        else:
+            run("dataset", [python, "-u", "build_cot_dataset.py", TRACES],
+                log_path)
 
     # ---- stage 2: train candidate ----------------------------------------
     run("train",

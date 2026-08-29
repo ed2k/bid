@@ -18,3 +18,45 @@ training 5,508,096 params on 1472 examples | 2 epochs | device=mps block=88
   epoch 1 step 60 loss 1.6456
   epoch 1 step 80 loss 1.4023
 saved /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt
+
+=== [traces] /Users/admin/Documents/GitHub/bid/.venv/bin/python -u trace_factory.py --boards 500 --seed 42 --out /Users/admin/Documents/GitHub/bid/data/traces/traces.jsonl
+Wrote 4064 call-traces (500 boards) -> /Users/admin/Documents/GitHub/bid/data/traces/traces.jsonl
+Meta   : /Users/admin/Documents/GitHub/bid/data/traces/traces.meta.json | corpus sha256=ccf87e1ba07a01ae… dsl sha256=e23cd28100fd3f9f…
+
+=== [dataset] /Users/admin/Documents/GitHub/bid/.venv/bin/python -u build_cot_dataset.py /Users/admin/Documents/GitHub/bid/data/traces/corpus_combined.jsonl
+dataset -> data/cot_dataset/dataset.json
+  traces 4088 | vocab 2241 | max block 90 | tokens 227,101 | train/val 3680/408
+
+=== [train] /Users/admin/Documents/GitHub/bid/.venv/bin/python -u cot_model.py train --dataset /Users/admin/Documents/GitHub/bid/data/cot_dataset/dataset.json --epochs 5 --batch 32 --lr 0.0003 --out /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt
+/Users/admin/Documents/GitHub/bid/.venv/lib/python3.12/site-packages/torch/nn/modules/transformer.py:20: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+training 5,909,504 params on 3680 examples | 5 epochs | device=mps block=90
+  epoch 0 step 20 loss 4.4865
+  epoch 0 step 40 loss 2.6521
+  epoch 0 step 60 loss 1.7824
+  epoch 0 step 80 loss 1.5065
+  epoch 0 step 100 loss 1.3081
+  epoch 1 step 120 loss 1.1712
+  epoch 1 step 140 loss 1.1581
+  epoch 1 step 160 loss 1.0384
+  epoch 1 step 180 loss 1.0114
+  epoch 1 step 200 loss 1.0608
+  epoch 1 step 220 loss 0.9947
+  epoch 2 step 240 loss 0.9380
+  epoch 2 step 260 loss 1.0245
+  epoch 2 step 280 loss 0.9177
+  epoch 2 step 300 loss 0.8924
+  epoch 2 step 320 loss 0.8687
+  epoch 2 step 340 loss 0.8198
+  epoch 3 step 360 loss 0.7856
+  epoch 3 step 380 loss 0.8401
+  epoch 3 step 400 loss 0.8198
+  epoch 3 step 420 loss 0.8043
+  epoch 3 step 440 loss 0.7623
+  epoch 3 step 460 loss 0.7574
+  epoch 4 step 480 loss 0.7553
+  epoch 4 step 500 loss 0.7922
+  epoch 4 step 520 loss 0.7186
+  epoch 4 step 540 loss 0.7377
+  epoch 4 step 560 loss 0.7568
+saved /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt

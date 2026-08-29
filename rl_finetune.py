@@ -31,6 +31,11 @@ import json
 import math
 import os
 import statistics
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+REPO_PARENT = os.path.dirname(HERE)
+DATASET = os.path.join(HERE, "data", "cot_dataset", "dataset.json")
 
 import torch
 
@@ -183,6 +188,29 @@ def reinforce_update(model, opt, episodes, dev, clip=1.0):
     return tot_loss / max(1, len(episodes))
 
 
+def _eval_ckpt(ckpt, tag, log_base):
+    """eval-val a checkpoint against the current dataset; returns (exact, bid)"""
+    import re
+    import subprocess
+    env = dict(os.environ)
+    env["PYTHONPATH"] = REPO_PARENT + os.pathsep + env.get("PYTHONPATH", "")
+    log = f"{log_base}.eval.{tag}.txt"
+    with open(log, "w") as lf:
+        proc = subprocess.run([sys.executable, "-u", "cot_model.py",
+                               "eval-val", "--dataset", DATASET,
+                               "--ckpt", ckpt],
+                              cwd=HERE, env=env, stdout=lf,
+                              stderr=subprocess.STDOUT, timeout=1800)
+    try:
+        text = open(log).read()
+        m = re.search(r"BID correct\s*:\s*\d+/\d+\s*\(([\d.]+)%\)", text)
+        if proc.returncode == 0 and m:
+            return float(m.group(1))
+    except Exception:
+        pass
+    return None
+
+
 def main():
     ap = argparse.ArgumentParser(description="REINFORCE fine-tuning")
     ap.add_argument("--boards", type=int, default=16)
@@ -194,6 +222,10 @@ def main():
     ap.add_argument("--epochs", type=int, default=2)
     ap.add_argument("--temp", type=float, default=0.7)
     ap.add_argument("--lr", type=float, default=2e-5)
+    ap.add_argument("--tolerance", type=float, default=0.0,
+                    help="max allowed BID-accuracy regression for the gate")
+    ap.add_argument("--no-gate", action="store_true",
+                    help="skip the eval-val quality gate")
     args = ap.parse_args()
 
     student = StudentPolicy(args.ckpt)
@@ -236,12 +268,46 @@ def main():
         print(f"  rl epoch {ep}: policy-loss {avg:+.4f}")
 
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
-    torch.save(student.model.state_dict(), args.out)
+    cand_path = args.out + ".candidate.pt"
+    torch.save(student.model.state_dict(), cand_path)
     vocab_src = args.ckpt + ".vocab.json"
     if os.path.exists(vocab_src):
         import shutil
-        shutil.copy(vocab_src, args.out + ".vocab.json")
-    print(f"saved RL checkpoint -> {args.out}")
+        shutil.copy(vocab_src, cand_path + ".vocab.json")
+
+    # ---- quality gate: keep the RL ckpt only if it does not regress -----
+    if args.no_gate:
+        os.replace(cand_path, args.out)
+        if os.path.exists(cand_path + ".vocab.json"):
+            os.replace(cand_path + ".vocab.json", args.out + ".vocab.json")
+        print(f"gate disabled - saved RL checkpoint -> {args.out}")
+        return
+    base_bi = _eval_ckpt(args.ckpt, "base", args.out)
+    rl_bi = _eval_ckpt(cand_path, "rl", args.out)
+    if base_bi is None or rl_bi is None:
+        print("gate inconclusive (eval failed) - keeping candidate "
+              f"at {args.out} for manual review")
+        os.replace(cand_path, args.out)
+        if os.path.exists(cand_path + ".vocab.json"):
+            os.replace(cand_path + ".vocab.json", args.out + ".vocab.json")
+        return
+    if rl_bi >= base_bi - args.tolerance:
+        os.replace(cand_path, args.out)
+        if os.path.exists(cand_path + ".vocab.json"):
+            os.replace(cand_path + ".vocab.json", args.out + ".vocab.json")
+        print(f"GATE PASSED: RL bid-acc {rl_bi:.1f}% vs base {base_bi:.1f}% "
+              f"(tolerance {args.tolerance}) -> {args.out}")
+    else:
+        rej = os.path.join(os.path.dirname(args.out) or ".",
+                           "rejected_rl")
+        os.makedirs(rej, exist_ok=True)
+        import time as _t
+        dest = os.path.join(rej, f"{_t.strftime('%Y%m%d_%H%M%S')}_rl.pt")
+        os.replace(cand_path, dest)
+        if os.path.exists(cand_path + ".vocab.json"):
+            os.replace(cand_path + ".vocab.json", dest + ".vocab.json")
+        print(f"GATE REJECTED: RL bid-acc {rl_bi:.1f}% < base {base_bi:.1f}% "
+              f"(tolerance {args.tolerance}) -> archived {dest}")
 
 
 if __name__ == "__main__":

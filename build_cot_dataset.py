@@ -20,6 +20,15 @@ import sys
 from cot_tokenizer import Tokenizer, PAD, BOS, SEP, EOT, example_lines
 
 
+def _sha256(path):
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 16), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 def build_example(tok: Tokenizer, trace_obj: dict):
     prefix_lines, target_lines = example_lines(trace_obj)
     V = tok.vocab
@@ -64,6 +73,7 @@ def main():
         split["val" if i in val_idx else "train"].append(ex)
 
     meta = {"corpus": corpus, "n_traces": len(traces),
+            "corpus_sha256": _sha256(corpus) if os.path.exists(corpus) else None,
             "vocab_size": len(tok.vocab),
             "block_size_max": max(len(e["ids"]) for e in
                                   split["train"] + split["val"]),

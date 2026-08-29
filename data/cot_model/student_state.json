@@ -18,25 +18,39 @@
       "reason": "new 60.7% vs incumbent 70.6% (tolerance 0.0)",
       "elapsed_sec": 312.8,
       "rejected_to": "/Users/admin/Documents/GitHub/bid/data/cot_model/rejected/20260826_132141_ckpt.pt"
+    },
+    {
+      "ts": "2026-08-27 11:01:33",
+      "dsl_sha256": "e23cd28100fd3f9f0d54ee1461dc033d32f3e3b52e3a95585f840b5465e1cb59",
+      "corpus_sha256": "ccf87e1ba07a01ae143f83838324b346e88790d5139d39956b47fcbfdd43146b",
+      "boards": 500,
+      "epochs": 5,
+      "candidate": {
+        "exact": 45.4,
+        "bid": 60.7
+      },
+      "incumbent": "not evaluable",
+      "promoted": true,
+      "reason": "no comparable incumbent",
+      "elapsed_sec": 1890.8,
+      "checkpoint": "/Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt"
     }
   ],
   "last": {
-    "ts": "2026-08-26 13:21:41",
+    "ts": "2026-08-27 11:01:33",
     "dsl_sha256": "e23cd28100fd3f9f0d54ee1461dc033d32f3e3b52e3a95585f840b5465e1cb59",
-    "corpus_sha256": "8926a29fbd4e23766d137530009a97dac25e0a48adea2a49005a9eb2e85dcb79",
-    "boards": 8,
-    "epochs": 2,
+    "corpus_sha256": "ccf87e1ba07a01ae143f83838324b346e88790d5139d39956b47fcbfdd43146b",
+    "boards": 500,
+    "epochs": 5,
     "candidate": {
-      "exact": 45.4,
-      "bid": 60.7
+      "exact": 50.2,
+      "bid": 64.7
     },
-    "incumbent": {
-      "exact": 55.2,
-      "bid": 70.6
-    },
-    "promoted": false,
-    "reason": "new 60.7% vs incumbent 70.6% (tolerance 0.0)",
-    "elapsed_sec": 312.8,
-    "rejected_to": "/Users/admin/Documents/GitHub/bid/data/cot_model/rejected/20260826_132141_ckpt.pt"
+    "incumbent": "not comparable (old vocab 1458 vs new 2241)",
+    "promoted": true,
+    "reason": "no comparable incumbent",
+    "elapsed_sec": 1890.8,
+    "checkpoint": "/Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt",
+    "note": "corrected: parse_eval stale-match bug; true values from refresh_prod.log (205/408 exact, 264/408 bid)"
   }
 }

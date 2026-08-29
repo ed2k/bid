@@ -192,6 +192,9 @@ def main():
                     help="reject accepted patches whose SDS two-hand score regresses")
     ap.add_argument("--idle-limit", type=int, default=3,
                     help="empty-pool cycles before declaring converged")
+    ap.add_argument("--policy-prior", type=str, default=None,
+                    help="ckpt path; enables policy-guided PIDM pruning "
+                         "(requires torch; adds ~0.5s/decision overhead)")
     args = ap.parse_args()
 
     tiers = [int(x) for x in args.tiers.split(",") if int(x) > 0]
@@ -200,6 +203,41 @@ def main():
     engine = PIDMEngine(sampler=RBMBMCSampler(sample_size=2, max_iterations=6,
                                               timeout_sec=0.06),
                         max_lookahead_depth=1)
+
+    # ---- learned-model integration (#4/#5), opt-in / auto when artifacts --
+    # soft world-consistency: attach whenever a trained player model exists
+    soft_path = "data/player_models/call_model.json"
+    if os.path.exists(soft_path):
+        try:
+            from player_model import CallModel, SoftInconsistencyScorer
+            engine.sampler.soft_scorer = SoftInconsistencyScorer(
+                CallModel.load(soft_path))
+            print("soft player-model attached to RBMBMC sampler "
+                  f"({soft_path})")
+        except Exception as ex:
+            print(f"soft player-model unavailable: {type(ex).__name__}: {ex}")
+    # policy-guided candidate pruning: only with --policy-prior (torch);
+    # on the ultra-light screening engine the prior overhead can exceed the
+    # search savings — intended for the escalated/big-tier runs.
+    if args.policy_prior:
+        try:
+            from mine_disagreements import StudentPolicy
+            from trace_factory import hand_str
+            _student = StudentPolicy(args.policy_prior)
+
+            def _prior(ps, actions, _s=_student):
+                bid, _ = _s.bid(ps.dealer.name, ps.vuln, ps.my_seat.name,
+                                len(ps.history),
+                                [str(c) for c in ps.history],
+                                hand_str(ps.my_hand), max_new=24)
+                return {str(a): (1.0 if str(a) == bid else 0.35)
+                        for a in actions}
+
+            engine.action_prior = _prior
+            print(f"policy-guided pruning enabled ({args.policy_prior})")
+        except Exception as ex:
+            print(f"policy prior unavailable: {type(ex).__name__}: {ex}")
+
     arena = BiddingArena(engine=engine)
 
     sds_scorer = None
