@@ -67,26 +67,289 @@ The system treats bridge conventions as **imperative communication programs**:
   $$\text{VOI}(Q) = \mathbb{E}[\max_a V(a \mid Q)] - \max_a \mathbb{E}[V(a)]$$
 - **Adversarial Signaling**: Measures net information payoff against defenders $(\Delta V_{\text{partner}} - \Delta V_{\text{opponent}})$, allowing the system to discover strategic pooling, concealment, and gambling bids.
 
+### 6. Opponent-Aggressiveness Awareness
+Competitiveness is conditioned on **how the opponents behave**, not merely whether they have bid. `BridgeFeatures.extract_auction_features` computes a seat-correct opponent-style profile on every decision:
+
+| Feature | Meaning |
+|---|---|
+| `opp_bid_count`, `competition_level` | intensity of the contested auction |
+| `opp_preempted`, `opp_first_bid_level` | opponents opened pre-emptively (weak-hand signal; first opp bid at level ≥ 3, or a 2-suit opening early in the auction) |
+| `opp_strength_class` | `weak` / `unknown` / `strong`, inferred from opponents' bidding shape |
+| `auction_altitude`, `auction_contested` | how high the auction has escalated and whether both sides are in |
+| `opp_fit_shown`, `our_fit_shown` | fit inference: a side is "shown a fit" when **both** of its members bid the same suit |
+| `is_unfavorable_vuln`, `vuln_pressure` | the previously missing unfavorable-vulnerability case (`favorable` / `unfavorable` / `equal`) |
+| `partner_rebid` | partner voluntarily re-entered the auction |
+| `opp_suit_stoppers`, `has_stopper` | NT stopper quality (A=2.0, guarded K=1.0, guarded Q=0.5) in every suit the opponents have bid |
+| `partner_last_bid_strain`, `support_in_partner_suit` | partner's most recent suit bid and my holding length in it — the basis for support raises |
+
+These feed the symbolic system two ways:
+
+1. **Curated rules** — the flywheel's `AGGRESSION` patch family (`flywheel.py`) uses them for vuln-gated preempt pushes (`FW_PREEMPT_PUSH_*`), altitude discipline against strong opponents at unfavorable vulnerability (`FW_ALTITUDE_DISCIPLINE`), and light competition against detected weak pre-empters with a shown fit (`FW_VS_WEAK_COMPETE`).
+2. **Automatic propagation** — `serialize_features` copies all of them into every trace row, so the CoT student's tokenizer vocabulary and training distribution pick them up on the next `refresh_student` cycle with zero extra work; the threshold values themselves are auto-tuned by the flywheel's `tighten`/`loosen` mutation operators like any other numeric bound.
+
+
+---
+
+## 🔁 Operating the Teacher ↔ Student Loops (Runbook)
+
+This section documents the *actual* self-improvement loops as implemented —
+exact commands, what each stage does automatically, which decisions stay with
+a human, and where every artifact lands.
+
+### The loops at a glance
+
+```
+   ┌─────────────────────────── TEACHER (symbolic) ───────────────────────────┐
+   │  flywheel.py / autoloop.py                                               │
+   │  patch pool → paired hill-climb vs DDS par → val-seed gate → SDS gate    │
+   │  → SAVED v(n+1) in system/improved_system.dsl (+ archive, state JSON)    │
+   └──────────────┬───────────────────────────────────────────▲───────────────┘
+                  │ new DSL hash                               │ arb_student_right
+                  ▼                                            │ (student found a
+   ┌─────────────────────────── STUDENT (neural) ─────────────┴───────────┐   │
+   │  refresh_student.py                                                  │   │
+   │  trace_factory → build_cot_dataset (merged w/ disagreements)         │   │
+   │  → train candidate → eval-val gate vs incumbent → promote/archive    │   │
+   └──────────────┬───────────────────────────────────────────────────────┘   │
+                  │ disagreements.jsonl ──────────────────────────────────────┘
+   ┌──────────────▼──────────── RL / SEARCH (break the imitation ceiling) ───┐
+   │  rl_finetune.py        (REINFORCE on DDS-scored self-play, gated)       │
+   │  convention_search.py  (protocol mutation hill-climb, report only)      │
+   │  player_model.py       (soft P(call|ctx) for RBMBMC world filtering)    │
+   └─────────────────────────────────────────────────────────────────────────┘
+```
+
+### Loop A — improve the teacher (symbolic DSL)
+
+```bash
+PYTHONPATH=.. python3 flywheel.py --deals 96 --rounds 2 --sds
+```
+
+Per round, automatically:
+1. Plays the deal set vs native DDS par, dumps worst flaws (`OVERBID_DOWN`,
+   `MISSED_SLAM`, `SOFT_DEFENSE`, ...) via `ParDiagnosticEngine`.
+2. Builds a patch pool: curated families (`CURATED` dict in `flywheel.py`),
+   diagnostic-corrective rules, ungated-rule gating variants, broad-rule
+   drops, and `tighten`/`loosen` threshold mutations of every numeric bound.
+3. Greedy hill-climb: applies the best measured patch, re-screens, repeats.
+4. **Validation gate** on two disjoint val seeds (7 and 13): any val
+   regression → the round is *not saved* and the failed patch signature is
+   cached (won't be retried).
+5. **SDS two-hand gate** (`--sds`): re-scores accepted auctions from the
+   declarer+dummy two-hand view; rejects patches whose realistic-info score
+   regressed.
+6. On success: `improved_system.dsl` saved, previous version archived to
+   `system/history/improved_system_vN.dsl`, `flywheel_state.json` bumped
+   (version, applied list, failed-signature cache).
+
+Variants:
+```bash
+PYTHONPATH=.. python3 autoloop.py --tiers 24,96,384        # long-running:
+# tiered screening with statistical escalation, automatic champion
+# promotion to system/champion_system.dsl, progress JSON under debug/
+PYTHONPATH=.. python3 flywheel.py --deals 96 --rounds 2 --sds-primary
+# hill-climb directly on the SDS objective instead of DDS-par score
+PYTHONPATH=.. python3 autoloop.py --policy-prior data/cot_model/ckpt.pt
+# policy-guided PIDM pruning using the trained student as a prior
+```
+
+**Human involvement:** choosing the deal budget (24 deals ≈ 10 min,
+96 deals + SDS ≈ 3.3 h); occasionally re-running with fresh eval seeds to
+confirm gains generalize; writing *new idea families* (see
+"Adding an idea to the teacher" below).
+
+---
+
+### Loop B — refresh the student (neural CoT model)
+
+```bash
+PYTHONPATH=.. python3 refresh_student.py                  # auto-detects changes
+PYTHONPATH=.. python3 refresh_student.py --boards 500 --epochs 5   # production scale
+```
+
+Automatically, in order:
+1. **Freshness check**: `sha256(improved_system.dsl)` vs
+   `data/traces/traces.meta.json` (→ regenerate traces when the teacher
+   changed) and corpus sha vs `dataset.json` meta (→ rebuild dataset when
+   mined rows arrived). Skips cleanly when nothing changed.
+2. **Regenerate** the corpus with `trace_factory.py` (PIDM-labeled auctions
+   of the *current* DSL; constraint-invariant asserted per row), then merge
+   `data/traces/disagreements.jsonl` (Loop C output) into
+   `corpus_combined.jsonl` and build the tokenized dataset.
+3. **Train a candidate** (`cot_model.py train`, MPS/CUDA auto) — the
+   incumbent `ckpt.pt` is never touched during training.
+4. **Gate**: eval-val the candidate *and* the incumbent on the new val
+   split; promote only if BID accuracy doesn't regress beyond
+   `--tolerance`. Incompatible incumbent (vocab change) → promote with a
+   "no comparable incumbent" note.
+5. Record every decision in `data/cot_model/student_state.json`
+   (hashes, scores, promoted/rejected, elapsed).
+
+Typical durations: 200 boards end-to-end ≈ 12 min; 500 boards + 5 epochs ≈ 32 min.
+Artifacts: `ckpt.pt` (+`.vocab.json`), `rejected/…` archives,
+`refresh_last.log`, `student_state.json`.
+
+**Human involvement:** choosing scale (`--boards`, `--epochs`); interpreting
+a promotion that happened via the "no comparable incumbent" fallback
+(vocabulary grew — old scores aren't comparable; spot-check with
+`cot_model.py eval-val` or an arena h2h).
+
+### Loop C — mine student ↔ teacher disagreements (feedback into both)
+
+```bash
+PYTHONPATH=.. python3 mine_disagreements.py --boards 200
+```
+
+Automatically: replays DSL-system auctions, queries the student at every
+non-forced decision, and where they disagree runs a **high-budget PIDM
+referee**; the verdict is written as a schema-identical trace row (tagged
+`ARB_SYSTEM` / `ARB_STUDENT_LEGAL` / `ARB_THIRD` in `all_matched`), deduped
+and appended to `data/traces/disagreements.jsonl` with stats in
+`disagreements.meta.json`.
+
+How to read the stats:
+- `arb_system_right` — student was wrong; the row relabels it (better-than-
+  corpus labels: the referee has a bigger search budget than the corpus
+  labeler).
+- `arb_student_right` — **the student flagged a position where the deep
+  search agrees with it against the DSL** → a candidate *teacher bug*;
+  feed those boards to the flywheel (or add a curated patch family) for the
+  next teacher round.
+- `arb_new_call` — neither player's choice survived deeper search; these
+  labels are new information.
+
+Rows are consumed automatically by `refresh_student.py` on the next cycle.
+**Human involvement:** sizing the run; inspecting `arb_student_right` boards
+(`explanation.all_matched` tag) for teacher improvements.
+
+### Loop D — RL fine-tuning (student beyond its teacher)
+
+```bash
+PYTHONPATH=.. python3 rl_finetune.py --boards 64 --epochs 3 --tolerance 0.5
+```
+
+Automatically: student plays N/S against the DSL's E/W; each decision is
+*samples* (temperature) with a legality check (illegal → teacher fallback,
+no gradient); terminal contracts are scored by native DDS from N/S's
+perspective and converted to IMPs; REINFORCE updates
+(`loss = -advantage · Σ log π`) with batch-normalized advantages; the
+resulting candidate is **eval-val gated** against the base checkpoint
+(`--tolerance`, `--no-gate` to skip) and archived under `rejected_rl/` on
+failure.
+
+**Human involvement:** this is the only loop whose output *intentionally
+diverges* from the teacher — always A/B the gated checkpoint in
+`arena.py`/`ab_engine.py` at 100+ boards before adopting it as `ckpt.pt`.
+
+### Loop E — convention invention search
+
+```bash
+PYTHONPATH=.. python3 convention_search.py --boards 96 --rounds 3
+```
+
+Automatically: mutates seed protocols (Stayman, Transfers, Blackwood, ...) —
+feature retargeting, range shifts, response swaps, step drops — compiles each
+candidate into DSL clones, hill-climbs on a train tier, and confirms on a
+disjoint validation seed. Writes `data/conventions/search_report.json`.
+
+**Human involvement (required):** accepted conventions are **never**
+auto-installed into `improved_system.dsl`. Review the report (watch the
+validation z-score — small boards produce inconclusive `escalate` verdicts),
+then either promote the rules by hand, or express them as a curated flywheel
+family so the standard gates apply.
+
+### Supporting tooling
+
+```bash
+PYTHONPATH=.. python3 player_model.py train    # soft P(call|ctx) -> data/player_models/
+# auto-attached to the RBMBMC sampler by autoloop.py when present
+```
+
+### Adding an idea to the teacher
+
+The flywheel can only hill-climb over rules that are *expressible* and
+*families that exist*. New capability enters the loop in two steps:
+
+1. **Feature** (agent/human): add a deterministic computation to
+   `BridgeFeatures.extract_auction_features` in `bid/features.py`
+   (e.g., `support_in_partner_suit`, `opp_suit_stoppers`). Sanity-check it
+   against a synthetic auction and `tests/test_features_and_state.py`.
+   Features propagate to traces/dataset automatically.
+2. **Patch family** (agent/human): write a `p_<name>(net)` function in
+   `flywheel.py` that emits `DecisionNetRule`s gated on the new features,
+   and register it in the `CURATED` dict. From then on the flywheel
+   screens, tunes thresholds, and val/SDS-gates it like any other patch.
+
+Campaign record so far: `SUPPORT` accepted (v23, +23.7), `NT_SAFETY`
+rejected (−40.4), `AGGRESSION` positive standalone but subsumed by TKO
+patches — every rejection is cached by signature and never retried.
+
+### What stays with a human
+
+| Decision | Why |
+|---|---|
+| Run budgets (deals/rounds/tiers, hours) | statistics-vs-time tradeoff |
+| New features & curated families | domain judgment; the loop can't invent features itself |
+| Fresh-eval-seed spot checks | guards against seed-fitting across many saved versions |
+| Convention promotions from `search_report.json` | statistical gate is the script's, but adoption is a system-design choice |
+| RL checkpoint adoption | intentionally off-teacher; A/B in the arena first |
+| Interpreting "no comparable incumbent" promotions | vocab changed → run an arena h2h to confirm |
+
+### Command cheat sheet
+
+| Script | Loop | Purpose | Typical run | Key artifacts |
+|---|---|---|---|---|
+| `flywheel.py --deals N --rounds R --sds` | A | patch hill-climb on the DSL | 10 min – 3.3 h | `improved_system.dsl`, `history/`, `flywheel_state.json` |
+| `autoloop.py --tiers 24,96,384 [--policy-prior ckpt]` | A | unattended staged loop + champion promotion | hours | `champion_system.dsl`, `debug/progress.json` |
+| `refresh_student.py [--boards B --epochs E]` | B | regen corpus/dataset, train + gate student | 12–32 min | `ckpt.pt`, `student_state.json` |
+| `mine_disagreements.py --boards N` | C | student-vs-teacher arbitration rows | ~3 s/board | `disagreements.jsonl` |
+| `rl_finetune.py --boards N [--tolerance t]` | D | REINFORCE beyond the teacher | ~1 min/4 boards | `ckpt_rl.pt` + gate |
+| `convention_search.py --boards N` | E | protocol mutation search | ~2 min/12 boards | `search_report.json` |
+| `player_model.py train` | support | soft world-consistency model | seconds | `call_model.json` |
+
 ---
 
 ## 🚀 Quick Start
 
 ### Installation
 
-No external dependencies are required beyond Python 3.8+.
+Python 3.8+ is required. The symbolic loops run on the standard library only;
+the neural student (Loops B/D) needs **PyTorch** (Apple MPS or CUDA
+accelerated, CPU works too):
 
 ```bash
 git clone https://github.com/ed2k/bid.git
 cd bid
+python3 -m venv .venv && source .venv/bin/activate
+pip install torch          # only needed for Loops B and D
 ```
 
-### Running the Continuous Improvement Pipeline
+All scripts in this repo are run from the `bid/` directory with
+`PYTHONPATH=<parent>` (they import `bid.*` as a package):
 
-Run the multi-iteration self-improving pipeline directly from CLI:
+```bash
+PYTHONPATH=.. python3 flywheel.py --deals 96 --rounds 2 --sds
+```
+
+### The self-improvement loops
+
+The primary workflow is the five-loop system documented in the
+**[Runbook](#-operating-the-teacher--student-loops-runbook)** above:
+flywheel (teacher) → `refresh_student.py` (student) →
+`mine_disagreements.py` (feedback) → `rl_finetune.py` /
+`convention_search.py` (beyond-imitation). Start there.
+
+### Legacy: co-training pipeline demo
+
+`main.py` drives the older invention/co-training path directly:
 
 ```bash
 PYTHONPATH=.. python3 main.py --iterations 10 --duration 120 --states 8 --deals 25
 ```
+
+This demonstrates `BidInventionEngine` co-training and diagnostic refinement
+in one process, but the runbook loops supersede it for real improvement
+work (they add validation gates, versioning, and the neural student).
 
 ### Finding the Best Bidding System (World Championship Tournament)
 
@@ -102,7 +365,14 @@ The champion bidding system code is automatically persisted to `system/champion_
 
 ## 🧪 Pipeline Usage Examples
 
+These are **component-level API examples** — the building blocks the runbook
+loops orchestrate. For the full automated workflow, use the runbook scripts
+(`flywheel.py`, `refresh_student.py`, `mine_disagreements.py`, ...).
+
 ### 1. Running the Continuous Co-Training Loop
+
+> Loop A (`flywheel.py`/`autoloop.py`) automates this at system scale with
+> validation gates; the API below shows the underlying mechanism.
 
 ```python
 from bid.invention import BidInventionEngine
@@ -125,7 +395,7 @@ for round_info in results["rounds"]:
 from bid.decision_net import DecisionNet, DecisionNetRule, RuleCondition
 from bid.learner import DecisionNetLearner, ID3DecisionTree
 from bid.pidm import PIDMEngine
-from bid.models import Call, CallType, Strain, Hand
+from bid.models import Seat, Call, CallType, Strain, Hand
 
 # 1. Base Decision Net with overlapping rules (1NT vs 1H on 15-17 HCP 5-heart balanced)
 net = DecisionNet("PartnerNet")
@@ -180,16 +450,36 @@ print(f"Added state to replay buffer (priority={priority}, reason={reason})")
 
 ### 4. Synthesizing Conventions & Measuring Value of Information (VOI)
 
+> Loop E (`convention_search.py`) automates search over this protocol space
+> with paired arena evaluation; the API below measures a single protocol.
+
 ```python
 from bid.protocol import ConventionProtocol, ValueOfInformationEvaluator
 from bid.pidm import PIDMEngine
+from bid.models import Seat, Call, CallType, Strain
+from bid.sampling import Deal, PartialState
+from eval_vs_dds import load_decision_net_dsl
 
 # Compile a synthesized Stayman protocol (2C ask -> 2D/2H/2S step responses)
 stayman = ConventionProtocol.create_stayman()
 rules = stayman.compile_to_rules()
 
-# Evaluate Value of Information (VOI) over sample states
+# Sample decision points for the opener after partner's Stayman 2C ask:
+#   W passes, N opens 1NT, E passes, S bids 2C  ->  it's North's turn
 engine = PIDMEngine()
+net = load_decision_net_dsl("system/improved_system.dsl")
+models = {s: net for s in Seat}
+sample_states = []
+for _ in range(20):
+    deal = Deal.random_deal(dealer=Seat.WEST)
+    hist = [Call(CallType.PASS),
+            Call(CallType.BID, 1, Strain.NT),     # North opens 1NT
+            Call(CallType.PASS),
+            Call(CallType.BID, 2, Strain.CLUBS)]  # South asks Stayman
+    sample_states.append(PartialState(
+        Seat.NORTH, deal.hands[Seat.NORTH], hist,
+        deal.dealer, deal.vuln))
+
 voi_eval = ValueOfInformationEvaluator(engine)
 voi_score = voi_eval.evaluate_voi(stayman.steps[0], sample_states, models)
 print(f"Stayman query VOI: +{voi_score:.2f} IMP-equivalent")
@@ -216,7 +506,16 @@ PYTHONPATH=.. python3 -m unittest tests/test_cotraining.py
 PYTHONPATH=.. python3 -m unittest tests/test_experience_and_stratified.py
 PYTHONPATH=.. python3 -m unittest tests/test_protocol_synthesis_and_voi.py
 PYTHONPATH=.. python3 -m unittest tests/test_bid_invention_e2e.py
+PYTHONPATH=.. python3 -m unittest tests/test_cot_bidder.py
+PYTHONPATH=.. python3 -m unittest tests/test_sds_scoring.py
+PYTHONPATH=.. python3 -m unittest tests/test_trace_manifest.py
 ```
+
+> Note: the loop scripts (`flywheel.py`, `refresh_student.py`,
+> `mine_disagreements.py`, `rl_finetune.py`, `convention_search.py`) are
+> validated by their built-in gates (val-seed, SDS, eval-val) rather than
+> unit tests; `tests/test_autoloop.py` and `tests/test_trace_manifest.py`
+> cover their state/manifest plumbing.
 
 ---
 
@@ -243,7 +542,26 @@ bid/
 ├── constraints.py       # HandConstraints representation
 ├── system/              # Bidding system definitions & DSL files (BlueClub, Precision, GIB, SAYC)
 ├── research/            # Research document (bid-invention.md)
-└── tests/               # Unit and integration test suite (83 tests)
+├── tests/               # Unit and integration test suite (83 tests)
+│
+│   # --- self-improvement loops (see Runbook above) ---
+├── flywheel.py          # Loop A: DSL patch hill-climb (curated/diag/gate/drop/mutation pool)
+├── autoloop.py          # Loop A: unattended staged loop + champion promotion
+├── trace_factory.py     # Loop B: PIDM-labeled CoT trace generation from the current DSL
+├── build_cot_dataset.py # Loop B: trace corpus -> tokenized train/val dataset
+├── cot_model.py         # Loop B: 5.5M decoder-only student (train / generate / eval-val)
+├── refresh_student.py   # Loop B orchestrator: freshness -> regen -> train -> gate -> promote
+├── mine_disagreements.py# Loop C: student-vs-teacher disputes, arbitrated by heavy PIDM
+├── rl_finetune.py       # Loop D: REINFORCE self-play fine-tuning with eval gate
+├── convention_search.py # Loop E: protocol mutation hill-climb (report only)
+├── player_model.py      # Learned soft P(call|ctx) for RBMBMC world filtering
+├── cot_bidder.py        # P0 retrieval bidder + constraint verification (CoT decode)
+├── cot_tokenizer.py     # Field-level tokenizer for CoT traces
+├── eval_vs_dds.py       # Deal generation, DSL loading, arena-vs-par evaluation
+├── diagnostics.py       # ParDiagnosticEngine flaw classification
+├── sds.py / dds.py      # SDS two-hand scorer & native double-dummy solver interface
+├── data/                # traces/, cot_dataset/, cot_model/, player_models/, conventions/
+```
 ```
 
 ---

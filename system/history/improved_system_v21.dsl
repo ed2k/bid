@@ -1,5 +1,5 @@
 # ==========================================
-# IMPROVED BIDDING SYSTEM: ImprovedSystem_v23
+# IMPROVED BIDDING SYSTEM: ImprovedSystem_v21
 # Generated via Continuous Self-Improvement Pipeline
 # ==========================================
 
@@ -532,136 +532,6 @@ RULE NO_C_WITH_MAJOR_SPA:
   CONDITION: is_opening == True
   CONDITION: spade_len >= 5
 
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  NEGATIVE: True
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE NO_D_WITH_MAJOR_HEA:
-  CALL: 1D
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 5
-
-RULE SELF_REBID_2S:
-  CALL: 2S
-  PRIORITY: 21
-  CONDITION: my_last_call == 1S
-  CONDITION: partner_last_call in ['PASS', 'NONE']
-  CONDITION: spade_len >= 6
-  CONDITION: hcp >= 10
-
-RULE SELF_REBID_3S:
-  CALL: 3S
-  PRIORITY: 21
-  CONDITION: my_last_call == 2S
-  CONDITION: partner_last_call in ['PASS', 'NONE']
-  CONDITION: spade_len >= 6
-  CONDITION: hcp >= 10
-
-RULE SELF_REBID_3H:
-  CALL: 3H
-  PRIORITY: 21
-  CONDITION: my_last_call == 2H
-  CONDITION: partner_last_call in ['PASS', 'NONE']
-  CONDITION: heart_len >= 6
-  CONDITION: hcp >= 10
-
-RULE SELF_GAME_4S:
-  CALL: 4S
-  PRIORITY: 33
-  CONDITION: my_last_call in ['1S', '2S', '3S']
-  CONDITION: spade_len >= 6
-  CONDITION: spade_has_ace == True
-  CONDITION: spade_has_king == True
-  CONDITION: spade_has_queen == True
-  CONDITION: hcp >= 11
-
-RULE SELF_GAME_4H:
-  CALL: 4H
-  PRIORITY: 33
-  CONDITION: my_last_call in ['1H', '2H', '3H']
-  CONDITION: heart_len >= 6
-  CONDITION: heart_has_ace == True
-  CONDITION: heart_has_king == True
-  CONDITION: heart_has_queen == True
-  CONDITION: hcp >= 11
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  NEGATIVE: True
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
-RULE NO_C_WITH_MAJOR_SPA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: spade_len >= 5
-
 RULE NO_D_WITH_MAJOR_HEA:
   CALL: 1D
   PRIORITY: 30
@@ -713,6 +583,14 @@ RULE SELF_REBID_3S:
   CONDITION: my_last_call == 2S
   CONDITION: partner_last_call in ['PASS', 'NONE']
   CONDITION: spade_len >= 6
+  CONDITION: hcp >= 10
+
+RULE SELF_REBID_2H:
+  CALL: 2H
+  PRIORITY: 21
+  CONDITION: my_last_call == 1H
+  CONDITION: partner_last_call in ['PASS', 'NONE']
+  CONDITION: heart_len >= 6
   CONDITION: hcp >= 10
 
 RULE SELF_REBID_3H:
@@ -784,6 +662,108 @@ RULE NO_D_WITH_MAJOR_HEA:
 RULE NO_D_WITH_MAJOR_HEA:
   CALL: 1D
   PRIORITY: 30
+  CONDITION: is_opening == True
+  CONDITION: heart_len >= 5
+
+RULE NO_D_WITH_MAJOR_HEA:
+  CALL: 1D
+  PRIORITY: 30
+  CONDITION: is_opening == True
+  CONDITION: heart_len >= 5
+
+RULE NO_D_WITH_MAJOR_HEA:
+  CALL: 1D
+  PRIORITY: 30
+  CONDITION: is_opening == True
+  CONDITION: heart_len >= 5
+
+RULE NO_D_WITH_MAJOR_HEA:
+  CALL: 1D
+  PRIORITY: 30
+  CONDITION: is_opening == True
+  CONDITION: heart_len >= 5
+
+RULE SELF_REBID_2S:
+  CALL: 2S
+  PRIORITY: 21
+  CONDITION: my_last_call == 1S
+  CONDITION: partner_last_call in ['PASS', 'NONE']
+  CONDITION: spade_len >= 6
+  CONDITION: hcp >= 10
+
+RULE SELF_REBID_3S:
+  CALL: 3S
+  PRIORITY: 21
+  CONDITION: my_last_call == 2S
+  CONDITION: partner_last_call in ['PASS', 'NONE']
+  CONDITION: spade_len >= 6
+  CONDITION: hcp >= 10
+
+RULE SELF_REBID_2H:
+  CALL: 2H
+  PRIORITY: 21
+  CONDITION: my_last_call == 1H
+  CONDITION: partner_last_call in ['PASS', 'NONE']
+  CONDITION: heart_len >= 6
+  CONDITION: hcp >= 10
+
+RULE SELF_REBID_3H:
+  CALL: 3H
+  PRIORITY: 21
+  CONDITION: my_last_call == 2H
+  CONDITION: partner_last_call in ['PASS', 'NONE']
+  CONDITION: heart_len >= 6
+  CONDITION: hcp >= 10
+
+RULE SELF_GAME_4S:
+  CALL: 4S
+  PRIORITY: 33
+  CONDITION: my_last_call in ['1S', '2S', '3S']
+  CONDITION: spade_len >= 6
+  CONDITION: spade_has_ace == True
+  CONDITION: spade_has_king == True
+  CONDITION: spade_has_queen == True
+  CONDITION: hcp >= 11
+
+RULE SELF_GAME_4H:
+  CALL: 4H
+  PRIORITY: 33
+  CONDITION: my_last_call in ['1H', '2H', '3H']
+  CONDITION: heart_len >= 6
+  CONDITION: heart_has_ace == True
+  CONDITION: heart_has_king == True
+  CONDITION: heart_has_queen == True
+  CONDITION: hcp >= 11
+
+RULE NO_C_WITH_MAJOR_SPA:
+  CALL: 1C
+  PRIORITY: 30
+  NEGATIVE: True
+  CONDITION: is_opening == True
+  CONDITION: spade_len >= 5
+
+RULE NO_C_WITH_MAJOR_SPA:
+  CALL: 1C
+  PRIORITY: 30
+  CONDITION: is_opening == True
+  CONDITION: spade_len >= 5
+
+RULE NO_C_WITH_MAJOR_SPA:
+  CALL: 1C
+  PRIORITY: 30
+  CONDITION: is_opening == True
+  CONDITION: spade_len >= 5
+
+RULE NO_C_WITH_MAJOR_SPA:
+  CALL: 1C
+  PRIORITY: 30
+  CONDITION: is_opening == True
+  CONDITION: spade_len >= 5
+
+RULE NO_D_WITH_MAJOR_HEA:
+  CALL: 1D
+  PRIORITY: 30
+  NEGATIVE: True
   CONDITION: is_opening == True
   CONDITION: heart_len >= 5
 
@@ -892,50 +872,3 @@ RULE FW_TKO_VS_H:
   CONDITION: heart_len <= 3
   CONDITION: hcp >= 10
   CONDITION: spade_len >= 3
-
-RULE SELF_REBID_2H:
-  CALL: 2H
-  PRIORITY: 21
-  CONDITION: my_last_call == 1H
-  CONDITION: partner_last_call in ['PASS', 'NONE']
-  CONDITION: heart_len >= 7
-  CONDITION: hcp >= 11
-
-RULE FW_MIXED_RAISE_H:
-  CALL: 2H
-  PRIORITY: 21
-  CONDITION: partner_last_bid_strain == H
-  CONDITION: support_in_partner_suit >= 3
-  CONDITION: hcp >= 6
-  CONDITION: hcp <= 10
-
-RULE FW_MIXED_RAISE_S:
-  CALL: 2S
-  PRIORITY: 21
-  CONDITION: partner_last_bid_strain == S
-  CONDITION: support_in_partner_suit >= 3
-  CONDITION: hcp >= 6
-  CONDITION: hcp <= 10
-
-RULE FW_PRE_RAISE_H:
-  CALL: 3H
-  PRIORITY: 22
-  CONDITION: partner_last_bid_strain == H
-  CONDITION: support_in_partner_suit >= 4
-  CONDITION: hcp <= 8
-  CONDITION: is_favorable_vuln == True
-
-RULE FW_NO_2_TRUMP_RAISE:
-  CALL: 2H
-  PRIORITY: 24
-  NEGATIVE: True
-  CONDITION: partner_last_bid_strain == H
-  CONDITION: support_in_partner_suit <= 2
-  CONDITION: hcp <= 10
-
-RULE FW_NO_2_TRUMP_RAISE:
-  CALL: 2H
-  PRIORITY: 24
-  CONDITION: partner_last_bid_strain == H
-  CONDITION: support_in_partner_suit <= 2
-  CONDITION: hcp <= 10

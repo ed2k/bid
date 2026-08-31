@@ -17,7 +17,7 @@ Constraints honored (sds.md WorldSampler v1):
 
 import random
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from bid.models import Seat, Strain, Suit, Rank, Card, Hand
 from bid.dds import DDSolver

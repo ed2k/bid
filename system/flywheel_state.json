@@ -1,5 +1,5 @@
 {
-  "version": 20,
+  "version": 23,
   "failed": [
     "curated:BALANCING",
     "curated:TKO_SHAPE",
@@ -348,7 +348,25 @@
     [
       "loosen:NO_D_WITH_MAJOR_HEA",
       "LOOSEN_NO_D_WITH_MAJOR_HEA"
-    ]
+    ],
+    "drop:R_OPEN_2C_STRONG",
+    "drop:R_WEAK_2S",
+    "tighten:SLAM_FIT_3NT_D",
+    "loosen:SLAM_REBID_3D",
+    "loosen:R_RESP_3NT",
+    "curated:AGGRESSION",
+    "tighten:MC_OVERCALL_2D",
+    "loosen:R_1C_balanced",
+    "loosen:FW_TKO_VS_H",
+    "loosen:SLAM_EXPLORE_6S",
+    "curated:NT_SAFETY",
+    "tighten:GRAND_7NT_ONE_K",
+    "tighten:SLAM_FIT_6D",
+    "tighten:NO_C_WITH_MAJOR_SPA",
+    "loosen:COMP_TAKEOUT_DBL",
+    "loosen:SLAM_FIT_3NT_D",
+    "loosen:GRAND_7NT_ONE_K",
+    "loosen:FW_TKO_VS_S"
   ],
   "applied": [
     {
@@ -439,6 +457,26 @@
       ],
       "name": "LOOSEN_NO_C_WITH_MAJOR_HEA",
       "delta": 58.7
+    },
+    {
+      "sig": "loosen:NO_D_WITH_MAJOR_SPA",
+      "name": "LOOSEN_NO_D_WITH_MAJOR_SPA",
+      "delta": 50.8
+    },
+    {
+      "sig": "loosen:FW_TKO_VS_H",
+      "name": "LOOSEN_FW_TKO_VS_H",
+      "delta": 4.3
+    },
+    {
+      "sig": "tighten:SELF_REBID_2H",
+      "name": "TIGHTEN_SELF_REBID_2H",
+      "delta": 10.7
+    },
+    {
+      "sig": "curated:SUPPORT",
+      "name": "SUPPORT",
+      "delta": 23.7
     }
   ],
   "champion_swaps": 0,

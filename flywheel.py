@@ -132,11 +132,108 @@ def p_force_raise(net):
     ])
 
 
+def p_aggression(net):
+    """Opponent-aggressiveness aware competition rules (#feature-addition).
+
+    Uses the new auction features (opp_preempted, opp_strength_class,
+    auction_altitude, vuln_pressure, opp_bid_count, opp_fit_shown,
+    our_fit_shown) so competitiveness adapts to HOW the opponents behave
+    instead of only whether they have bid at all."""
+    add_rules(net, [
+        # push into a preemption war only at favorable vulnerability
+        DecisionNetRule("FW_PREEMPT_PUSH_S", B(3, Strain.SPADES), [
+            RuleCondition("opp_preempted", "==", True),
+            RuleCondition("is_favorable_vuln", "==", True),
+            RuleCondition("hcp", ">=", 9),
+            RuleCondition("spade_len", ">=", 6)], priority=23),
+        DecisionNetRule("FW_PREEMPT_PUSH_H", B(3, Strain.HEARTS), [
+            RuleCondition("opp_preempted", "==", True),
+            RuleCondition("is_favorable_vuln", "==", True),
+            RuleCondition("hcp", ">=", 9),
+            RuleCondition("heart_len", ">=", 6)], priority=23),
+        # discipline: don't stretch into game zone at unfavorable vul
+        # against opponents who have shown strength
+        DecisionNetRule("FW_ALTITUDE_DISCIPLINE", Call(CallType.PASS), [
+            RuleCondition("auction_altitude", ">=", 3),
+            RuleCondition("is_unfavorable_vuln", "==", True),
+            RuleCondition("hcp", "<=", 11)], priority=25),
+        # opponents preempts => their hands are weak: compete light with fit
+        DecisionNetRule("FW_VS_WEAK_COMPETE", B(2, Strain.HEARTS), [
+            RuleCondition("opp_strength_class", "==", "weak"),
+            RuleCondition("our_fit_shown", "==", True),
+            RuleCondition("hcp", ">=", 7),
+            RuleCondition("heart_len", ">=", 3)], priority=21),
+    ])
+
+
+def p_nt_safety(net):
+    """Stopper-aware NT bidding + slam controls discipline.
+
+    Targets the OVERBID_DOWN diagnostic family: 3NT/6NT contracts reached
+    without a stopper in the opponents' bid suit, and slam bids made with
+    insufficient controls."""
+    add_rules(net, [
+        # negative guard: don't drive 3NT with no stopper against an
+        # opponent suit auction at equal/unfavorable vulnerability
+        DecisionNetRule("FW_3NT_NO_STOPPER", B(3, Strain.NT), [
+            RuleCondition("opp_bid_count", ">=", 1),
+            RuleCondition("opp_suit_stoppers", "<=", 0.0),
+            RuleCondition("is_balanced", "==", True),
+            RuleCondition("hcp", "<=", 18)],
+            is_negative=True, priority=27),
+        # penalty double of a weak preempt when strong with their suit stopped
+        DecisionNetRule("FW_X_WEAK_PREEMPT", Call(CallType.DOUBLE), [
+            RuleCondition("opp_preempted", "==", True),
+            RuleCondition("hcp", ">=", 15),
+            RuleCondition("opp_suit_stoppers", ">=", 2.0),
+            RuleCondition("is_unfavorable_vuln", "==", False)], priority=26),
+        # slam discipline: 6NT needs controls; keep 5-level exploration
+        # instead when controls are short
+        DecisionNetRule("FW_6NT_CONTROLS", B(6, Strain.NT), [
+            RuleCondition("auction_altitude", ">=", 3),
+            RuleCondition("controls", ">=", 6),
+            RuleCondition("hcp", ">=", 22)], priority=28),
+    ])
+
+
+def p_support(net):
+    """Support-raise competition rules using support_in_partner_suit.
+
+    Classic competitive decisions that per-hand features cannot express:
+    mixed raises (3+ support, 6-10 HCP), preemptive raises (4+ support,
+    light, favorable vulnerability), and a guard against 2-trump raises."""
+    add_rules(net, [
+        DecisionNetRule("FW_MIXED_RAISE_H", B(2, Strain.HEARTS), [
+            RuleCondition("partner_last_bid_strain", "==", "H"),
+            RuleCondition("support_in_partner_suit", ">=", 3),
+            RuleCondition("hcp", ">=", 6),
+            RuleCondition("hcp", "<=", 10)], priority=21),
+        DecisionNetRule("FW_MIXED_RAISE_S", B(2, Strain.SPADES), [
+            RuleCondition("partner_last_bid_strain", "==", "S"),
+            RuleCondition("support_in_partner_suit", ">=", 3),
+            RuleCondition("hcp", ">=", 6),
+            RuleCondition("hcp", "<=", 10)], priority=21),
+        DecisionNetRule("FW_PRE_RAISE_H", B(3, Strain.HEARTS), [
+            RuleCondition("partner_last_bid_strain", "==", "H"),
+            RuleCondition("support_in_partner_suit", ">=", 4),
+            RuleCondition("hcp", "<=", 8),
+            RuleCondition("is_favorable_vuln", "==", True)], priority=22),
+        DecisionNetRule("FW_NO_2_TRUMP_RAISE", B(2, Strain.HEARTS), [
+            RuleCondition("partner_last_bid_strain", "==", "H"),
+            RuleCondition("support_in_partner_suit", "<=", 2),
+            RuleCondition("hcp", "<=", 10)],
+            is_negative=True, priority=24),
+    ])
+
+
 CURATED = {
     "OVERCALLS": p_overcalls,
     "BALANCING": p_balancing,
     "TKO_SHAPE": p_tko_shape,
     "FORCE_RAISE_2NT": p_force_raise,
+    "AGGRESSION": p_aggression,
+    "NT_SAFETY": p_nt_safety,
+    "SUPPORT": p_support,
 }
 
 

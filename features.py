@@ -147,7 +147,8 @@ class BridgeFeatures:
     def extract_auction_features(history: List[Call],
                                  my_seat: Seat,
                                  dealer: Seat = Seat.NORTH,
-                                 vuln: int = Vulnerability.NONE) -> Dict[str, Any]:
+                                 vuln: int = Vulnerability.NONE,
+                                 hand: Optional[Hand] = None) -> Dict[str, Any]:
         features: Dict[str, Any] = {}
 
         features["auction_len"] = len(history)
@@ -219,6 +220,108 @@ class BridgeFeatures:
         opp_vuln = Vulnerability.is_vulnerable(vuln, opp1)
         features["is_favorable_vuln"] = (not my_vuln) and opp_vuln
         features["is_equal_non_vuln"] = (not my_vuln) and (not opp_vuln)
+        features["is_unfavorable_vuln"] = my_vuln and (not opp_vuln)
+        features["vuln_pressure"] = ("favorable" if features["is_favorable_vuln"]
+                                     else "unfavorable" if features["is_unfavorable_vuln"]
+                                     else "equal")
+
+        # ---- opponent aggressiveness / competition modeling ----------------
+        # Seat-correct attribution: seat of call i is (dealer + i) % 4
+        def _seat_of(idx):
+            return Seat((dealer.value + idx) % 4)
+
+        opp_bid_calls = [c for i, c in enumerate(history)
+                         if _seat_of(i) in (opp1, opp2) and c.type == CallType.BID]
+        my_side_calls = [c for i, c in enumerate(history)
+                         if _seat_of(i) in (my_seat, my_seat.partner)
+                         and c.type == CallType.BID]
+        features["opp_bid_count"] = len(opp_bid_calls)
+        features["my_side_bid_count"] = len(my_side_calls)
+        features["competition_level"] = sum(
+            1 for c in history if c.type != CallType.PASS)
+
+        # auction altitude: highest level reached by anyone
+        all_bids = [c for c in history if c.type == CallType.BID]
+        features["auction_altitude"] = max((c.level for c in all_bids), default=0)
+        features["auction_contested"] = bool(opp_bid_calls) and bool(my_side_calls)
+
+        # preemption: opponents' FIRST bid at level >= 3 (or a 2-level suit
+        # opening, classic weak-two) => they are signaling a weak/shaky hand
+        opp_first = opp_bid_calls[0] if opp_bid_calls else None
+        features["opp_preempted"] = bool(
+            opp_first and (opp_first.level >= 3 or
+                           (opp_first.level == 2 and opp_first.strain is not None
+                            and opp_first.strain != Strain.NT
+                            and len(history) <= 4)))
+        features["opp_first_bid_level"] = opp_first.level if opp_first else 0
+
+        # rough strength class inferred from opponents' bidding shape
+        if features["opp_preempted"]:
+            features["opp_strength_class"] = "weak"
+        elif opp_first is not None and opp_first.level >= 4:
+            features["opp_strength_class"] = "strong"
+        else:
+            features["opp_strength_class"] = "unknown"
+
+        # fit inference: how many distinct suits each side has bid
+        opp_suits = {c.strain for c in opp_bid_calls
+                     if c.strain is not None and c.strain != Strain.NT}
+        my_suits = {c.strain for c in my_side_calls
+                    if c.strain is not None and c.strain != Strain.NT}
+        features["opp_fit_shown"] = len(opp_suits) >= 2
+        partner_suits = {c.strain for c in bids_by_seat[my_seat.partner]
+                         if c.type == CallType.BID and c.strain is not None
+                         and c.strain != Strain.NT}
+        my_own_suits = {c.strain for c in bids_by_seat[my_seat]
+                        if c.type == CallType.BID and c.strain is not None
+                        and c.strain != Strain.NT}
+        # true shown fit: BOTH members of the partnership bid the same suit
+        features["our_fit_shown"] = bool(my_own_suits & partner_suits)
+
+        # partner competition signal: has partner made a non-pass, non-first
+        # bid (i.e., partner voluntarily re-entered the auction)
+        features["partner_rebid"] = len(
+            [c for c in bids_by_seat[my_seat.partner]]) >= 2
+
+        # ---- support for partner's shown suit (raise decisions) ------------
+        partner_last_bid = None
+        for c in reversed(bids_by_seat[my_seat.partner]):
+            if c.type == CallType.BID and c.strain is not None \
+                    and c.strain != Strain.NT:
+                partner_last_bid = c
+                break
+        if partner_last_bid is not None:
+            features["partner_last_bid_strain"] = str(partner_last_bid.strain)
+            if hand is not None:
+                features["support_in_partner_suit"] = len(
+                    hand.by_suit.get(partner_last_bid.strain, []))
+            else:
+                features["support_in_partner_suit"] = -1
+        else:
+            features["partner_last_bid_strain"] = "NONE"
+            features["support_in_partner_suit"] = -1
+
+        # ---- NT stopper quality in opponents' bid suits ---------------------
+        # Deterministic holding check: A=2, guarded K (K + 1 other)=1,
+        # guarded Q (Q + 2 others)=0.5; the best stopper across every suit
+        # the opponents have bid. 0.0 => no stopper anywhere.
+        def _stopper_q(suit):
+            cards = hand.by_suit.get(suit, [])
+            ranks = {c.rank for c in cards}
+            if Rank.ACE in ranks:
+                return 2.0
+            if Rank.KING in ranks and len(cards) >= 2:
+                return 1.0
+            if Rank.QUEEN in ranks and len(cards) >= 3:
+                return 0.5
+            return 0.0
+
+        if opp_suits and hand is not None:
+            features["opp_suit_stoppers"] = max(_stopper_q(s) for s in opp_suits)
+        else:
+            features["opp_suit_stoppers"] = 2.0   # nothing to stop / no hand: treat as safe
+        features["has_stopper"] = features["opp_suit_stoppers"] > 0
+
 
         # Balancing seat (2 consecutive passes after an opponent bid)
         features["is_balancing"] = (passes_since_last_bid == 2) and (last_bid_seat in (opp1, opp2))
@@ -233,5 +336,5 @@ class BridgeFeatures:
                     dealer: Seat = Seat.NORTH,
                     vuln: int = Vulnerability.NONE) -> Dict[str, Any]:
         h_feats = BridgeFeatures.extract_hand_features(hand)
-        a_feats = BridgeFeatures.extract_auction_features(history, my_seat, dealer, vuln)
+        a_feats = BridgeFeatures.extract_auction_features(history, my_seat, dealer, vuln, hand=hand)
         return {**h_feats, **a_feats}
