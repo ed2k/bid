@@ -6,8 +6,15 @@ Rather than relying on static, brittle rule tables or black-box policies, `bid` 
 
 ---
 
-> 📖 **Designing a New Bidding System**: For a complete step-by-step walkthrough on creating custom DSL rules, testing against Double Dummy par, A/B duplicate arena matches, SDS two-hand realism, and neural distillation, see **[`docs/DESIGNING_A_BID_SYSTEM.md`](docs/DESIGNING_A_BID_SYSTEM.md)**.
+### 🎓 Learning Curriculum & System Design Guides
+Whether you are designing a custom bidding system or studying the computer science behind bridge AI:
+- 📖 **[Bidding System Design Guide](docs/DESIGNING_A_BID_SYSTEM.md)**: Step-by-step tutorial on drafting DSL rules, diagnosing gaps, A/B benchmarking, SDS two-hand validation, and neural distillation.
+- ♟️ **[Track 1: Game Theory & Signaling](docs/LEARNING_GAME_THEORY.md)**: Imperfect information, Bayesian updating, cooperative-adversarial signaling, competitive VOI, and scoring math.
+- 🌲 **[Track 2: Machine Learning & Search](docs/LEARNING_MACHINE_LEARNING.md)**: RBMBMC Monte Carlo sampling, PIDM lookahead, ID3 speedup learning, and active learning.
+- 🧠 **[Track 3: LLMs & Chain-of-Thought](docs/LEARNING_LLM_AND_COT.md)**: Decoder-only Transformers from scratch, knowledge distillation, CoT reasoning, batched decoding, and neuro-symbolic verification.
+- 🗺️ **[Full Curriculum Roadmap](docs/CURRICULUM.md)**: Complete learning track index and code walkthroughs.
 
+---
 ## 🔄 The Continuous Improvement Pipeline
 
 The core goal of `bid` is to run an autonomous flywheel that iteratively improves both bidding policy and belief-state inference:
