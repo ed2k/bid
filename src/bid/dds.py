@@ -59,9 +59,10 @@ class DDSolver:
             return cls._lib
 
         search_paths = [
-            os.path.join(os.path.dirname(__file__), "..", "bin"),
-            os.path.join(os.path.dirname(__file__), "..", "..", "ben", "bin"),
+            os.path.join(os.path.dirname(__file__), "..", "..", "bin"),
             os.path.join(os.path.dirname(__file__), "bin"),
+            os.path.join(os.path.dirname(__file__), "..", "bin"),
+            os.path.join(os.path.dirname(__file__), "..", "..", "..", "ben", "bin"),
             "/Users/admin/Documents/GitHub/ben/bin"
         ]
 

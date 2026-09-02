@@ -12,6 +12,7 @@ Whether you are designing a custom bidding system or studying the computer scien
 - ♟️ **[Track 1: Game Theory & Signaling](docs/LEARNING_GAME_THEORY.md)**: Imperfect information, Bayesian updating, cooperative-adversarial signaling, competitive VOI, and scoring math.
 - 🌲 **[Track 2: Machine Learning & Search](docs/LEARNING_MACHINE_LEARNING.md)**: RBMBMC Monte Carlo sampling, PIDM lookahead, ID3 speedup learning, and active learning.
 - 🧠 **[Track 3: LLMs & Chain-of-Thought](docs/LEARNING_LLM_AND_COT.md)**: Decoder-only Transformers from scratch, knowledge distillation, CoT reasoning, batched decoding, and neuro-symbolic verification.
+- ⚡ **[Double Dummy Solver (DDS) Guide](docs/BUILDING_AND_USING_DDS.md)**: Building and using Bo Haglund's native C++ solver (`libdds`) for exact trick calculations and par analysis.
 - 🗺️ **[Full Curriculum Roadmap](docs/CURRICULUM.md)**: Complete learning track index and code walkthroughs.
 
 ---
