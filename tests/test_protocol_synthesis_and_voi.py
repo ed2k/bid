@@ -74,5 +74,28 @@ class TestProtocolSynthesisAndVOI(unittest.TestCase):
         voi = voi_eval.evaluate_voi(step, states, models)
         self.assertGreaterEqual(voi, 0.0)
 
+    def test_competitive_value_of_information(self):
+        engine = PIDMEngine()
+        voi_eval = ValueOfInformationEvaluator(engine)
+
+        stayman = ConventionProtocol.create_stayman()
+        step = stayman.steps[0]
+
+        states = [
+            PartialState(Seat.NORTH, Hand.random(), [Call(CallType.BID, 1, Strain.NT), Call(CallType.BID, 2, Strain.CLUBS)])
+            for _ in range(2)
+        ]
+        models = {s: DecisionNet(f"M_{s}") for s in Seat}
+        comp_voi = voi_eval.evaluate_competitive_voi(step, states, models, leakage_penalty=0.2, preemption_bonus=0.3)
+
+        self.assertIn("voi_partner", comp_voi)
+        self.assertIn("leakage", comp_voi)
+        self.assertIn("disruption", comp_voi)
+        self.assertIn("net_voi", comp_voi)
+        self.assertGreaterEqual(comp_voi["leakage"], 0.0)
+        self.assertLessEqual(comp_voi["leakage"], 1.0)
+        self.assertGreaterEqual(comp_voi["disruption"], 0.0)
+
+
 if __name__ == "__main__":
     unittest.main()

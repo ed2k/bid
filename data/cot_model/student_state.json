@@ -34,23 +34,38 @@
       "reason": "no comparable incumbent",
       "elapsed_sec": 1890.8,
       "checkpoint": "/Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt"
+    },
+    {
+      "ts": "2026-09-02 11:14:56",
+      "dsl_sha256": "dba8d31afbbec8fdccce9d1b4c1a8f791387021dae1f0a21ff0cf0194854dd5c",
+      "corpus_sha256": "83c9119a469ae696f19c1831f2981e5ddfbfd4fd9f3bdd87ed2ffdf39f1022f3",
+      "boards": 60,
+      "epochs": 2,
+      "candidate": {
+        "exact": 0.0,
+        "bid": 1.9
+      },
+      "incumbent": "not evaluable",
+      "promoted": true,
+      "reason": "no comparable incumbent",
+      "elapsed_sec": 212.6,
+      "checkpoint": "/Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt"
     }
   ],
   "last": {
-    "ts": "2026-08-27 11:01:33",
-    "dsl_sha256": "e23cd28100fd3f9f0d54ee1461dc033d32f3e3b52e3a95585f840b5465e1cb59",
-    "corpus_sha256": "ccf87e1ba07a01ae143f83838324b346e88790d5139d39956b47fcbfdd43146b",
-    "boards": 500,
-    "epochs": 5,
+    "ts": "2026-09-02 11:14:56",
+    "dsl_sha256": "dba8d31afbbec8fdccce9d1b4c1a8f791387021dae1f0a21ff0cf0194854dd5c",
+    "corpus_sha256": "83c9119a469ae696f19c1831f2981e5ddfbfd4fd9f3bdd87ed2ffdf39f1022f3",
+    "boards": 60,
+    "epochs": 2,
     "candidate": {
-      "exact": 50.2,
-      "bid": 64.7
+      "exact": 0.0,
+      "bid": 1.9
     },
-    "incumbent": "not comparable (old vocab 1458 vs new 2241)",
+    "incumbent": "not evaluable",
     "promoted": true,
     "reason": "no comparable incumbent",
-    "elapsed_sec": 1890.8,
-    "checkpoint": "/Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt",
-    "note": "corrected: parse_eval stale-match bug; true values from refresh_prod.log (205/408 exact, 264/408 bid)"
+    "elapsed_sec": 212.6,
+    "checkpoint": "/Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt"
   }
 }

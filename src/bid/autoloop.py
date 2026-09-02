@@ -196,6 +196,8 @@ def main():
     ap.add_argument("--policy-prior", type=str, default=None,
                     help="ckpt path; enables policy-guided PIDM pruning "
                          "(requires torch; adds ~0.5s/decision overhead)")
+    ap.add_argument("--min-final-boards", type=int, default=MIN_BOARDS_FINAL,
+                    help="minimum boards required for final champion challenge")
     args = ap.parse_args()
 
     tiers = [int(x) for x in args.tiers.split(",") if int(x) > 0]
@@ -227,10 +229,11 @@ def main():
             _student = StudentPolicy(args.policy_prior)
 
             def _prior(ps, actions, _s=_student):
-                bid, _ = _s.bid(ps.dealer.name, ps.vuln, ps.my_seat.name,
-                                len(ps.history),
-                                [str(c) for c in ps.history],
-                                hand_str(ps.my_hand), max_new=24)
+                res = _s.bid(ps.dealer.name, ps.vuln, ps.my_seat.name,
+                             len(ps.history),
+                             [str(c) for c in ps.history],
+                             hand_str(ps.my_hand), max_new=24)
+                bid = res[0]
                 return {str(a): (1.0 if str(a) == bid else 0.35)
                         for a in actions}
 
@@ -294,18 +297,22 @@ def main():
         base_res = evaluate_system(arena, "base", base_net, d0, dd0,
                                    run_diagnostics=True, seed=EVAL_SEED)
         base_scores = base_res["scores"]
+        base_scores_by_tier = {tiers[0]: base_scores}
 
         pool = pool_builder.build(base_net, base_res["diagnostics"])
+        if args.pool_cap:
+            pool = pool[:args.pool_cap]
         if not pool:
             cycles_empty += 1
             maybe_report(force=True, note=f"empty pool ({cycles_empty}/{args.idle_limit})")
             if cycles_empty >= args.idle_limit:
-                print("Converged: no generable candidates remain un-failed.")
+                print("Converged: no generable candidates remain un-failed.", flush=True)
                 break
             time.sleep(5)
             continue
         cycles_empty = 0
         progress["last_event"] = f"cyc{cycle_no} screening {len(pool)} @t{tiers[0]}"
+        print(f"  [{progress['last_event']}]", flush=True)
 
         # ---- stage 1: screen everything on the smallest tier ----
         screened = []
@@ -314,7 +321,7 @@ def main():
             try:
                 fn(cand)
             except Exception as ex:
-                print(f"    !! {name} failed to apply: {type(ex).__name__}: {ex}")
+                print(f"    !! {name} failed to apply: {type(ex).__name__}: {ex}", flush=True)
                 state["failed"].append(sig)
                 continue
             res = evaluate_system(arena, "cand", cand, d0, dd0, seed=EVAL_SEED)
@@ -327,6 +334,7 @@ def main():
             screened.append(dict(sig=sig, name=name, fn=fn, net=cand, delta=dm,
                                  z=z, verdict=verdict, acc_ok=acc_ok, imp_ok=imp_ok))
             progress["screened"] += 1
+            print(f"    cand {i+1}/{len(pool)} {name:<24} Δ{dm:+.2f} z={z:.2f} -> {verdict}", flush=True)
             if verdict == "reject" or not acc_ok or not imp_ok:
                 state["failed"].append(sig)
             maybe_report(note=f"cyc{cycle_no} screening {i+1}/{len(pool)}")
@@ -343,7 +351,11 @@ def main():
                 deals_t, dd_t = tier_data(t)
                 res_t = evaluate_system(arena, "esc", cand["net"], deals_t, dd_t,
                                         seed=EVAL_SEED)
-                deltas = [b - a for b, a in zip(res_t["scores"], base_scores)]
+                if t not in base_scores_by_tier:
+                    base_t = evaluate_system(arena, "base_esc", base_net, deals_t, dd_t,
+                                             seed=EVAL_SEED)
+                    base_scores_by_tier[t] = base_t["scores"]
+                deltas = [b - a for b, a in zip(res_t["scores"], base_scores_by_tier[t])]
                 dm = sum(deltas) / len(deltas)
                 z = paired_z(deltas)
                 verdict = classify(dm, z)
@@ -395,8 +407,9 @@ def main():
         champ_name = "champion"
         imp_diffs = []
         champ_boards = tiers[-1]
-        if champ_boards < MIN_BOARDS_FINAL:
-            champ_boards = min(max(tiers[-1], MIN_BOARDS_FINAL), 384)
+        min_final = args.min_final_boards
+        if champ_boards < min_final:
+            champ_boards = min(max(tiers[-1], min_final), 384)
         boards_c, _ = tier_data(champ_boards)
         for deal in boards_c:
             _, sc_new_ns = arena.play_board(deal, winner["net"], champ_net)
@@ -407,7 +420,7 @@ def main():
         z = paired_z([float(x) for x in imp_diffs])
         n_boards = len(boards_c)
         promoted = False
-        if total_imps > 0 and z >= CONFIRM_Z and n_boards >= MIN_BOARDS_FINAL:
+        if total_imps > 0 and z >= CONFIRM_Z and n_boards >= min_final:
             cv = state.get("champion_version", 1)
             os.makedirs(HISTORY_DIR, exist_ok=True)
             if os.path.exists(CHAMPION):

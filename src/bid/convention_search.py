@@ -33,12 +33,12 @@ import time
 
 from bid.arena import BiddingArena
 from bid.pidm import PIDMEngine
-from bid.sampling import RBMBMCSampler
-from bid.models import Strain, Call, CallType
+from bid.sampling import RBMBMCSampler, PartialState, Deal
+from bid.models import Strain, Call, CallType, Seat, Hand
 
 from bid.eval_vs_dds import build_deals, load_decision_net_dsl, evaluate_system, SYSTEM_DIR, precompute
 from bid.autoloop import paired_z, classify
-from bid.protocol import ConventionProtocol, ProtocolStep, ProtocolOpType
+from bid.protocol import ConventionProtocol, ProtocolStep, ProtocolOpType, ValueOfInformationEvaluator
 
 TARGET = os.path.join(SYSTEM_DIR, "improved_system.dsl")
 
@@ -113,6 +113,14 @@ def main():
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--dsl", default=TARGET)
     ap.add_argument("--report", default="data/conventions/search_report.json")
+    ap.add_argument("--use-voi", action="store_true", default=False,
+                    help="Evaluate competitive Value of Information (VOI) during screening.")
+    ap.add_argument("--leakage-penalty", type=float, default=0.2,
+                    help="Penalty for information leakage to defenders.")
+    ap.add_argument("--preemption-bonus", type=float, default=0.3,
+                    help="Bonus for preemptive disruption of opponents.")
+    ap.add_argument("--voi-weight", type=float, default=0.25,
+                    help="Weight of competitive VOI when ranking candidate mutants.")
     args = ap.parse_args()
 
     base_net = load_decision_net_dsl(args.dsl)
@@ -121,11 +129,20 @@ def main():
                                               timeout_sec=0.06),
                         max_lookahead_depth=1)
     arena = BiddingArena(engine=engine)
+    voi_evaluator = ValueOfInformationEvaluator(engine=engine)
 
     train_deals, train_dd = (lambda d: (d, precompute(d)))(
         build_deals(args.boards, seed=TRAIN_SEED))
     val_deals, val_dd = (lambda d: (d, precompute(d)))(
         build_deals(args.boards, seed=VAL_SEED))
+
+    sample_voi_states = []
+    if args.use_voi:
+        for d in train_deals[:min(6, len(train_deals))]:
+            for s in (Seat.NORTH, Seat.SOUTH):
+                sample_voi_states.append(
+                    PartialState(s, d.hands[s], [Call(CallType.PASS)], d.dealer, d.vuln)
+                )
 
     def evl(net, deals, dd):
         return evaluate_system(arena, "cand", net, deals, dd,
@@ -179,17 +196,32 @@ def main():
                 continue  # everything already present in the DSL
             res = evl(cand_net, train_deals, train_dd)
             delta = res["avg_score"] - base_train
-            screened.append((delta, mut_name, mut, cand_net, added))
-            print(f"  r{rnd} {mut_name:<40} delta {delta:+.2f} "
+
+            comp_voi = None
+            if args.use_voi and mut.steps:
+                try:
+                    models = {s: cand_net for s in Seat}
+                    comp_voi = voi_evaluator.evaluate_competitive_voi(
+                        mut.steps[0], sample_voi_states, models,
+                        leakage_penalty=args.leakage_penalty,
+                        preemption_bonus=args.preemption_bonus
+                    )
+                except Exception:
+                    comp_voi = {"voi_partner": 0.0, "leakage": 0.0, "disruption": 0.0, "net_voi": 0.0}
+
+            rank_score = delta + (args.voi_weight * comp_voi["net_voi"]) if comp_voi else delta
+            screened.append((rank_score, delta, comp_voi, mut_name, mut, cand_net, added))
+            voi_msg = f"| VOI {comp_voi['net_voi']:+.2f} (leak={comp_voi['leakage']:.2f}, disr={comp_voi['disruption']:.2f})" if comp_voi else ""
+            print(f"  r{rnd} {mut_name:<36} delta {delta:+.2f} {voi_msg} "
                   f"({len(added)} rules)", flush=True)
 
         if not screened:
             print(f"  r{rnd}: no applicable mutants")
             continue
         screened.sort(key=lambda x: -x[0])
-        delta, mut_name, mut, cand_net, added = screened[0]
-        if delta <= 0:
-            print(f"  r{rnd}: best mutant {delta:+.2f} <= 0 - converged")
+        rank_score, delta, comp_voi, mut_name, mut, cand_net, added = screened[0]
+        if delta <= 0 and rank_score <= 0:
+            print(f"  r{rnd}: best mutant delta {delta:+.2f} <= 0 - converged")
             break
 
         # ---- validation gate on disjoint seed ------------------------------
@@ -198,7 +230,7 @@ def main():
         z = paired_z([b - a for b, a in
                       zip(val_res["scores"], base_va["scores"])])
         verdict = classify(val_delta, z)
-        print(f"  r{rnd} BEST {mut_name}: train {delta:+.2f} | "
+        print(f"  r{rnd} BEST {mut_name}: train {delta:+.2f} (rank {rank_score:+.2f}) | "
               f"val {val_delta:+.2f} z={z:.2f} -> {verdict}")
         if verdict == "reject":
             print("  rejected on validation - stopping")
@@ -206,15 +238,23 @@ def main():
 
         best = {"score": base_train + delta, "protocols": best["protocols"] + [mut],
                 "names": best["names"] + [mut_name]}
-        history.append({"round": rnd, "mutation": mut_name,
-                        "train_delta": round(delta, 2),
-                        "val_delta": round(val_delta, 2), "z": round(z, 2),
-                        "verdict": verdict, "rules_added": added,
-                        "steps": [{"name": s.name, "op": s.op_type,
-                                   "feature": s.target_feature,
-                                   "mapping": {str(k): str(v) for k, v in
-                                               s.call_mapping.items()}}
-                                  for s in mut.steps]})
+        hist_entry = {
+            "round": rnd, "mutation": mut_name,
+            "train_delta": round(delta, 2),
+            "rank_score": round(rank_score, 2),
+            "val_delta": round(val_delta, 2), "z": round(z, 2),
+            "verdict": verdict, "rules_added": added,
+            "steps": [{"name": s.name, "op": s.op_type,
+                       "feature": s.target_feature,
+                       "mapping": {str(k): str(v) for k, v in
+                                   s.call_mapping.items()}}
+                      for s in mut.steps]
+        }
+        if comp_voi:
+            hist_entry["competitive_voi"] = {
+                k: round(v, 3) for k, v in comp_voi.items()
+            }
+        history.append(hist_entry)
 
     report = {"ts": time.strftime("%Y-%m-%d %H:%M:%S"),
               "base_train": round(base_train, 2),

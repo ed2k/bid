@@ -1,5 +1,5 @@
 {
-  "version": 23,
+  "version": 25,
   "failed": [
     "curated:BALANCING",
     "curated:TKO_SHAPE",
@@ -477,8 +477,18 @@
       "sig": "curated:SUPPORT",
       "name": "SUPPORT",
       "delta": 23.7
+    },
+    {
+      "sig": "curated:SUPPORT",
+      "name": "SUPPORT",
+      "delta": 0.0
+    },
+    {
+      "sig": "curated:SUPPORT",
+      "name": "SUPPORT",
+      "delta": 0.0
     }
   ],
   "champion_swaps": 0,
-  "champion_holds": 3
+  "champion_holds": 4
 }

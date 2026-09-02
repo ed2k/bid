@@ -69,23 +69,32 @@ class Hand:
     def __init__(self, cards: List[Card]):
         self.cards = sorted(cards, key=lambda c: (c.suit.value, c.rank.value), reverse=True)
         self.by_suit = {s: [] for s in Suit}
+        self.suit_masks = {s: 0 for s in Suit}
         for c in self.cards:
             self.by_suit[c.suit].append(c)
+            self.suit_masks[c.suit] |= (1 << (c.rank.value - 2))
+
+        self._lengths = {s: len(self.by_suit[s]) for s in Suit}
+        self._hcp = sum(c.hcp for c in self.cards)
+        self._major_hcp = sum(c.hcp for c in self.by_suit[Suit.HEARTS]) + sum(c.hcp for c in self.by_suit[Suit.SPADES])
+        self._controls = sum(2 if c.rank == Rank.ACE else (1 if c.rank == Rank.KING else 0) for c in self.cards)
+        self._ace_count = sum(1 for c in self.cards if c.rank == Rank.ACE)
+        self._cached_features = None
 
     @property
     def hcp(self) -> int:
-        return sum(c.hcp for c in self.cards)
+        return self._hcp
 
     @property
     def major_hcp(self) -> int:
-        return sum(c.hcp for c in self.by_suit[Suit.HEARTS]) + sum(c.hcp for c in self.by_suit[Suit.SPADES])
+        return self._major_hcp
 
     def length(self, suit: Suit) -> int:
-        return len(self.by_suit[suit])
+        return self._lengths[suit]
 
     @property
     def distribution(self) -> Dict[Suit, int]:
-        return {s: len(self.by_suit[s]) for s in Suit}
+        return dict(self._lengths)
 
     @property
     def total_points(self) -> int:
@@ -96,51 +105,30 @@ class Hand:
         """
         dist_points = 0
         penalty = 0
-        
+        HONOR_MASK = (1 << 9) | (1 << 10) | (1 << 11) | (1 << 12)
         for suit in Suit:
-            length = self.length(suit)
+            length = self._lengths[suit]
             if length == 0:
                 dist_points += 3
             elif length == 1:
                 dist_points += 2
             elif length == 2:
                 dist_points += 1
-            
-            # Check penalty: short suit with honor
-            if length < 3:
-                # Check for honors in this suit
-                has_honor = False
-                for card in self.by_suit[suit]:
-                    if card.rank.value >= Rank.JACK.value:
-                        has_honor = True
-                        break
-                if has_honor:
-                    penalty += 1
+            if length < 3 and (self.suit_masks[suit] & HONOR_MASK):
+                penalty += 1
                     
-        return self.hcp + dist_points - penalty
+        return self._hcp + dist_points - penalty
 
     @property
     def controls(self) -> int:
         """
         Blue Club Controls: Ace=2, King=1.
         """
-        count = 0
-        for suit in Suit:
-            for card in self.by_suit[suit]:
-                if card.rank == Rank.ACE:
-                    count += 2
-                elif card.rank == Rank.KING:
-                    count += 1
-        return count
+        return self._controls
 
     @property
     def ace_count(self) -> int:
-        count = 0
-        for suit in Suit:
-            for card in self.by_suit[suit]:
-                if card.rank == Rank.ACE:
-                    count += 1
-        return count
+        return self._ace_count
 
     @property
     def ace_topology(self) -> str:
@@ -151,15 +139,12 @@ class Hand:
         COLOR: Both Black or Both Red.
         MIXED: Neither Same Rank nor Same Color (e.g. S+D, H+C).
         """
-        if self.ace_count != 2:
+        if self._ace_count != 2:
             return "NONE"
             
-        aces = []
-        for suit in Suit:
-            for card in self.by_suit[suit]:
-                if card.rank == Rank.ACE:
-                    aces.append(suit)
-        
+        aces = [s for s in Suit if (self.suit_masks[s] & (1 << 12))]
+        if len(aces) != 2:
+            return "NONE"
         s1, s2 = aces[0], aces[1]
         
         # Check Rank (Both Major or Both Minor)
@@ -179,9 +164,7 @@ class Hand:
     @property
     def is_balanced(self) -> bool:
         """Standard balanced definition: no singleton/void, at most one doubleton."""
-        lengths = sorted(self.distribution.values())
-        # Possible balanced shapes: 4333, 4432, 5332
-        # (Though some consider 5422 semi-balanced, stick to strict for now)
+        lengths = sorted(self._lengths.values())
         return lengths in [[3, 3, 3, 4], [2, 3, 4, 4], [2, 3, 3, 5]]
 
     def from_string(s: str) -> 'Hand':

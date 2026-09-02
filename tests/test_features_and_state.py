@@ -37,6 +37,25 @@ class TestFeaturesAndState(unittest.TestCase):
         self.assertEqual(feats["last_bid_level"], 2)
         self.assertEqual(feats["last_bid_strain"], "H")
 
+    def test_bitmask_representation_and_caching(self):
+        hand = Hand.from_string("SAKQ32 HK32 DA32 C43")
+        # Check that suit_masks has bits set correctly (bit 0 = 2, bit 12 = Ace)
+        # Spades: A(12), K(11), Q(10), 3(1), 2(0)
+        expected_spades_mask = (1 << 12) | (1 << 11) | (1 << 10) | (1 << 1) | (1 << 0)
+        self.assertEqual(hand.suit_masks[Suit.SPADES], expected_spades_mask)
+
+        # Verify caching
+        self.assertIsNone(hand._cached_features)
+        feats1 = BridgeFeatures.extract_hand_features(hand)
+        self.assertIsNotNone(hand._cached_features)
+        self.assertIs(hand._cached_features, hand._cached_features)
+        feats2 = BridgeFeatures.extract_hand_features(hand)
+        self.assertEqual(feats1, feats2)
+
+        # Check LTC and quick tricks
+        self.assertEqual(feats1["losing_trick_count"], 6)  # S: 0, H: 2, D: 2, C: 2 = 6
+        self.assertEqual(feats1["quick_tricks"], 3.5)      # S: AK(2.0), H: Kxx(0.5), D: Axx(1.0) = 3.5
+
     def test_partial_state_contract_determination(self):
         # North 1H - East Pass - South 4H - West Pass - North Pass - East Pass (Over!)
         history = [

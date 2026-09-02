@@ -42,7 +42,7 @@ from bid.trace_factory import hand_str, serialize_features, trace_object
 
 try:
     import torch
-    from bid.cot_model import COTModel, pick_device, PAD_ID, SEP_ID, EOT_ID
+    from bid.cot_model import COTModel, pick_device, PAD_ID, SEP_ID, EOT_ID, generate_batch
     TORCH = True
 except ImportError:
     TORCH = False
@@ -88,48 +88,43 @@ class StudentPolicy:
         ids.append(V["<sep>"])
         return ids
 
+    def bid_batch(self, items, max_new=48, temp=0.0, batch_size=32):
+        """Batched student bidding across multiple states.
+        items: list of (dealer, vuln, seat_name, turn, auction_strs, hand_str_)
+        Returns: list of (bid_string_or_None, generated_text, avg_confidence, avg_entropy)
+        """
+        if not items:
+            return []
+        prompts = [
+            self.prefix_ids(d, v, s, t, a, h)
+            for d, v, s, t, a, h in items
+        ]
+        batch_out = generate_batch(
+            self.model, prompts, max_new=max_new, temp=temp,
+            dev=self.dev, pad_id=PAD_ID, eot_id=EOT_ID, sep_id=SEP_ID,
+            batch_size=batch_size, block_size=self.block
+        )
+        results = []
+        for out, prompt in zip(batch_out, prompts):
+            all_ids = prompt + out["generated_ids"]
+            toks = [self.inv.get(i, "") for i in all_ids]
+            text = " ".join(toks)
+            parts = text.split()
+            bid_str = None
+            if "BID" in parts:
+                k = len(parts) - parts[::-1].index("BID")
+                bid_str = " ".join(parts[k:]) or None
+            results.append((bid_str, text, out["avg_confidence"], out["avg_entropy"]))
+        return results
+
     def bid(self, dealer, vuln, seat_name, turn, auction_strs, hand_str_,
             max_new=48, temp=0.0):
         """Returns (bid_string_or_None, generated_text, avg_confidence, avg_entropy)."""
-        ids = self.prefix_ids(dealer, vuln, seat_name, turn,
-                              auction_strs, hand_str_)
-        confidences = []
-        entropies = []
-        with torch.no_grad():
-            for _ in range(max_new):
-                x = torch.tensor([ids[-self.block:]]).to(self.dev)
-                logits, _ = self.model(x)
-                last_logits = logits[0, -1]
-                probs = torch.softmax(last_logits, dim=-1)
-                
-                # Calculate Shannon entropy: H = - sum(p * log(p))
-                nz_probs = probs[probs > 1e-12]
-                ent = float(-(nz_probs * torch.log(nz_probs)).sum().item())
-                entropies.append(ent)
-
-                if temp > 0.0:
-                    scaled = last_logits / max(1e-5, temp)
-                    nxt = int(torch.multinomial(torch.softmax(scaled, dim=-1), num_samples=1).item())
-                else:
-                    nxt = int(torch.argmax(last_logits).item())
-                
-                conf = float(probs[nxt].item())
-                confidences.append(conf)
-
-                if nxt in (EOT_ID, PAD_ID, SEP_ID):
-                    break
-                ids.append(nxt)
-
-        toks = [self.inv[i] for i in ids]
-        text = " ".join(toks)
-        parts = text.split()
-        avg_conf = sum(confidences) / len(confidences) if confidences else 1.0
-        avg_ent = sum(entropies) / len(entropies) if entropies else 0.0
-
-        if "BID" not in parts:
-            return None, text, avg_conf, avg_ent
-        k = len(parts) - parts[::-1].index("BID")
-        return " ".join(parts[k:]) or None, text, avg_conf, avg_ent
+        res = self.bid_batch(
+            [(dealer, vuln, seat_name, turn, auction_strs, hand_str_)],
+            max_new=max_new, temp=temp, batch_size=1
+        )
+        return res[0]
 
 
 def _tokens(line):
@@ -211,10 +206,7 @@ def main():
                     temp=args.temp)
                 if s_bid == str(call):
                     stats["agreements"] += 1
-                else:
-                    if s_conf < args.min_confidence or s_ent > args.max_entropy:
-                        # Skipped due to confidence/entropy thresholding
-                        continue
+                elif s_conf >= args.min_confidence and s_ent <= args.max_entropy:
                     stats["disagreements"] += 1
                     illegal = s_bid is None or s_bid not in cand_strs
                     arb_call, arb_values = heavy_engine.decide(ps, models)

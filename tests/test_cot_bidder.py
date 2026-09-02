@@ -79,5 +79,37 @@ class TestCorpusInvariants(unittest.TestCase):
         self.assertAlmostEqual(d_ab, d_ba, places=9)
 
 
+class TestBatchedNeuralInference(unittest.TestCase):
+    def test_generate_batch_synthetic(self):
+        try:
+            import torch
+            from bid.cot_model import COTModel, generate_batch
+        except ImportError:
+            self.skipTest("torch not installed")
+
+        torch.manual_seed(42)
+        vocab_size = 30
+        model = COTModel(vocab_size=vocab_size, block_size=32, n_layer=1, n_head=1, n_embd=16)
+        model.eval()
+
+        prompts = [
+            [1, 5, 8],
+            [1, 4, 7, 10, 12],
+            [1, 2],
+        ]
+
+        results = generate_batch(model, prompts, max_new=10, temp=0.0, batch_size=2)
+        self.assertEqual(len(results), len(prompts))
+        for r in results:
+            self.assertIn("generated_ids", r)
+            self.assertIn("confidences", r)
+            self.assertIn("entropies", r)
+            self.assertIn("avg_confidence", r)
+            self.assertIn("avg_entropy", r)
+            self.assertGreaterEqual(r["avg_confidence"], 0.0)
+            self.assertLessEqual(r["avg_confidence"], 1.0)
+            self.assertGreaterEqual(r["avg_entropy"], 0.0)
+
+
 if __name__ == "__main__":
     unittest.main()

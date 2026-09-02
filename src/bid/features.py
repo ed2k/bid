@@ -10,16 +10,32 @@ class BridgeFeatures:
 
     @staticmethod
     def extract_hand_features(hand: Hand) -> Dict[str, Any]:
+        if getattr(hand, "_cached_features", None) is not None:
+            return dict(hand._cached_features)
+
         features: Dict[str, Any] = {}
 
         # 1. High Card Points (HCP)
+        s_mask = hand.suit_masks[Suit.SPADES]
+        h_mask = hand.suit_masks[Suit.HEARTS]
+        d_mask = hand.suit_masks[Suit.DIAMONDS]
+        c_mask = hand.suit_masks[Suit.CLUBS]
+
+        def _mask_hcp(m: int) -> int:
+            return 4 * ((m >> 12) & 1) + 3 * ((m >> 11) & 1) + 2 * ((m >> 10) & 1) + ((m >> 9) & 1)
+
+        s_hcp = _mask_hcp(s_mask)
+        h_hcp = _mask_hcp(h_mask)
+        d_hcp = _mask_hcp(d_mask)
+        c_hcp = _mask_hcp(c_mask)
+
         features["hcp"] = hand.hcp
         features["major_hcp"] = hand.major_hcp
-        features["minor_hcp"] = sum(c.hcp for c in hand.by_suit[Suit.CLUBS]) + sum(c.hcp for c in hand.by_suit[Suit.DIAMONDS])
-        features["spade_hcp"] = sum(c.hcp for c in hand.by_suit[Suit.SPADES])
-        features["heart_hcp"] = sum(c.hcp for c in hand.by_suit[Suit.HEARTS])
-        features["diamond_hcp"] = sum(c.hcp for c in hand.by_suit[Suit.DIAMONDS])
-        features["club_hcp"] = sum(c.hcp for c in hand.by_suit[Suit.CLUBS])
+        features["minor_hcp"] = c_hcp + d_hcp
+        features["spade_hcp"] = s_hcp
+        features["heart_hcp"] = h_hcp
+        features["diamond_hcp"] = d_hcp
+        features["club_hcp"] = c_hcp
 
         # 2. Suit lengths
         s_len = hand.length(Suit.SPADES)
@@ -59,9 +75,9 @@ class BridgeFeatures:
         features["controls"] = hand.controls
         features["ace_count"] = hand.ace_count
 
-        king_count = sum(1 for c in hand.cards if c.rank == Rank.KING)
-        queen_count = sum(1 for c in hand.cards if c.rank == Rank.QUEEN)
-        jack_count = sum(1 for c in hand.cards if c.rank == Rank.JACK)
+        king_count = sum(((m >> 11) & 1) for m in (s_mask, h_mask, d_mask, c_mask))
+        queen_count = sum(((m >> 10) & 1) for m in (s_mask, h_mask, d_mask, c_mask))
+        jack_count = sum(((m >> 9) & 1) for m in (s_mask, h_mask, d_mask, c_mask))
 
         features["king_count"] = king_count
         features["queen_count"] = queen_count
@@ -69,30 +85,37 @@ class BridgeFeatures:
         features["keycard_count_1430"] = hand.ace_count # Base aces
 
         # 5. Suit specific honors
-        for suit in Suit:
+        for suit, mask, s_len in ((Suit.CLUBS, c_mask, c_len),
+                                  (Suit.DIAMONDS, d_mask, d_len),
+                                  (Suit.HEARTS, h_mask, h_len),
+                                  (Suit.SPADES, s_mask, s_len)):
             s_name = str(suit).lower()
-            cards = hand.by_suit[suit]
-            ranks = {c.rank for c in cards}
-            features[f"{s_name}_has_ace"] = Rank.ACE in ranks
-            features[f"{s_name}_has_king"] = Rank.KING in ranks
-            features[f"{s_name}_has_queen"] = Rank.QUEEN in ranks
-            features[f"{s_name}_has_jack"] = Rank.JACK in ranks
-            features[f"{s_name}_has_ten"] = Rank.TEN in ranks
+            has_ace = bool(mask & (1 << 12))
+            has_king = bool(mask & (1 << 11))
+            has_queen = bool(mask & (1 << 10))
+            has_jack = bool(mask & (1 << 9))
+            has_ten = bool(mask & (1 << 8))
 
-            top2 = (1 if Rank.ACE in ranks else 0) + (1 if Rank.KING in ranks else 0)
-            top3 = top2 + (1 if Rank.QUEEN in ranks else 0)
+            features[f"{s_name}_has_ace"] = has_ace
+            features[f"{s_name}_has_king"] = has_king
+            features[f"{s_name}_has_queen"] = has_queen
+            features[f"{s_name}_has_jack"] = has_jack
+            features[f"{s_name}_has_ten"] = has_ten
+
+            top2 = (1 if has_ace else 0) + (1 if has_king else 0)
+            top3 = top2 + (1 if has_queen else 0)
             features[f"{s_name}_top2_honors"] = top2
             features[f"{s_name}_top3_honors"] = top3
 
             # Stopper level (None=0, Half=1, Single=2, Double=3)
             stopper = 0
-            if Rank.ACE in ranks:
+            if has_ace:
                 stopper = 2
-            elif Rank.KING in ranks and len(cards) >= 2:
+            elif has_king and s_len >= 2:
                 stopper = 2
-            elif Rank.QUEEN in ranks and len(cards) >= 3:
+            elif has_queen and s_len >= 3:
                 stopper = 1
-            elif Rank.JACK in ranks and Rank.TEN in ranks and len(cards) >= 3:
+            elif has_jack and has_ten and s_len >= 3:
                 stopper = 1
             features[f"{s_name}_stopper"] = stopper
 
@@ -101,47 +124,49 @@ class BridgeFeatures:
 
         # Losing Trick Count (LTC)
         ltc = 0
-        for suit in Suit:
-            cards = hand.by_suit[suit]
-            length = len(cards)
-            ranks = {c.rank for c in cards}
-            if length == 0:
+        for mask, s_len in ((c_mask, c_len), (d_mask, d_len), (h_mask, h_len), (s_mask, s_len)):
+            if s_len == 0:
                 continue
-            elif length == 1:
-                if Rank.ACE not in ranks:
+            has_ace = bool(mask & (1 << 12))
+            has_king = bool(mask & (1 << 11))
+            has_queen = bool(mask & (1 << 10))
+            if s_len == 1:
+                if not has_ace:
                     ltc += 1
-            elif length == 2:
-                if Rank.ACE not in ranks:
+            elif s_len == 2:
+                if not has_ace:
                     ltc += 1
-                if Rank.KING not in ranks:
+                if not has_king:
                     ltc += 1
             else: # length >= 3
-                if Rank.ACE not in ranks:
+                if not has_ace:
                     ltc += 1
-                if Rank.KING not in ranks:
+                if not has_king:
                     ltc += 1
-                if Rank.QUEEN not in ranks:
+                if not has_queen:
                     ltc += 1
         features["losing_trick_count"] = ltc
 
         # Quick Tricks
         quick_tricks = 0.0
-        for suit in Suit:
-            cards = hand.by_suit[suit]
-            ranks = {c.rank for c in cards}
-            if Rank.ACE in ranks and Rank.KING in ranks:
+        for mask, s_len in ((c_mask, c_len), (d_mask, d_len), (h_mask, h_len), (s_mask, s_len)):
+            has_ace = bool(mask & (1 << 12))
+            has_king = bool(mask & (1 << 11))
+            has_queen = bool(mask & (1 << 10))
+            if has_ace and has_king:
                 quick_tricks += 2.0
-            elif Rank.ACE in ranks and Rank.QUEEN in ranks:
+            elif has_ace and has_queen:
                 quick_tricks += 1.5
-            elif Rank.ACE in ranks:
+            elif has_ace:
                 quick_tricks += 1.0
-            elif Rank.KING in ranks and Rank.QUEEN in ranks:
+            elif has_king and has_queen:
                 quick_tricks += 1.0
-            elif Rank.KING in ranks and len(cards) >= 2:
+            elif has_king and s_len >= 2:
                 quick_tricks += 0.5
         features["quick_tricks"] = quick_tricks
 
-        return features
+        hand._cached_features = features
+        return dict(features)
 
     @staticmethod
     def extract_auction_features(history: List[Call],
@@ -196,14 +221,11 @@ class BridgeFeatures:
         features["opponents_bid"] = any(c.type == CallType.BID for c in opp_bids)
 
         # Opponent last call and contract analysis
-        opp_calls_all = [c for c in history if (history.index(c) % 4) in ((my_seat.value + 1) % 4, (my_seat.value + 3) % 4)]
         last_opp_bid = None
-        for c in reversed(history):
-            # Check if call was by opponent
-            caller_idx = history.index(c) % 4
-            caller_seat = Seat((dealer.value + history.index(c)) % 4)
-            if caller_seat in (opp1, opp2) and c.type == CallType.BID:
-                last_opp_bid = c
+        for i in range(len(history) - 1, -1, -1):
+            caller_seat = Seat((dealer.value + i) % 4)
+            if caller_seat in (opp1, opp2) and history[i].type == CallType.BID:
+                last_opp_bid = history[i]
                 break
 
         features["opp_last_call"] = str(last_opp_bid) if last_opp_bid else "NONE"

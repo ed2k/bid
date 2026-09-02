@@ -180,6 +180,96 @@ class RetrievalReasoner:
         return None
 
 
+class NeuralCotReasoner:
+    """Neural reasoner backed by a trained CoT transformer model with batched inference."""
+
+    def __init__(self, ckpt_path="data/cot_model/ckpt.pt",
+                 dataset_path="data/cot_dataset/dataset.json",
+                 device=None, block=None):
+        try:
+            import torch
+        except ImportError:
+            raise ImportError("torch is required for NeuralCotReasoner")
+        from bid.cot_model import _load_model, load_dataset, pick_device, PAD_ID, EOT_ID, SEP_ID, generate_batch
+        self.dev = device or pick_device()
+        self.vocab, _, self.meta = load_dataset(dataset_path)
+        self.inv = {i: t for t, i in self.vocab.items()}
+        class _Args: pass
+        args = _Args()
+        args.ckpt = ckpt_path
+        args.block = block
+        self.block = block or int(self.meta.get("block_size_max", 128))
+        self.model = _load_model(len(self.vocab), args, self.meta)
+        self.model.eval()
+
+    def prefix_ids(self, dealer, vuln, seat, turn, auction_strs, hand_str):
+        V = self.vocab
+        import re
+        def _tokens(line):
+            return re.compile(r"\w+|[^\w\s]").findall(line)
+        v_str = vuln.name if hasattr(vuln, "name") else str(vuln)
+        s_str = seat.name if hasattr(seat, "name") else str(seat)
+        d_str = dealer.name if hasattr(dealer, "name") else str(dealer)
+        lines = [
+            f"<bos> STATE dealer={d_str} vuln={v_str}",
+            f"seat={s_str} turn={turn}",
+            ("AUCTION " + " ".join(auction_strs)) if auction_strs else "AUCTION -",
+            f"HAND {hand_str}",
+        ]
+        ids = [V["<bos>"]]
+        for ln in lines:
+            ids += [V[t] for t in _tokens(ln) if t in V]
+        ids.append(V["<sep>"])
+        return ids
+
+    def bid_batch(self, items, max_new=48, temp=0.0, batch_size=32):
+        """Batched reasoning for a list of items:
+        items: list of (hand, auction, features, seat, dealer, turn, vuln)
+        Returns: list of (Call_or_None, cot_text, avg_conf, avg_ent)
+        """
+        from bid.trace_factory import hand_str
+        from bid.cot_model import PAD_ID, EOT_ID, SEP_ID, generate_batch
+        prompts = []
+        parsed_items = []
+        for it in items:
+            hand, auction, features, seat, dealer = it[:5]
+            turn = it[5] if len(it) > 5 else len(auction)
+            vuln = it[6] if len(it) > 6 else 0
+            h_str = hand_str(hand) if not isinstance(hand, str) else hand
+            p_ids = self.prefix_ids(dealer, vuln, seat, turn, auction, h_str)
+            prompts.append(p_ids)
+            parsed_items.append((hand, auction, features, seat, dealer))
+
+        batch_out = generate_batch(
+            self.model, prompts, max_new=max_new, temp=temp,
+            dev=self.dev, pad_id=PAD_ID, eot_id=EOT_ID, sep_id=SEP_ID,
+            batch_size=batch_size, block_size=self.block
+        )
+
+        results = []
+        for out, prompt, (hand, auction, features, seat, dealer) in zip(batch_out, prompts, parsed_items):
+            all_ids = prompt + out["generated_ids"]
+            toks = [self.inv.get(i, "") for i in all_ids]
+            text = " ".join(toks)
+            parts = text.split()
+            bid_call = None
+            if "BID" in parts:
+                k = len(parts) - parts[::-1].index("BID")
+                bid_str = " ".join(parts[k:]) or None
+                if bid_str:
+                    seat_i = seat.value if hasattr(seat, "value") else int(seat)
+                    dealer_i = dealer.value if hasattr(dealer, "value") else int(dealer)
+                    if bid_legal(bid_str, auction, seat_i, dealer_i):
+                        bid_call = parse_bid(bid_str)
+            results.append((bid_call, text, out["avg_confidence"], out["avg_entropy"]))
+        return results
+
+    def bid(self, hand, auction, features, seat, dealer, temp=0.0):
+        res = self.bid_batch([(hand, auction, features, seat, dealer)], temp=temp, batch_size=1)
+        call_obj, cot, _, _ = res[0]
+        return call_obj, cot
+
+
 def parse_bid(s: str):
     from bid.models import Call as C
     if s == "PASS":

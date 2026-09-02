@@ -16,6 +16,8 @@ import json
 import math
 import os
 import sys
+import time
+from typing import List, Dict, Any, Optional
 
 try:
     import torch
@@ -244,10 +246,106 @@ def cmd_generate(args):
     print("parsed bid:", bid_m.group(1) if bid_m else None)
 
 
+def generate_batch(model, prompts: List[List[int]], max_new: int = 48,
+                   temp: float = 0.0, dev=None, pad_id: int = PAD_ID,
+                   eot_id: int = EOT_ID, sep_id: int = SEP_ID,
+                   batch_size: int = 32, block_size: Optional[int] = None) -> List[Dict[str, Any]]:
+    """Batched autoregressive generation for a list of prompt token ID lists.
+
+    Returns a list of dicts for each prompt:
+      {
+        "generated_ids": List[int],
+        "confidences": List[float],
+        "entropies": List[float],
+        "avg_confidence": float,
+        "avg_entropy": float
+      }
+    """
+    if dev is None:
+        dev = next(model.parameters()).device
+    if block_size is None:
+        block_size = getattr(model, "block_size", 512)
+
+    results: List[Dict[str, Any]] = []
+    for chunk_start in range(0, len(prompts), batch_size):
+        chunk = prompts[chunk_start:chunk_start + batch_size]
+        B = len(chunk)
+        active_ids = [list(p) for p in chunk]
+        finished = [False] * B
+        confidences = [[] for _ in range(B)]
+        entropies = [[] for _ in range(B)]
+
+        for _ in range(max_new):
+            if all(finished):
+                break
+
+            # Slices restricted to block_size context window
+            slices = [seq[-block_size:] for seq in active_ids]
+            lens = [len(s) for s in slices]
+            max_len = max(lens)
+
+            # Build on CPU, transfer once to avoid repeated device allocations
+            batch_cpu = torch.full((B, max_len), pad_id, dtype=torch.long)
+            for i, s in enumerate(slices):
+                batch_cpu[i, :len(s)] = torch.tensor(s, dtype=torch.long)
+            batch_dev = batch_cpu.to(dev)
+
+            with torch.no_grad():
+                logits, _ = model(batch_dev)
+
+            # Vectorized extraction of last valid token logits for each sequence
+            indices = torch.tensor([lens[i] - 1 for i in range(B)], device=dev)
+            last_logits = logits[torch.arange(B, device=dev), indices]
+            probs = torch.softmax(last_logits, dim=-1)
+
+            # Vectorized Shannon entropy: H = - sum(p * log(p))
+            log_probs = torch.log(probs.clamp(min=1e-12))
+            batch_ents = (-(probs * log_probs).sum(dim=-1)).cpu().tolist()
+
+            if temp > 0.0:
+                scaled = last_logits / max(1e-5, temp)
+                nxt_tokens = torch.multinomial(torch.softmax(scaled, dim=-1), num_samples=1).squeeze(-1)
+            else:
+                nxt_tokens = torch.argmax(last_logits, dim=-1)
+
+            batch_confs = probs[torch.arange(B, device=dev), nxt_tokens].cpu().tolist()
+            nxt_list = nxt_tokens.cpu().tolist()
+
+            for i in range(B):
+                if finished[i]:
+                    continue
+                nxt = nxt_list[i]
+                conf = float(batch_confs[i])
+                ent = float(batch_ents[i])
+
+                confidences[i].append(conf)
+                entropies[i].append(ent)
+
+                if nxt in (eot_id, pad_id, sep_id):
+                    finished[i] = True
+                else:
+                    active_ids[i].append(nxt)
+
+        for i in range(B):
+            prompt_len = len(chunk[i])
+            gen = active_ids[i][prompt_len:]
+            confs = confidences[i]
+            ents = entropies[i]
+            avg_c = sum(confs) / len(confs) if confs else 1.0
+            avg_e = sum(ents) / len(ents) if ents else 0.0
+            results.append({
+                "generated_ids": gen,
+                "confidences": confs,
+                "entropies": ents,
+                "avg_confidence": avg_c,
+                "avg_entropy": avg_e,
+            })
+    return results
+
+
 def cmd_evalval(args):
-    """Pipeline validation: greedy decode every val example from its state
-    prefix; report exact-sequence and final-BID accuracy."""
-    import random as _r
+    """Pipeline validation: greedy decode val examples in batched forward
+    passes; report exact-sequence and final-BID accuracy."""
     if not TORCH:
         sys.exit("torch not installed")
     vocab, splits, meta = load_dataset(args.dataset)
@@ -256,44 +354,50 @@ def cmd_evalval(args):
     eot = vocab.get(EOT_ID, 3)
     dev = pick_device()
     model = _load_model(len(vocab), args, meta)
+    model.eval()
+
+    val_examples = splits["val"]
+    prompts = []
+    truths = []
+    for ex in val_examples:
+        ids, _ = ex
+        sep_i = ids.index(SEP_ID) if SEP_ID in ids else len(ids)
+        plen = sep_i + 1
+        prompts.append(list(ids[:plen]))
+        truths.append([i for i in ids[plen:] if i not in (eot, pad)])
+
+    bs = getattr(args, "batch_size", 32)
+    t0 = time.time()
+    batch_outputs = generate_batch(
+        model, prompts, max_new=args.max_new, temp=0.0, dev=dev,
+        pad_id=pad, eot_id=eot, sep_id=SEP_ID,
+        batch_size=bs, block_size=args.block
+    )
+
     total = seq_exact = bid_ok = 0
-    with torch.no_grad():
-        for ex in splits["val"]:
-            ids, _ = ex          # load_dataset yields (x_ids, y_ids) tuples
-            full = [t for t in list(ids[:]) ]
-            # recover prefix length from stored <sep> position
-            sep_i = ids.index(SEP_ID) if SEP_ID in ids else len(ids)
-            plen = sep_i + 1
-            x = list(ids[:plen])
-            gen_ids = []
-            for _ in range(args.max_new):
-                xx = torch.tensor([x[-args.block:]]).to(dev)
-                logits, _ = model(xx)
-                nxt = int(torch.argmax(logits[0, -1]))
-                if nxt == eot or nxt == pad:
-                    break
-                gen_ids.append(nxt)
-                x.append(nxt)
-            truth = [i for i in ids[plen:] if i not in (eot, pad)]
-            gt = " ".join(inv[i] for i in gen_ids)
-            tt = " ".join(inv[i] for i in truth)
 
-            def bid_of(s):
-                parts = s.split()
-                if "BID" in parts:
-                    k = len(parts) - parts[::-1].index("BID")
-                    return " ".join(parts[k:])
-                return None
+    def bid_of(s):
+        parts = s.split()
+        if "BID" in parts:
+            k = len(parts) - parts[::-1].index("BID")
+            return " ".join(parts[k:])
+        return None
 
-            total += 1
-            bo, bt = bid_of(gt), bid_of(tt)
-            if gt.strip() == tt.strip():
-                seq_exact += 1
-            if bo is not None and bo == bt:
-                bid_ok += 1
-            else:
-                print(f"    miss: got BID {bo!r} want {bt!r}")
-    print(f"\nval examples        : {total}")
+    for out, truth in zip(batch_outputs, truths):
+        gen_ids = out["generated_ids"]
+        gt = " ".join(inv[i] for i in gen_ids if i in inv)
+        tt = " ".join(inv[i] for i in truth if i in inv)
+        total += 1
+        bo, bt = bid_of(gt), bid_of(tt)
+        if gt.strip() == tt.strip():
+            seq_exact += 1
+        if bo is not None and bo == bt:
+            bid_ok += 1
+        else:
+            print(f"    miss: got BID {bo!r} want {bt!r}")
+
+    elapsed = time.time() - t0
+    print(f"\nval examples        : {total} ({elapsed:.1f}s)")
     print(f"exact sequence match: {seq_exact}/{total} "
           f"({seq_exact / total * 100:.1f}%)")
     print(f"BID correct         : {bid_ok}/{total} "
@@ -325,6 +429,8 @@ if __name__ == "__main__":
     ev.add_argument("--dataset", default="data/cot_dataset/dataset.json")
     ev.add_argument("--ckpt", default="data/cot_model/ckpt.pt")
     ev.add_argument("--max-new", type=int, default=48)
+    ev.add_argument("--batch-size", type=int, default=32,
+                    help="inference batch size for evaluation")
     ev.add_argument("--block", type=int, default=None,
                     help="context length (default: dataset block_size_max)")
     args = ap.parse_args()

@@ -6,6 +6,8 @@ Rather than relying on static, brittle rule tables or black-box policies, `bid` 
 
 ---
 
+> 📖 **Designing a New Bidding System**: For a complete step-by-step walkthrough on creating custom DSL rules, testing against Double Dummy par, A/B duplicate arena matches, SDS two-hand realism, and neural distillation, see **[`docs/DESIGNING_A_BID_SYSTEM.md`](docs/DESIGNING_A_BID_SYSTEM.md)**.
+
 ## 🔄 The Continuous Improvement Pipeline
 
 The core goal of `bid` is to run an autonomous flywheel that iteratively improves both bidding policy and belief-state inference:
@@ -262,7 +264,7 @@ family so the standard gates apply.
 ### Supporting tooling
 
 ```bash
-PYTHONPATH=.. python3 player_model.py train    # soft P(call|ctx) -> data/player_models/
+python3 -m bid.player_model train    # soft P(call|ctx) -> data/player_models/
 # auto-attached to the RBMBMC sampler by autoloop.py when present
 ```
 
@@ -314,38 +316,39 @@ patches — every rejection is cached by signature and never retried.
 
 ### Installation
 
-Python 3.8+ is required. The symbolic loops run on the standard library only;
-the neural student (Loops B/D) needs **PyTorch** (Apple MPS or CUDA
-accelerated, CPU works too):
+Python 3.9+ is required. Clone the repository and install in editable mode:
 
 ```bash
 git clone https://github.com/ed2k/bid.git
 cd bid
 python3 -m venv .venv && source .venv/bin/activate
-pip install torch          # only needed for Loops B and D
+pip install -e .
 ```
 
-All scripts in this repo are run from the `bid/` directory with
-`PYTHONPATH=<parent>` (they import `bid.*` as a package):
+This installs all dependencies (`torch`, `numpy<2`) and registers CLI console scripts (`bid-flywheel`, `bid-autoloop`, `bid-refresh-student`, `bid-mine-disagreements`, `bid-rl-finetune`, `bid-convention-search`).
+
+You can execute any loop using `python3 -m bid.<module>` or directly via CLI aliases:
 
 ```bash
-PYTHONPATH=.. python3 flywheel.py --deals 96 --rounds 2 --sds
+python3 -m bid.flywheel --deals 96 --rounds 2 --sds
+# or CLI script:
+bid-flywheel --deals 96 --rounds 2 --sds
 ```
 
 ### The self-improvement loops
 
 The primary workflow is the five-loop system documented in the
 **[Runbook](#-operating-the-teacher--student-loops-runbook)** above:
-flywheel (teacher) → `refresh_student.py` (student) →
-`mine_disagreements.py` (feedback) → `rl_finetune.py` /
-`convention_search.py` (beyond-imitation). Start there.
+flywheel (teacher) → `refresh_student` (student) →
+`mine_disagreements` (feedback) → `rl_finetune` /
+`convention_search` (beyond-imitation). Start there.
 
 ### Legacy: co-training pipeline demo
 
 `main.py` drives the older invention/co-training path directly:
 
 ```bash
-PYTHONPATH=.. python3 main.py --iterations 10 --duration 120 --states 8 --deals 25
+python3 -m bid.main --iterations 10 --duration 120 --states 8 --deals 25
 ```
 
 This demonstrates `BidInventionEngine` co-training and diagnostic refinement
@@ -357,7 +360,7 @@ work (they add validation gates, versioning, and the neural student).
 Run a multi-board round-robin tournament (evaluating competing archetypes like Precision Strong Club, Modern 2/1 GF, SAYC, and Autonomous Evolved AI) to find the champion system:
 
 ```bash
-PYTHONPATH=.. python3 main.py --tournament --boards 50
+python3 -m bid.main --tournament --boards 50
 ```
 
 The champion bidding system code is automatically persisted to `system/champion_system.dsl`.

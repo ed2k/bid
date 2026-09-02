@@ -1,13 +1,13 @@
 {
-  "decisions": 383,
-  "forced": 352,
-  "agreements": 9,
-  "disagreements": 22,
-  "arb_system_right": 13,
-  "arb_student_right": 2,
-  "arb_new_call": 7,
-  "rows_written": 22,
-  "elapsed_sec": 157.5,
-  "dsl_sha256": "e23cd28100fd3f9f0d54ee1461dc033d32f3e3b52e3a95585f840b5465e1cb59",
+  "decisions": 68,
+  "forced": 61,
+  "agreements": 0,
+  "disagreements": 7,
+  "arb_system_right": 4,
+  "arb_student_right": 0,
+  "arb_new_call": 3,
+  "rows_written": 7,
+  "elapsed_sec": 26.1,
+  "dsl_sha256": "dba8d31afbbec8fdccce9d1b4c1a8f791387021dae1f0a21ff0cf0194854dd5c",
   "ckpt": "data/cot_model/ckpt.pt"
 }

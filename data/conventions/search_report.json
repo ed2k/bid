@@ -1,16 +1,17 @@
 {
-  "ts": "2026-08-27 18:59:28",
-  "base_train": 92.22,
-  "base_val": -33.89,
-  "final_train": 287.78,
-  "gain": 195.56,
+  "ts": "2026-09-02 11:08:24",
+  "base_train": 116.0,
+  "base_val": -33.0,
+  "final_train": 567.0,
+  "gain": 451.0,
   "accepted": [
     {
       "round": 1,
       "mutation": "retarget[0]is_balanced->king_count",
-      "train_delta": 265.56,
-      "val_delta": 135.56,
-      "z": 0.71,
+      "train_delta": 451.0,
+      "rank_score": 641.5,
+      "val_delta": 25.0,
+      "z": 0.12,
       "verdict": "escalate",
       "rules_added": [
         "Jacoby_Transfer_Hearts_True_2H",
@@ -26,31 +27,14 @@
             "False": "2H"
           }
         }
-      ]
-    },
-    {
-      "round": 2,
-      "mutation": "retarget[0]heart_len->hcp",
-      "train_delta": 195.56,
-      "val_delta": 31.67,
-      "z": 0.22,
-      "verdict": "escalate",
-      "rules_added": [
-        "Cappelletti_2D_Response_(3, 13)_2H",
-        "Cappelletti_2D_Response_(0, 2)_2S"
       ],
-      "steps": [
-        {
-          "name": "Cappelletti_2D_Response",
-          "op": "COMMAND",
-          "feature": "hcp",
-          "mapping": {
-            "(3, 13)": "2H",
-            "(0, 2)": "2S"
-          }
-        }
-      ]
+      "competitive_voi": {
+        "voi_partner": 762.083,
+        "leakage": 0.5,
+        "disruption": 0.0,
+        "net_voi": 761.983
+      }
     }
   ],
-  "elapsed_sec": 131.7
+  "elapsed_sec": 55.6
 }
