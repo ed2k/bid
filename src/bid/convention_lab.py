@@ -35,8 +35,7 @@ from bid.pidm import PIDMEngine
 from bid.sampling import RBMBMCSampler
 from bid.scoring import score_to_imp
 
-from eval_vs_dds import build_deals, evaluate_system, load_decision_net_dsl, SYSTEM_DIR
-from improve_improved_system import precompute
+from bid.eval_vs_dds import build_deals, evaluate_system, load_decision_net_dsl, SYSTEM_DIR, precompute
 
 
 # ================= EXACT: HCP distribution =================

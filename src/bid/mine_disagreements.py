@@ -37,12 +37,12 @@ from bid.features import BridgeFeatures
 from bid.pidm import PIDMEngine
 from bid.sampling import PartialState, RBMBMCSampler
 
-from eval_vs_dds import build_deals, load_decision_net_dsl, SYSTEM_DIR
-from trace_factory import hand_str, serialize_features, trace_object
+from bid.eval_vs_dds import build_deals, load_decision_net_dsl, SYSTEM_DIR
+from bid.trace_factory import hand_str, serialize_features, trace_object
 
 try:
     import torch
-    from cot_model import COTModel, pick_device, PAD_ID, SEP_ID, EOT_ID
+    from bid.cot_model import COTModel, pick_device, PAD_ID, SEP_ID, EOT_ID
     TORCH = True
 except ImportError:
     TORCH = False
@@ -90,24 +90,46 @@ class StudentPolicy:
 
     def bid(self, dealer, vuln, seat_name, turn, auction_strs, hand_str_,
             max_new=48, temp=0.0):
-        """Returns (bid_string_or_None, generated_text)."""
+        """Returns (bid_string_or_None, generated_text, avg_confidence, avg_entropy)."""
         ids = self.prefix_ids(dealer, vuln, seat_name, turn,
                               auction_strs, hand_str_)
+        confidences = []
+        entropies = []
         with torch.no_grad():
             for _ in range(max_new):
                 x = torch.tensor([ids[-self.block:]]).to(self.dev)
                 logits, _ = self.model(x)
-                nxt = int(torch.argmax(logits[0, -1]))
+                last_logits = logits[0, -1]
+                probs = torch.softmax(last_logits, dim=-1)
+                
+                # Calculate Shannon entropy: H = - sum(p * log(p))
+                nz_probs = probs[probs > 1e-12]
+                ent = float(-(nz_probs * torch.log(nz_probs)).sum().item())
+                entropies.append(ent)
+
+                if temp > 0.0:
+                    scaled = last_logits / max(1e-5, temp)
+                    nxt = int(torch.multinomial(torch.softmax(scaled, dim=-1), num_samples=1).item())
+                else:
+                    nxt = int(torch.argmax(last_logits).item())
+                
+                conf = float(probs[nxt].item())
+                confidences.append(conf)
+
                 if nxt in (EOT_ID, PAD_ID, SEP_ID):
                     break
                 ids.append(nxt)
+
         toks = [self.inv[i] for i in ids]
         text = " ".join(toks)
         parts = text.split()
+        avg_conf = sum(confidences) / len(confidences) if confidences else 1.0
+        avg_ent = sum(entropies) / len(entropies) if entropies else 0.0
+
         if "BID" not in parts:
-            return None, text
+            return None, text, avg_conf, avg_ent
         k = len(parts) - parts[::-1].index("BID")
-        return " ".join(parts[k:]) or None, text
+        return " ".join(parts[k:]) or None, text, avg_conf, avg_ent
 
 
 def _tokens(line):
@@ -134,6 +156,12 @@ def main():
     ap.add_argument("--ckpt", default="data/cot_model/ckpt.pt")
     ap.add_argument("--out", default="data/traces/disagreements.jsonl")
     ap.add_argument("--max-new", type=int, default=48)
+    ap.add_argument("--temp", type=float, default=0.0,
+                    help="Sampling temperature for student policy generation.")
+    ap.add_argument("--min-confidence", type=float, default=0.0,
+                    help="Filter out student disagreements below minimum confidence.")
+    ap.add_argument("--max-entropy", type=float, default=100.0,
+                    help="Filter out student disagreements above maximum entropy.")
     ap.add_argument("--heavy-samples", type=int, default=6)
     ap.add_argument("--heavy-timeout", type=float, default=0.35)
     args = ap.parse_args()
@@ -176,13 +204,17 @@ def main():
             if len(candidates) <= 1:
                 stats["forced"] += 1
             else:
-                s_bid, _text = student.bid(
+                s_bid, _text, s_conf, s_ent = student.bid(
                     deal.dealer.name, deal.vuln, curr.name, n,
                     [str(c) for c in history],
-                    hand_str(deal.hands[curr]), max_new=args.max_new)
+                    hand_str(deal.hands[curr]), max_new=args.max_new,
+                    temp=args.temp)
                 if s_bid == str(call):
                     stats["agreements"] += 1
                 else:
+                    if s_conf < args.min_confidence or s_ent > args.max_entropy:
+                        # Skipped due to confidence/entropy thresholding
+                        continue
                     stats["disagreements"] += 1
                     illegal = s_bid is None or s_bid not in cand_strs
                     arb_call, arb_values = heavy_engine.decide(ps, models)
@@ -202,6 +234,8 @@ def main():
                                        arb_call, arb_values)
                     obj["explanation"]["all_matched"] = sorted(
                         set(obj["explanation"]["all_matched"]) | {tag})
+                    obj["explanation"]["student_confidence"] = round(s_conf, 4)
+                    obj["explanation"]["student_entropy"] = round(s_ent, 4)
                     key = dedup_key(obj)
                     if key not in seen:
                         seen.add(key)

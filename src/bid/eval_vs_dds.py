@@ -28,7 +28,8 @@ from bid.diagnostics import ParDiagnosticEngine
 from bid.scoring import score_to_imp
 
 STRAIN_STR = ['C', 'D', 'H', 'S', 'NT']
-SYSTEM_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "system")
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+SYSTEM_DIR = os.path.join(REPO_ROOT, "system")
 
 
 def parse_call(s: str) -> Call:
@@ -207,6 +208,15 @@ def build_deals(num_random: int, seed: int = 42, include_stratified: bool = True
     deals.append(_assign(StratifiedDealGenerator.generate_stratified_deal(Seat.NORTH, hcp_stratum=(16, 18))))
     deals.append(_assign(StratifiedDealGenerator.generate_stratified_deal(Seat.SOUTH, hcp_stratum=(0, 4))))
     return deals
+
+
+def precompute(deals: List[Deal]) -> List[Tuple[int, str, dict]]:
+    out = []
+    for deal in deals:
+        par_score, par_contract = DDSolver.calculate_par(deal, deal.vuln)
+        dd_table = DDSolver.solve_dd_table(deal)
+        out.append((par_score, par_contract, dd_table))
+    return out
 
 
 def contract_string(pstate: PartialState) -> str:

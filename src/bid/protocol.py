@@ -285,6 +285,37 @@ class ValueOfInformationEvaluator:
 
         return total_gain / len(states_under_query)
 
+    def evaluate_competitive_voi(self,
+                                 query_step: ProtocolStep,
+                                 states_under_query: List[PartialState],
+                                 models: Dict[Seat, DecisionNet],
+                                 leakage_penalty: float = 0.2,
+                                 preemption_bonus: float = 0.3) -> Dict[str, float]:
+        """
+        Calculates Bidirectional / Competitive Value of Information (VOI):
+        VOI_comp(Q) = VOI_partner(Q) - leakage_penalty * InformationLeakage(Q) + preemption_bonus * Disruption(Q)
+        """
+        if not states_under_query:
+            return {"voi_partner": 0.0, "leakage": 0.0, "disruption": 0.0, "net_voi": 0.0}
+
+        partner_voi = self.evaluate_voi(query_step, states_under_query, models)
+        
+        # Estimate information leakage: granularity of target features exposed to opponents
+        num_branches = len(query_step.call_mapping)
+        leakage = (num_branches - 1) / max(1, num_branches)
+
+        # Estimate preemption disruption: altitude jump of query/response calls
+        disruptive_calls = [c for c in query_step.call_mapping.values() if getattr(c, "level", 0) >= 3]
+        disruption = len(disruptive_calls) / max(1, num_branches)
+
+        net_voi = partner_voi - (leakage_penalty * leakage) + (preemption_bonus * disruption)
+        return {
+            "voi_partner": partner_voi,
+            "leakage": leakage,
+            "disruption": disruption,
+            "net_voi": net_voi
+        }
+
 class AdversarialSignalingEvaluator:
     """
     Evaluates net strategic payoff:

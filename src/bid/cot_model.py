@@ -202,7 +202,7 @@ def _load_model(vocab_size, args, meta):
 def cmd_generate(args):
     if not TORCH:
         sys.exit("torch not installed")
-    from cot_bidder import verify_constraints, bid_legal
+    from bid.cot_bidder import verify_constraints, bid_legal
     vocab, splits, meta = load_dataset(args.dataset)
     inv = {i: t for t, i in vocab.items()}
     V = len(vocab)

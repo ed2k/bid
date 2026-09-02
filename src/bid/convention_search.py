@@ -36,10 +36,9 @@ from bid.pidm import PIDMEngine
 from bid.sampling import RBMBMCSampler
 from bid.models import Strain, Call, CallType
 
-from eval_vs_dds import build_deals, load_decision_net_dsl, evaluate_system, SYSTEM_DIR
-from improve_improved_system import precompute
-from autoloop import paired_z, classify
-from protocol import ConventionProtocol, ProtocolStep, ProtocolOpType
+from bid.eval_vs_dds import build_deals, load_decision_net_dsl, evaluate_system, SYSTEM_DIR, precompute
+from bid.autoloop import paired_z, classify
+from bid.protocol import ConventionProtocol, ProtocolStep, ProtocolOpType
 
 TARGET = os.path.join(SYSTEM_DIR, "improved_system.dsl")
 

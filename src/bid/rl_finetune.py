@@ -33,17 +33,16 @@ import os
 import statistics
 import sys
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-REPO_PARENT = os.path.dirname(HERE)
+HERE = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 DATASET = os.path.join(HERE, "data", "cot_dataset", "dataset.json")
 
 import torch
 
 from bid.models import Seat, CallType
 from bid.pidm import PIDMEngine
-from eval_vs_dds import build_deals, load_decision_net_dsl, SYSTEM_DIR
-from mine_disagreements import StudentPolicy
-from trace_factory import hand_str
+from bid.eval_vs_dds import build_deals, load_decision_net_dsl, SYSTEM_DIR
+from bid.mine_disagreements import StudentPolicy
+from bid.trace_factory import hand_str
 
 
 def ew_greedy_call(net, hand, history, seat, dealer, vuln):

@@ -1030,7 +1030,8 @@ class SystemOptimizer:
         champion = ranked[0]["system"]
 
         # Save Champion to disk
-        dsl_champion_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "system", "champion_system.dsl")
+        repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        dsl_champion_path = os.path.join(repo_root, "system", "champion_system.dsl")
         champion.save_dsl(dsl_champion_path)
 
         print("\n" + "=" * 85)

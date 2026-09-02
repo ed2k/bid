@@ -20,7 +20,7 @@ from bid.sampling import Deal, PartialState
 from bid.features import BridgeFeatures
 from bid.pidm import PIDMEngine
 
-from eval_vs_dds import build_deals, load_decision_net_dsl, SYSTEM_DIR
+from bid.eval_vs_dds import build_deals, load_decision_net_dsl, SYSTEM_DIR
 
 FEATURE_KEYS = ["hcp", "total_points", "spade_len", "heart_len",
                 "diamond_len", "club_len", "is_balanced", "is_opening",

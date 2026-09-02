@@ -106,6 +106,8 @@ class TestPlaySearch(unittest.TestCase):
             truth = DDSolver.solve_position({sn: list(hands[sn]) for sn in Seat},
                                             DDSolver.strain_to_dds_index(trump),
                                             Seat.NORTH.value, [])
+            if truth is None:
+                self.skipTest("Native DDS3 solver not available in current environment")
             self.assertAlmostEqual(vec.values[0], float(truth), places=6,
                                    msg=f"seed {seed}")
 
@@ -120,6 +122,8 @@ class TestPlaySearch(unittest.TestCase):
             truth = DDSolver.solve_position({s: list(hands[s]) for s in Seat},
                                             DDSolver.strain_to_dds_index(trump),
                                             Seat.NORTH.value, [])
+            if truth is None:
+                self.skipTest("Native DDS3 solver not available in current environment")
             self.assertAlmostEqual(vec.values[0], float(truth), places=6,
                                    msg=f"seed {seed}")
 
@@ -136,6 +140,8 @@ class TestPlaySearch(unittest.TestCase):
             for j, w in enumerate(worlds):
                 truth = DDSolver.solve_position({sn: list(w[sn]) for sn in Seat},
                                                 tidx, Seat.NORTH.value, [])
+                if truth is None:
+                    self.skipTest("Native DDS3 solver not available in current environment")
                 self.assertLessEqual(vec.values[j], float(truth) + 1e-9,
                                      msg=f"seed {seed} world {j}")
 

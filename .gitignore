@@ -10,5 +10,10 @@ debug/
 /dump.txt
 
 
+# build & packaging
+*.egg-info/
+build/
+dist/
+
 # python venv
 .venv/

@@ -14,10 +14,9 @@ from bid.dds import DDSolver
 from bid.arena import BiddingArena
 from bid.pidm import PIDMEngine
 from bid.sampling import RBMBMCSampler
-from bid.diagnostics import ParDiagnosticEngine
-from eval_vs_dds import build_deals, load_decision_net_dsl, SYSTEM_DIR, contract_string
+from bid.eval_vs_dds import build_deals, load_decision_net_dsl, SYSTEM_DIR, contract_string
 
-OUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "improved_system_64_deals.txt")
+OUT_PATH = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")), "improved_system_64_deals.txt")
 NUM_DEALS = 64
 SEED = 42
 EVAL_SEED = 1234

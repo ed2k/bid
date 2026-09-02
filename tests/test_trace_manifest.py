@@ -13,14 +13,18 @@ class TestTraceManifest(unittest.TestCase):
     def test_meta_exists_and_matches(self):
         self.assertTrue(os.path.exists(META),
                         "meta manifest missing next to corpus")
-        meta = json.load(open(META))
-        self.assertEqual(meta["n_traces"],
-                         sum(1 for _ in open(CORPUS)))
-        h = hashlib.sha256(open(CORPUS, "rb").read()).hexdigest()
+        with open(META, "r", encoding="utf-8") as f:
+            meta = json.load(f)
+        with open(CORPUS, "r", encoding="utf-8") as f:
+            n_traces = sum(1 for _ in f)
+        self.assertEqual(meta["n_traces"], n_traces)
+        with open(CORPUS, "rb") as f:
+            h = hashlib.sha256(f.read()).hexdigest()
         self.assertEqual(meta["corpus_sha256"], h)
 
     def test_dsl_provenance_recorded(self):
-        meta = json.load(open(META))
+        with open(META, "r", encoding="utf-8") as f:
+            meta = json.load(f)
         self.assertIn("dsl_source", meta)
         self.assertIn("dsl_sha256", meta)
 

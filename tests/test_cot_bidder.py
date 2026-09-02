@@ -10,7 +10,7 @@ for pth in (sys_path, sys_path_root):
     if pth not in __import__("sys").path:
         __import__("sys").path.insert(0, pth)
 
-from cot_bidder import verify_constraints, bid_legal, load_traces, distance
+from bid.cot_bidder import verify_constraints, bid_legal, load_traces, distance
 
 
 class TestConstraintVerifier(unittest.TestCase):
@@ -59,14 +59,15 @@ class TestCorpusInvariants(unittest.TestCase):
     @unittest.skipUnless(os.path.exists(CORPUS), "corpus not generated")
     def test_constraints_hold_on_features(self):
         bad = 0
-        for i, line in enumerate(open(self.CORPUS)):
-            t = json.loads(line)
-            ok, fails = verify_constraints(t["explanation"]["constraints"],
-                                           t["input"]["features"])
-            if not ok:
-                bad += 1
-                if bad <= 3:
-                    print(f"trace {i}: {fails}")
+        with open(self.CORPUS, "r", encoding="utf-8") as f:
+            for i, line in enumerate(f):
+                t = json.loads(line)
+                ok, fails = verify_constraints(t["explanation"]["constraints"],
+                                               t["input"]["features"])
+                if not ok:
+                    bad += 1
+                    if bad <= 3:
+                        print(f"trace {i}: {fails}")
         self.assertEqual(bad, 0)
 
     @unittest.skipUnless(os.path.exists(CORPUS), "corpus not generated")

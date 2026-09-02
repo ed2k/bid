@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bid"
+version = "0.2.0"
+description = "Autonomous Self-Improving Contract Bridge Bidding Engine"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "torch",
+    "numpy<2"
+]
+
+[project.scripts]
+bid-flywheel = "bid.flywheel:main"
+bid-autoloop = "bid.autoloop:main"
+bid-refresh-student = "bid.refresh_student:main"
+bid-mine-disagreements = "bid.mine_disagreements:main"
+bid-rl-finetune = "bid.rl_finetune:main"
+bid-convention-search = "bid.convention_search:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["tests*", "data*", "research*"]

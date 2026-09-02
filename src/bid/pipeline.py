@@ -72,8 +72,8 @@ def run_continuous_improvement_pipeline(num_iterations: int = 15,
     print(f"   • Decision Latency             : {baseline_time:.2f} ms/deal\n")
 
     history_log = []
-    iteration = 0
-    dsl_output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "system", "improved_system.dsl")
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    dsl_output_path = os.path.join(repo_root, "system", "improved_system.dsl")
 
     # 3. Continuous Improvement Loop
     while True:

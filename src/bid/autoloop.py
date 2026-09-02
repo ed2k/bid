@@ -34,16 +34,17 @@ from bid.sampling import RBMBMCSampler
 from bid.diagnostics import ParDiagnosticEngine
 from bid.scoring import score_to_imp
 
-from eval_vs_dds import build_deals, evaluate_system, load_decision_net_dsl, SYSTEM_DIR
-from improve_improved_system import precompute
+from bid.eval_vs_dds import build_deals, evaluate_system, load_decision_net_dsl, SYSTEM_DIR, precompute
+from bid.dds import DDSolver
+from bid.sampling import Deal
 
-import flywheel as fw
+import bid.flywheel as fw
 
 TARGET = os.path.join(SYSTEM_DIR, "improved_system.dsl")
 CHAMPION = os.path.join(SYSTEM_DIR, "champion_system.dsl")
 STATE_PATH = os.path.join(SYSTEM_DIR, "flywheel_state.json")
 HISTORY_DIR = os.path.join(SYSTEM_DIR, "history")
-PROGRESS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "debug", "autoloop_progress.json")
+PROGRESS_PATH = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")), "debug", "autoloop_progress.json")
 
 TRAIN_SEED = 42
 EVAL_SEED = 777
@@ -209,7 +210,7 @@ def main():
     soft_path = "data/player_models/call_model.json"
     if os.path.exists(soft_path):
         try:
-            from player_model import CallModel, SoftInconsistencyScorer
+            from bid.player_model import CallModel, SoftInconsistencyScorer
             engine.sampler.soft_scorer = SoftInconsistencyScorer(
                 CallModel.load(soft_path))
             print("soft player-model attached to RBMBMC sampler "
@@ -221,8 +222,8 @@ def main():
     # search savings — intended for the escalated/big-tier runs.
     if args.policy_prior:
         try:
-            from mine_disagreements import StudentPolicy
-            from trace_factory import hand_str
+            from bid.mine_disagreements import StudentPolicy
+            from bid.trace_factory import hand_str
             _student = StudentPolicy(args.policy_prior)
 
             def _prior(ps, actions, _s=_student):

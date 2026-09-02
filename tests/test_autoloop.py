@@ -1,7 +1,7 @@
 import unittest
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from autoloop import paired_z, classify
+from bid.autoloop import paired_z, classify
 
 
 class TestStatsHelpers(unittest.TestCase):

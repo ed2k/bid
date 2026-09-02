@@ -122,7 +122,8 @@ a human, and where every artifact lands.
 ### Loop A — improve the teacher (symbolic DSL)
 
 ```bash
-PYTHONPATH=.. python3 flywheel.py --deals 96 --rounds 2 --sds
+python3 -m bid.flywheel --deals 96 --rounds 2 --sds
+# or CLI script: bid-flywheel --deals 96 --rounds 2 --sds
 ```
 
 Per round, automatically:
@@ -144,12 +145,12 @@ Per round, automatically:
 
 Variants:
 ```bash
-PYTHONPATH=.. python3 autoloop.py --tiers 24,96,384        # long-running:
+python3 -m bid.autoloop --tiers 24,96,384        # long-running:
 # tiered screening with statistical escalation, automatic champion
 # promotion to system/champion_system.dsl, progress JSON under debug/
-PYTHONPATH=.. python3 flywheel.py --deals 96 --rounds 2 --sds-primary
+python3 -m bid.flywheel --deals 96 --rounds 2 --sds-primary
 # hill-climb directly on the SDS objective instead of DDS-par score
-PYTHONPATH=.. python3 autoloop.py --policy-prior data/cot_model/ckpt.pt
+python3 -m bid.autoloop --policy-prior data/cot_model/ckpt.pt
 # policy-guided PIDM pruning using the trained student as a prior
 ```
 
@@ -163,8 +164,8 @@ confirm gains generalize; writing *new idea families* (see
 ### Loop B — refresh the student (neural CoT model)
 
 ```bash
-PYTHONPATH=.. python3 refresh_student.py                  # auto-detects changes
-PYTHONPATH=.. python3 refresh_student.py --boards 500 --epochs 5   # production scale
+python3 -m bid.refresh_student                  # auto-detects changes
+python3 -m bid.refresh_student --boards 500 --epochs 5   # production scale
 ```
 
 Automatically, in order:
@@ -176,7 +177,7 @@ Automatically, in order:
    of the *current* DSL; constraint-invariant asserted per row), then merge
    `data/traces/disagreements.jsonl` (Loop C output) into
    `corpus_combined.jsonl` and build the tokenized dataset.
-3. **Train a candidate** (`cot_model.py train`, MPS/CUDA auto) — the
+3. **Train a candidate** (`python3 -m bid.cot_model train`, MPS/CUDA auto) — the
    incumbent `ckpt.pt` is never touched during training.
 4. **Gate**: eval-val the candidate *and* the incumbent on the new val
    split; promote only if BID accuracy doesn't regress beyond
@@ -192,12 +193,12 @@ Artifacts: `ckpt.pt` (+`.vocab.json`), `rejected/…` archives,
 **Human involvement:** choosing scale (`--boards`, `--epochs`); interpreting
 a promotion that happened via the "no comparable incumbent" fallback
 (vocabulary grew — old scores aren't comparable; spot-check with
-`cot_model.py eval-val` or an arena h2h).
+`python3 -m bid.cot_model eval-val` or an arena h2h).
 
 ### Loop C — mine student ↔ teacher disagreements (feedback into both)
 
 ```bash
-PYTHONPATH=.. python3 mine_disagreements.py --boards 200
+python3 -m bid.mine_disagreements --boards 200
 ```
 
 Automatically: replays DSL-system auctions, queries the student at every
@@ -225,7 +226,7 @@ Rows are consumed automatically by `refresh_student.py` on the next cycle.
 ### Loop D — RL fine-tuning (student beyond its teacher)
 
 ```bash
-PYTHONPATH=.. python3 rl_finetune.py --boards 64 --epochs 3 --tolerance 0.5
+python3 -m bid.rl_finetune --boards 64 --epochs 3 --tolerance 0.5
 ```
 
 Automatically: student plays N/S against the DSL's E/W; each decision is
@@ -244,7 +245,7 @@ diverges* from the teacher — always A/B the gated checkpoint in
 ### Loop E — convention invention search
 
 ```bash
-PYTHONPATH=.. python3 convention_search.py --boards 96 --rounds 3
+python3 -m bid.convention_search --boards 96 --rounds 3
 ```
 
 Automatically: mutates seed protocols (Stayman, Transfers, Blackwood, ...) —
@@ -458,7 +459,7 @@ from bid.protocol import ConventionProtocol, ValueOfInformationEvaluator
 from bid.pidm import PIDMEngine
 from bid.models import Seat, Call, CallType, Strain
 from bid.sampling import Deal, PartialState
-from eval_vs_dds import load_decision_net_dsl
+from bid.eval_vs_dds import load_decision_net_dsl
 
 # Compile a synthesized Stayman protocol (2C ask -> 2D/2H/2S step responses)
 stayman = ConventionProtocol.create_stayman()
@@ -489,30 +490,34 @@ print(f"Stayman query VOI: +{voi_score:.2f} IMP-equivalent")
 
 ## 🧪 Running Tests
 
-Run the complete test suite:
-
+Install the package in editable mode:
 ```bash
-PYTHONPATH=.. python3 -m unittest discover -s tests
+pip install -e .
+```
+
+Run the complete test suite:
+```bash
+python3 -m unittest discover tests
 ```
 
 Individual test suites:
 ```bash
-PYTHONPATH=.. python3 -m unittest tests/test_features_and_state.py
-PYTHONPATH=.. python3 -m unittest tests/test_scoring.py
-PYTHONPATH=.. python3 -m unittest tests/test_rbmbmc_sampling.py
-PYTHONPATH=.. python3 -m unittest tests/test_pidm_lookahead.py
-PYTHONPATH=.. python3 -m unittest tests/test_id3_refinement.py
-PYTHONPATH=.. python3 -m unittest tests/test_cotraining.py
-PYTHONPATH=.. python3 -m unittest tests/test_experience_and_stratified.py
-PYTHONPATH=.. python3 -m unittest tests/test_protocol_synthesis_and_voi.py
-PYTHONPATH=.. python3 -m unittest tests/test_bid_invention_e2e.py
-PYTHONPATH=.. python3 -m unittest tests/test_cot_bidder.py
-PYTHONPATH=.. python3 -m unittest tests/test_sds_scoring.py
-PYTHONPATH=.. python3 -m unittest tests/test_trace_manifest.py
+python3 -m unittest tests/test_features_and_state.py
+python3 -m unittest tests/test_scoring.py
+python3 -m unittest tests/test_rbmbmc_sampling.py
+python3 -m unittest tests/test_pidm_lookahead.py
+python3 -m unittest tests/test_id3_refinement.py
+python3 -m unittest tests/test_cotraining.py
+python3 -m unittest tests/test_experience_and_stratified.py
+python3 -m unittest tests/test_protocol_synthesis_and_voi.py
+python3 -m unittest tests/test_bid_invention_e2e.py
+python3 -m unittest tests/test_cot_bidder.py
+python3 -m unittest tests/test_sds_scoring.py
+python3 -m unittest tests/test_trace_manifest.py
 ```
 
-> Note: the loop scripts (`flywheel.py`, `refresh_student.py`,
-> `mine_disagreements.py`, `rl_finetune.py`, `convention_search.py`) are
+> Note: the loop scripts (`bid.flywheel`, `bid.refresh_student`,
+> `bid.mine_disagreements`, `bid.rl_finetune`, `bid.convention_search`) are
 > validated by their built-in gates (val-seed, SDS, eval-val) rather than
 > unit tests; `tests/test_autoloop.py` and `tests/test_trace_manifest.py`
 > cover their state/manifest plumbing.
@@ -523,45 +528,52 @@ PYTHONPATH=.. python3 -m unittest tests/test_trace_manifest.py
 
 ```
 bid/
-├── __init__.py
-├── models.py            # Core domain models: Hand, Card, Call, Seat, Strain, Rank
-├── features.py          # BridgeFeatures extractor (250+ numerical & auction features)
-├── scoring.py           # Contract scoring, 24-band IMP scale, Double Dummy trick estimator
-├── decision_net.py      # DecisionNet, RuleCondition, IntersectionNode, legality filtering
-├── sampling.py          # Deal, PartialState, RBMBMCSampler, backwards inconsistency scoring
-├── pidm.py              # PIDMEngine with Monte Carlo lookahead & nested player simulation
-├── learner.py           # ID3DecisionTree, DecisionNetLearner, intersection refinement
-├── cotrain.py           # CoTrainer for parallel partner learning & model exchange
-├── experience.py        # StratifiedDealGenerator, ExperienceBuffer, exploration generator
-├── protocol.py          # ConventionProtocol (Stayman, Jacoby, Blackwood), VOI & signaling
-├── invention.py         # BidInventionEngine facade
-├── engine.py            # Traditional rule-matching engine
-├── system.py            # BiddingSystem rule engine & convention manager
-├── translator.py        # DSL rule parser & compiler
-├── lin.py               # BBO LIN file parser
-├── constraints.py       # HandConstraints representation
-├── system/              # Bidding system definitions & DSL files (BlueClub, Precision, GIB, SAYC)
-├── research/            # Research document (bid-invention.md)
-├── tests/               # Unit and integration test suite (83 tests)
-│
-│   # --- self-improvement loops (see Runbook above) ---
-├── flywheel.py          # Loop A: DSL patch hill-climb (curated/diag/gate/drop/mutation pool)
-├── autoloop.py          # Loop A: unattended staged loop + champion promotion
-├── trace_factory.py     # Loop B: PIDM-labeled CoT trace generation from the current DSL
-├── build_cot_dataset.py # Loop B: trace corpus -> tokenized train/val dataset
-├── cot_model.py         # Loop B: 5.5M decoder-only student (train / generate / eval-val)
-├── refresh_student.py   # Loop B orchestrator: freshness -> regen -> train -> gate -> promote
-├── mine_disagreements.py# Loop C: student-vs-teacher disputes, arbitrated by heavy PIDM
-├── rl_finetune.py       # Loop D: REINFORCE self-play fine-tuning with eval gate
-├── convention_search.py # Loop E: protocol mutation hill-climb (report only)
-├── player_model.py      # Learned soft P(call|ctx) for RBMBMC world filtering
-├── cot_bidder.py        # P0 retrieval bidder + constraint verification (CoT decode)
-├── cot_tokenizer.py     # Field-level tokenizer for CoT traces
-├── eval_vs_dds.py       # Deal generation, DSL loading, arena-vs-par evaluation
-├── diagnostics.py       # ParDiagnosticEngine flaw classification
-├── sds.py / dds.py      # SDS two-hand scorer & native double-dummy solver interface
+├── pyproject.toml       # Modern Python packaging & CLI console scripts
+├── README.md            # Comprehensive architecture guide & runbook
+├── system/              # Bidding system definitions & DSL files (SAYC, Precision, Improved)
 ├── data/                # traces/, cot_dataset/, cot_model/, player_models/, conventions/
-```
+├── tests/               # Unit and integration test suite (115 tests)
+├── research/
+│   ├── bid-invention.md # Research document on BIDI, RBMBMC, VOI, and CoT distillation
+│   └── experiments/     # Archived diagnostic and one-off experimental scripts
+│
+└── src/bid/             # Core Python package
+    ├── __init__.py
+    ├── models.py        # Core domain models: Hand, Card, Call, Seat, Strain, Rank
+    ├── features.py      # BridgeFeatures extractor (250+ numerical & auction features)
+    ├── scoring.py       # Contract scoring, 24-band IMP scale, trick estimators
+    ├── decision_net.py  # DecisionNet, RuleCondition, IntersectionNode, legality filtering
+    ├── sampling.py      # Deal, PartialState, RBMBMCSampler, inconsistency scoring
+    ├── pidm.py          # PIDMEngine with Monte Carlo lookahead & nested player simulation
+    ├── learner.py       # ID3DecisionTree, DecisionNetLearner, intersection refinement
+    ├── cotrain.py       # CoTrainer for parallel partner learning & model exchange
+    ├── experience.py    # StratifiedDealGenerator, ExperienceBuffer, exploration generator
+    ├── protocol.py      # ConventionProtocol, bidirectional & competitive VOI
+    ├── invention.py     # BidInventionEngine facade
+    ├── engine.py        # Traditional rule-matching engine
+    ├── system.py        # BiddingSystem rule engine & convention manager
+    ├── translator.py    # DSL rule parser & compiler
+    ├── lin.py           # BBO LIN file parser
+    ├── constraints.py   # HandConstraints representation
+    ├── eval_vs_dds.py   # Deal generation, DSL loading, arena-vs-par evaluation
+    ├── diagnostics.py   # ParDiagnosticEngine flaw classification
+    ├── sds.py / dds.py  # SDS two-hand scorer & native double-dummy solver interface
+    │
+    │   # --- Neural Student & Active Learning (CoT) ---
+    ├── cot_model.py     # 5.5M decoder-only CoT transformer reasoner
+    ├── cot_tokenizer.py # Field-level tokenizer for CoT traces
+    ├── cot_bidder.py    # Constrained decoding + verification
+    ├── trace_factory.py # PIDM-labeled trace generator from current DSL
+    ├── build_cot_dataset.py # Trace corpus -> tokenized dataset
+    ├── player_model.py  # Learned soft P(call|ctx) for RBMBMC world filtering
+    │
+    │   # --- Self-Improvement Loops (Orchestrators) ---
+    ├── flywheel.py      # Loop A: DSL patch hill-climb (curated/diag/gate/mutation pool)
+    ├── autoloop.py      # Loop A: unattended staged loop + champion promotion
+    ├── refresh_student.py # Loop B: freshness -> regen -> train -> gate -> promote
+    ├── mine_disagreements.py # Loop C: student-vs-teacher disputes arbitrated by heavy PIDM
+    ├── rl_finetune.py   # Loop D: REINFORCE self-play fine-tuning with eval gate
+    └── convention_search.py # Loop E: protocol mutation hill-climb
 ```
 
 ---

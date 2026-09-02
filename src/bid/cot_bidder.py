@@ -32,7 +32,7 @@ from bid.models import Seat, Suit, Strain, Call, CallType
 from bid.sampling import Deal, PartialState
 from bid.pidm import PIDMEngine
 
-from eval_vs_dds import build_deals, load_decision_net_dsl, SYSTEM_DIR, contract_string
+from bid.eval_vs_dds import build_deals, load_decision_net_dsl, SYSTEM_DIR, contract_string
 
 CORPUS_DEFAULT = "data/traces/traces.jsonl"
 NUMERIC_KEYS = ["hcp", "total_points", "spade_len", "heart_len",

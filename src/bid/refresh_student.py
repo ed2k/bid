@@ -33,17 +33,17 @@ import subprocess
 import sys
 import time
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-REPO_PARENT = os.path.dirname(HERE)
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+HERE = REPO_ROOT
 
-DSL_PATH = os.path.join(HERE, "system", "improved_system.dsl")
-TRACES = os.path.join(HERE, "data", "traces", "traces.jsonl")
-TRACES_META = os.path.join(HERE, "data", "traces", "traces.meta.json")
-DISAGREEMENTS = os.path.join(HERE, "data", "traces",
+DSL_PATH = os.path.join(REPO_ROOT, "system", "improved_system.dsl")
+TRACES = os.path.join(REPO_ROOT, "data", "traces", "traces.jsonl")
+TRACES_META = os.path.join(REPO_ROOT, "data", "traces", "traces.meta.json")
+DISAGREEMENTS = os.path.join(REPO_ROOT, "data", "traces",
                              "disagreements.jsonl")
-COMBINED = os.path.join(HERE, "data", "traces", "corpus_combined.jsonl")
-DATASET = os.path.join(HERE, "data", "cot_dataset", "dataset.json")
-MODEL_DIR = os.path.join(HERE, "data", "cot_model")
+COMBINED = os.path.join(REPO_ROOT, "data", "traces", "corpus_combined.jsonl")
+DATASET = os.path.join(REPO_ROOT, "data", "cot_dataset", "dataset.json")
+MODEL_DIR = os.path.join(REPO_ROOT, "data", "cot_model")
 INCUMBENT = os.path.join(MODEL_DIR, "ckpt.pt")
 CANDIDATE = os.path.join(MODEL_DIR, "ckpt_candidate.pt")
 STATE_PATH = os.path.join(MODEL_DIR, "student_state.json")
@@ -73,12 +73,11 @@ def save_state(st):
 def run(stage, cmd, log_path):
     """Run one pipeline stage as a subprocess; stream to console + log."""
     env = dict(os.environ)
-    env["PYTHONPATH"] = REPO_PARENT + os.pathsep + env.get("PYTHONPATH", "")
     print(f"\n=== [{stage}] {' '.join(cmd[1:])}", flush=True)
     with open(log_path, "a") as log:
         log.write(f"\n=== [{stage}] {' '.join(cmd)}\n")
         t0 = time.time()
-        proc = subprocess.Popen(cmd, cwd=HERE, env=env,
+        proc = subprocess.Popen(cmd, cwd=REPO_ROOT, env=env,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT, text=True)
         for line in proc.stdout:
@@ -108,7 +107,7 @@ def eval_ckpt(python, ckpt, log_path):
         with open(sub_log, "w") as trunc:
             trunc.write("")  # per-run log, never append stale blocks
         run("eval",
-            [python, "-u", "cot_model.py", "eval-val",
+            [python, "-u", "-m", "bid.cot_model", "eval-val",
              "--dataset", DATASET, "--ckpt", ckpt], sub_log)
         with open(sub_log) as f:
             return parse_eval(f.read())
@@ -191,7 +190,7 @@ def main():
               f"corpus {corpus_sha256()[:12]}…) - skipping regeneration.")
     else:
         if need_traces:
-            run("traces", [python, "-u", "trace_factory.py",
+            run("traces", [python, "-u", "-m", "bid.trace_factory",
                            "--boards", str(boards), "--seed", str(args.seed),
                            "--out", TRACES], log_path)
         # merge base corpus + mined disagreement rows -> effective corpus
@@ -201,15 +200,15 @@ def main():
                     with open(src, "rb") as r:
                         shutil.copyfileobj(r, w)
             print(f"merged corpus: {TRACES} + {DISAGREEMENTS} -> {COMBINED}")
-            run("dataset", [python, "-u", "build_cot_dataset.py", COMBINED],
+            run("dataset", [python, "-u", "-m", "bid.build_cot_dataset", COMBINED],
                 log_path)
         else:
-            run("dataset", [python, "-u", "build_cot_dataset.py", TRACES],
+            run("dataset", [python, "-u", "-m", "bid.build_cot_dataset", TRACES],
                 log_path)
 
     # ---- stage 2: train candidate ----------------------------------------
     run("train",
-        [python, "-u", "cot_model.py", "train",
+        [python, "-u", "-m", "bid.cot_model", "train",
          "--dataset", DATASET, "--epochs", str(args.epochs),
          "--batch", str(args.batch), "--lr", str(args.lr),
          "--out", CANDIDATE], log_path)

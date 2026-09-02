@@ -5,7 +5,7 @@ from bid.models import Call, CallType, Suit, Strain
 from bid.constraints import HandConstraints
 from bid.system import Rule, BiddingSystem
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 class SystemTranslator:
     def __init__(self):

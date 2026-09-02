@@ -17,7 +17,7 @@ import json
 import os
 import sys
 
-from cot_tokenizer import Tokenizer, PAD, BOS, SEP, EOT, example_lines
+from bid.cot_tokenizer import Tokenizer, PAD, BOS, SEP, EOT, example_lines
 
 
 def _sha256(path):

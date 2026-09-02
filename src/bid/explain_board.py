@@ -35,7 +35,7 @@ from bid.pidm import PIDMEngine
 from bid.sds import SDSScorer
 from bid.diagnostics import ParDiagnosticEngine
 
-from eval_vs_dds import build_deals, load_decision_net_dsl, SYSTEM_DIR, contract_string
+from bid.eval_vs_dds import build_deals, load_decision_net_dsl, SYSTEM_DIR, contract_string
 
 EVAL_SEED = 1234
 
