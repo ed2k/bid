@@ -99,3 +99,70 @@ warm-started model weights from /Users/admin/Documents/GitHub/bid/data/cot_model
 training 4,967,424 params on 499 examples | 2 epochs | device=mps block=84
   epoch 1 step 20 loss 0.8384
 saved /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt
+
+=== [train] /Users/admin/Documents/GitHub/bid/.venv/bin/python3.12 -u -m bid.cot_model train --dataset /Users/admin/Documents/GitHub/bid/data/cot_dataset/dataset.json --epochs 5 --batch 32 --lr 0.0003 --out /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt --init-from /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt
+warm-started model weights from /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt
+training 4,967,424 params on 499 examples | 5 epochs | device=mps block=84
+  epoch 1 step 20 loss 0.8374
+  epoch 2 step 40 loss 0.8557
+  epoch 3 step 60 loss 0.7939
+saved /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt
+
+=== [traces] /Users/admin/Documents/GitHub/bid/.venv/bin/python3.12 -u -m bid.trace_factory --boards 500 --seed 42 --out /Users/admin/Documents/GitHub/bid/data/traces/traces.jsonl
+Wrote 3980 call-traces (500 boards) -> /Users/admin/Documents/GitHub/bid/data/traces/traces.jsonl
+Meta   : /Users/admin/Documents/GitHub/bid/data/traces/traces.meta.json | corpus sha256=57f0fde4a8ea6559… dsl sha256=c6e2553f47e8212b…
+
+=== [dataset] /Users/admin/Documents/GitHub/bid/.venv/bin/python3.12 -u -m bid.build_cot_dataset /Users/admin/Documents/GitHub/bid/data/traces/corpus_combined.jsonl
+dataset -> data/cot_dataset/dataset.json
+  traces 4106 | vocab 404 | max block 88 | tokens 243,547 | train/val 3696/410
+
+=== [train] /Users/admin/Documents/GitHub/bid/.venv/bin/python3.12 -u -m bid.cot_model train --dataset /Users/admin/Documents/GitHub/bid/data/cot_dataset/dataset.json --epochs 8 --batch 32 --lr 0.0003 --out /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt --init-from /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt
+skipping warm-start: block size mismatch (84 vs 88)
+training 4,968,448 params on 3696 examples | 8 epochs | device=mps block=88
+  epoch 0 step 20 loss 3.2716
+  epoch 0 step 40 loss 1.9078
+  epoch 0 step 60 loss 1.4466
+  epoch 0 step 80 loss 1.2773
+  epoch 0 step 100 loss 1.1422
+  epoch 1 step 120 loss 1.0855
+  epoch 1 step 140 loss 0.9591
+  epoch 1 step 160 loss 0.9906
+  epoch 1 step 180 loss 1.0228
+  epoch 1 step 200 loss 0.9467
+  epoch 1 step 220 loss 1.0129
+  epoch 2 step 240 loss 0.9185
+  epoch 2 step 260 loss 0.9205
+  epoch 2 step 280 loss 0.8574
+  epoch 2 step 300 loss 0.8764
+  epoch 2 step 320 loss 0.8922
+  epoch 2 step 340 loss 0.8031
+  epoch 3 step 360 loss 0.8090
+  epoch 3 step 380 loss 0.8435
+  epoch 3 step 400 loss 0.8215
+  epoch 3 step 420 loss 0.7597
+  epoch 3 step 440 loss 0.8235
+  epoch 3 step 460 loss 0.7562
+  epoch 4 step 480 loss 0.7606
+  epoch 4 step 500 loss 0.7657
+  epoch 4 step 520 loss 0.7712
+  epoch 4 step 540 loss 0.7306
+  epoch 4 step 560 loss 0.7681
+  epoch 5 step 580 loss 0.7673
+  epoch 5 step 600 loss 0.7040
+  epoch 5 step 620 loss 0.7075
+  epoch 5 step 640 loss 0.6755
+  epoch 5 step 660 loss 0.7255
+  epoch 5 step 680 loss 0.6924
+  epoch 6 step 700 loss 0.6947
+  epoch 6 step 720 loss 0.6980
+  epoch 6 step 740 loss 0.6521
+  epoch 6 step 760 loss 0.6853
+  epoch 6 step 780 loss 0.6814
+  epoch 6 step 800 loss 0.6801
+  epoch 7 step 820 loss 0.6671
+  epoch 7 step 840 loss 0.6977
+  epoch 7 step 860 loss 0.6622
+  epoch 7 step 880 loss 0.6528
+  epoch 7 step 900 loss 0.6507
+  epoch 7 step 920 loss 0.6713
+saved /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt
