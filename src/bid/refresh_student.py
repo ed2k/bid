@@ -167,6 +167,8 @@ def main():
                          "(percentage points)")
     ap.add_argument("--force", action="store_true",
                     help="regenerate corpus even if the DSL hash is unchanged")
+    ap.add_argument("--scratch", action="store_true",
+                    help="train candidate from scratch rather than warm-starting from incumbent")
     args = ap.parse_args()
 
     log_path = os.path.join(MODEL_DIR, "refresh_last.log")
@@ -207,11 +209,15 @@ def main():
                 log_path)
 
     # ---- stage 2: train candidate ----------------------------------------
-    run("train",
-        [python, "-u", "-m", "bid.cot_model", "train",
-         "--dataset", DATASET, "--epochs", str(args.epochs),
-         "--batch", str(args.batch), "--lr", str(args.lr),
-         "--out", CANDIDATE], log_path)
+    train_cmd = [
+        python, "-u", "-m", "bid.cot_model", "train",
+        "--dataset", DATASET, "--epochs", str(args.epochs),
+        "--batch", str(args.batch), "--lr", str(args.lr),
+        "--out", CANDIDATE,
+    ]
+    if os.path.exists(INCUMBENT) and not getattr(args, "scratch", False):
+        train_cmd += ["--init-from", INCUMBENT]
+    run("train", train_cmd, log_path)
 
     # ---- stage 3: gated comparison on the NEW val split ------------------
     new_ex, new_bi = eval_ckpt(python, CANDIDATE, log_path)

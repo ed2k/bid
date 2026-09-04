@@ -203,23 +203,13 @@ class NeuralCotReasoner:
         self.model.eval()
 
     def prefix_ids(self, dealer, vuln, seat, turn, auction_strs, hand_str):
+        from bid.cot_tokenizer import format_state_prefix, tokenize_line, BOS, SEP
         V = self.vocab
-        import re
-        def _tokens(line):
-            return re.compile(r"\w+|[^\w\s]").findall(line)
-        v_str = vuln.name if hasattr(vuln, "name") else str(vuln)
-        s_str = seat.name if hasattr(seat, "name") else str(seat)
-        d_str = dealer.name if hasattr(dealer, "name") else str(dealer)
-        lines = [
-            f"<bos> STATE dealer={d_str} vuln={v_str}",
-            f"seat={s_str} turn={turn}",
-            ("AUCTION " + " ".join(auction_strs)) if auction_strs else "AUCTION -",
-            f"HAND {hand_str}",
-        ]
-        ids = [V["<bos>"]]
+        lines = format_state_prefix(dealer, vuln, seat, turn, auction_strs, hand_str)
+        ids = [V[BOS]]
         for ln in lines:
-            ids += [V[t] for t in _tokens(ln) if t in V]
-        ids.append(V["<sep>"])
+            ids += [V[t] for t in tokenize_line(ln) if t in V]
+        ids.append(V[SEP])
         return ids
 
     def bid_batch(self, items, max_new=48, temp=0.0, batch_size=32):

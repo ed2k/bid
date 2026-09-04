@@ -1,17 +1,35 @@
 
 === [eval] /Users/admin/Documents/GitHub/bid/.venv/bin/python3 -u -m bid.cot_model eval-val --dataset /Users/admin/Documents/GitHub/bid/data/cot_dataset/dataset.json --ckpt /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt
-Traceback (most recent call last):
-  File "<frozen runpy>", line 198, in _run_module_as_main
-  File "<frozen runpy>", line 88, in _run_code
-  File "/Users/admin/Documents/GitHub/bid/src/bid/cot_model.py", line 442, in <module>
-    cmd_evalval(args)
-  File "/Users/admin/Documents/GitHub/bid/src/bid/cot_model.py", line 356, in cmd_evalval
-    model = _load_model(len(vocab), args, meta)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/admin/Documents/GitHub/bid/src/bid/cot_model.py", line 198, in _load_model
-    model.load_state_dict(sd)
-  File "/Users/admin/Documents/GitHub/bid/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2153, in load_state_dict
-    raise RuntimeError('Error(s) in loading state_dict for {}:\n\t{}'.format(
-RuntimeError: Error(s) in loading state_dict for COTModel:
-	size mismatch for tok_emb.weight: copying a param with shape torch.Size([2241, 256]) from checkpoint, the shape in current model is torch.Size([769, 256]).
-	size mismatch for head.weight: copying a param with shape torch.Size([2241, 256]) from checkpoint, the shape in current model is torch.Size([769, 256]).
+    miss: got BID '1C' want '1D'
+    miss: got BID 'X' want 'PASS'
+    miss: got BID '1C' want 'X'
+    miss: got BID '1C' want 'PASS'
+    miss: got BID '1H' want 'X'
+    miss: got BID '1C' want 'PASS'
+    miss: got BID '1C' want 'PASS'
+    miss: got BID '1C' want '1NT'
+    miss: got BID 'PASS' want '2H'
+    miss: got BID 'X' want 'PASS'
+    miss: got BID '1C' want 'PASS'
+    miss: got BID 'PASS' want 'X'
+    miss: got BID '1C' want 'PASS'
+    miss: got BID '1C' want '1S'
+    miss: got BID 'X' want '5NT'
+    miss: got BID '1C' want 'PASS'
+    miss: got BID '1S' want 'X'
+    miss: got BID '1H' want '2NT'
+    miss: got BID '1C' want '1H'
+    miss: got BID '1S' want 'X'
+    miss: got BID '1H' want 'X'
+    miss: got BID '1S' want '1H'
+    miss: got BID '1S' want '1H'
+    miss: got BID '1S' want '1H'
+    miss: got BID '1C' want '1NT'
+    miss: got BID '1S' want '1D'
+    miss: got BID '1S' want '1C'
+    miss: got BID 'X' want '2NT'
+    miss: got BID '1H' want '1C'
+
+val examples        : 55 (48.9s)
+exact sequence match: 9/55 (16.4%)
+BID correct         : 26/55 (47.3%)

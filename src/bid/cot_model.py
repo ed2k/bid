@@ -155,6 +155,18 @@ def cmd_train(args):
         args.block = int(meta.get("block_size_max", 128))
     dev = pick_device()
     model = COTModel(V, block_size=args.block).to(dev)
+    if getattr(args, "init_from", None) and os.path.exists(args.init_from):
+        sd = torch.load(args.init_from, map_location="cpu")
+        if "tok_emb.weight" in sd and sd["tok_emb.weight"].shape[0] == V:
+            if "pos_emb.weight" in sd and sd["pos_emb.weight"].shape[0] == args.block:
+                model.load_state_dict(sd)
+                print(f"warm-started model weights from {args.init_from}")
+            else:
+                old_b = sd.get("pos_emb.weight", torch.empty(0)).shape[0]
+                print(f"skipping warm-start: block size mismatch ({old_b} vs {args.block})")
+        else:
+            old_v = sd["tok_emb.weight"].shape[0] if "tok_emb.weight" in sd else None
+            print(f"skipping warm-start: vocab size mismatch ({old_v} vs {V}); training from scratch")
     opt = __import__("torch").optim.AdamW(model.parameters(), lr=args.lr,
                                           betas=(0.9, 0.95))
     rng = __import__("random").Random(7)
@@ -416,6 +428,8 @@ if __name__ == "__main__":
                     help="context length (default: dataset block_size_max)")
     tr.add_argument("--log-every", type=int, default=20)
     tr.add_argument("--out", default="data/cot_model/ckpt.pt")
+    tr.add_argument("--init-from", default=None,
+                    help="checkpoint path to initialize weights from (warm-start)")
     ge = sub.add_parser("generate")
     ge.add_argument("--dataset", default="data/cot_dataset/dataset.json")
     ge.add_argument("--ckpt", default="data/cot_model/ckpt.pt")

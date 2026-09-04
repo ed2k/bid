@@ -74,18 +74,13 @@ class StudentPolicy:
               f"| device={self.dev} block={block}")
 
     def prefix_ids(self, dealer, vuln, seat, turn, auction_strs, hand):
+        from bid.cot_tokenizer import format_state_prefix, tokenize_line, BOS, SEP
         V = self.vocab
-        lines = [
-            f"<bos> STATE dealer={dealer} vuln={vuln}",
-            f"seat={seat} turn={turn}",
-            ("AUCTION " + " ".join(auction_strs)) if auction_strs
-            else "AUCTION -",
-            f"HAND {hand}",
-        ]
-        ids = [V["<bos>"]]
+        lines = format_state_prefix(dealer, vuln, seat, turn, auction_strs, hand)
+        ids = [V[BOS]]
         for ln in lines:
-            ids += [V[t] for t in _tokens(ln) if t in V]
-        ids.append(V["<sep>"])
+            ids += [V[t] for t in tokenize_line(ln) if t in V]
+        ids.append(V[SEP])
         return ids
 
     def bid_batch(self, items, max_new=48, temp=0.0, batch_size=32):

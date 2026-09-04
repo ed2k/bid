@@ -50,22 +50,44 @@
       "reason": "no comparable incumbent",
       "elapsed_sec": 212.6,
       "checkpoint": "/Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt"
+    },
+    {
+      "ts": "2026-09-03 17:25:35",
+      "dsl_sha256": "c6e2553f47e8212bb25353114a39da230a2556d9331adfdebdad16345ddec75a",
+      "corpus_sha256": "2131dcc021dbfa95783e6dd144ebcd7c122e0d8694eba258c01b77b3d827c787",
+      "boards": 50,
+      "epochs": 2,
+      "candidate": {
+        "exact": 1.8,
+        "bid": 29.1
+      },
+      "incumbent": {
+        "exact": 16.4,
+        "bid": 47.3
+      },
+      "promoted": false,
+      "reason": "new 29.1% vs incumbent 47.3% (tolerance 0.0)",
+      "elapsed_sec": 177.5,
+      "rejected_to": "/Users/admin/Documents/GitHub/bid/data/cot_model/rejected/20260903_172535_ckpt.pt"
     }
   ],
   "last": {
-    "ts": "2026-09-02 11:14:56",
-    "dsl_sha256": "dba8d31afbbec8fdccce9d1b4c1a8f791387021dae1f0a21ff0cf0194854dd5c",
-    "corpus_sha256": "83c9119a469ae696f19c1831f2981e5ddfbfd4fd9f3bdd87ed2ffdf39f1022f3",
-    "boards": 60,
+    "ts": "2026-09-03 17:25:35",
+    "dsl_sha256": "c6e2553f47e8212bb25353114a39da230a2556d9331adfdebdad16345ddec75a",
+    "corpus_sha256": "2131dcc021dbfa95783e6dd144ebcd7c122e0d8694eba258c01b77b3d827c787",
+    "boards": 50,
     "epochs": 2,
     "candidate": {
-      "exact": 0.0,
-      "bid": 1.9
+      "exact": 1.8,
+      "bid": 29.1
     },
-    "incumbent": "not evaluable",
-    "promoted": true,
-    "reason": "no comparable incumbent",
-    "elapsed_sec": 212.6,
-    "checkpoint": "/Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt"
+    "incumbent": {
+      "exact": 16.4,
+      "bid": 47.3
+    },
+    "promoted": false,
+    "reason": "new 29.1% vs incumbent 47.3% (tolerance 0.0)",
+    "elapsed_sec": 177.5,
+    "rejected_to": "/Users/admin/Documents/GitHub/bid/data/cot_model/rejected/20260903_172535_ckpt.pt"
   }
 }

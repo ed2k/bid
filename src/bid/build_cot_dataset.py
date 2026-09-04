@@ -34,14 +34,11 @@ def build_example(tok: Tokenizer, trace_obj: dict):
     V = tok.vocab
     ids = [V[BOS]]
     for line in prefix_lines:
-        ids += tok.encode_line(line)
+        ids += tok.encode_line(line, strict=True)
     ids.append(V[SEP])                      # real special id, not split text
     prefix_len = len(ids)
     for line in target_lines:
-        if line == EOT:
-            ids.append(V[EOT])
-        else:
-            ids += tok.encode_line(line)
+        ids += tok.encode_line(line, strict=True)
     ids.append(V[EOT])
     return {"ids": ids, "prefix_len": prefix_len}
 
@@ -51,12 +48,16 @@ def main():
     outdir = "data/cot_dataset"
     os.makedirs(outdir, exist_ok=True)
 
+    vocab_path = os.path.join(outdir, "vocab.json")
+    if not os.path.exists(vocab_path):
+        from bid.cot_tokenizer import build_frozen_vocab
+        frozen = build_frozen_vocab()
+        tok = Tokenizer(frozen)
+        tok.save(vocab_path)
+    else:
+        tok = Tokenizer.load(vocab_path)
+
     traces = [json.loads(l) for l in open(corpus)]
-    all_lines = []
-    for t in traces:
-        pre, tgt = example_lines(t)
-        all_lines += pre + tgt
-    tok = Tokenizer.train(all_lines)
 
     rng = __import__("random").Random(7)
     idxs = list(range(len(traces)))

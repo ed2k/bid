@@ -73,3 +73,29 @@ dataset -> data/cot_dataset/dataset.json
 training 5,155,584 params on 493 examples | 2 epochs | device=mps block=89
   epoch 1 step 20 loss 3.7185
 saved /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt
+
+=== [traces] /Users/admin/Documents/GitHub/bid/.venv/bin/python3 -u -m bid.trace_factory --boards 50 --seed 42 --out /Users/admin/Documents/GitHub/bid/data/traces/traces.jsonl
+Wrote 428 call-traces (50 boards) -> /Users/admin/Documents/GitHub/bid/data/traces/traces.jsonl
+Meta   : /Users/admin/Documents/GitHub/bid/data/traces/traces.meta.json | corpus sha256=2131dcc021dbfa95… dsl sha256=c6e2553f47e8212b…
+
+=== [dataset] /Users/admin/Documents/GitHub/bid/.venv/bin/python3 -u -m bid.build_cot_dataset /Users/admin/Documents/GitHub/bid/data/traces/corpus_combined.jsonl
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/admin/Documents/GitHub/bid/src/bid/build_cot_dataset.py", line 94, in <module>
+    main()
+  File "/Users/admin/Documents/GitHub/bid/src/bid/build_cot_dataset.py", line 71, in main
+    ex = build_example(tok, t)
+         ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/admin/Documents/GitHub/bid/src/bid/build_cot_dataset.py", line 37, in build_example
+    ids += tok.encode_line(line, strict=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/admin/Documents/GitHub/bid/src/bid/cot_tokenizer.py", line 132, in encode_line
+    raise KeyError(f"Unseen token '{t}' in line: '{line}'. Frozen vocabulary violated!")
+KeyError: "Unseen token 'AKJT3' in line: 'HAND S:73 H:AKJT3 D:KQ43 C:64'. Frozen vocabulary violated!"
+
+=== [train] /Users/admin/Documents/GitHub/bid/.venv/bin/python3 -u -m bid.cot_model train --dataset /Users/admin/Documents/GitHub/bid/data/cot_dataset/dataset.json --epochs 2 --batch 32 --lr 0.0003 --out /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt --init-from /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt
+warm-started model weights from /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt
+training 4,967,424 params on 499 examples | 2 epochs | device=mps block=84
+  epoch 1 step 20 loss 0.8384
+saved /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt

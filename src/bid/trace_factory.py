@@ -31,10 +31,10 @@ FEATURE_KEYS = ["hcp", "total_points", "spade_len", "heart_len",
 def hand_str(hand):
     parts = []
     for suit in (Suit.SPADES, Suit.HEARTS, Suit.DIAMONDS, Suit.CLUBS):
-        cards = "".join(str(c.rank) for c in
-                        sorted(hand.by_suit[suit], key=lambda c: c.rank.value,
-                               reverse=True))
-        parts.append(f"{suit.name[0]}:{cards or '-'}")
+        cards = " ".join(str(c.rank) for c in
+                         sorted(hand.by_suit[suit], key=lambda c: c.rank.value,
+                                reverse=True))
+        parts.append(f"{suit.name[0]} : {cards or '-'}")
     return " ".join(parts)
 
 
