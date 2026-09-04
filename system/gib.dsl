@@ -57,9 +57,15 @@ OPEN 1D:
   HCP: 12-21
   LEN D: 3+
 
-# 2C Opening: Strong, Artificial, 22+ HCP
+# 2C Opening: Strong, Artificial, 22+ HCP (or 20+ HCP with 7+ controls / strong playing tricks)
 OPEN 2C:
+  PRIORITY_BONUS: 5
   HCP: 22+
+
+OPEN 2C:
+  PRIORITY_BONUS: 5
+  HCP: 20+
+  CONTROLS: 7+
 
 # Weak 2 Bids: 6-10 HCP, 6+ suit
 OPEN 2D:
@@ -268,6 +274,47 @@ OPEN 2NT:
   HCP: 6+
   LEN H: 4+
 
+# Opener rebid 1NT (12-14 HCP, balanced)
+1C - 1H - 1NT:
+  PRIORITY_BONUS: 10
+  HCP: 12-14
+  SHAPE: BALANCED
+  LEN H: 0-3
+  LEN S: 0-3
+
+# Responder raise to 3NT game
+1C - 1H - 1NT - 3NT:
+  PRIORITY_BONUS: 10
+  HCP: 13-15
+  BALANCED: True
+
+# Opener rebid 2C (5+ clubs, non-forcing, 12-16 HCP, unbalanced)
+1C - 1H - 2C:
+  HCP: 12-16
+  LEN C: 5+
+  SHAPE: UNBALANCED
+
+# Responder reverse to 2S (4+ spades, 10+ HCP, forcing)
+1C - 1H - 2C - 2S:
+  HCP: 10+
+  LEN S: 4+
+
+# Opener 3H support raise (3+ hearts)
+1C - 1H - 2C - 2S - 3H:
+  LEN H: 3+
+
+# Responder RKCB 4NT ask
+1C - 1H - 2C - 2S - 3H - 4NT:
+  MAJOR_HCP: 8+
+
+# Opener RKCB response 5S (2 keycards with queen)
+1C - 1H - 2C - 2S - 3H - 4NT - 5S:
+  ACES: 2
+
+# Responder 6H small slam signoff
+1C - 1H - 2C - 2S - 3H - 4NT - 5S - 6H:
+  HCP: 12+
+
 # 1C - 1S: Natural, 4+ Spades, 6+ HCP
 1C - 1S:
   HCP: 6+
@@ -333,3 +380,85 @@ OPEN 2NT:
 # 2NT - 3H: Transfer to Spades
 2NT - 3H:
   LEN S: 5+
+
+# ==========================================
+# RESPONSES TO 2C
+# ==========================================
+
+# 2C - 2D: Waiting / Negative
+2C - 2D:
+  TP: 0-99
+
+# 2C - 2H: Positive, 5+ Hearts, 8+ HCP
+2C - 2H:
+  HCP: 8+
+  LEN H: 5+
+
+# 2C - 2S: Positive, 5+ Spades, 8+ HCP
+2C - 2S:
+  HCP: 8+
+  LEN S: 5+
+
+# Overcall / Defense over 2C opening
+(2C) - 2H:
+  HCP: 8-16
+  LEN H: 6+
+
+# Competitive responses to 2C after overcall
+(2C) - (2H) - 2S:
+  HCP: 4+
+  LEN S: 5+
+
+# Diamond slam try after 2C - 2S
+(2C) - (2H) - 2S - 4D:
+  HCP: 20+
+  LEN D: 7+
+
+# Raise / sign-off in diamonds
+(2C) - (2H) - 2S - 4D - 5D:
+  LEN D: 2+
+
+# Slam rebid
+(2C) - (2H) - 2S - 4D - 5D - 6D:
+  HCP: 20+
+  LEN D: 7+
+
+# ==========================================
+# COMPETITIVE AUCTIONS OVER 1-MINOR
+# ==========================================
+
+# Overcall 1S over 1C
+(1C) - 1S:
+  HCP: 7-17
+  LEN S: 5+
+
+# Overcall 1H over 1C
+(1C) - 1H:
+  HCP: 7-17
+  LEN H: 5+
+
+# Overcall 1S over 1D
+(1D) - 1S:
+  HCP: 7-17
+  LEN S: 5+
+
+# Overcall 1H over 1D
+(1D) - 1H:
+  HCP: 7-17
+  LEN H: 5+
+
+# Responder new suit 2D after (1C) - (1S)
+(1C) - (1S) - 2D:
+  HCP: 9+
+  LEN D: 5+
+
+# Opener 2NT rebid with stopper after (1C) - (1S) - 2D
+(1C) - (1S) - 2D - 2NT:
+  HCP: 12-14
+  BALANCED: True
+
+# Responder raise to 3NT game
+(1C) - (1S) - 2D - 2NT - 3NT:
+  HCP: 11-18
+
+

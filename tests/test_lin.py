@@ -101,5 +101,92 @@ class TestLinParser(unittest.TestCase):
         # Verify played cards count
         self.assertEqual(len(deal.play_history), 52)
 
+    def test_clean_alert_suit_symbols(self):
+        from bid.lin import clean_alert
+        self.assertEqual(clean_alert("Strong 2 !C opening"), "Strong 2 ♣ opening")
+        self.assertEqual(clean_alert("!S transfer over 1!N"), "♠ transfer over 1NT")
+        self.assertEqual(clean_alert("5+ !H; 4+ !D"), "5+ ♥; 4+ ♦")
+
+    def test_parse_bbo_handviewer_url_and_identify(self):
+        from bid.lin import clean_alert
+        from bid.system_identifier import BiddingSystemIdentifier
+        url = (
+            "https://www.bridgebase.com/tools/handviewer.html?lin="
+            "pn%7CBrill,Lia,Brill,Lia%7Cst%7C%7Cmd%7C1SK9654HT95DJ73C62,SATHADAKQT9862CKJ,"
+            "S3HKQJ763DCA97543,SQJ872H842D54CQT8%7Csv%7C0%7Cah%7CBoard%2059%20(Open)%7C"
+            "mb%7CP%7Can%7COpening%20Bid,%20HCP-12,%20RuleOf-21%7C"
+            "mb%7C2C%7Can%7C*%20Artificial%20-%20Strong%202%20!C%20Opening%20-%2022+%20hcp%7C"
+            "mb%7C2H%7Can%7CResponses%20to%202C,%20H+6,%20LoserLevel+2%7C"
+            "mb%7C2S%7Can%7CNatural%20-%204+%20hcp%20%20-%20Game%20Forcing%20-%20At%20least%205%E2%99%A0%7C"
+            "mb%7CP%7Can%7CLast%20resort%20-%20defensive,%20Sensible%7C"
+            "mb%7C4D%7Can%7CNatural%20-%20Slam%20Try%20-%2024+%20hcp%20%20-%20Forcing%20-%20At%20least%208%E2%99%A6%7C"
+            "mb%7CP%7Can%7CLast%20resort%20-%20defensive,%20Sensible%7C"
+            "mb%7C5D%7Can%7CTo%20play%20-%20Maximum%202%20cards%20among%20aces%20+%20K/Q%20of%20trump%7C"
+            "mb%7CP%7Can%7CLast%20resort%20-%20defensive,%20Sensible%7C"
+            "mb%7C6D%7Can%7CNatural%20-%2026+%20hcp%7C"
+            "mb%7CP%7Can%7CLast%20resort%20-%20defensive,%20Sensible%7C"
+            "mb%7CP%7Can%7CNo%20new%20information%20-%204-5%20hcp%7C"
+            "mb%7CP%7Can%7CLast%20resort%20-%20defensive,%20Sensible%7C"
+            "pc%7ChK%7Cpc%7Ch2%7Cpc%7Ch9%7Cpc%7ChA%7Cpc%7CdQ%7Cpc%7Cc5%7Cpc%7Cd4%7Cpc%7Cd3%7C"
+        )
+        deals = self.parser.parse(url)
+        self.assertEqual(len(deals), 1)
+        deal = deals[0]
+
+        # Check 1-to-1 alert mapping
+        self.assertEqual(len(deal.bidding_history), len(deal.bidding_alerts))
+        self.assertEqual(len(deal.bidding_history), 13)
+
+        # Check alert on 2C
+        self.assertIn("22+ hcp", deal.bidding_alerts[1])
+        cleaned_2c = clean_alert(deal.bidding_alerts[1])
+        self.assertIn("Strong 2 ♣ Opening", cleaned_2c)
+
+        # Identify system
+        sys_res = BiddingSystemIdentifier.identify(deal)
+        self.assertTrue(sys_res.is_bbo_gib)
+        self.assertIn("BBO GIB", sys_res.ew.system_name)
+        self.assertEqual(sys_res.ew.confidence, "High")
+        self.assertIn("Strong 2♣ Opening", sys_res.ew.key_conventions)
+        self.assertIn("Slam Try", sys_res.ew.key_conventions)
+
+    def test_identify_system_precision(self):
+        from bid.system_identifier import BiddingSystemIdentifier
+        precision_lin = (
+            "pn|N,E,S,W|st||"
+            "md|3SAK2HAQ3DAKJ2CKQ2,S87H8754D874C8765,SQJT9HKJT9D965CAT,S6543H62DQT3CJ943|"
+            "sv|o|mb|1C|an|Artificial 16+ HCP|mb|P|mb|1D|an|0-7 HCP negative|mb|P|mb|1N|mb|P|mb|3N|mb|P|mb|P|mb|P|"
+        )
+        deal = self.parser.parse(precision_lin)[0]
+        sys_res = BiddingSystemIdentifier.identify(deal)
+        self.assertEqual(sys_res.ns.system_name, "Precision Club")
+        self.assertEqual(sys_res.ns.confidence, "High")
+        self.assertIn("Strong 1♣ Opening", sys_res.ns.key_conventions)
+
+    def test_identify_system_acol(self):
+        from bid.system_identifier import BiddingSystemIdentifier
+        acol_lin = (
+            "pn|N,E,S,W|st||"
+            "md|1SAKJ2H874DA87CK98,S87HKQJT9DQJ5CT76,SQ65HA532DK43CQJ4,ST943H6DT962CA532|"
+            "sv|o|mb|1N|an|Weak 1NT 12-14|mb|P|mb|3N|mb|P|mb|P|mb|P|"
+        )
+        deal = self.parser.parse(acol_lin)[0]
+        sys_res = BiddingSystemIdentifier.identify(deal)
+        self.assertEqual(sys_res.ns.system_name, "Acol")
+        self.assertEqual(sys_res.ns.confidence, "High")
+
+    def test_select_reference_dsl(self):
+        from bid.system_identifier import BiddingSystemIdentifier
+        from bid.explain_board import select_reference_dsl
+        url = "https://www.bridgebase.com/tools/handviewer.html?lin=pn%7CBrill,Lia,Brill,Lia%7Cst%7C%7Cmd%7C1SK9654HT95DJ73C62,SATHADAKQT9862CKJ,S3HKQJ763DCA97543,SQJ872H842D54CQT8%7Csv%7C0%7Cah%7CBoard%2059%20(Open)%7Cmb%7CP%7Can%7COpening%20Bid,%20HCP-12,%20RuleOf-21%7Cmb%7C2C%7Can%7C*%20Artificial%20-%20Strong%202%20!C%20Opening%20-%2022+%20hcp%7C"
+        deal = self.parser.parse(url)[0]
+        sys_res = BiddingSystemIdentifier.identify(deal)
+        dsl_path, reason = select_reference_dsl(sys_res, "system/champion_system.dsl")
+        self.assertTrue(dsl_path.endswith("gib.dsl"))
+        self.assertIn("auto-selected", reason)
+
+
 if __name__ == "__main__":
     unittest.main()
+
+

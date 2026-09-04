@@ -1,6 +1,26 @@
+import os
 import re
+import urllib.parse
 from typing import List, Dict, Optional, Tuple
 from bid.models import Hand, Card, Suit, Rank, Call, CallType, Strain, Seat
+
+
+def clean_alert(alert_text: str) -> str:
+    """Replace BBO suit markers (!C, !D, !H, !S, !N) with symbols and clean up formatting."""
+    if not alert_text:
+        return ""
+    replacements = {
+        "!C": "♣", "!c": "♣",
+        "!D": "♦", "!d": "♦",
+        "!H": "♥", "!h": "♥",
+        "!S": "♠", "!s": "♠",
+        "!N": "NT", "!n": "NT",
+    }
+    res = alert_text
+    for k, v in replacements.items():
+        res = res.replace(k, v)
+    return res.strip()
+
 
 class LinDeal:
     """Represents a parsed LIN format deal including metadata, hands, and auction."""
@@ -65,11 +85,63 @@ class LinParser:
         'NT': Strain.NT
     }
 
+    @staticmethod
+    def extract_lin_content(lin_input: str) -> str:
+        """Extract raw LIN string from a URL, a file path, or an inline LIN string."""
+        lin_str = lin_input.strip()
+        if not lin_str:
+            return ""
+
+        # If it's a valid local file path with multiple lines, don't collapse them into one string
+        if os.path.isfile(lin_str):
+            try:
+                with open(lin_str, 'r', encoding='utf-8', errors='ignore') as f:
+                    lines = [line.strip() for line in f if line.strip()]
+                if len(lines) > 1:
+                    return lin_str  # Handled in parse() directly
+                elif len(lines) == 1:
+                    lin_str = lines[0]
+            except Exception:
+                pass
+
+        # If it's a URL or contains lin query parameter
+        if "lin=" in lin_str:
+            idx = lin_str.find("lin=")
+            sub = lin_str[idx + 4:]
+            end_idx = len(sub)
+            for delim in ('&', '#', '\n', '\r'):
+                d_pos = sub.find(delim)
+                if d_pos != -1 and d_pos < end_idx:
+                    end_idx = d_pos
+            encoded_lin = sub[:end_idx]
+            # Use urllib.parse.unquote to decode %7C -> |, %20 -> ' ', etc. while preserving '+'
+            lin_str = urllib.parse.unquote(encoded_lin)
+        elif lin_str.startswith("http://") or lin_str.startswith("https://"):
+            # URL without lin= parameter, or already unquoted
+            parsed = urllib.parse.urlparse(lin_str)
+            qs = urllib.parse.parse_qs(parsed.query)
+            if 'lin' in qs and qs['lin']:
+                lin_str = qs['lin'][0]
+
+        return lin_str
+
     def parse(self, lin_text: str) -> List[LinDeal]:
-        """Parse LIN format text (single or multi-deal) into a list of LinDeal objects."""
-        # LIN tags are formatted as tag|value| or tag|value1|value2|
-        # Normalize LIN string
-        lin_text = lin_text.strip()
+        """Parse LIN format text (single or multi-deal, URL or raw text) into a list of LinDeal objects."""
+        # Handle file paths with multiple lines
+        candidate_file = lin_text.strip()
+        if os.path.isfile(candidate_file):
+            try:
+                with open(candidate_file, 'r', encoding='utf-8', errors='ignore') as f:
+                    lines = [line.strip() for line in f if line.strip()]
+                if len(lines) > 1:
+                    all_deals: List[LinDeal] = []
+                    for line in lines:
+                        all_deals.extend(self.parse(line))
+                    return all_deals
+            except Exception:
+                pass
+
+        lin_text = self.extract_lin_content(lin_text)
         if not lin_text:
             return []
 
@@ -128,10 +200,15 @@ class LinParser:
                 call = self._parse_mb_tag(val)
                 if call:
                     current_deal.bidding_history.append(call)
+                    # Maintain 1-to-1 alignment for bidding_alerts
+                    current_deal.bidding_alerts.append("")
                 i += 2
             elif tag == 'an':
                 # Alert/annotation for previous bid
-                current_deal.bidding_alerts.append(val)
+                if current_deal.bidding_alerts:
+                    current_deal.bidding_alerts[-1] = val
+                else:
+                    current_deal.bidding_alerts.append(val)
                 i += 2
             elif tag == 'pc':
                 # Play card

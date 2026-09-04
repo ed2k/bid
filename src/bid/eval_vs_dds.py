@@ -181,6 +181,18 @@ def load_decision_net_dsl(path: str) -> DecisionNet:
             continue
 
         i += 1
+
+    if not net.rules:
+        # Check if the DSL file is in SystemTranslator format (e.g., gib.dsl)
+        try:
+            from bid.translator import SystemTranslator
+            translator = SystemTranslator()
+            sys = translator.load_system_with_conventions(path)
+            if sys and sys.rules:
+                net.attach_system(sys)
+        except Exception:
+            pass
+
     return net
 
 
