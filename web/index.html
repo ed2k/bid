@@ -15,10 +15,14 @@
   <script src="objects.js"></script>
   <script src="features.js"></script>
   <script src="bid_dsl.js"></script>
+  <script src="system_dsl.js"></script>
   <script src="bid_net.js"></script>
   <script src="auction.js"></script>
+  <script src="student_lab.js"></script>
   <!-- Generated snapshot: python3 -m bid.web_export -->
   <script src="review_data.js"></script>
+  <!-- Default in-browser student: node web/build_default_student.mjs -->
+  <script src="student_default.js"></script>
 </head>
 <body>
   <div class="app-container">
@@ -30,6 +34,8 @@
       <nav class="tabs">
         <button id="tab-auction" class="tab active">Auction Review</button>
         <button id="tab-data" class="tab">Loop Data</button>
+        <button id="tab-rules" class="tab">Rules Editor</button>
+        <button id="tab-student" class="tab">Student Lab</button>
       </nav>
     </header>
 
@@ -49,6 +55,12 @@
             <option value="0" selected>None</option><option value="1">N/S</option>
             <option value="2">E/W</option><option value="3">Both</option>
           </select>
+        </label>
+        <label class="inline-label">N/S system
+          <select id="sel-system-ns"></select>
+        </label>
+        <label class="inline-label">E/W system
+          <select id="sel-system-ew"></select>
         </label>
         <span class="toolbar-sep"></span>
         <label class="inline-label">Corpus
@@ -186,6 +198,81 @@
         </div>
       </div>
     </div>
+
+    <!-- ==================== RULES EDITOR ==================== -->
+    <main id="view-rules" class="hidden">
+      <div class="toolbar">
+        <label class="inline-label">System
+          <select id="sel-rules-system"></select>
+        </label>
+        <span class="toolbar-sep"></span>
+        <button id="btn-rules-apply-ns" class="btn btn-primary">Apply to N/S</button>
+        <button id="btn-rules-apply-ew" class="btn btn-accent">Apply to E/W</button>
+        <button id="btn-rules-download" class="btn">&#11015; Download .dsl</button>
+        <button id="btn-rules-reset" class="btn btn-secondary">Revert to snapshot</button>
+      </div>
+      <div id="rules-status" class="status-bar"><div class="status-item">
+        <span class="label">Status:</span><span id="rules-status-text" class="val">&ndash;</span>
+      </div></div>
+      <textarea id="rules-text" spellcheck="false"
+        placeholder="Select a system to view its DSL rules&hellip;"></textarea>
+      <p class="muted small" style="margin-top:8px">
+        Edit the DSL and apply it to a team — the auction review restarts with
+        your edited rules so you can probe behaviour changes. Download saves the
+        edited DSL as a <code>.dsl</code> file you can drop into
+        <code>system/</code> and feed to the flywheel
+        (<code>TARGET</code>-style formats are preserved: block RULE rules and
+        one-line RULE rules both round-trip through the same parser as Python's).
+      </p>
+    </main>
+
+    <!-- ==================== STUDENT LAB ==================== -->
+    <main id="view-student" class="hidden">
+      <div class="toolbar">
+        <label class="inline-label">Teacher system
+          <select id="sel-student-teacher"></select>
+        </label>
+        <label class="inline-label">Deals
+          <input id="in-student-deals" type="number" value="100" min="10" max="400" style="width:70px">
+        </label>
+        <button id="btn-student-generate" class="btn">1 &middot; Generate corpus</button>
+        <label class="inline-label">Epochs
+          <input id="in-student-epochs" type="number" value="12" min="2" max="60" style="width:60px">
+        </label>
+        <button id="btn-student-train" class="btn btn-accent">2 &middot; Train student</button>
+        <span class="toolbar-sep"></span>
+        <button id="btn-student-download" class="btn btn-primary">3 &middot; Save student.json</button>
+        <label class="btn btn-secondary" style="display:inline-flex;align-items:center;gap:6px">
+          Load student.json <input id="in-student-file" type="file" accept=".json" style="display:none">
+        </label>
+        <button id="btn-student-eval" class="btn">Evaluate loaded</button>
+      </div>
+      <div class="status-bar">
+        <div class="status-item"><span class="label">Corpus:</span>
+          <span id="student-info-corpus" class="val">&ndash;</span></div>
+        <div class="status-item"><span class="label">Training:</span>
+          <span id="student-info-train" class="val">&ndash;</span></div>
+        <div class="status-item"><span class="label">Held-out accuracy:</span>
+          <span id="student-info-acc" class="val">&ndash;</span></div>
+        <div class="status-item"><span class="label">Status:</span>
+          <span id="student-info-status" class="val status-active">idle</span></div>
+      </div>
+      <div class="inspector-card">
+        <h3>What this is</h3>
+        <p class="muted small" style="margin:0 0 6px 0">
+          A compact in-browser student: it watches the selected teacher bid
+          <em>N</em> generated boards with the same JS engine as the review
+          UI, then trains a small neural network (27 &rarr; 64 &rarr; 32 &rarr;
+          bids) to imitate the teacher's calls from auction features.
+          Deterministic and seeded &mdash; identical inputs give identical
+          models. The production 5.5M-param CoT student still trains in Python
+          (<code>refresh_student.py</code>, Loop B); this lab is for fast,
+          local experimentation with any loaded or hand-edited system.
+          Saved <code>student.json</code> files can be reloaded and evaluated
+          here at any time.
+        </p>
+      </div>
+    </main>
 
     <footer class="app-footer">
       Static review UI &mdash; engine ported from <code>src/bid/</code> and cross-validated

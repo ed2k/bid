@@ -35,6 +35,93 @@ from bid.models import Card, Hand, Rank, Seat, Strain, Suit          # noqa: E40
 from bid.sampling import Deal                                  # noqa: E402
 from bid.dds import DDSolver                                   # noqa: E402
 
+SYSTEM_DIR = os.path.join(REPO_ROOT, "system")
+CONVENTIONS_DIR = os.path.join(SYSTEM_DIR, "conventions")
+
+# name -> (relative path, engine, display label).  'net' files are parsed by
+# eval_vs_dds.load_decision_net_dsl, 'legacy' files by translator/SystemTranslator.
+REVIEW_SYSTEMS = {
+    "improved": ("system/improved_system.dsl", "net", "Improved (current teacher)"),
+    "champion": ("system/champion_system.dsl", "net", "Champion (auto-evolved)"),
+    "precision": ("system/precision.dsl", "legacy", "Precision Big Club"),
+    "blue_club": ("system/blue_club.dsl", "legacy", "Italian Blue Club"),
+    "gib": ("system/gib.dsl", "legacy", "GIB"),
+}
+
+
+def inline_conventions(text, depth=0):
+    """Replace a CONVENTIONS: block with the inlined convention file contents
+    (marked `# COMMON:` so the JS parser reproduces translator.load_convention
+    is_common semantics).  Returns (text, n_conventions)."""
+    lines = text.splitlines()
+    out, names, in_block = [], [], False
+    for line in lines:
+        stripped = line.strip()
+        if stripped.upper() == "CONVENTIONS:":
+            in_block = True
+            continue
+        if in_block:
+            if stripped.startswith("-"):
+                names.append(stripped[1:].strip())
+                continue
+            if stripped.endswith(":") or not stripped:
+                in_block = False
+                if not stripped:
+                    continue
+            else:
+                names.append(stripped)
+                continue
+        out.append(line)
+    if names and depth < 3:
+        out.append("")
+        for conv in names:
+            norm = conv.strip().lower().replace(" ", "_")
+            for cand in (os.path.join(CONVENTIONS_DIR, f"{norm}.dsl"),
+                         os.path.join(SYSTEM_DIR, "cuebids", f"{norm}.dsl")):
+                if os.path.exists(cand):
+                    body = open(cand).read()
+                    if "CONVENTIONS:" in body:
+                        body, _ = inline_conventions(body, depth + 1)
+                    out.append(f"# COMMON: {norm}")
+                    out.append(body.rstrip())
+                    out.append("")
+                    break
+    return "\n".join(out), len(names)
+
+
+def python_rule_count(text, fmt):
+    """Count rules with the repo's own parsers (ground truth for the JS port)."""
+    import tempfile
+    if fmt == "net":
+        from bid.eval_vs_dds import load_decision_net_dsl
+        with tempfile.NamedTemporaryFile("w", suffix=".dsl", delete=False) as f:
+            f.write(text)
+            path = f.name
+        try:
+            return len(load_decision_net_dsl(path).rules)
+        finally:
+            os.unlink(path)
+    from bid.translator import SystemTranslator
+    return len(SystemTranslator().parse(text).rules)
+
+
+def export_systems():
+    systems = {}
+    for key, (rel, fmt, label) in REVIEW_SYSTEMS.items():
+        path = os.path.join(REPO_ROOT, rel)
+        if not os.path.exists(path):
+            continue
+        text = open(path).read()
+        if fmt == "legacy":
+            text, _ = inline_conventions(text)
+        try:
+            count = python_rule_count(text, fmt)
+        except Exception:
+            count = None
+        systems[key] = {"label": label, "format": fmt, "text": text,
+                        "python_rule_count": count}
+    return systems
+
 DSL_PATH = os.path.join(REPO_ROOT, "system", "improved_system.dsl")
 CHAMPION_PATH = os.path.join(REPO_ROOT, "system", "champion_system.dsl")
 FLYWHEEL_STATE = os.path.join(REPO_ROOT, "system", "flywheel_state.json")
@@ -234,6 +321,9 @@ def build_snapshot(boards=40):
         # native-DDS solutions for sampled boards; the browser UI uses the
         # vendored WASM DDS live and falls back to these when it can't load
         "boards": export_board_solutions(sampled),
+        # every reviewable bidding system; JS parses these live and the
+        # python_rule_count fields cross-validate the JS parsers
+        "systems": export_systems(),
     }
 
 

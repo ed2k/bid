@@ -36,7 +36,39 @@
         pendingLevel: null,
         dds: null,          // WASM DDS module once DDS.init() resolves
         ddsFailed: false,
+        systems: {ns: 'improved', ew: 'improved'},
+        engines: {},        // key -> engine (parsed once)
     };
+
+    /** Parse and cache a reviewable system from the snapshot. */
+    function engineFor(key) {
+        if (App.engines[key]) return App.engines[key];
+        const spec = (DATA.systems || {})[key];
+        if (!spec) return null;
+        let engine;
+        if (spec.format === 'legacy') {
+            engine = {kind: 'legacy', system: BidWeb.Legacy.parse(spec.text, key)};
+        } else {
+            engine = {kind: 'net', net: BidWeb.DSL.parse(spec.text, key)};
+        }
+        engine.key = key;
+        engine.label = spec.label;
+        engine.ruleCount = spec.python_rule_count;
+        App.engines[key] = engine;
+        return engine;
+    }
+
+    function buildModels() {
+        return {ns: engineFor(App.systems.ns), ew: engineFor(App.systems.ew)};
+    }
+
+    function teamLabel(seat) {
+        const key = (seat === 0 || seat === 2) ? App.systems.ns : App.systems.ew;
+        const eng = App.engines[key];
+        if (eng) return eng.label;
+        const spec = (DATA.systems || {})[key];
+        return spec ? spec.label : key;
+    }
 
     // WASM calcParPBN vulnerability codes: 0=None, 1=Both, 2=NS, 3=EW
     const WASM_VULN = {0: 0, 1: 2, 2: 3, 3: 1};
@@ -155,6 +187,8 @@
             const fresh = seatHandHTML(hands[s], s, !!hands[s]);
             fresh.id = old.id;
             old.replaceWith(fresh);
+            seatEl.querySelector('.seat-name').textContent =
+                Seat.name(s) + '  ·  ' + teamLabel(s);
             seatEl.classList.toggle('to-call', !!dec && !over && dec.seat === s);
         }
     }
@@ -225,7 +259,7 @@
         }
         const exp = dec.exp;
         body.appendChild(el('p', null, 'Seat to call: ')).appendChild(
-            el('strong', null, Seat.name(dec.seat)));
+            el('strong', null, Seat.name(dec.seat) + '  (' + teamLabel(dec.seat) + ')'));
 
         body.appendChild(el('h4', 'muted small', 'features (JS port)'));
         body.appendChild(featureChips(exp.features));
@@ -234,14 +268,22 @@
             body.appendChild(replayVerification(dec));
         }
 
-        body.appendChild(el('h4', 'muted small',
-            `rules matched (${exp.matchedIds.length}/${App.net.rules.length})`));
-        for (const rr of exp.ruleResults.filter(r => r.matched)) {
-            body.appendChild(ruleBlock(rr));
-        }
-        if (!exp.matchedIds.length) {
-            body.appendChild(el('p', 'muted small',
-                'No positive rule matched → PASS fallback.'));
+        if (exp.kind === 'legacy') {
+            renderLegacyRules(body, exp, dec);
+        } else {
+            const model = App.mode === 'live'
+                ? App.live.runner.modelFor(dec.seat) : null;
+            const total = (model && model.net) ? model.net.rules.length
+                : App.net.rules.length;
+            body.appendChild(el('h4', 'muted small',
+                `rules matched (${exp.matchedIds.length}/${total})`));
+            for (const rr of exp.ruleResults.filter(r => r.matched)) {
+                body.appendChild(ruleBlock(rr));
+            }
+            if (!exp.matchedIds.length) {
+                body.appendChild(el('p', 'muted small',
+                    'No positive rule matched → PASS fallback.'));
+            }
         }
 
         body.appendChild(el('h4', 'muted small', 'candidate set φ(s) — legal'));
@@ -265,9 +307,43 @@
             body.appendChild(el('p', 'tag tag-ok',
                 'intersection override: ' + exp.intersectionApplied));
         }
-        const auto = Net.autoSelect(App.net, exp);
+        const auto = App.mode === 'live'
+            ? App.live.runner.autoCall()
+            : Net.autoSelect(App.net, exp);
         $('system-call-hint').textContent =
-            'System priority pick: ' + auto.toString();
+            'System pick: ' + auto.toString();
+    }
+
+    /** Inspector section for legacy (translator) systems. */
+    function renderLegacyRules(body, exp, dec) {
+        const hand = App.live.deal.hands[dec.seat];
+        body.appendChild(el('h4', 'muted small',
+            `rules matched (${exp.applied.length}, priority order)`));
+        if (!exp.applied.length) {
+            body.appendChild(el('p', 'muted small',
+                'No rule triggered → PASS.'));
+            return;
+        }
+        exp.applied.forEach((rule, i) => {
+            const block = el('div', 'rule-block' + (i === 0 ? '' : ' rule-unmatched'));
+            if (i === 0) {
+                const sel = el('span', 'tag tag-ok', 'SELECTED');
+                block.appendChild(sel);
+                block.appendChild(document.createTextNode(' '));
+            }
+            const head = el('div', 'rule-head');
+            head.appendChild(document.createTextNode(
+                rule.description + ' → ' + rule.call.toString()));
+            head.appendChild(el('span', 'prio', '  prio ' + rule.priority));
+            block.appendChild(head);
+            const ul = el('ul', 'cond-list');
+            for (const chk of BidWeb.Legacy.constraintsDetail(rule.constraints, hand)) {
+                ul.appendChild(el('li', chk.ok ? 'cond-ok' : 'cond-fail',
+                    `${chk.label}  [${formatVal(chk.actual)}]`));
+            }
+            block.appendChild(ul);
+            body.appendChild(block);
+        });
     }
 
     function ruleBlock(rr) {
@@ -527,7 +603,7 @@
         App.replay = null;
         App.pendingLevel = null;
         App.live.deal = BidWeb.Deal.random(dealer, vuln);
-        App.live.runner = new Auction.AuctionRunner(App.live.deal, App.net, 'manual');
+        App.live.runner = new Auction.AuctionRunner(App.live.deal, buildModels(), 'manual');
         $('info-source').textContent = 'live deal (random)';
         $('info-dealer-vuln').textContent = Seat.name(dealer) + ' / ' +
             BidWeb.Vulnerability.label(vuln);
@@ -602,7 +678,7 @@
         App.replay = null;
         App.pendingLevel = null;
         App.live.deal = new BidWeb.Deal(dealer, vuln, hands);
-        App.live.runner = new Auction.AuctionRunner(App.live.deal, App.net, 'manual');
+        App.live.runner = new Auction.AuctionRunner(App.live.deal, buildModels(), 'manual');
         $('info-source').textContent = 'custom board (user input)';
         $('info-dealer-vuln').textContent = Seat.name(dealer) + ' / ' +
             BidWeb.Vulnerability.label(vuln);
@@ -613,7 +689,7 @@
     function resetAuction() {
         App.pendingLevel = null;
         if (App.mode === 'live') {
-            App.live.runner = new Auction.AuctionRunner(App.live.deal, App.net, 'manual');
+            App.live.runner = new Auction.AuctionRunner(App.live.deal, buildModels(), 'manual');
         } else if (App.replay) {
             App.replay.idx = -1;
         }
@@ -816,13 +892,290 @@
         table.appendChild(tb);
     }
 
+    // ---------- rules editor ----------
+
+    const Rules = {key: null, baseline: '', edited: {}};
+
+    function rulesStatus(text, cls) {
+        const elx = $('rules-status-text');
+        elx.textContent = text;
+        elx.className = 'val ' + (cls || '');
+    }
+
+    function rulesSourceText(key) {
+        return Rules.edited[key] !== undefined
+            ? Rules.edited[key] : (DATA.systems[key] || {}).text || '';
+    }
+
+    function selectRulesSystem(key) {
+        Rules.key = key;
+        const spec = DATA.systems[key] || {};
+        $('sel-rules-system').value = key;
+        $('rules-text').value = rulesSourceText(key);
+        const edited = Rules.edited[key] !== undefined;
+        rulesStatus(`${spec.label || key} — ${spec.format} engine, ` +
+            `${spec.python_rule_count ?? '?'} rules in snapshot` +
+            (edited ? ' · LOCAL EDITS ACTIVE' : ''), edited ? 'dirty' : '');
+    }
+
+    function rulesTextChanged() {
+        if (!Rules.key) return;
+        const cur = $('rules-text').value;
+        const hasEdits = cur !== (DATA.systems[Rules.key] || {}).text;
+        if (hasEdits) Rules.edited[Rules.key] = cur;
+        else delete Rules.edited[Rules.key];
+        rulesStatus(hasEdits ? 'edited (not yet applied)'
+            : `${Rules.key} — matches snapshot`, hasEdits ? 'dirty' : '');
+    }
+
+    /** Parse the edited text; on success register the engine and assign it
+     *  to the given team, restarting the live auction. Returns true on success. */
+    function applyRules(side) {
+        if (!Rules.key) return false;
+        const text = $('rules-text').value;
+        const spec = DATA.systems[Rules.key] || {};
+        let engine;
+        try {
+            if (spec.format === 'legacy') {
+                const parsed = BidWeb.Legacy.parse(text, Rules.key + '_edited');
+                if (!parsed.rules.length) throw new Error('no rules parsed');
+                engine = {kind: 'legacy', system: parsed};
+            } else {
+                const parsed = BidWeb.DSL.parse(text, Rules.key + '_edited');
+                if (!parsed.rules.length) throw new Error('no rules parsed');
+                engine = {kind: 'net', net: parsed};
+            }
+        } catch (e) {
+            rulesStatus('Parse FAILED: ' + e.message, 'error');
+            return false;
+        }
+        engine.key = 'edited:' + Rules.key;
+        engine.label = `Edited ${spec.label || Rules.key} (local)`;
+        engine.ruleCount = engine.net ? engine.net.rules.length
+            : engine.system.rules.length;
+        App.engines[engine.key] = engine;
+
+        // make the edited engine selectable and current for the team
+        App.editedOption = App.editedOption || {};
+        const optKey = 'edited:' + Rules.key;
+        for (const side2 of ['ns', 'ew']) {
+            const sel = $('sel-system-' + side2);
+            if (!sel.querySelector(`option[value="${optKey}"]`)) {
+                const opt = document.createElement('option');
+                opt.value = optKey;
+                opt.textContent = engine.label;
+                sel.appendChild(opt);
+            }
+        }
+        App.systems[side] = optKey;
+        $('sel-system-' + side).value = optKey;
+
+        Rules.edited[Rules.key] = text;
+        rulesStatus(`applied to ${side.toUpperCase()} — ${engine.ruleCount} rules ` +
+            'parsed from edited DSL', 'applied');
+        if (App.mode === 'live') resetAuction();
+        return true;
+    }
+
+    function downloadRules() {
+        const key = Rules.key || 'system';
+        const text = $('rules-text').value;
+        const blob = new Blob([text], {type: 'text/plain'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = key.replace(/[^a-z0-9_]+/gi, '_') + '_edited.dsl';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        rulesStatus(`downloaded ${a.download} (${text.split('\n').length} lines)`,
+            'applied');
+    }
+
+    function revertRules() {
+        if (!Rules.key) return;
+        delete Rules.edited[Rules.key];
+        $('rules-text').value = (DATA.systems[Rules.key] || {}).text || '';
+        rulesStatus('reverted to snapshot version');
+    }
+
+    function renderRulesTab() {
+        const sel = $('sel-rules-system');
+        if (!sel.options.length) {
+            for (const [key, spec] of Object.entries(DATA.systems || {})) {
+                const opt = el('option', null,
+                    `${spec.label} (${spec.format}, ${spec.python_rule_count ?? '?'} rules)`);
+                opt.value = key;
+                sel.appendChild(opt);
+            }
+            sel.addEventListener('change', () => selectRulesSystem(sel.value));
+        }
+        if (!Rules.key && sel.options.length) selectRulesSystem(sel.value);
+    }
+
+    // ---------- student lab ----------
+
+    const Lab = {rows: null, dataset: null, trained: null, loaded: null, teacher: 'improved'};
+
+    function labStatus(text) { $('student-info-status').textContent = text; }
+
+    function labTeacherEngine() {
+        // prefer a live (possibly edited) engine over the raw snapshot text
+        const key = Lab.teacher;
+        if (App.engines[key]) return App.engines[key];
+        const spec = (DATA.systems || {})[key];
+        if (!spec) return null;
+        return engineFor(key);
+    }
+
+    async function labGenerate() {
+        const engine = labTeacherEngine();
+        if (!engine) { labStatus('no teacher system available'); return; }
+        const deals = Math.max(10, Math.min(400, parseInt($('in-student-deals').value, 10) || 100));
+        labStatus(`generating ${deals} boards with ${engine.label}…`);
+        await new Promise(r => setTimeout(r, 30));   // let the status paint
+        Lab.rows = BidWeb.StudentLab.buildCorpus(engine, deals, 7);
+        Lab.dataset = BidWeb.StudentLab.encodeDataset(Lab.rows);
+        $('student-info-corpus').textContent =
+            `${Lab.rows.length} decisions / ${deals} boards · ` +
+            `${Lab.dataset.vocab.length} distinct bids · ` +
+            `forced ${Lab.rows.filter(r => r.forced).length}`;
+        labStatus('corpus ready — train the student');
+    }
+
+    async function labTrain() {
+        if (!Lab.dataset) { labStatus('generate a corpus first'); return; }
+        const epochs = Math.max(2, Math.min(60, parseInt($('in-student-epochs').value, 10) || 12));
+        labStatus(`training ${epochs} epochs…`);
+        const {model, log} = await new Promise(resolve => {
+            const result = BidWeb.StudentLab.train(Lab.dataset.X, Lab.dataset.y,
+                Lab.dataset.vocab, {
+                    epochs,
+                    onEpoch: e => {
+                        $('student-info-train').textContent =
+                            `epoch ${e.epoch}/${epochs} · loss ${e.loss.toFixed(3)}`;
+                    },
+                });
+            // yield between epochs is handled inside train via onEpoch sync;
+            // release the thread once now that it is done
+            setTimeout(() => resolve(result), 20);
+        });
+        Lab.trained = model;
+        const last = log[log.length - 1];
+        $('student-info-train').textContent = `done · final loss ${last.loss.toFixed(3)}`;
+        $('student-info-acc').textContent =
+            `${(last.valAcc * 100).toFixed(1)}% (majority baseline ${(last.baselineAcc * 100).toFixed(1)}%)`;
+        labStatus('student trained — save it or evaluate it');
+    }
+
+    function labDownload() {
+        if (!Lab.trained) { labStatus('train a student first'); return; }
+        const teacherSpec = (DATA.systems || {})[Lab.teacher];
+        const payload = BidWeb.StudentLab.serialize(Lab.trained, {
+            teacher: Lab.teacher,
+            teacher_label: teacherSpec ? teacherSpec.label : Lab.teacher,
+            created: new Date().toISOString(),
+            corpus_rows: Lab.rows ? Lab.rows.length : 0,
+            feature_dim: BidWeb.StudentLab.FEATURE_DIM,
+        });
+        const blob = new Blob([JSON.stringify(payload)], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'student_web.json';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        labStatus('saved student_web.json');
+    }
+
+    function labEvaluateLoaded() {
+        if (!Lab.loaded) { labStatus('load a student.json first'); return; }
+        if (!Lab.dataset) { labStatus('generate a corpus to evaluate against'); return; }
+        const res = BidWeb.StudentLab.evaluate(Lab.loaded.model, Lab.dataset.X,
+            Lab.dataset.y, Lab.dataset.vocab);
+        $('student-info-acc').textContent =
+            `loaded student ${(res.acc * 100).toFixed(1)}% on current corpus (${res.n} rows)`;
+        labStatus('loaded student evaluated' +
+            (Lab.loaded.meta.created ? ` (created ${Lab.loaded.meta.created})` : ''));
+    }
+
+    function renderStudentTab() {
+        if (!Lab.trained && Lab.loaded) {
+            const m = Lab.loaded.meta || {};
+            const isDefault = globalThis.BID_DEFAULT_STUDENT &&
+                Lab.loaded.meta === globalThis.BID_DEFAULT_STUDENT.meta;
+            labStatus((isDefault ? 'default student loaded' : 'student loaded') +
+                (m.val_acc !== undefined
+                    ? ` — snapshot-time val ${(m.val_acc * 100).toFixed(1)}% ` +
+                      `vs baseline ${(m.baseline_acc * 100).toFixed(1)}%` : ''));
+            $('student-info-corpus').textContent = m.corpus_rows
+                ? `trained on ${m.corpus_rows} rows` : '–';
+            $('student-info-train').textContent = m.teacher
+                ? `teacher: ${m.teacher_label || m.teacher}` : '–';
+        }
+        const sel = $('sel-student-teacher');
+        const prev = sel.value || Lab.teacher;
+        sel.innerHTML = '';
+        const add = (value, label) => {
+            const opt = el('option', null, label);
+            opt.value = value;
+            sel.appendChild(opt);
+        };
+        for (const [key, spec] of Object.entries(DATA.systems || {})) {
+            add(key, spec.label);
+        }
+        for (const [key, eng] of Object.entries(App.engines)) {
+            if (key.startsWith('edited:')) add(key, eng.label);
+        }
+        sel.value = prev in (DATA.systems || {}) || App.engines[prev] ? prev : Lab.teacher;
+        sel.onchange = () => {
+            Lab.teacher = sel.value;
+            Lab.rows = Lab.dataset = Lab.trained = null;
+            $('student-info-corpus').textContent = '–';
+            $('student-info-train').textContent = '–';
+            $('student-info-acc').textContent = '–';
+            labStatus('teacher changed — regenerate the corpus');
+        };
+    }
+
+    async function labLoadFile(file) {
+        try {
+            const text = await file.text();
+            Lab.loaded = BidWeb.StudentLab.load(JSON.parse(text));
+            labStatus(`loaded ${file.name}` +
+                (Lab.loaded.meta.teacher ? ` (teacher: ${Lab.loaded.meta.teacher})` : ''));
+            $('student-info-corpus').textContent = Lab.loaded.meta.corpus_rows
+                ? `trained on ${Lab.loaded.meta.corpus_rows} rows` : '–';
+        } catch (e) {
+            labStatus('load failed: ' + e.message);
+        }
+    }
+
+    /** Load the shipped default student (web/student_default.js) if present. */
+    function loadDefaultStudent() {
+        const d = globalThis.BID_DEFAULT_STUDENT;
+        if (!d) return false;
+        try {
+            Lab.loaded = BidWeb.StudentLab.load(d);
+            return true;
+        } catch (e) {
+            console.warn('default student failed to load:', e.message);
+            return false;
+        }
+    }
+
     // ---------- tabs / boot ----------
 
     function showTab(name) {
         $('view-auction').classList.toggle('hidden', name !== 'auction');
         $('view-data').classList.toggle('hidden', name !== 'data');
+        $('view-rules').classList.toggle('hidden', name !== 'rules');
+        $('view-student').classList.toggle('hidden', name !== 'student');
         $('tab-auction').classList.toggle('active', name === 'auction');
         $('tab-data').classList.toggle('active', name === 'data');
+        $('tab-rules').classList.toggle('active', name === 'rules');
+        $('tab-student').classList.toggle('active', name === 'student');
     }
 
     function boot() {
@@ -891,11 +1244,29 @@
             if (App.mode === 'live') { App.live.runner.runOut(); render(); }
             else replayStep(App.replay.rows.length);
         };
+        // per-team bidding-system selects (net + legacy engines)
+        const sysKeys = Object.keys(DATA.systems || {});
+        for (const side of ['ns', 'ew']) {
+            const sel = $('sel-system-' + side);
+            sel.innerHTML = '';
+            for (const key of sysKeys) {
+                const spec = DATA.systems[key];
+                const opt = el('option', null,
+                    `${spec.label} (${spec.python_rule_count ?? '?'} rules)`);
+                opt.value = key;
+                sel.appendChild(opt);
+            }
+            sel.value = App.systems[side];
+            sel.onchange = () => {
+                App.systems[side] = sel.value;
+                if (App.mode === 'live') resetAuction();   // restart with new systems
+            };
+        }
+
         selBoard.onchange = () => {
             const b = App.boardByKey[selBoard.value];
             if (b) { loadReplay(b.rows, 'corpus ' + b.label); selDispute.value = ''; }
-        };
-        selDispute.onchange = () => {
+        };        selDispute.onchange = () => {
             const row = App.disputes[parseInt(selDispute.value, 10)];
             if (!row) return;
             const board = App.boardByKey[row.board.seed + ':' + row.board.index];
@@ -905,6 +1276,20 @@
         };
         $('tab-auction').onclick = () => showTab('auction');
         $('tab-data').onclick = () => { showTab('data'); renderDataTab(); };
+        $('tab-rules').onclick = () => { showTab('rules'); renderRulesTab(); };
+        $('tab-student').onclick = () => { showTab('student'); renderStudentTab(); };
+        $('btn-student-generate').onclick = () => { labGenerate(); };
+        $('btn-student-train').onclick = () => { labTrain(); };
+        $('btn-student-download').onclick = labDownload;
+        $('btn-student-eval').onclick = labEvaluateLoaded;
+        $('in-student-file').addEventListener('change', e => {
+            if (e.target.files && e.target.files[0]) labLoadFile(e.target.files[0]);
+        });
+        $('btn-rules-apply-ns').onclick = () => applyRules('ns');
+        $('btn-rules-apply-ew').onclick = () => applyRules('ew');
+        $('btn-rules-download').onclick = downloadRules;
+        $('btn-rules-reset').onclick = revertRules;
+        $('rules-text').addEventListener('input', rulesTextChanged);
 
         document.querySelectorAll('.special-bids .bid-btn').forEach(btn => {
             btn.onclick = () => {
@@ -921,6 +1306,7 @@
         });
 
         renderDataTab();
+        loadDefaultStudent();   // ship with a ready-to-use student
         newDeal();
     }
 

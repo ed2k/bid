@@ -336,14 +336,40 @@ and `../ben/web`): vanilla JS modules, no framework, no server-side logic.
   (`Load board…` accepts `SAK2 HKQJ DQJ9 C432`, dotted `AKQJ.T98.765.432`,
   or the corpus `S : A K 2 …` format, with 13-card/duplicate validation), or
   step through every decision of the *current* DSL system in the browser.
+  **Pick the bidding system per team** (`N/S system` / `E/W system` selects:
+  the evolved Improved system, the auto-evolved Champion, Precision, Blue
+  Club, or GIB) and review partnerships against each other, arena-style.
   The inspector shows the extracted
   features, every matched rule with per-condition ✓/✗, the candidate set
   φ(s), legality filtering, and the deterministic system pick; you can bid
   manually from the bidding box (any bridge-legal call) to probe the system.
+  Both engine families are ported: the DecisionNet DSL (improved/champion)
+  and the legacy translator engine with its constraint matcher and SEQUENCE
+  trigger algorithm (precision/blue_club/gib, conventions inlined by the
+  exporter); JS rule counts are asserted equal to Python's own parsers in
+  `tests/web/engine_test.mjs`.
 - **Replay review** — load any sampled corpus board or student↔teacher
   disagreement; each recorded call is re-verified live against the re-computed
   candidate set and feature values (`in φ(s) ✓`, `features match Python ✓`),
   with `ARB_STUDENT_LEGAL` teacher-bug rows one click away.
+- **Rules Editor** — view and edit any embedded system's DSL in the browser,
+  apply the edited version to a team (the auction review restarts with your
+  rules, so you can probe behaviour changes decision-by-decision), and
+  **download the edited DSL as a `.dsl` file** to drop into `system/` — a
+  human-in-the-loop path back into the flywheel. Edits are validated by the
+  same parsers; broken DSL is reported, never applied.
+- **Student Lab** — an in-browser student loop at demo scale: generate a
+  corpus by letting any loaded (or hand-edited) system bid N boards with the
+  JS engine, train a small seeded MLP (27 features → 64 → 32 → bid vocab,
+  pure JS, no dependencies) to imitate the teacher, inspect held-out accuracy
+  vs the majority baseline, and **save the student locally** as
+  `student.json`. A **default student ships with the UI**
+  (`web/student_default.js`, auto-loaded at boot, ~74% vs 61% baseline on the
+  snapshot teacher) — regenerate it against a refreshed snapshot with
+  `node web/build_default_student.mjs`. Saved students can be reloaded and
+  evaluated against fresh corpora at any time. This complements (not
+  replaces) the production 5.5M-param CoT student, which still trains via
+  `refresh_student.py` (Loop B).
 - **Loop Data** — the teacher's anchor ledger and applied patches, the
   student's gate history, and mining statistics.
 - **Double-dummy tables** come from the vendored WASM DDS

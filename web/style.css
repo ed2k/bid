@@ -237,3 +237,17 @@ select {
 .board-input-grid input.bad { border-color: var(--danger); }
 .board-error { color: var(--danger); font-size: 0.8rem; min-height: 18px; margin: 4px 0 8px 0; }
 .result-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+/* ---- rules editor ---- */
+#rules-text {
+    width: 100%; min-height: 560px; resize: vertical;
+    background: var(--code-bg); color: var(--text);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.82rem; line-height: 1.45; white-space: pre; tab-size: 2;
+}
+#rules-text:focus { outline: 1px solid var(--primary); }
+#rules-status { margin-bottom: 10px; }
+#rules-status .val.dirty { color: var(--warn); }
+#rules-status .val.applied { color: var(--success); }
+#rules-status .val.error { color: var(--danger); }

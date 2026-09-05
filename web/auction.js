@@ -67,19 +67,41 @@
     const MAX_CALLS = 20;   // arena.py safety cap
 
     /**
-     * AuctionRunner drives one board. Modes:
+     * AuctionRunner drives one board. `models` maps each seat (0..3) to an
+     * engine: {kind:'net', net} (DecisionNet DSL) or {kind:'legacy', system}
+     * (translator DSL).  A bare net/engine applies to all four seats, and
+     * {ns, ew} picks engines per partnership — mirroring arena.play_board.
+     * Modes:
      *   'manual'  — the reviewer picks every call via the bidding box
-     *   'auto'    — deterministic priority selection (see bid_net.autoSelect)
-     * step() returns the explanation of the NEXT decision, or null when the
-     * auction is over. applyCall(call) appends and advances.
+     *   'auto'    — deterministic selection per engine (see autoSelect)
      */
-    function AuctionRunner(deal, net, mode) {
+    function AuctionRunner(deal, models, mode) {
         this.deal = deal;
-        this.net = net;
         this.mode = mode || 'manual';
         this.history = [];
-        this.record = [];      // [{seat, call, explanation, auto}]
+        this.record = [];
+        this.models = normalizeModels(models);
     }
+
+    function normalizeModels(models) {
+        const bySeat = {};
+        if (!models) {
+            for (let s = 0; s < 4; s++) bySeat[s] = null;
+        } else if (models.ns !== undefined || models.ew !== undefined) {
+            bySeat[0] = bySeat[2] = models.ns || null;
+            bySeat[1] = bySeat[3] = models.ew || null;
+        } else if (models.kind === 'net' || models.kind === 'legacy' ||
+                   models.rules !== undefined) {
+            for (let s = 0; s < 4; s++) bySeat[s] = models;
+        } else {
+            for (let s = 0; s < 4; s++) bySeat[s] = models[s] || null;
+        }
+        return bySeat;
+    }
+
+    AuctionRunner.prototype.modelFor = function (seat) {
+        return this.models[seat];
+    };
 
     AuctionRunner.prototype.currentSeat = function () {
         return (this.deal.dealer + this.history.length) % 4;
@@ -92,13 +114,23 @@
     /** Explanation of the decision currently facing `seat` (defaults to turn). */
     AuctionRunner.prototype.explain = function (seat) {
         const s = (seat === undefined) ? this.currentSeat() : seat;
-        return api.Net.explain(this.net, this.deal.hands[s], this.history,
+        const model = this.models[s];
+        if (model && model.kind === 'legacy') {
+            return api.Legacy.explain(model.system, this.deal.hands[s], this.history);
+        }
+        const net = model ? model.net : null;
+        return api.Net.explain(net, this.deal.hands[s], this.history,
             s, this.deal.dealer, this.deal.vuln);
     };
 
     /** Compute (but do not apply) the auto call for the current turn. */
     AuctionRunner.prototype.autoCall = function () {
-        return api.Net.autoSelect(this.net, this.explain());
+        const model = this.models[this.currentSeat()];
+        if (model && model.kind === 'legacy') {
+            const exp = this.explain();
+            return exp.chosen ? exp.chosen.call : new Call(C.PASS);
+        }
+        return api.Net.autoSelect(model ? model.net : null, this.explain());
     };
 
     AuctionRunner.prototype.applyCall = function (call, explanation, auto) {

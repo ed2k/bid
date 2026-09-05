@@ -1,2 +1,13 @@
-port to javascript code that can be run from user browser
+🔴 1. priority is dead code in DecisionNet (critical correctness bug) DecisionNetRule.priority is stored and exported, but DecisionNet.actions() never reads it — all matched rules' calls go into a set, and tie-breaking among multiple candidates is arbitrary. Compare with BiddingSystem.get_bid (engine.py), which does sort by priority. So the same DSL behaves differently depending on which path evaluates it, and all your flywheel PRIORITY: 30/35 tuning is silently ignored on the DecisionNet path. Fix: return highest-priority matched call per call, or order candidates by priority.
 
+🔴 2. Negative rules are exported twice — this is why SLAM_EXPLORE_6S appears 5× and NO_D_WITH_MAJOR_HEA 24× In export_dsl() the if r.is_negative: block prints the rule, then the code falls through and prints the same rule again (missing continue). Each save→load→save cycle squares the duplicates. Your improved_system.dsl is currently 145 blocks where ~⅓ are floaters from this bug. Fix is one continue; then clean the DSL once.
+
+🔴 3. Duplicate-rule linting is absent BiddingSystem.add_rule dedupes common rules but DecisionNet dedupes nothing — you have 24 identical NO_D_WITH_MAJOR_HEA rules and 7 NEGATIVE blocks in the DSL. A 20-line lint_dsl.py (duplicate ID, contradicted conditions e.g. hcp >= 15 + hcp <= 14, unreachable priority shadowing) run as a test catches this whole class.
+
+🟡 4. Engine.estimate_deal is intentionally weak on passes "PASS implies no rule matched" → currently pass (“do nothing if no explicit rule matches”), so your belief inference gives zero information from partner passing. Even a crude "constraints = complement of opening rules" would materially improve RBMBMC world filtering — and the player model's job gets easier.
+
+🟡 5. Still missing from the last conversation, now confirmed against actually-landed code:
+
+No opponent-aggression features (nothing matching opp_*count*, competitive_*, preempt* in features.py — only opponents_bid, is_competitive booleans).
+Validation: grep -c "opp_" features.py = a handful of strings, none numeric. Rules can't yet count how much the opponents bid.
+Order of work I'd do: (1) priority dead-code fix — correctness; (2) export-dsl double-write — one continue; (3) lint + cleans the DSL down to a sane size; then the design-level stuff (opponent-aggression features, PASS inference). The first three are bugs; fixing them will change evaluation numbers, so do them before any retraining or DSL cleanup of conventions.

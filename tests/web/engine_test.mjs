@@ -16,9 +16,15 @@ import {dirname, join} from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
-for (const f of ['objects.js', 'features.js', 'bid_dsl.js', 'bid_net.js', 'auction.js']) {
+for (const f of ['objects.js', 'features.js', 'bid_dsl.js', 'system_dsl.js',
+                 'bid_net.js', 'auction.js', 'student_lab.js']) {
     (0, eval)(readFileSync(join(root, 'web', f), 'utf8'));
 }
+let DEFAULT_STUDENT = null;
+try {
+    (0, eval)(readFileSync(join(root, 'web', 'student_default.js'), 'utf8'));
+    DEFAULT_STUDENT = globalThis.BID_DEFAULT_STUDENT;
+} catch (e) { /* optional artifact */ }
 (0, eval)(readFileSync(join(root, 'web', 'review_data.js'), 'utf8'));
 
 const BidWeb = globalThis.BidWeb;
@@ -187,6 +193,104 @@ try {
     console.log(`  (WASM calcDDTablePBN: ${ms} ms on a random full deal)`);
 } catch (e) {
     check('dds: WASM solves full deal', false, String(e));
+}
+
+// ---- 7. reviewable systems: parse parity + legacy behaviour ----------------
+
+const systems = DATA.systems || {};
+check('systems: snapshot carries reviewable systems',
+    Object.keys(systems).length >= 4, `got ${Object.keys(systems).length}`);
+for (const [key, spec] of Object.entries(systems)) {
+    const parsed = spec.format === 'legacy'
+        ? BidWeb.Legacy.parse(spec.text, key)
+        : BidWeb.DSL.parse(spec.text, key);
+    check(`systems: ${key} rule count matches Python`,
+        parsed.rules.length === spec.python_rule_count,
+        `js ${parsed.rules.length} vs py ${spec.python_rule_count}`);
+}
+
+// Precision strong-club opening, verified against the Python engine:
+//   SAK2 HAK2 DAK3 C5432 (21 HCP) -> 1C; weak hands -> no OPEN rule fires.
+{
+    const prec = BidWeb.Legacy.parse(systems.precision.text, 'precision');
+    const strong = BidWeb.Hand.parse('SAK2 HKQ2 DAK3 C5432');
+    const r = BidWeb.Legacy.appliedRules(prec, [], strong)[0];
+    check('systems: precision opens 1C on 21 HCP',
+        r && r.call.toString() === '1C', r && r.call.toString());
+    const weak = BidWeb.Hand.parse('S5432 H872 D962 CJ42');
+    check('systems: precision passes on 1 HCP opening set',
+        !BidWeb.Legacy.appliedRules(prec, [], weak).length);
+}
+
+// mixed-partnership auction must run end-to-end (improved N/S vs precision E/W)
+{
+    const deal = BidWeb.Deal.random(0, 0, 7);
+    const runner = new BidWeb.Auction.AuctionRunner(deal, {
+        ns: {kind: 'net', net},
+        ew: {kind: 'legacy', system: BidWeb.Legacy.parse(systems.precision.text, 'precision')},
+    }, 'manual');
+    runner.runOut();
+    check('systems: mixed-partnership auction completes',
+        runner.history.length >= 4 && BidWeb.Auction.getContract(runner.history, 0) !== null,
+        `calls ${runner.history.length}`);
+}
+
+// ---- 8. student lab: seeded corpus -> train -> serialize/load --------------
+
+{
+    const SL = BidWeb.StudentLab;
+    const engine = {kind: 'net', net};
+    const rows = SL.buildCorpus(engine, 12, 3);
+    check('student: corpus generated', rows.length >= 40, `rows ${rows.length}`);
+    const {X, y, vocab} = SL.encodeDataset(rows);
+    check('student: feature dim consistent', X[0].length === SL.FEATURE_DIM,
+        `${X[0].length} vs ${SL.FEATURE_DIM}`);
+    const {model, log} = SL.train(X, y, vocab, {epochs: 10, seed: 1});
+    check('student: training reduces loss',
+        log[log.length - 1].loss < log[0].loss,
+        `${log[0].loss.toFixed(3)} -> ${log[log.length - 1].loss.toFixed(3)}`);
+    const last = log[log.length - 1];
+    check('student: val accuracy sane', last.valAcc >= 0 && last.valAcc <= 1,
+        String(last.valAcc));
+
+    // determinism: same seed -> identical round-tripped model behaviour
+    const json = SL.serialize({model, meta: {teacher: 'test'}});
+    const reloaded = SL.load(JSON.parse(JSON.stringify(json)));
+    const evOrig = SL.evaluate({model}, X, y, vocab);
+    const evLoad = SL.evaluate(reloaded.model, X, y, vocab);
+    check('student: serialize/load round-trips exactly',
+        evOrig.acc === evLoad.acc, `${evOrig.acc} vs ${evLoad.acc}`);
+
+    // determinism of the whole pipeline
+    const rows2 = SL.buildCorpus(engine, 12, 3);
+    check('student: corpus generation is seeded/deterministic',
+        JSON.stringify(rows2) === JSON.stringify(rows));
+}
+
+// ---- 9. shipped default student ---------------------------------------------
+
+{
+    const SL = BidWeb.StudentLab;
+    const engine = {kind: 'net', net};
+    check('student: default student ships with the UI', !!DEFAULT_STUDENT);
+    if (DEFAULT_STUDENT) {
+        const reloaded = SL.load(DEFAULT_STUDENT);
+        check('student: default metadata present',
+            reloaded.meta.teacher === 'improved' && reloaded.meta.val_acc !== undefined,
+            JSON.stringify(reloaded.meta).slice(0, 90));
+        // beats the majority baseline on a fresh deterministic corpus
+        const rows = SL.buildCorpus(engine, 30, 11);
+        const fresh = SL.encodeDataset(rows);
+        const ev = SL.evaluate(reloaded.model, fresh.X, fresh.y, fresh.vocab);
+        const counts = new Map();
+        for (const c of fresh.y) counts.set(c, (counts.get(c) || 0) + 1);
+        let maj = 0;
+        for (const n of counts.values()) if (n > maj) maj = n;
+        const baseline = maj / fresh.y.length;
+        check('student: default beats majority baseline on fresh corpus',
+            ev.acc > baseline,
+            `acc ${(ev.acc * 100).toFixed(1)}% vs baseline ${(baseline * 100).toFixed(1)}%`);
+    }
 }
 
 // ---- summary ---------------------------------------------------------------
