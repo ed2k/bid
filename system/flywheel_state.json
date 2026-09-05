@@ -1,5 +1,5 @@
 {
-  "version": 27,
+  "version": 28,
   "failed": [
     "curated:BALANCING",
     "curated:TKO_SHAPE",
@@ -107,7 +107,10 @@
     "loosen:GRAND_7NT_ONE_K",
     "gate:FW_NO_2_TRUMP_RAISE:not_opening",
     "gate:FW_NO_2_TRUMP_RAISE:partner",
-    "tighten:NO_D_WITH_MAJOR_HEA"
+    "tighten:NO_D_WITH_MAJOR_HEA",
+    "gate:FW_PRE_RAISE_H:partner",
+    "curated:SUPPORT",
+    "gate:FW_MIXED_RAISE_H:not_opening"
   ],
   "applied": [
     {
@@ -238,10 +241,15 @@
       "sig": "curated:SUPPORT",
       "name": "SUPPORT",
       "delta": 0.0
+    },
+    {
+      "sig": "loosen:NO_C_WITH_MAJOR_HEA",
+      "name": "LOOSEN_NO_C_WITH_MAJOR_HEA",
+      "delta": 36.0
     }
   ],
   "champion_swaps": 0,
-  "champion_holds": 6,
+  "champion_holds": 8,
   "failed_at": {
     "curated:BALANCING": 25,
     "curated:TKO_SHAPE": 25,
@@ -349,7 +357,10 @@
     "loosen:GRAND_7NT_ONE_K": 25,
     "gate:FW_NO_2_TRUMP_RAISE:not_opening": 25,
     "gate:FW_NO_2_TRUMP_RAISE:partner": 25,
-    "tighten:NO_D_WITH_MAJOR_HEA": 26
+    "tighten:NO_D_WITH_MAJOR_HEA": 26,
+    "gate:FW_PRE_RAISE_H:partner": 27,
+    "curated:SUPPORT": 27,
+    "gate:FW_MIXED_RAISE_H:not_opening": 27
   },
   "anchor": {
     "25": {
@@ -366,6 +377,11 @@
       "avg_score": -19.81,
       "avg_imp_loss": 4.074,
       "par_accuracy": 53.7
+    },
+    "28": {
+      "avg_score": 0.93,
+      "avg_imp_loss": 4.204,
+      "par_accuracy": 50.0
     }
   }
 }

@@ -83,6 +83,16 @@ class DecisionNet:
         self.wrapped_system: Optional[BiddingSystem] = None
 
     def add_rule(self, rule: DecisionNetRule):
+        # Skip exact duplicates: the pre-fix exporter double-wrote negative
+        # rules, and repeated save->load cycles squared them (24 identical
+        # NO_D_WITH_MAJOR_HEA blocks in one historical system.dsl).
+        body = (rule.rule_id, str(rule.call), rule.priority, rule.is_negative,
+                tuple((c.key, c.op, str(c.value)) for c in rule.conditions))
+        for existing in self.rules:
+            if (existing.rule_id, str(existing.call), existing.priority,
+                    existing.is_negative,
+                    tuple((c.key, c.op, str(c.value)) for c in existing.conditions)) == body:
+                return
         self.rules.append(rule)
 
     def attach_system(self, system: BiddingSystem):
@@ -99,14 +109,19 @@ class DecisionNet:
                 history: List[Call],
                 my_seat: Seat = Seat.SOUTH,
                 dealer: Seat = Seat.NORTH,
-                vuln: int = 0) -> Set[Call]:
+                vuln: int = 0) -> List[Call]:
         """
         Evaluate partial state s and return candidate calls φ(s).
+
+        The result is ORDERED by rule priority (highest first; ties by call
+        string), so deterministic consumers can take actions()[0] and DSL
+        PRIORITY: fields finally bite on the DecisionNet path.  The full
+        candidate set is still returned — PIDM searches the whole frontier.
         """
         features = BridgeFeatures.extract_all(hand, history, my_seat, dealer, vuln)
-        
+
         # 1. Evaluate explicit decision net rules
-        positive_calls: Set[Call] = set()
+        rule_priority: Dict[Call, int] = {}   # call -> max matched rule priority
         negative_calls: Set[Call] = set()
         matched_rule_ids: List[str] = []
 
@@ -115,36 +130,44 @@ class DecisionNet:
                 if r.is_negative:
                     negative_calls.add(r.call)
                 else:
-                    positive_calls.add(r.call)
+                    prev = rule_priority.get(r.call)
+                    rule_priority[r.call] = r.priority if prev is None else max(prev, r.priority)
                     matched_rule_ids.append(r.rule_id)
 
         # 2. If wrapped BiddingSystem is present, add its matched bid if any
         if self.wrapped_system is not None:
             sys_rule = self.wrapped_system.get_bid(history, hand)
             if sys_rule:
-                positive_calls.add(sys_rule.call)
+                rule_priority[sys_rule.call] = max(
+                    rule_priority.get(sys_rule.call, 0), sys_rule.priority)
                 matched_rule_ids.append(f"sys_{sys_rule.description or str(sys_rule.call)}")
 
         # Default fallback if no positive rules matched
-        if not positive_calls:
-            # Fallback: Pass
-            candidate_calls = {Call(CallType.PASS)}
+        if not rule_priority:
+            candidate_calls = [(Call(CallType.PASS), 0)]
         else:
-            candidate_calls = positive_calls - negative_calls
+            candidate_calls = [(c, p) for c, p in rule_priority.items()
+                               if c not in negative_calls]
             if not candidate_calls:
-                candidate_calls = {Call(CallType.PASS)}
+                candidate_calls = [(Call(CallType.PASS), 0)]
 
         # 3. Check for intersection node refinement if multiple rules matched
         if len(matched_rule_ids) > 1:
             key = tuple(sorted(matched_rule_ids))
+            resolved = None
             if key in self.intersection_nodes:
-                candidate_calls = self.intersection_nodes[key].resolve(features, candidate_calls)
+                resolved = self.intersection_nodes[key].resolve(
+                    features, {c for c, _ in candidate_calls})
             else:
                 # Check for subset intersection keys
                 for inter_key, inter_node in self.intersection_nodes.items():
                     if set(inter_key).issubset(set(matched_rule_ids)):
-                        candidate_calls = inter_node.resolve(features, candidate_calls)
+                        resolved = inter_node.resolve(
+                            features, {c for c, _ in candidate_calls})
                         break
+            if resolved is not None:
+                prio_by_call = dict(candidate_calls)
+                candidate_calls = [(c, prio_by_call.get(c, 0)) for c in resolved]
 
         # 4. Filter out illegal calls based on auction history
         last_bid: Optional[Call] = None
@@ -180,28 +203,40 @@ class DecisionNet:
                         break
                     j -= 1
 
-        legal_calls: Set[Call] = set()
-        for c in candidate_calls:
+        legal_calls: List[Tuple[Call, int]] = []
+        for c, prio in candidate_calls:
             if c.type == CallType.PASS:
-                legal_calls.add(c)
+                legal_calls.append((c, prio))
             elif c.type == CallType.DOUBLE:
                 if x_ok:
-                    legal_calls.add(c)
+                    legal_calls.append((c, prio))
             elif c.type == CallType.REDOUBLE:
                 if xx_ok:
-                    legal_calls.add(c)
+                    legal_calls.append((c, prio))
             elif c.type == CallType.BID:
                 if last_bid is None:
-                    legal_calls.add(c)
+                    legal_calls.append((c, prio))
                 elif c.level > last_bid.level:
-                    legal_calls.add(c)
+                    legal_calls.append((c, prio))
                 elif c.level == last_bid.level and c.strain.value > last_bid.strain.value:
-                    legal_calls.add(c)
+                    legal_calls.append((c, prio))
 
         if not legal_calls:
-            legal_calls = {Call(CallType.PASS)}
+            legal_calls = [(Call(CallType.PASS), 0)]
 
-        return legal_calls
+        # priority order (highest first), call string as deterministic tie-break
+        legal_calls.sort(key=lambda cp: (-cp[1], str(cp[0])))
+        return [c for c, _ in legal_calls]
+
+    def best_call(self,
+                  hand: Hand,
+                  history: List[Call],
+                  my_seat: Seat = Seat.SOUTH,
+                  dealer: Seat = Seat.NORTH,
+                  vuln: int = 0) -> Call:
+        """The priority winner of φ(s): actions(...)[0], explicit for
+        deterministic single-pick consumers (review tooling, tests)."""
+        return self.actions(hand, history, my_seat, dealer, vuln)[0]
 
     def clone(self) -> 'DecisionNet':
         new_net = DecisionNet(self.name)
@@ -224,19 +259,20 @@ class DecisionNet:
         ]
 
         for r in self.rules:
+            call_str = str(r.call)
+            lines.append(f"\nRULE {r.rule_id}:")
+            lines.append(f"  CALL: {call_str}")
+            lines.append(f"  PRIORITY: {r.priority}")
             if r.is_negative:
-                lines.append(f"\nRULE {r.rule_id}:")
-                lines.append(f"  CALL: {r.call}")
-                lines.append(f"  PRIORITY: {r.priority}")
+                # one block per rule: the pre-fix fall-through double-wrote
+                # every negative rule (missing continue), and repeated
+                # save->load cycles squared the duplicates
                 lines.append("  NEGATIVE: True")
                 for c in r.conditions:
                     lines.append(f"  CONDITION: {c.key} {c.op} {c.value}")
                 if r.description:
                     lines.append(f"  # {r.description}")
-            call_str = str(r.call)
-            lines.append(f"\nRULE {r.rule_id}:")
-            lines.append(f"  CALL: {call_str}")
-            lines.append(f"  PRIORITY: {r.priority}")
+                continue
             for c in r.conditions:
                 lines.append(f"  CONDITION: {c.key} {c.op} {c.value}")
             if r.description:

@@ -1,5 +1,5 @@
 # ==========================================
-# IMPROVED BIDDING SYSTEM: ImprovedSystem_v28
+# IMPROVED BIDDING SYSTEM: improved_system
 # Generated via Continuous Self-Improvement Pipeline
 # ==========================================
 
@@ -510,6 +510,12 @@ RULE MC_REBID_3D:
   CONDITION: diamond_len >= 6
   CONDITION: hcp >= 12
 
+RULE NO_C_WITH_MAJOR_HEA:
+  CALL: 1C
+  PRIORITY: 30
+  CONDITION: is_opening == True
+  CONDITION: heart_len >= 4
+
 RULE NO_D_WITH_MAJOR_SPA:
   CALL: 1D
   PRIORITY: 30
@@ -571,9 +577,3 @@ RULE FW_NO_2_TRUMP_RAISE:
   CONDITION: partner_last_bid_strain == H
   CONDITION: support_in_partner_suit <= 2
   CONDITION: hcp <= 10
-
-RULE NO_C_WITH_MAJOR_HEA:
-  CALL: 1C
-  PRIORITY: 30
-  CONDITION: is_opening == True
-  CONDITION: heart_len >= 3

@@ -68,16 +68,46 @@ class Engine:
                 # For now, take first match.
                 r = matching_rules[0]
                 constraints[current_seat] = constraints[current_seat].intersect(r.constraints)
-            else:
-                # No rule matched. 
-                # If PASS, implies no opening/response rule triggered. 
-                # This logic is complex (negative processing). 
-                # For now, do nothing if no explicit rule matches.
-                pass
-            
+            elif call.type == CallType.PASS:
+                # Pass inference: a pass DECLINES every system call that was
+                # both triggered and legal at that point.  Only single-binding
+                # 'X+' lower-bound rules are carved (negating a conjunction is
+                # ambiguous), but even this crude complement gives the belief
+                # model real information — passing over "1C: 16+" bounds the
+                # hand at hcp <= 15.
+                constraints[current_seat] = self._infer_pass(
+                    active_system.rules, history_before,
+                    constraints[current_seat])
+            # else: no rule matched and the call wasn't a pass — nothing sound
+            # to infer yet.
+
             current_seat = Seat((current_seat.value + 1) % 4)
             
         return constraints
+
+    @staticmethod
+    def _infer_pass(rules, history_before: List[Call], current: HandConstraints) -> HandConstraints:
+        last_bid = None
+        for c in history_before:
+            if c.type == CallType.BID:
+                last_bid = c
+        for r in rules:
+            if r.call.type != CallType.BID:
+                continue
+            if not r.trigger(history_before):
+                continue
+            if last_bid is not None:
+                legal = (r.call.level > last_bid.level or
+                         (r.call.level == last_bid.level and
+                          r.call.strain.value > last_bid.strain.value))
+                if not legal:
+                    continue   # the call wasn't available; passing was forced
+            binding = r.constraints.lower_bounds()
+            if len(binding) != 1:
+                continue       # negating a multi-field conjunction is ambiguous
+            field, minv = binding[0]
+            current = current.cap_above(field, minv - 1)
+        return current
 
     def explain_auction(self, auction: List[Call], dealer_seat_index: int) -> Dict[int, HandConstraints]:
         dealer_seat = Seat(dealer_seat_index)

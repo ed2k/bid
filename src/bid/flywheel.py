@@ -87,6 +87,14 @@ def passes_effect_floor(delta: float) -> bool:
     return delta >= MIN_PATCH_DELTA
 
 
+def winner_gate(ok: bool, delta: float) -> bool:
+    """Stage-2 winner decision: surviving the escalation ladder is not
+    enough — the final delta must also clear MIN_PATCH_DELTA.  Kept as a
+    pure function so the no-op-patch regression stays unit-tested: ok=True
+    with a noise delta must NOT produce a winner."""
+    return bool(ok) and passes_effect_floor(delta)
+
+
 def expire_failed(state: dict, expiry_versions: int = FAIL_EXPIRY_VERSIONS) -> int:
     """Drop failure signatures that have not recurred for `expiry_versions`
     saved versions.  The system underneath a failed patch changes with every

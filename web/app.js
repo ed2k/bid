@@ -58,6 +58,41 @@
         return engine;
     }
 
+    /** Register a student as a reviewable system and refresh team selects. */
+    function registerStudentEngine(key, loaded, label) {
+        const eng = BidWeb.StudentEngine.make(loaded, label);
+        eng.key = key;
+        App.engines[key] = eng;
+        refreshSystemSelects();
+        return eng;
+    }
+
+    /** Rebuild the N/S and E/W selects: snapshot systems + edited + students. */
+    function refreshSystemSelects() {
+        for (const side of ['ns', 'ew']) {
+            const sel = $('sel-system-' + side);
+            const prev = sel.value;
+            sel.innerHTML = '';
+            const add = (value, label) => {
+                const opt = el('option', null, label);
+                opt.value = value;
+                sel.appendChild(opt);
+            };
+            for (const [key, spec] of Object.entries(DATA.systems || {})) {
+                add(key, `${spec.label} (${spec.python_rule_count ?? '?'} rules)`);
+            }
+            for (const [key, eng] of Object.entries(App.engines)) {
+                if (key.startsWith('edited:')) add(key, eng.label);
+                if (key.startsWith('student:')) add(key, eng.label);
+            }
+            if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
+            sel.onchange = () => {
+                App.systems[side] = sel.value;
+                if (App.mode === 'live') resetAuction();   // restart with new systems
+            };
+        }
+    }
+
     function buildModels() {
         return {ns: engineFor(App.systems.ns), ew: engineFor(App.systems.ew)};
     }
@@ -187,8 +222,9 @@
             const fresh = seatHandHTML(hands[s], s, !!hands[s]);
             fresh.id = old.id;
             old.replaceWith(fresh);
-            seatEl.querySelector('.seat-name').textContent =
-                Seat.name(s) + '  ·  ' + teamLabel(s);
+            seatEl.querySelector('.seat-name').textContent = Seat.name(s);
+            const sysEl = seatEl.querySelector('.seat-system');
+            if (sysEl) sysEl.textContent = teamLabel(s);
             seatEl.classList.toggle('to-call', !!dec && !over && dec.seat === s);
         }
     }
@@ -270,6 +306,8 @@
 
         if (exp.kind === 'legacy') {
             renderLegacyRules(body, exp, dec);
+        } else if (exp.kind === 'student') {
+            renderStudentRanking(body, exp);
         } else {
             const model = App.mode === 'live'
                 ? App.live.runner.modelFor(dec.seat) : null;
@@ -312,6 +350,47 @@
             : Net.autoSelect(App.net, exp);
         $('system-call-hint').textContent =
             'System pick: ' + auto.toString();
+    }
+
+    /** Inspector section for the neural student: probability ranking with
+     *  legality marks and the constrained choice. */
+    function renderStudentRanking(body, exp) {
+        body.appendChild(el('h4', 'muted small',
+            `bid probability ranking (${exp.label || 'student'})`));
+        const top = exp.ranking.slice(0, 8);
+        const maxP = Math.max(...top.map(r => r.prob), 0.0001);
+        for (const r of top) {
+            const row = el('div', 'candidate-row');
+            row.style.margin = '2px 0';
+            const bid = el('span', 'call-chip' +
+                (r.legal ? '' : ' illegal') +
+                (exp.chosen && exp.chosen.bid === r.bid ? ' chosen' : ''),
+                r.bid + '  ' + (r.prob * 100).toFixed(1) + '%');
+            bid.style.flex = '0 0 110px';
+            row.appendChild(bid);
+            const bar = el('div');
+            bar.style.cssText = `flex:1;height:8px;border-radius:4px;` +
+                `background:rgba(56,189,248,${0.15 + 0.55 * (r.prob / maxP)})`;
+            row.appendChild(bar);
+            if (!r.legal) {
+                row.appendChild(el('span', 'tag tag-bad', 'illegal'));
+            }
+            body.appendChild(row);
+        }
+        if (exp.chosen) {
+            const line = el('p');
+            line.appendChild(el('span', 'tag tag-ok', 'CHOSEN (legality-constrained)'));
+            line.appendChild(document.createTextNode('  ' + exp.chosen.bid +
+                (exp.chosen.prob !== null ? `  p=${(exp.chosen.prob * 100).toFixed(1)}%` : '')));
+            body.appendChild(line);
+        }
+        if (exp.suppressed) {
+            body.appendChild(el('p', 'tag tag-warn',
+                `highest-ranked illegal call ${exp.suppressed} → vetoed by constrained decoding`));
+        }
+        if (exp.fallbackPass) {
+            body.appendChild(el('p', 'tag tag-warn', 'no legal bid in vocab → PASS'));
+        }
     }
 
     /** Inspector section for legacy (translator) systems. */
@@ -956,17 +1035,8 @@
         App.engines[engine.key] = engine;
 
         // make the edited engine selectable and current for the team
-        App.editedOption = App.editedOption || {};
         const optKey = 'edited:' + Rules.key;
-        for (const side2 of ['ns', 'ew']) {
-            const sel = $('sel-system-' + side2);
-            if (!sel.querySelector(`option[value="${optKey}"]`)) {
-                const opt = document.createElement('option');
-                opt.value = optKey;
-                opt.textContent = engine.label;
-                sel.appendChild(opt);
-            }
-        }
+        refreshSystemSelects();
         App.systems[side] = optKey;
         $('sel-system-' + side).value = optKey;
 
@@ -1066,6 +1136,10 @@
         $('student-info-acc').textContent =
             `${(last.valAcc * 100).toFixed(1)}% (majority baseline ${(last.baselineAcc * 100).toFixed(1)}%)`;
         labStatus('student trained — save it or evaluate it');
+        // the trained student becomes a reviewable system for either team
+        registerStudentEngine('student:lab', {model, meta: {
+            teacher: Lab.teacher, corpus_rows: Lab.rows ? Lab.rows.length : 0}},
+            `Student (Lab-trained on ${Lab.teacher})`);
     }
 
     function labDownload() {
@@ -1126,7 +1200,9 @@
             add(key, spec.label);
         }
         for (const [key, eng] of Object.entries(App.engines)) {
-            if (key.startsWith('edited:')) add(key, eng.label);
+            if (key.startsWith('edited:') || key.startsWith('student:')) {
+                add(key, eng.label);
+            }
         }
         sel.value = prev in (DATA.systems || {}) || App.engines[prev] ? prev : Lab.teacher;
         sel.onchange = () => {
@@ -1147,6 +1223,8 @@
                 (Lab.loaded.meta.teacher ? ` (teacher: ${Lab.loaded.meta.teacher})` : ''));
             $('student-info-corpus').textContent = Lab.loaded.meta.corpus_rows
                 ? `trained on ${Lab.loaded.meta.corpus_rows} rows` : '–';
+            registerStudentEngine('student:loaded', Lab.loaded,
+                `Student (loaded: ${Lab.loaded.meta.teacher || 'unknown teacher'})`);
         } catch (e) {
             labStatus('load failed: ' + e.message);
         }
@@ -1163,6 +1241,43 @@
             console.warn('default student failed to load:', e.message);
             return false;
         }
+    }
+
+    /** A/B: student vs teacher over N boards — contract-agreement stats. */
+    async function labCompare() {
+        const teacher = labTeacherEngine();
+        const studentLoaded = Lab.trained ? {model: Lab.trained, meta: {}}
+            : (Lab.loaded || globalThis.BID_DEFAULT_STUDENT);
+        if (!teacher || !studentLoaded) {
+            labStatus('need both a teacher and a student (train or load one first)');
+            return;
+        }
+        const student = BidWeb.StudentEngine.make(studentLoaded, 'student');
+        const boards = 20;
+        labStatus(`A/B over ${boards} boards: ${teacher.label} vs student…`);
+        await new Promise(r => setTimeout(r, 30));
+
+        let identical = 0, sameStrain = 0, levelDelta = 0, contracts = 0;
+        for (let i = 0; i < boards; i++) {
+            const deal = BidWeb.Deal.random(i % 4, (i + 1) % 4, 1000 + i);
+            const rt = new BidWeb.Auction.AuctionRunner(deal, teacher, 'manual');
+            rt.runOut();
+            const rs = new BidWeb.Auction.AuctionRunner(deal, student, 'manual');
+            rs.runOut();
+            const ct = rt.contract(), cs = rs.contract();
+            if (!ct && !cs) { identical++; continue; }
+            if (!ct || !cs) { contracts++; levelDelta += 1; continue; }
+            contracts++;
+            if (ct.level === cs.level && ct.strain === cs.strain &&
+                ct.declarer === cs.declarer) identical++;
+            if (ct.strain === cs.strain) sameStrain++;
+            levelDelta += Math.abs(ct.level - cs.level);
+        }
+        $('student-info-acc').textContent =
+            `identical contracts ${(identical / boards * 100).toFixed(0)}% · ` +
+            `same strain ${(sameStrain / boards * 100).toFixed(0)}% · ` +
+            `avg |level Δ| ${(levelDelta / boards).toFixed(2)}`;
+        labStatus(`A/B complete: student vs ${teacher.label} over ${boards} boards`);
     }
 
     // ---------- tabs / boot ----------
@@ -1245,22 +1360,9 @@
             else replayStep(App.replay.rows.length);
         };
         // per-team bidding-system selects (net + legacy engines)
-        const sysKeys = Object.keys(DATA.systems || {});
+        refreshSystemSelects();
         for (const side of ['ns', 'ew']) {
-            const sel = $('sel-system-' + side);
-            sel.innerHTML = '';
-            for (const key of sysKeys) {
-                const spec = DATA.systems[key];
-                const opt = el('option', null,
-                    `${spec.label} (${spec.python_rule_count ?? '?'} rules)`);
-                opt.value = key;
-                sel.appendChild(opt);
-            }
-            sel.value = App.systems[side];
-            sel.onchange = () => {
-                App.systems[side] = sel.value;
-                if (App.mode === 'live') resetAuction();   // restart with new systems
-            };
+            $('sel-system-' + side).value = App.systems[side];
         }
 
         selBoard.onchange = () => {
@@ -1282,6 +1384,7 @@
         $('btn-student-train').onclick = () => { labTrain(); };
         $('btn-student-download').onclick = labDownload;
         $('btn-student-eval').onclick = labEvaluateLoaded;
+        $('btn-student-ab').onclick = () => { labCompare(); };
         $('in-student-file').addEventListener('change', e => {
             if (e.target.files && e.target.files[0]) labLoadFile(e.target.files[0]);
         });
@@ -1307,6 +1410,10 @@
 
         renderDataTab();
         loadDefaultStudent();   // ship with a ready-to-use student
+        if (Lab.loaded) {
+            registerStudentEngine('student:default', Lab.loaded,
+                'Student (default MLP)');
+        }
         newDeal();
     }
 

@@ -19,6 +19,7 @@
   <script src="bid_net.js"></script>
   <script src="auction.js"></script>
   <script src="student_lab.js"></script>
+  <script src="student_engine.js"></script>
   <!-- Generated snapshot: python3 -m bid.web_export -->
   <script src="review_data.js"></script>
   <!-- Default in-browser student: node web/build_default_student.mjs -->
@@ -89,13 +90,13 @@
       </div>
 
       <div class="review-grid">
-        <section class="table-area">
+        <section class="desk-panel">
           <div id="seat-N" class="seat seat-north"><div class="seat-header">
             <span class="seat-name">North</span><span class="turn-indicator">to call</span>
-          </div><div class="hand-cards" id="hand-N"></div></div>
+          </div><div class="seat-system" id="sys-N"></div><div class="hand-cards" id="hand-N"></div></div>
           <div id="seat-W" class="seat seat-west"><div class="seat-header">
             <span class="seat-name">West</span><span class="turn-indicator">to call</span>
-          </div><div class="hand-cards" id="hand-W"></div></div>
+          </div><div class="seat-system" id="sys-W"></div><div class="hand-cards" id="hand-W"></div></div>
           <div class="felt-table">
             <div class="auction-history-box">
               <div class="auction-title">Auction</div>
@@ -112,10 +113,10 @@
           </div>
           <div id="seat-E" class="seat seat-east"><div class="seat-header">
             <span class="seat-name">East</span><span class="turn-indicator">to call</span>
-          </div><div class="hand-cards" id="hand-E"></div></div>
+          </div><div class="seat-system" id="sys-E"></div><div class="hand-cards" id="hand-E"></div></div>
           <div id="seat-S" class="seat seat-south"><div class="seat-header">
             <span class="seat-name">South</span><span class="turn-indicator">to call</span>
-          </div><div class="hand-cards" id="hand-S"></div></div>
+          </div><div class="seat-system" id="sys-S"></div><div class="hand-cards" id="hand-S"></div></div>
         </section>
 
         <aside class="inspector">
@@ -246,6 +247,7 @@
           Load student.json <input id="in-student-file" type="file" accept=".json" style="display:none">
         </label>
         <button id="btn-student-eval" class="btn">Evaluate loaded</button>
+        <button id="btn-student-ab" class="btn btn-secondary">A/B vs teacher (20 boards)</button>
       </div>
       <div class="status-bar">
         <div class="status-item"><span class="label">Corpus:</span>

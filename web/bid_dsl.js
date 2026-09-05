@@ -134,6 +134,18 @@
             }
             i++;
         }
+
+        // mirror DecisionNet.add_rule: skip exact duplicate rules (same id,
+        // call, priority, negative flag, conditions) — the pre-fix exporter
+        // double-wrote negative rules and squared them across save cycles
+        const seen = new Set();
+        net.rules = net.rules.filter(r => {
+            const body = JSON.stringify([r.ruleId, r.call.toString(), r.priority,
+                r.isNegative, r.conditions.map(c => [c.key, c.op, String(c.value)])]);
+            if (seen.has(body)) return false;
+            seen.add(body);
+            return true;
+        });
         return net;
     }
 

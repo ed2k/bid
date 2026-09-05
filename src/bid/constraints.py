@@ -90,6 +90,48 @@ class HandConstraints:
         if s2 is None: return s1
         return s1.intersection(s2)
 
+    _SUIT_BY_NAME = {s.name.lower(): s for s in Suit}
+
+    def lower_bounds(self):
+        """Binding lower bounds only: fields with min above the default whose
+        max is still the default (pure 'X+' style requirements)."""
+        out = []
+        if self.hcp_min > 0 and self.hcp_max >= 37:
+            out.append(("hcp", self.hcp_min))
+        if self.major_hcp_min > 0 and self.major_hcp_max >= 37:
+            out.append(("major_hcp", self.major_hcp_min))
+        if self.tp_min > 0 and self.tp_max >= 50:
+            out.append(("tp", self.tp_min))
+        if self.controls_min > 0 and self.controls_max >= 12:
+            out.append(("controls", self.controls_min))
+        for s in Suit:
+            if self.length_min[s] > 0 and self.length_max[s] >= 13:
+                out.append((s.name.lower(), self.length_min[s]))
+        return out
+
+    def cap_above(self, field: str, new_max: int) -> 'HandConstraints':
+        """Copy of these constraints with one field's upper bound lowered.
+        Used to carve declined lower-bound requirements out of a pass
+        inference (passing over '1C: 16+' implies hcp <= 15)."""
+        suit = self._SUIT_BY_NAME.get(field)
+        kw = dict(
+            hcp_min=self.hcp_min, hcp_max=self.hcp_max,
+            major_hcp_min=self.major_hcp_min, major_hcp_max=self.major_hcp_max,
+            tp_min=self.tp_min, tp_max=self.tp_max,
+            controls_min=self.controls_min, controls_max=self.controls_max,
+            length_min=dict(self.length_min), length_max=dict(self.length_max),
+            aces=self.aces, ace_topology=self.ace_topology,
+            balanced=self.balanced,
+        )
+        if suit is not None:
+            kw["length_max"][suit] = min(kw["length_max"][suit], new_max)
+        elif field in ("hcp", "major_hcp", "tp", "controls"):
+            key = f"{field}_max"
+            kw[key] = min(kw[key], new_max)
+        else:
+            return self
+        return HandConstraints(**kw)
+
     def __str__(self):
         parts = [f"HCP: {self.hcp_min}-{self.hcp_max}"]
         if self.tp_min > 0 or self.tp_max < 50:

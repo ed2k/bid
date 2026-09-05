@@ -405,7 +405,7 @@ def main():
                 if verdict == "reject":
                     ok = False
                 break  # inconclusive -> stop escalating this candidate
-            if ok and fw.passes_effect_floor(cand["delta"]):
+            if fw.winner_gate(ok, cand["delta"]):
                 # final SDS gate (two-hand realism), cheap tier
                 if sds_scorer is not None:
                     rb = evaluate_system(arena, "b", base_net, d0, dd0,
@@ -417,9 +417,9 @@ def main():
                         maybe_report(force=True,
                                      note=f"{cand['name']} rejected by SDS gate")
                         ok = False
-            if ok:
-                winner = cand
-                break
+                if ok:
+                    winner = cand
+                    break
             fw.mark_failed(state, cand["sig"])
 
         if winner is None:

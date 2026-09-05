@@ -17,7 +17,8 @@ import {dirname, join} from 'node:path';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
 for (const f of ['objects.js', 'features.js', 'bid_dsl.js', 'system_dsl.js',
-                 'bid_net.js', 'auction.js', 'student_lab.js']) {
+                 'bid_net.js', 'auction.js', 'student_lab.js',
+                 'student_engine.js']) {
     (0, eval)(readFileSync(join(root, 'web', f), 'utf8'));
 }
 let DEFAULT_STUDENT = null;
@@ -39,7 +40,7 @@ function check(name, ok, detail) {
 // ---- 1. DSL parse ---------------------------------------------------------
 
 const net = BidWeb.DSL.parse(DATA.dsl, 'ImprovedSystem');
-check('dsl: parses rules', net.rules.length >= 100,
+check('dsl: parses rules', net.rules.length >= 60,
     `got ${net.rules.length} rules`);
 check('dsl: has 1NT opening', net.rules.some(r => r.ruleId === 'R_1NT'),
     'R_1NT missing');
@@ -290,6 +291,47 @@ for (const [key, spec] of Object.entries(systems)) {
         check('student: default beats majority baseline on fresh corpus',
             ev.acc > baseline,
             `acc ${(ev.acc * 100).toFixed(1)}% vs baseline ${(baseline * 100).toFixed(1)}%`);
+    }
+}
+
+// ---- 10. student engine: reviewable system with explained decisions --------
+
+{
+    check('student engine: default student present for seating', !!DEFAULT_STUDENT);
+    if (DEFAULT_STUDENT) {
+        const eng = BidWeb.StudentEngine.make(
+            BidWeb.StudentLab.load(DEFAULT_STUDENT), 'Student (test)');
+        const hand = BidWeb.Hand.parse('SAK2 HKQ2 DQ95 C542');   // 16 HCP balanced
+        const exp = eng.explain(hand, [], 0, 0, 0);
+        check('student: explain returns ranking', exp.kind === 'student' &&
+            exp.ranking.length > 0, `ranking ${exp.ranking.length}`);
+        check('student: ranking is probability-sorted',
+            exp.ranking.every((r, i) => i === 0 || exp.ranking[i - 1].prob >= r.prob));
+        check('student: chosen is bridge-legal', exp.chosen && exp.chosen.legal,
+            JSON.stringify(exp.chosen));
+        check('student: legal+illegal marks coherent',
+            exp.ranking.every(r => typeof r.legal === 'boolean'));
+
+        // student seated N/S against rule-based East/West completes an auction
+        const deal = BidWeb.Deal.random(0, 0, 5);
+        const runner = new BidWeb.Auction.AuctionRunner(deal, {
+            ns: eng,
+            ew: {kind: 'net', net},
+        }, 'manual');
+        runner.runOut();
+        check('student: mixed student-vs-rules auction completes',
+            runner.history.length >= 4 &&
+            BidWeb.Auction.getContract(runner.history, 0) !== null,
+            `calls ${runner.history.length}`);
+        // every student call was legality-checked at apply time by design;
+        // spot-check the runner's history is a legal sequence via replay:
+        let legal = true;
+        for (let t = 0; t < runner.history.length && legal; t++) {
+            const ctx = BidWeb.Net.legalityContext(runner.history.slice(0, t),
+                (deal.dealer + t) % 4, deal.dealer);
+            legal = ctx.isLegal(runner.history[t]);
+        }
+        check('student: produced auction is bridge-legal', legal);
     }
 }
 

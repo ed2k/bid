@@ -56,68 +56,15 @@
      *   candidates, legal, fallbackPass, intersectionApplied,
      *   xOk, xxOk, illegal }
      */
-    function explain(net, hand, history, mySeat, dealer, vuln) {
-        const features = Features.extractAll(hand, history, mySeat, dealer, vuln);
-
-        const ruleResults = [];
-        const positive = [];
-        const negative = [];
-        const matchedIds = [];
-
-        for (const rule of net.rules) {
-            const res = ruleMatches(rule, features, true);
-            ruleResults.push({rule, matched: res.matched, conditionResults: res.conditionResults});
-            if (res.matched) {
-                if (rule.isNegative) negative.push(rule.call);
-                else {
-                    positive.push(rule.call);
-                    matchedIds.push(rule.ruleId);
-                }
-            }
-        }
-
-        // candidate set with PASS fallback (port of decision_net.py step 2)
-        let candidates;
-        let fallbackPass = false;
-        if (positive.length === 0) {
-            candidates = [new Call(C.PASS)];
-            fallbackPass = true;
-        } else {
-            candidates = positive.filter(c => !negative.some(n => n.equals(c)));
-            if (candidates.length === 0) {
-                candidates = [new Call(C.PASS)];
-                fallbackPass = true;
-            }
-        }
-
-        // intersection refinement (only RESOLVED_CALL classifiers exist in DSL)
-        let intersectionApplied = null;
-        if (matchedIds.length > 1) {
-            const exact = matchedIds.slice().sort().join('^');
-            if (net.intersections[exact]) {
-                const forced = net.intersections[exact];
-                candidates = [forced];
-                intersectionApplied = exact;
-            } else {
-                for (const key of Object.keys(net.intersections)) {
-                    const ids = key.split('^');
-                    if (ids.every(id => matchedIds.indexOf(id) >= 0)) {
-                        candidates = [net.intersections[key]];
-                        intersectionApplied = key;
-                        break;
-                    }
-                }
-            }
-        }
-
-        // legality filter (exact port of decision_net.py step 4)
+    /** Bridge-legality context for a seat about to call: shared by
+     *  bid_net.explain and the student engine's constrained choice. */
+    function legalityContext(history, mySeat, dealer) {
         let lastBid = null, lastNp = null;
         for (let i = 0; i < history.length; i++) {
             const call = history[i];
             if (call.type === C.BID) lastBid = call;
             if (call.type !== C.PASS) lastNp = {index: i, call};
         }
-
         let xOk = false, xxOk = false;
         if (lastNp) {
             const {index, call} = lastNp;
@@ -141,24 +88,103 @@
                 }
             }
         }
+        const isLegal = c => {
+            if (c.type === C.PASS) return true;
+            if (c.type === C.DOUBLE) return xOk;
+            if (c.type === C.REDOUBLE) return xxOk;
+            return lastBid === null ||
+                c.level > lastBid.level ||
+                (c.level === lastBid.level && c.strain > lastBid.strain);
+        };
+        return {lastBid, xOk, xxOk, isLegal};
+    }
+
+    function explain(net, hand, history, mySeat, dealer, vuln) {
+        const features = Features.extractAll(hand, history, mySeat, dealer, vuln);
+
+        const ruleResults = [];
+        const positive = [];
+        const negative = [];
+        const matchedIds = [];
+
+        for (const rule of net.rules) {
+            const res = ruleMatches(rule, features, true);
+            ruleResults.push({rule, matched: res.matched, conditionResults: res.conditionResults});
+            if (res.matched) {
+                if (rule.isNegative) negative.push(rule.call);
+                else {
+                    positive.push(rule.call);
+                    matchedIds.push(rule.ruleId);
+                }
+            }
+        }
+
+        // candidate set with PASS fallback (port of decision_net.py step 2);
+        // per-call max rule priority — Python orders φ(s) by priority, so
+        // candidates here sort by (-priority, call string) to stay in parity
+        const prioByCall = new Map();
+        let candidates;
+        let fallbackPass = false;
+        if (positive.length === 0) {
+            candidates = [new Call(C.PASS)];
+            fallbackPass = true;
+        } else {
+            const surviving = positive.filter(c => !negative.some(n => n.equals(c)));
+            if (surviving.length === 0) {
+                candidates = [new Call(C.PASS)];
+                fallbackPass = true;
+            } else {
+                candidates = surviving;
+            }
+        }
+        if (!fallbackPass) {
+            for (const rr of ruleResults) {
+                if (!rr.matched || rr.rule.isNegative) continue;
+                const key = rr.rule.call.toString();
+                const prev = prioByCall.get(key);
+                prioByCall.set(key, prev === undefined ? rr.rule.priority
+                    : Math.max(prev, rr.rule.priority));
+            }
+            candidates.sort((a, b) => {
+                const pa = prioByCall.get(a.toString()) || 0;
+                const pb = prioByCall.get(b.toString()) || 0;
+                if (pa !== pb) return pb - pa;
+                return callOrderKey(a) < callOrderKey(b) ? -1 : 1;
+            });
+        }
+
+        // intersection refinement (only RESOLVED_CALL classifiers exist in DSL)
+        let intersectionApplied = null;
+        if (matchedIds.length > 1) {
+            const exact = matchedIds.slice().sort().join('^');
+            if (net.intersections[exact]) {
+                const forced = net.intersections[exact];
+                candidates = [forced];
+                intersectionApplied = exact;
+            } else {
+                for (const key of Object.keys(net.intersections)) {
+                    const ids = key.split('^');
+                    if (ids.every(id => matchedIds.indexOf(id) >= 0)) {
+                        candidates = [net.intersections[key]];
+                        intersectionApplied = key;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // legality filter (port of decision_net.py step 4)
+        const legality = legalityContext(history, mySeat, dealer);
+        const {xOk, xxOk} = legality;
 
         const legal = [];
         const illegal = [];
         for (const c of candidates) {
-            let ok = false;
-            if (c.type === C.PASS) ok = true;
-            else if (c.type === C.DOUBLE) ok = xOk;
-            else if (c.type === C.REDOUBLE) ok = xxOk;
-            else if (c.type === C.BID) {
-                ok = lastBid === null ||
-                    c.level > lastBid.level ||
-                    (c.level === lastBid.level && c.strain > lastBid.strain);
-            }
-            (ok ? legal : illegal).push(c);
+            (legality.isLegal(c) ? legal : illegal).push(c);
         }
         if (legal.length === 0) legal.push(new Call(C.PASS));
 
-        // stable ordering for deterministic display/selection
+        // stable ordering: priority first (set by the caller below), then call
         const byStr = (a, b) => callOrderKey(a) < callOrderKey(b) ? -1 :
             callOrderKey(a) > callOrderKey(b) ? 1 : 0;
         legal.sort(byStr);
@@ -201,5 +227,5 @@
         return best || new Call(C.PASS);
     }
 
-    api.Net = {explain, actions, autoSelect, conditionResult};
+    api.Net = {explain, actions, autoSelect, conditionResult, legalityContext};
 })(typeof globalThis !== 'undefined' ? (globalThis.BidWeb = globalThis.BidWeb || {}) : (window.BidWeb = window.BidWeb || {}));

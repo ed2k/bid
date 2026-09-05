@@ -67,7 +67,9 @@ class TestID3Refinement(unittest.TestCase):
         # Hand with 16 HCP, 5 hearts, balanced (3 spades, 5 hearts, 3 diamonds, 2 clubs)
         hand_low_heart_hcp = Hand.from_string("SAK4 H76543 DAQ3 CK2") # 16 HCP, 5 hearts with 0 heart HCP
         actions_before = net.actions(hand_low_heart_hcp, [])
-        self.assertEqual(actions_before, {Call(CallType.BID, 1, Strain.NT), Call(CallType.BID, 1, Strain.HEARTS)})
+        # actions() now returns a priority-ordered LIST of candidates
+        self.assertEqual(set(actions_before), {Call(CallType.BID, 1, Strain.NT), Call(CallType.BID, 1, Strain.HEARTS)})
+        self.assertEqual(actions_before[0], Call(CallType.BID, 1, Strain.HEARTS))  # tie -> call-string order
 
         # Train and attach refinement to ("R1_1NT", "R2_1H")
         tree = ID3DecisionTree(max_depth=3)
@@ -85,7 +87,7 @@ class TestID3Refinement(unittest.TestCase):
 
         # After refinement: resolved to single call {1NT} for low heart HCP hand
         actions_after = net.actions(hand_low_heart_hcp, [])
-        self.assertEqual(actions_after, {Call(CallType.BID, 1, Strain.NT)})
+        self.assertEqual(actions_after, [Call(CallType.BID, 1, Strain.NT)])
 
 if __name__ == "__main__":
     unittest.main()

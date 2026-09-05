@@ -81,7 +81,9 @@
                 const exp = runner.explain();
                 const bid = engine.kind === 'legacy'
                     ? (exp.chosen ? exp.chosen.call : new api.Call(api.CallType.PASS))
-                    : api.Net.autoSelect(engine.net, exp);
+                    : engine.kind === 'student'
+                        ? exp.chosen.call
+                        : api.Net.autoSelect(engine.net, exp);
                 rows.push({
                     seat,
                     auction: runner.history.map(c => c.toString()),

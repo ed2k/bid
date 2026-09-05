@@ -338,7 +338,13 @@ and `../ben/web`): vanilla JS modules, no framework, no server-side logic.
   step through every decision of the *current* DSL system in the browser.
   **Pick the bidding system per team** (`N/S system` / `E/W system` selects:
   the evolved Improved system, the auto-evolved Champion, Precision, Blue
-  Club, or GIB) and review partnerships against each other, arena-style.
+  Club, GIB — **or the neural student**) and review partnerships against
+  each other, arena-style. Student seats are explained like every other
+  engine: the inspector shows the full **bid-probability ranking** with
+  bridge-legality marks, the legality-constrained choice, and any vetoed
+  call — the student picks among the same rule-based table with its
+  reasoning visible; trained/loaded students register automatically as
+  selectable systems.
   The inspector shows the extracted
   features, every matched rule with per-condition ✓/✗, the candidate set
   φ(s), legality filtering, and the deterministic system pick; you can bid
@@ -367,7 +373,10 @@ and `../ben/web`): vanilla JS modules, no framework, no server-side logic.
   (`web/student_default.js`, auto-loaded at boot, ~74% vs 61% baseline on the
   snapshot teacher) — regenerate it against a refreshed snapshot with
   `node web/build_default_student.mjs`. Saved students can be reloaded and
-  evaluated against fresh corpora at any time. This complements (not
+  evaluated against fresh corpora at any time. An **A/B button** auctions 20
+  boards with the teacher and the student respectively and reports
+  contract-agreement statistics — the end-to-end complement of per-decision
+  accuracy. This complements (not
   replaces) the production 5.5M-param CoT student, which still trains via
   `refresh_student.py` (Loop B).
 - **Loop Data** — the teacher's anchor ledger and applied patches, the

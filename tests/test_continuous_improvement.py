@@ -72,6 +72,15 @@ class TestEffectFloor(unittest.TestCase):
         self.assertTrue(fw.passes_effect_floor(0.5))
         self.assertTrue(fw.passes_effect_floor(23.7))
 
+    def test_winner_gate_blocks_noise_even_when_ladder_passed(self):
+        """The stage-2 winner decision must gate on the floor itself: an
+        ok=True candidate with a noise delta still loses (this exact hole
+        let SUPPORT burn v28 with delta 0.0 while the floor 'was wired')."""
+        self.assertFalse(fw.winner_gate(True, 0.04))
+        self.assertFalse(fw.winner_gate(True, 0.0))
+        self.assertTrue(fw.winner_gate(True, 0.6))
+        self.assertFalse(fw.winner_gate(False, 23.7))
+
 
 class TestPoolBuilderSignatures(unittest.TestCase):
     """Regression: the loosen family once built tuple signatures that never
