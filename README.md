@@ -164,6 +164,19 @@ python3 -m bid.autoloop --policy-prior data/cot_model/ckpt.pt
 # policy-guided PIDM pruning using the trained student as a prior
 ```
 
+Long-run hygiene (both `flywheel.py` and `autoloop.py`):
+- **Eval-seed rotation** — screening/validation seeds derive from the current
+  system version, so different saved versions are gated on different random
+  draws (within one cycle base and candidate still share a seed, keeping the
+  paired deltas honest).
+- **Anchor ledger** — every version is also scored on a frozen, never-reused
+  anchor deal set (`anchor` map in `flywheel_state.json`); a flat or falling
+  anchor ledger means gains were seed-fitting, not real.
+- **Failure-signature expiry** — failed patch candidates are cached with the
+  version they failed at and become retryable after `FAIL_EXPIRY_VERSIONS`
+  (8) saved versions; the system underneath them changed, so the pool never
+  permanently empties.
+
 **Human involvement:** choosing the deal budget (24 deals ≈ 10 min,
 96 deals + SDS ≈ 3.3 h); occasionally re-running with fresh eval seeds to
 confirm gains generalize; writing *new idea families* (see
@@ -191,8 +204,9 @@ Automatically, in order:
    incumbent `ckpt.pt` is never touched during training.
 4. **Gate**: eval-val the candidate *and* the incumbent on the new val
    split; promote only if BID accuracy doesn't regress beyond
-   `--tolerance`. Incompatible incumbent (vocab change) → promote with a
-   "no comparable incumbent" note.
+   `--tolerance`. Incompatible incumbent (vocab change) → the absolute
+   `--min-bid` floor (default 25%) decides; weaker candidates are archived
+   instead of promoted.
 5. Record every decision in `data/cot_model/student_state.json`
    (hashes, scores, promoted/rejected, elapsed).
 
@@ -269,11 +283,43 @@ validation z-score — small boards produce inconclusive `escalate` verdicts),
 then either promote the rules by hand, or express them as a curated flywheel
 family so the standard gates apply.
 
+### Loop F — unattended continuous operation (the meta-loop)
+
+```bash
+python3 -m bid.continuous                      # run until stopped
+python3 -m bid.continuous --max-cycles 5 --sds-gate --rl-every 3
+```
+
+`continuous.py` chains the loops above into one repeating cycle — this is
+what makes improvement actually *continuous* instead of five scripts a human
+must schedule:
+
+1. **teacher**: a bounded `autoloop` run (`--teacher-cycles` screening cycles).
+2. **student**: `refresh_student` (auto-detects the new DSL hash, regenerates
+   corpus/dataset, retrains + gates the student, and retrains the player
+   model when the corpus changed).
+3. **mine**: `mine_disagreements` — its `disagreements.jsonl` is merged into
+   the *next* student corpus by step 2, closing the loop.
+4. every `--rl-every` cycles: `rl_finetune` (off-teacher; A/B before adopting).
+
+Each stage runs as a subprocess of the runbook script, so every per-loop gate
+still applies. State persists in `system/continuous_state.json`
+(`{"cycle", "next_stage"}`); a crash or Ctrl-C resumes at the interrupted
+stage, and a stage failing `--max-stage-fails` consecutive cycles aborts the
+loop so nothing spins unattended. Consolidated log: `debug/continuous.log`.
+
+**Human involvement:** only budgets (`--boards`, `--tiers`, `--rl-every`),
+and watching the mining summary — when `arb_student_right > 0` the student
+found a position where deep search contradicts the teacher (candidate
+teacher bug worth a curated patch family).
+
 ### Supporting tooling
 
 ```bash
 python3 -m bid.player_model train    # soft P(call|ctx) -> data/player_models/
-# auto-attached to the RBMBMC sampler by autoloop.py when present
+# auto-attached to the RBMBMC sampler by autoloop.py when present;
+# refresh_student.py re-trains it automatically whenever the corpus changes
+# (recorded corpus sha in call_model.json meta drives the freshness check)
 ```
 
 ### Adding an idea to the teacher
@@ -310,6 +356,7 @@ patches — every rejection is cached by signature and never retried.
 
 | Script | Loop | Purpose | Typical run | Key artifacts |
 |---|---|---|---|---|
+| `continuous.py` | F | unattended A→B→C chaining with stage resume | days/weeks | `continuous_state.json`, `debug/continuous.log` |
 | `flywheel.py --deals N --rounds R --sds` | A | patch hill-climb on the DSL | 10 min – 3.3 h | `improved_system.dsl`, `history/`, `flywheel_state.json` |
 | `autoloop.py --tiers 24,96,384 [--policy-prior ckpt]` | A | unattended staged loop + champion promotion | hours | `champion_system.dsl`, `debug/progress.json` |
 | `refresh_student.py [--boards B --epochs E]` | B | regen corpus/dataset, train + gate student | 12–32 min | `ckpt.pt`, `student_state.json` |
@@ -333,7 +380,7 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 ```
 
-This installs all dependencies (`torch`, `numpy<2`) and registers CLI console scripts (`bid-flywheel`, `bid-autoloop`, `bid-refresh-student`, `bid-mine-disagreements`, `bid-rl-finetune`, `bid-convention-search`).
+This installs all dependencies (`torch`, `numpy<2`) and registers CLI console scripts (`bid-flywheel`, `bid-autoloop`, `bid-continuous`, `bid-refresh-student`, `bid-mine-disagreements`, `bid-rl-finetune`, `bid-convention-search`).
 
 You can execute any loop using `python3 -m bid.<module>` or directly via CLI aliases:
 
@@ -345,8 +392,9 @@ bid-flywheel --deals 96 --rounds 2 --sds
 
 ### The self-improvement loops
 
-The primary workflow is the five-loop system documented in the
+The primary workflow is the six-loop system documented in the
 **[Runbook](#-operating-the-teacher--student-loops-runbook)** above:
+`continuous.py` (unattended chaining of everything below) or manually:
 flywheel (teacher) → `refresh_student` (student) →
 `mine_disagreements` (feedback) → `rl_finetune` /
 `convention_search` (beyond-imitation). Start there.
@@ -543,7 +591,7 @@ bid/
 ├── README.md            # Comprehensive architecture guide & runbook
 ├── system/              # Bidding system definitions & DSL files (SAYC, Precision, Improved)
 ├── data/                # traces/, cot_dataset/, cot_model/, player_models/, conventions/
-├── tests/               # Unit and integration test suite (115 tests)
+├── tests/               # Unit and integration test suite (150 tests)
 ├── research/
 │   ├── bid-invention.md # Research document on BIDI, RBMBMC, VOI, and CoT distillation
 │   └── experiments/     # Archived diagnostic and one-off experimental scripts
@@ -581,6 +629,7 @@ bid/
     │   # --- Self-Improvement Loops (Orchestrators) ---
     ├── flywheel.py      # Loop A: DSL patch hill-climb (curated/diag/gate/mutation pool)
     ├── autoloop.py      # Loop A: unattended staged loop + champion promotion
+    ├── continuous.py    # Loop F: meta-orchestrator chaining A→B→C with stage resume
     ├── refresh_student.py # Loop B: freshness -> regen -> train -> gate -> promote
     ├── mine_disagreements.py # Loop C: student-vs-teacher disputes arbitrated by heavy PIDM
     ├── rl_finetune.py   # Loop D: REINFORCE self-play fine-tuning with eval gate

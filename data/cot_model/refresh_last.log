@@ -166,3 +166,30 @@ training 4,968,448 params on 3696 examples | 8 epochs | device=mps block=88
   epoch 7 step 900 loss 0.6507
   epoch 7 step 920 loss 0.6713
 saved /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt
+
+=== [traces] /Users/admin/Documents/GitHub/bid/.venv/bin/python -u -m bid.trace_factory --boards 200 --seed 42 --out /Users/admin/Documents/GitHub/bid/data/traces/traces.jsonl
+Wrote 1621 call-traces (200 boards) -> /Users/admin/Documents/GitHub/bid/data/traces/traces.jsonl
+Meta   : /Users/admin/Documents/GitHub/bid/data/traces/traces.meta.json | corpus sha256=e7f6e482c4d71ebd… dsl sha256=8b3a66c4308d4c82…
+
+=== [dataset] /Users/admin/Documents/GitHub/bid/.venv/bin/python -u -m bid.build_cot_dataset /Users/admin/Documents/GitHub/bid/data/traces/corpus_combined.jsonl
+dataset -> data/cot_dataset/dataset.json
+  traces 1747 | vocab 404 | max block 88 | tokens 104,823 | train/val 1573/174
+
+=== [player-model] /Users/admin/Documents/GitHub/bid/.venv/bin/python -u -m bid.player_model train --corpus /Users/admin/Documents/GitHub/bid/data/traces/corpus_combined.jsonl
+trained on 1485 rows (170 contexts, 27 distinct bids)
+held-out (262 rows):
+  top-1 accuracy : 51.5% (majority baseline 51.5%)
+  mean log-loss  : 2.168 bits (baseline 2.747)
+saved -> data/player_models/call_model.json
+
+=== [train] /Users/admin/Documents/GitHub/bid/.venv/bin/python -u -m bid.cot_model train --dataset /Users/admin/Documents/GitHub/bid/data/cot_dataset/dataset.json --epochs 3 --batch 32 --lr 0.0003 --out /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt --init-from /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt
+warm-started model weights from /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt
+training 4,968,448 params on 1573 examples | 3 epochs | device=mps block=88
+  epoch 0 step 20 loss 0.6654
+  epoch 0 step 40 loss 0.6529
+  epoch 1 step 60 loss 0.6179
+  epoch 1 step 80 loss 0.6306
+  epoch 2 step 100 loss 0.6174
+  epoch 2 step 120 loss 0.6420
+  epoch 2 step 140 loss 0.6541
+saved /Users/admin/Documents/GitHub/bid/data/cot_model/ckpt_candidate.pt

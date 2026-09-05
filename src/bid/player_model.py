@@ -24,6 +24,7 @@ CLI:
 
 import argparse
 import collections
+import hashlib
 import json
 import math
 import os
@@ -93,6 +94,14 @@ from collections import Counter
 from bid.models import Seat
 
 
+def sha256_file(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 16), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 class CallModel:
     """Add-smoothed table model over ctx -> call, with global backoff."""
 
@@ -102,10 +111,12 @@ class CallModel:
         self.ctx_counts = {}        # ctx_key -> {bid: count}
         self.global_counts = Counter()
         self.n_ctx_total = {}
+        self.meta = {}              # provenance (corpus sha, row counts)
 
     @classmethod
-    def train(cls, rows, **kw):
+    def train(cls, rows, meta=None, **kw):
         m = cls(**kw)
+        m.meta = dict(meta or {})
         for r in rows:
             f = subset_features(r["input"].get("features") or {})
             ctx = "|".join(featurize(r["seat"], r["call_index"],
@@ -136,7 +147,7 @@ class CallModel:
             "alpha": self.alpha, "backoff": self.backoff,
             "ctx_counts": self.ctx_counts,
             "global_counts": dict(self.global_counts),
-            "meta": {"contexts": len(self.ctx_counts),
+            "meta": {**self.meta, "contexts": len(self.ctx_counts),
                      "bids": len(self.global_counts)},
         }
         with open(path, "w") as f:
@@ -216,7 +227,10 @@ def main():
     n_val = max(1, int(args.holdout * len(rows)))
     val, train = rows[:n_val], rows[n_val:]
 
-    model = CallModel.train(train)
+    model = CallModel.train(train, meta={
+        "corpus_sha256": sha256_file(args.corpus),
+        "rows": len(rows), "trained": len(train),
+    })
     model.save(args.out)
     res = eval_holdout(model, val)
     print(f"trained on {len(train)} rows "

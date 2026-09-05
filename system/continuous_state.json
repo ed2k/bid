@@ -1,0 +1,10 @@
+{
+  "cycle": 2,
+  "next_stage": 0,
+  "stage_fails": {
+    "teacher": 0,
+    "student": 0,
+    "mine": 0
+  },
+  "ts": "2026-09-05 11:26:41"
+}

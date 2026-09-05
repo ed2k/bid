@@ -52,8 +52,21 @@ EVAL_SEED = 777
 CONFIRM_Z = 2.0        # |z| >= this at a tier => conclusive
 MIN_BOARDS_FINAL = 64  # never promote off fewer paired boards than this
 
+CHAMPION_SEED = 4242   # held-out deal seed for champion challenges; rotated per version
+ANCHOR_SEED = 909090   # frozen held-out anchor set: same deals for every version
+ANCHOR_BOARDS = 48
+
 
 # ---------------- stats helpers (pure; unit-tested) ----------------
+
+def eval_seed_for(version: int) -> int:
+    """Per-version evaluation seed.
+
+    Base and candidate within one cycle share the seed so their per-board
+    deltas stay paired; rotating it across versions stops the same random
+    draw from gating every saved system.  The frozen ANCHOR_SEED set is the
+    longitudinal check that gains are not seed-fitting."""
+    return EVAL_SEED + int(version)
 
 def paired_z(deltas: List[float]) -> float:
     """z statistic of paired per-board deltas (mean / stderr)."""
@@ -93,7 +106,7 @@ def load_state() -> dict:
     st.setdefault("applied", [])
     st.setdefault("champion_swaps", 0)
     st.setdefault("champion_holds", 0)
-    return st
+    return fw.normalize_state(st)
 
 
 def save_state(st: dict) -> None:
@@ -109,6 +122,18 @@ def write_progress(payload: dict) -> None:
             json.dump(payload, f, indent=2, default=str)
     except OSError:
         pass
+
+
+def anchor_eval(arena, net) -> dict:
+    """Evaluate a net on the frozen anchor deal set (never used for screening
+    or validation).  Recording this per version builds the ledger that shows
+    whether gains compound or merely fit the rotating eval seeds."""
+    deals = build_deals(ANCHOR_BOARDS, seed=ANCHOR_SEED)
+    res = evaluate_system(arena, "anchor", net, deals, precompute(deals),
+                          seed=ANCHOR_SEED)
+    return {"avg_score": round(res["avg_score"], 2),
+            "avg_imp_loss": round(res["avg_imp_loss"], 3),
+            "par_accuracy": round(res["par_accuracy"], 2)}
 
 
 # ---------------- candidate pool (reuses flywheel generators) ----------------
@@ -163,7 +188,7 @@ class PoolBuilder:
         for r in mutatable[:4]:
             m = fw.mutate_bounds(r, "loosen")
             if m is not None:
-                sig = f"loosen:{r.rule_id}", f"LOOSEN_{r.rule_id}"
+                sig = f"loosen:{r.rule_id}"
                 if sig not in self.state["failed"]:
                     entries.append((sig, f"LOOSEN_{r.rule_id}",
                                     (lambda rr: (lambda n: fw.replace_rule(n, rr)))(m)))
@@ -198,6 +223,9 @@ def main():
                          "(requires torch; adds ~0.5s/decision overhead)")
     ap.add_argument("--min-final-boards", type=int, default=MIN_BOARDS_FINAL,
                     help="minimum boards required for final champion challenge")
+    ap.add_argument("--max-cycles", type=int, default=0,
+                    help="stop after this many screening cycles (0 = until "
+                         "convergence or --max-minutes); used by bid.continuous")
     args = ap.parse_args()
 
     tiers = [int(x) for x in args.tiers.split(",") if int(x) > 0]
@@ -290,14 +318,23 @@ def main():
         if deadline and now >= deadline:
             print("Time budget reached.")
             break
+        if args.max_cycles and cycle_no >= args.max_cycles:
+            print("Cycle budget reached.")
+            break
 
         cycle_no += 1
+        eval_seed = eval_seed_for(state["version"])
         base_net = load_decision_net_dsl(TARGET)
         d0, dd0 = tier_data(tiers[0])
         base_res = evaluate_system(arena, "base", base_net, d0, dd0,
-                                   run_diagnostics=True, seed=EVAL_SEED)
+                                   run_diagnostics=True, seed=eval_seed)
         base_scores = base_res["scores"]
         base_scores_by_tier = {tiers[0]: base_scores}
+
+        # anchor ledger: record the incumbent once on the frozen held-out set
+        if str(state["version"]) not in state.setdefault("anchor", {}):
+            state["anchor"][str(state["version"])] = anchor_eval(arena, base_net)
+            save_state(state)
 
         pool = pool_builder.build(base_net, base_res["diagnostics"])
         if args.pool_cap:
@@ -322,9 +359,9 @@ def main():
                 fn(cand)
             except Exception as ex:
                 print(f"    !! {name} failed to apply: {type(ex).__name__}: {ex}", flush=True)
-                state["failed"].append(sig)
+                fw.mark_failed(state, sig)
                 continue
-            res = evaluate_system(arena, "cand", cand, d0, dd0, seed=EVAL_SEED)
+            res = evaluate_system(arena, "cand", cand, d0, dd0, seed=eval_seed)
             deltas = [b - a for b, a in zip(res["scores"], base_scores)]
             dm = sum(deltas) / len(deltas)
             z = paired_z(deltas)
@@ -336,7 +373,7 @@ def main():
             progress["screened"] += 1
             print(f"    cand {i+1}/{len(pool)} {name:<24} Δ{dm:+.2f} z={z:.2f} -> {verdict}", flush=True)
             if verdict == "reject" or not acc_ok or not imp_ok:
-                state["failed"].append(sig)
+                fw.mark_failed(state, sig)
             maybe_report(note=f"cyc{cycle_no} screening {i+1}/{len(pool)}")
 
         survivors = [c for c in screened
@@ -350,10 +387,10 @@ def main():
             for t in tiers[1:]:
                 deals_t, dd_t = tier_data(t)
                 res_t = evaluate_system(arena, "esc", cand["net"], deals_t, dd_t,
-                                        seed=EVAL_SEED)
+                                        seed=eval_seed)
                 if t not in base_scores_by_tier:
                     base_t = evaluate_system(arena, "base_esc", base_net, deals_t, dd_t,
-                                             seed=EVAL_SEED)
+                                             seed=eval_seed)
                     base_scores_by_tier[t] = base_t["scores"]
                 deltas = [b - a for b, a in zip(res_t["scores"], base_scores_by_tier[t])]
                 dm = sum(deltas) / len(deltas)
@@ -361,26 +398,29 @@ def main():
                 verdict = classify(dm, z)
                 cand["delta"], cand["z"] = dm, z
                 if verdict == "accept":
-                    continue
+                    if fw.passes_effect_floor(dm):
+                        continue
+                    ok = False  # significant but trivially small: sampler noise
+                    break
                 if verdict == "reject":
                     ok = False
                 break  # inconclusive -> stop escalating this candidate
-            if ok and cand["delta"] > 0:
+            if ok and fw.passes_effect_floor(cand["delta"]):
                 # final SDS gate (two-hand realism), cheap tier
                 if sds_scorer is not None:
                     rb = evaluate_system(arena, "b", base_net, d0, dd0,
-                                         seed=EVAL_SEED, sds_scorer=sds_scorer)
+                                         seed=eval_seed, sds_scorer=sds_scorer)
                     rf = evaluate_system(arena, "f", cand["net"], d0, dd0,
-                                         seed=EVAL_SEED, sds_scorer=sds_scorer)
+                                         seed=eval_seed, sds_scorer=sds_scorer)
                     if rf["avg_score_sds"] - rb["avg_score_sds"] < -5:
-                        state["failed"].append(cand["sig"])
+                        fw.mark_failed(state, cand["sig"])
                         maybe_report(force=True,
                                      note=f"{cand['name']} rejected by SDS gate")
                         ok = False
             if ok:
                 winner = cand
                 break
-            state["failed"].append(cand["sig"])
+            fw.mark_failed(state, cand["sig"])
 
         if winner is None:
             maybe_report(force=True, note=f"cyc{cycle_no}: no candidate survived ladder")
@@ -392,14 +432,18 @@ def main():
         os.makedirs(HISTORY_DIR, exist_ok=True)
         shutil.copy(TARGET, os.path.join(HISTORY_DIR, f"improved_system_v{v}.dsl"))
         state["version"] = v + 1
+        n_expired = fw.expire_failed(state)
         winner["net"].name = f"ImprovedSystem_v{v + 1}"
         winner["net"].save_dsl(TARGET)
         state["applied"].append({"sig": winner["sig"], "name": winner["name"],
                                  "delta": round(winner["delta"], 1)})
+        state["anchor"][str(state["version"])] = anchor_eval(arena, winner["net"])
         save_state(state)
         progress["version"] = state["version"]
-        maybe_report(force=True,
-                     note=f"APPLIED {winner['name']} Δ{winner['delta']:+.1f}@final")
+        note = (f"APPLIED {winner['name']} Δ{winner['delta']:+.1f}@final"
+                + (f", expired {n_expired} stale sigs" if n_expired else "")
+                + f" | anchor {state['anchor'][str(state['version'])]['avg_score']:+.1f}")
+        maybe_report(force=True, note=note)
 
         # ---- automatic champion challenge (both orientations) ----
         champ_net = (load_decision_net_dsl(CHAMPION)
@@ -410,7 +454,8 @@ def main():
         min_final = args.min_final_boards
         if champ_boards < min_final:
             champ_boards = min(max(tiers[-1], min_final), 384)
-        boards_c, _ = tier_data(champ_boards)
+        boards_c = build_deals(champ_boards,
+                               seed=CHAMPION_SEED + state["version"])
         for deal in boards_c:
             _, sc_new_ns = arena.play_board(deal, winner["net"], champ_net)
             imp_diffs.append(score_to_imp(int(sc_new_ns)))

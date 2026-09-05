@@ -1,5 +1,5 @@
 {
-  "version": 25,
+  "version": 27,
   "failed": [
     "curated:BALANCING",
     "curated:TKO_SHAPE",
@@ -37,336 +37,77 @@
     "tighten:COMP_BALANCING_1NT",
     "tighten:X_LIFT_2H",
     "tighten:COMP_TAKEOUT_DBL",
-    [
-      "loosen:GRAND_7NT_TWO_K",
-      "LOOSEN_GRAND_7NT_TWO_K"
-    ],
-    [
-      "loosen:COMP_1S_OVERCALL",
-      "LOOSEN_COMP_1S_OVERCALL"
-    ],
-    [
-      "loosen:COMP_BALANCING_1NT",
-      "LOOSEN_COMP_BALANCING_1NT"
-    ],
-    [
-      "loosen:X_LIFT_2H",
-      "LOOSEN_X_LIFT_2H"
-    ],
+    "loosen:GRAND_7NT_TWO_K",
+    "loosen:COMP_1S_OVERCALL",
+    "loosen:COMP_BALANCING_1NT",
+    "loosen:X_LIFT_2H",
     "tighten:R_RESP_2H",
     "tighten:R_4H",
     "tighten:FW_2NT_DECLINE",
     "tighten:FW_TKO_VS_S",
-    [
-      "loosen:R_RESP_2H",
-      "LOOSEN_R_RESP_2H"
-    ],
-    [
-      "loosen:R_4H",
-      "LOOSEN_R_4H"
-    ],
-    [
-      "loosen:GAME_ACCEPT_3NT_OVER_2NT",
-      "LOOSEN_GAME_ACCEPT_3NT_OVER_2NT"
-    ],
-    [
-      "loosen:FW_2NT_DECLINE",
-      "LOOSEN_FW_2NT_DECLINE"
-    ],
+    "loosen:R_RESP_2H",
+    "loosen:R_4H",
+    "loosen:FW_2NT_DECLINE",
     "tighten:R_WEAK_2S",
     "tighten:FW_TKO_VS_H",
     "tighten:R_1C_unbalanced",
-    [
-      "loosen:R_WEAK_2S",
-      "LOOSEN_R_WEAK_2S"
-    ],
-    [
-      "loosen:FW_TKO_VS_H",
-      "LOOSEN_FW_TKO_VS_H"
-    ],
-    [
-      "loosen:COMP_TAKEOUT_DBL",
-      "LOOSEN_COMP_TAKEOUT_DBL"
-    ],
+    "loosen:R_WEAK_2S",
+    "loosen:FW_TKO_VS_H",
+    "loosen:COMP_TAKEOUT_DBL",
     "tighten:FW_OVERCALL_1H",
     "tighten:FW_2NT_FORCE_H",
     "tighten:R_1C_balanced",
     "tighten:R_RESP_2S",
     "tighten:R_REBID_4H",
-    [
-      "loosen:FW_OVERCALL_1H",
-      "LOOSEN_FW_OVERCALL_1H"
-    ],
-    [
-      "loosen:R_RESP_4H",
-      "LOOSEN_R_RESP_4H"
-    ],
-    [
-      "loosen:FW_2NT_FORCE_H",
-      "LOOSEN_FW_2NT_FORCE_H"
-    ],
-    [
-      "loosen:R_1C_balanced",
-      "LOOSEN_R_1C_balanced"
-    ],
+    "loosen:FW_OVERCALL_1H",
+    "loosen:R_RESP_4H",
+    "loosen:FW_2NT_FORCE_H",
+    "loosen:R_1C_balanced",
     "tighten:R_OPEN_2C_STRONG",
     "tighten:X_LIFT_2S",
-    [
-      "loosen:SLAM_EXPLORE_6H",
-      "LOOSEN_SLAM_EXPLORE_6H"
-    ],
-    [
-      "loosen:R_RESP_2S",
-      "LOOSEN_R_RESP_2S"
-    ],
+    "loosen:R_RESP_2S",
     "tighten:R_1D",
-    [
-      "loosen:SLAM_EXPLORE_6S",
-      "LOOSEN_SLAM_EXPLORE_6S"
-    ],
-    [
-      "loosen:GAME_ACCEPT_4S_OVER_3S",
-      "LOOSEN_GAME_ACCEPT_4S_OVER_3S"
-    ],
+    "loosen:SLAM_EXPLORE_6S",
     "tighten:X_LIFT_3D",
-    [
-      "loosen:R_1D",
-      "LOOSEN_R_1D"
-    ],
+    "loosen:R_1D",
     "tighten:X_RESP_2NT",
     "tighten:ASK_5NT_KINGS",
     "tighten:GAME_ACCEPT_4H_OVER_3H",
-    [
-      "loosen:X_RESP_2NT",
-      "LOOSEN_X_RESP_2NT"
-    ],
-    [
-      "loosen:ASK_5NT_KINGS",
-      "LOOSEN_ASK_5NT_KINGS"
-    ],
-    [
-      "loosen:GAME_ACCEPT_4H_OVER_3H",
-      "LOOSEN_GAME_ACCEPT_4H_OVER_3H"
-    ],
+    "loosen:X_RESP_2NT",
+    "loosen:ASK_5NT_KINGS",
     "tighten:R_1H",
-    [
-      "loosen:R_1H",
-      "LOOSEN_R_1H"
-    ],
+    "loosen:R_1H",
     "tighten:R_1NT",
     "tighten:ASK_4NT_ACES",
-    [
-      "loosen:R_1NT",
-      "LOOSEN_R_1NT"
-    ],
-    [
-      "loosen:ASK_4NT_ACES",
-      "LOOSEN_ASK_4NT_ACES"
-    ],
+    "loosen:R_1NT",
+    "loosen:ASK_4NT_ACES",
     "tighten:R_4S",
-    [
-      "loosen:FW_TKO_VS_S",
-      "LOOSEN_FW_TKO_VS_S"
-    ],
+    "loosen:FW_TKO_VS_S",
     "tighten:PLACE_6NT_ACES",
     "tighten:SLAM_REBID_3D",
-    [
-      "loosen:PLACE_6NT_ACES",
-      "LOOSEN_PLACE_6NT_ACES"
-    ],
+    "loosen:PLACE_6NT_ACES",
     "tighten:R_RESP_3NT",
-    [
-      "loosen:R_RESP_3NT",
-      "LOOSEN_R_RESP_3NT"
-    ],
-    [
-      "loosen:GRAND_7NT_TWO_K",
-      "LOOSEN_GRAND_7NT_TWO_K"
-    ],
-    [
-      "loosen:COMP_1S_OVERCALL",
-      "LOOSEN_COMP_1S_OVERCALL"
-    ],
-    [
-      "loosen:COMP_BALANCING_1NT",
-      "LOOSEN_COMP_BALANCING_1NT"
-    ],
-    [
-      "loosen:X_LIFT_2H",
-      "LOOSEN_X_LIFT_2H"
-    ],
-    [
-      "loosen:R_RESP_2H",
-      "LOOSEN_R_RESP_2H"
-    ],
-    [
-      "loosen:R_4H",
-      "LOOSEN_R_4H"
-    ],
-    [
-      "loosen:GAME_ACCEPT_3NT_OVER_2NT",
-      "LOOSEN_GAME_ACCEPT_3NT_OVER_2NT"
-    ],
-    [
-      "loosen:FW_2NT_DECLINE",
-      "LOOSEN_FW_2NT_DECLINE"
-    ],
-    [
-      "loosen:R_WEAK_2S",
-      "LOOSEN_R_WEAK_2S"
-    ],
-    [
-      "loosen:FW_TKO_VS_H",
-      "LOOSEN_FW_TKO_VS_H"
-    ],
-    [
-      "loosen:COMP_TAKEOUT_DBL",
-      "LOOSEN_COMP_TAKEOUT_DBL"
-    ],
-    [
-      "loosen:FW_OVERCALL_1H",
-      "LOOSEN_FW_OVERCALL_1H"
-    ],
-    [
-      "loosen:R_RESP_4H",
-      "LOOSEN_R_RESP_4H"
-    ],
-    [
-      "loosen:FW_2NT_FORCE_H",
-      "LOOSEN_FW_2NT_FORCE_H"
-    ],
-    [
-      "loosen:R_1C_balanced",
-      "LOOSEN_R_1C_balanced"
-    ],
-    [
-      "loosen:SLAM_EXPLORE_6H",
-      "LOOSEN_SLAM_EXPLORE_6H"
-    ],
-    [
-      "loosen:R_RESP_2S",
-      "LOOSEN_R_RESP_2S"
-    ],
-    [
-      "loosen:SLAM_EXPLORE_6S",
-      "LOOSEN_SLAM_EXPLORE_6S"
-    ],
-    [
-      "loosen:GAME_ACCEPT_4S_OVER_3S",
-      "LOOSEN_GAME_ACCEPT_4S_OVER_3S"
-    ],
-    [
-      "loosen:R_1D",
-      "LOOSEN_R_1D"
-    ],
-    [
-      "loosen:GRAND_7NT_TWO_K",
-      "LOOSEN_GRAND_7NT_TWO_K"
-    ],
-    [
-      "loosen:COMP_1S_OVERCALL",
-      "LOOSEN_COMP_1S_OVERCALL"
-    ],
-    [
-      "loosen:COMP_BALANCING_1NT",
-      "LOOSEN_COMP_BALANCING_1NT"
-    ],
-    [
-      "loosen:X_LIFT_2H",
-      "LOOSEN_X_LIFT_2H"
-    ],
-    [
-      "loosen:R_RESP_2H",
-      "LOOSEN_R_RESP_2H"
-    ],
-    [
-      "loosen:R_4H",
-      "LOOSEN_R_4H"
-    ],
-    [
-      "loosen:GAME_ACCEPT_3NT_OVER_2NT",
-      "LOOSEN_GAME_ACCEPT_3NT_OVER_2NT"
-    ],
-    [
-      "loosen:FW_2NT_DECLINE",
-      "LOOSEN_FW_2NT_DECLINE"
-    ],
-    [
-      "loosen:R_WEAK_2S",
-      "LOOSEN_R_WEAK_2S"
-    ],
-    [
-      "loosen:FW_TKO_VS_H",
-      "LOOSEN_FW_TKO_VS_H"
-    ],
-    [
-      "loosen:COMP_TAKEOUT_DBL",
-      "LOOSEN_COMP_TAKEOUT_DBL"
-    ],
-    [
-      "loosen:FW_OVERCALL_1H",
-      "LOOSEN_FW_OVERCALL_1H"
-    ],
-    [
-      "loosen:R_RESP_4H",
-      "LOOSEN_R_RESP_4H"
-    ],
-    [
-      "loosen:FW_2NT_FORCE_H",
-      "LOOSEN_FW_2NT_FORCE_H"
-    ],
-    [
-      "loosen:R_1C_balanced",
-      "LOOSEN_R_1C_balanced"
-    ],
-    [
-      "loosen:COMP_1S_OVERCALL",
-      "LOOSEN_COMP_1S_OVERCALL"
-    ],
+    "loosen:R_RESP_3NT",
     "tighten:NO_D_WITH_MAJOR_SPA",
     "tighten:R_1S",
-    [
-      "loosen:NO_D_WITH_MAJOR_SPA",
-      "LOOSEN_NO_D_WITH_MAJOR_SPA"
-    ],
-    [
-      "loosen:COMP_BALANCING_1NT",
-      "LOOSEN_COMP_BALANCING_1NT"
-    ],
-    [
-      "loosen:R_1S",
-      "LOOSEN_R_1S"
-    ],
-    [
-      "loosen:R_1S",
-      "LOOSEN_R_1S"
-    ],
-    [
-      "loosen:NO_D_WITH_MAJOR_HEA",
-      "LOOSEN_NO_D_WITH_MAJOR_HEA"
-    ],
-    [
-      "loosen:NO_D_WITH_MAJOR_HEA",
-      "LOOSEN_NO_D_WITH_MAJOR_HEA"
-    ],
+    "loosen:NO_D_WITH_MAJOR_SPA",
+    "loosen:R_1S",
+    "loosen:NO_D_WITH_MAJOR_HEA",
     "drop:R_OPEN_2C_STRONG",
     "drop:R_WEAK_2S",
     "tighten:SLAM_FIT_3NT_D",
     "loosen:SLAM_REBID_3D",
-    "loosen:R_RESP_3NT",
     "curated:AGGRESSION",
     "tighten:MC_OVERCALL_2D",
-    "loosen:R_1C_balanced",
-    "loosen:FW_TKO_VS_H",
-    "loosen:SLAM_EXPLORE_6S",
     "curated:NT_SAFETY",
     "tighten:GRAND_7NT_ONE_K",
     "tighten:SLAM_FIT_6D",
     "tighten:NO_C_WITH_MAJOR_SPA",
-    "loosen:COMP_TAKEOUT_DBL",
     "loosen:SLAM_FIT_3NT_D",
     "loosen:GRAND_7NT_ONE_K",
-    "loosen:FW_TKO_VS_S"
+    "gate:FW_NO_2_TRUMP_RAISE:not_opening",
+    "gate:FW_NO_2_TRUMP_RAISE:partner",
+    "tighten:NO_D_WITH_MAJOR_HEA"
   ],
   "applied": [
     {
@@ -487,8 +228,144 @@
       "sig": "curated:SUPPORT",
       "name": "SUPPORT",
       "delta": 0.0
+    },
+    {
+      "sig": "curated:SUPPORT",
+      "name": "SUPPORT",
+      "delta": 0.0
+    },
+    {
+      "sig": "curated:SUPPORT",
+      "name": "SUPPORT",
+      "delta": 0.0
     }
   ],
   "champion_swaps": 0,
-  "champion_holds": 4
+  "champion_holds": 6,
+  "failed_at": {
+    "curated:BALANCING": 25,
+    "curated:TKO_SHAPE": 25,
+    "curated:FORCE_RAISE_2NT": 25,
+    "diag:COMP": 25,
+    "diag:GAME": 25,
+    "diag:SLAM": 25,
+    "gate:R_RESP_2H:not_opening": 25,
+    "gate:R_RESP_2H:partner": 25,
+    "gate:R_RESP_2S:partner": 25,
+    "gate:R_OPEN_2C_STRONG:not_opening": 25,
+    "curated:OVERCALLS": 25,
+    "diag:X": 25,
+    "gate:R_OPEN_2C_STRONG:partner": 25,
+    "gate:R_WEAK_2H:not_opening": 25,
+    "gate:R_WEAK_2S:not_opening": 25,
+    "gate:R_WEAK_2S:partner": 25,
+    "drop:R_1NT": 25,
+    "drop:R_1H": 25,
+    "drop:R_1S": 25,
+    "drop:R_1D": 25,
+    "drop:R_1C_unbalanced": 25,
+    "drop:R_1C_balanced": 25,
+    "tighten:SLAM_EXPLORE_6H": 25,
+    "tighten:GAME_ACCEPT_4S_OVER_3S": 25,
+    "tighten:GAME_ACCEPT_3NT_OVER_2NT": 25,
+    "tighten:R_RESP_4H": 25,
+    "tighten:SLAM_EXPLORE_6S": 25,
+    "loosen:SLAM_EXPLORE_6H": 25,
+    "loosen:GAME_ACCEPT_4H_OVER_3H": 25,
+    "loosen:GAME_ACCEPT_4S_OVER_3S": 25,
+    "loosen:GAME_ACCEPT_3NT_OVER_2NT": 25,
+    "tighten:GRAND_7NT_TWO_K": 25,
+    "tighten:COMP_1S_OVERCALL": 25,
+    "tighten:COMP_BALANCING_1NT": 25,
+    "tighten:X_LIFT_2H": 25,
+    "tighten:COMP_TAKEOUT_DBL": 25,
+    "loosen:GRAND_7NT_TWO_K": 25,
+    "loosen:COMP_1S_OVERCALL": 25,
+    "loosen:COMP_BALANCING_1NT": 25,
+    "loosen:X_LIFT_2H": 25,
+    "tighten:R_RESP_2H": 25,
+    "tighten:R_4H": 25,
+    "tighten:FW_2NT_DECLINE": 25,
+    "tighten:FW_TKO_VS_S": 25,
+    "loosen:R_RESP_2H": 25,
+    "loosen:R_4H": 25,
+    "loosen:FW_2NT_DECLINE": 25,
+    "tighten:R_WEAK_2S": 25,
+    "tighten:FW_TKO_VS_H": 25,
+    "tighten:R_1C_unbalanced": 25,
+    "loosen:R_WEAK_2S": 25,
+    "loosen:FW_TKO_VS_H": 25,
+    "loosen:COMP_TAKEOUT_DBL": 25,
+    "tighten:FW_OVERCALL_1H": 25,
+    "tighten:FW_2NT_FORCE_H": 25,
+    "tighten:R_1C_balanced": 25,
+    "tighten:R_RESP_2S": 25,
+    "tighten:R_REBID_4H": 25,
+    "loosen:FW_OVERCALL_1H": 25,
+    "loosen:R_RESP_4H": 25,
+    "loosen:FW_2NT_FORCE_H": 25,
+    "loosen:R_1C_balanced": 25,
+    "tighten:R_OPEN_2C_STRONG": 25,
+    "tighten:X_LIFT_2S": 25,
+    "loosen:R_RESP_2S": 25,
+    "tighten:R_1D": 25,
+    "loosen:SLAM_EXPLORE_6S": 25,
+    "tighten:X_LIFT_3D": 25,
+    "loosen:R_1D": 25,
+    "tighten:X_RESP_2NT": 25,
+    "tighten:ASK_5NT_KINGS": 25,
+    "tighten:GAME_ACCEPT_4H_OVER_3H": 25,
+    "loosen:X_RESP_2NT": 25,
+    "loosen:ASK_5NT_KINGS": 25,
+    "tighten:R_1H": 25,
+    "loosen:R_1H": 25,
+    "tighten:R_1NT": 25,
+    "tighten:ASK_4NT_ACES": 25,
+    "loosen:R_1NT": 25,
+    "loosen:ASK_4NT_ACES": 25,
+    "tighten:R_4S": 25,
+    "loosen:FW_TKO_VS_S": 25,
+    "tighten:PLACE_6NT_ACES": 25,
+    "tighten:SLAM_REBID_3D": 25,
+    "loosen:PLACE_6NT_ACES": 25,
+    "tighten:R_RESP_3NT": 25,
+    "loosen:R_RESP_3NT": 25,
+    "tighten:NO_D_WITH_MAJOR_SPA": 25,
+    "tighten:R_1S": 25,
+    "loosen:NO_D_WITH_MAJOR_SPA": 25,
+    "loosen:R_1S": 25,
+    "loosen:NO_D_WITH_MAJOR_HEA": 25,
+    "drop:R_OPEN_2C_STRONG": 25,
+    "drop:R_WEAK_2S": 25,
+    "tighten:SLAM_FIT_3NT_D": 25,
+    "loosen:SLAM_REBID_3D": 25,
+    "curated:AGGRESSION": 25,
+    "tighten:MC_OVERCALL_2D": 25,
+    "curated:NT_SAFETY": 25,
+    "tighten:GRAND_7NT_ONE_K": 25,
+    "tighten:SLAM_FIT_6D": 25,
+    "tighten:NO_C_WITH_MAJOR_SPA": 25,
+    "loosen:SLAM_FIT_3NT_D": 25,
+    "loosen:GRAND_7NT_ONE_K": 25,
+    "gate:FW_NO_2_TRUMP_RAISE:not_opening": 25,
+    "gate:FW_NO_2_TRUMP_RAISE:partner": 25,
+    "tighten:NO_D_WITH_MAJOR_HEA": 26
+  },
+  "anchor": {
+    "25": {
+      "avg_score": -19.81,
+      "avg_imp_loss": 4.074,
+      "par_accuracy": 53.7
+    },
+    "26": {
+      "avg_score": -19.81,
+      "avg_imp_loss": 4.074,
+      "par_accuracy": 53.7
+    },
+    "27": {
+      "avg_score": -19.81,
+      "avg_imp_loss": 4.074,
+      "par_accuracy": 53.7
+    }
+  }
 }

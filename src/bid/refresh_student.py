@@ -13,7 +13,9 @@ script propagates the improved teacher into the neural student:
   3. Apples-to-apples gate: run cot_model.py eval-val for BOTH the candidate
      and the incumbent on the NEW dataset's val split.
      Promote the candidate only if its BID accuracy is not worse than the
-     incumbent's by more than --tolerance percentage points.
+     incumbent's by more than --tolerance percentage points, and never below
+     the absolute --min-bid floor (guards the "no comparable incumbent" path
+     after vocabulary changes).
   4. On promotion replace ckpt.pt (+ .vocab.json); otherwise archive the
      rejected candidate under data/cot_model/rejected/.
      Every decision is recorded in data/cot_model/student_state.json.
@@ -47,6 +49,7 @@ MODEL_DIR = os.path.join(REPO_ROOT, "data", "cot_model")
 INCUMBENT = os.path.join(MODEL_DIR, "ckpt.pt")
 CANDIDATE = os.path.join(MODEL_DIR, "ckpt_candidate.pt")
 STATE_PATH = os.path.join(MODEL_DIR, "student_state.json")
+PLAYER_MODEL = os.path.join(REPO_ROOT, "data", "player_models", "call_model.json")
 
 
 def sha256_file(path):
@@ -151,6 +154,39 @@ def dsl_changed():
     return cur != prev
 
 
+def decide_promotion(new_bi, old_bi, tolerance, min_bid):
+    """Pure promotion decision: (promote, reason).
+
+    The candidate must clear the absolute BID-accuracy floor AND, when a
+    comparable incumbent exists, not regress beyond `tolerance`.  The floor
+    closes the 'no comparable incumbent' loophole that once auto-promoted a
+    1.9%-accuracy student after a vocabulary change."""
+    if old_bi is None:
+        ok = new_bi >= min_bid
+        return ok, (f"no comparable incumbent; floor {min_bid:.0f}% "
+                    f"{'passed' if ok else 'NOT met'} ({new_bi:.1f}%)")
+    if new_bi < min_bid:
+        return False, (f"candidate {new_bi:.1f}% below accuracy floor "
+                       f"{min_bid:.0f}% (incumbent {old_bi:.1f}%)")
+    ok = new_bi >= old_bi - tolerance
+    return ok, f"new {new_bi:.1f}% vs incumbent {old_bi:.1f}% (tolerance {tolerance})"
+
+
+def player_model_stale(path=PLAYER_MODEL, corpus_sha=None):
+    """True if call_model.json is missing, unreadable, or was trained from
+    different corpus bytes than the current effective corpus."""
+    if corpus_sha is None:
+        corpus_sha = corpus_sha256()
+    if not os.path.exists(path):
+        return True
+    try:
+        with open(path) as f:
+            meta = json.load(f).get("meta", {})
+    except (OSError, ValueError):
+        return True
+    return meta.get("corpus_sha256") != corpus_sha
+
+
 def main():
     ap = argparse.ArgumentParser(
         description="Regenerate traces/dataset and refresh the CoT student "
@@ -165,6 +201,10 @@ def main():
     ap.add_argument("--tolerance", type=float, default=0.0,
                     help="max allowed BID-accuracy regression to still promote "
                          "(percentage points)")
+    ap.add_argument("--min-bid", type=float, default=25.0,
+                    help="absolute BID-accuracy floor (%%): candidates below "
+                         "this are never promoted, even without a comparable "
+                         "incumbent")
     ap.add_argument("--force", action="store_true",
                     help="regenerate corpus even if the DSL hash is unchanged")
     ap.add_argument("--scratch", action="store_true",
@@ -208,6 +248,17 @@ def main():
             run("dataset", [python, "-u", "-m", "bid.build_cot_dataset", TRACES],
                 log_path)
 
+    # ---- stage 1b: player-model freshness ---------------------------------
+    # The soft RBMBMC world-consistency scorer trains from the same corpus;
+    # autoloop attaches whatever sits on disk, so keep it in lockstep with
+    # the corpus bytes (retrained here whenever they diverge).
+    eff_corpus = COMBINED if os.path.exists(DISAGREEMENTS) else TRACES
+    pm_retrained = False
+    if player_model_stale() and os.path.exists(eff_corpus):
+        run("player-model", [python, "-u", "-m", "bid.player_model", "train",
+                             "--corpus", eff_corpus], log_path)
+        pm_retrained = True
+
     # ---- stage 2: train candidate ----------------------------------------
     train_cmd = [
         python, "-u", "-m", "bid.cot_model", "train",
@@ -227,21 +278,20 @@ def main():
         if res:
             old_ex, old_bi = res
 
-    promote = old_bi is None or new_bi >= old_bi - args.tolerance
-    reason = ("no comparable incumbent" if old_bi is None else
-              f"new {new_bi:.1f}% vs incumbent {old_bi:.1f}% "
-              f"(tolerance {args.tolerance})")
+    promote, reason = decide_promotion(new_bi, old_bi,
+                                       args.tolerance, args.min_bid)
 
     # ---- stage 4: promote / reject + bookkeeping --------------------------
     record = {
         "ts": time.strftime("%Y-%m-%d %H:%M:%S"),
         "dsl_sha256": sha256_file(DSL_PATH) if os.path.exists(DSL_PATH) else None,
-        "corpus_sha256": sha256_file(TRACES) if os.path.exists(TRACES) else None,
+        "corpus_sha256": corpus_sha256(),
         "boards": boards, "epochs": args.epochs,
         "candidate": {"exact": new_ex, "bid": new_bi},
         "incumbent": ({"exact": old_ex, "bid": old_bi}
                       if old_bi is not None else "not evaluable"),
         "promoted": bool(promote), "reason": reason,
+        "player_model_retrained": pm_retrained,
         "elapsed_sec": round(time.time() - t_start, 1),
     }
 

@@ -44,6 +44,64 @@ HISTORY_DIR = os.path.join(SYSTEM_DIR, "history")
 TRAIN_SEED = 42
 VAL_SEEDS = (7, 13)
 EVAL_SEED = 777
+FAIL_EXPIRY_VERSIONS = 8  # failed patches become retryable after this many saved versions
+MIN_PATCH_DELTA = 0.5     # min avg-score gain (pts/board) to accept a patch
+
+
+# ------------- persistent patch-state helpers (shared with autoloop) -------------
+
+def normalize_state(st: dict) -> dict:
+    """Heal legacy/corrupted flywheel_state.json contents.
+
+    One autoloop revision stored [sig, name] tuples in `failed`; JSON
+    round-trips them as lists that never match generated string signatures,
+    so those patches were re-screened forever.  Flatten to bare signatures,
+    dedupe, and backfill per-signature failure versions so expiry has data
+    to work with (legacy entries get a full grace period)."""
+    cur = int(st.get("version", 0))
+    seen, failed = set(), []
+    for e in st.get("failed", []):
+        sig = e[0] if isinstance(e, (list, tuple)) else e
+        if isinstance(sig, str) and sig and sig not in seen:
+            seen.add(sig)
+            failed.append(sig)
+    st["failed"] = failed
+    fam = st.get("failed_at", {})
+    st["failed_at"] = {s: int(fam.get(s, cur)) for s in failed}
+    return st
+
+
+def mark_failed(state: dict, sig: str) -> None:
+    """Record a failed patch signature together with the version it failed at."""
+    if sig not in state["failed"]:
+        state["failed"].append(sig)
+    state.setdefault("failed_at", {})[sig] = int(state.get("version", 0))
+
+
+def passes_effect_floor(delta: float) -> bool:
+    """Reject noise-level 'improvements'.
+
+    The PIDM sampler has wall-clock timeouts, so re-scoring an identical net
+    is not perfectly repeatable; a +0.04 mean with near-zero variance can
+    otherwise pass the z-test and burn a saved version on a no-op."""
+    return delta >= MIN_PATCH_DELTA
+
+
+def expire_failed(state: dict, expiry_versions: int = FAIL_EXPIRY_VERSIONS) -> int:
+    """Drop failure signatures that have not recurred for `expiry_versions`
+    saved versions.  The system underneath a failed patch changes with every
+    saved version, so old failures stop being informative; keeping them
+    forever empties the candidate pool and halts the loop ("converged" when
+    it is really out of ideas).  Returns the number of expired entries."""
+    cur = int(state.get("version", 0))
+    fam = state.get("failed_at", {})
+    keep = [s for s in state.get("failed", [])
+            if cur - int(fam.get(s, cur)) < expiry_versions]
+    dropped = len(state.get("failed", [])) - len(keep)
+    state["failed"] = keep
+    live = set(keep)
+    state["failed_at"] = {s: v for s, v in fam.items() if s in live}
+    return dropped
 
 CONTEXT_KEYS = {"partner_last_call", "opp_last_call", "my_last_call", "is_opening",
                 "is_balancing", "is_competitive", "last_bid_strain"}
@@ -316,8 +374,8 @@ class Flywheel:
     def _load_state(self) -> dict:
         if os.path.exists(STATE_PATH):
             with open(STATE_PATH) as f:
-                return json.load(f)
-        return {"version": 5, "failed": [], "applied": []}
+                return normalize_state(json.load(f))
+        return normalize_state({"version": 5, "failed": [], "applied": []})
 
     def _save_state(self):
         with open(STATE_PATH, "w") as f:
@@ -332,8 +390,7 @@ class Flywheel:
         return sig in self.state["failed"]
 
     def fail(self, sig):
-        if sig not in self.state["failed"]:
-            self.state["failed"].append(sig)
+        mark_failed(self.state, sig)
 
     def build_pool(self, net: DecisionNet, diagnostics: List) -> List[Tuple[str, str, Callable]]:
         entries: List[Tuple[str, str, Callable]] = []
@@ -422,7 +479,7 @@ class Flywheel:
                 res = self.evl(cand, self.train_deals, self.dd_train)
                 delta = res[metric] - cur_train[metric]
                 tested.append((sig, delta))
-                ok = (delta > 0
+                ok = (passes_effect_floor(delta)
                       and res["par_accuracy"] >= cur_train["par_accuracy"] - 5
                       and res["avg_imp_loss"] <= cur_train["avg_imp_loss"] + 0.15)
                 if ok and delta > best_delta:
@@ -474,11 +531,13 @@ class Flywheel:
             os.makedirs(HISTORY_DIR, exist_ok=True)
             shutil.copy(TARGET, os.path.join(HISTORY_DIR, f"improved_system_v{v}.dsl"))
             self.state["version"] = v + 1
+            n_expired = expire_failed(self.state)
             current.name = f"ImprovedSystem_v{self.state['version']}"
             current.save_dsl(TARGET)
             self.state["applied"].extend(applied)
             self._save_state()
-            print(f"   SAVED v{self.state['version']} -> {TARGET} (archived v{v})")
+            print(f"   SAVED v{self.state['version']} -> {TARGET} (archived v{v})"
+                  + (f", expired {n_expired} stale failure sigs" if n_expired else ""))
             return True
         print("   NOT SAVED (validation failed or no patches)")
         for a in applied:

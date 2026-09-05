@@ -107,25 +107,46 @@
       "reason": "new 62.4% vs incumbent 51.5% (tolerance 0.0)",
       "elapsed_sec": 1705.6,
       "checkpoint": "/Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt"
+    },
+    {
+      "ts": "2026-09-05 11:18:53",
+      "dsl_sha256": "8b3a66c4308d4c8288ee915644b954ad9096e2d149fefa4d388fa9fb5aba4295",
+      "corpus_sha256": "f78769fa91e23e86f80b11f11f9c8fb2d66484d71f5c28d833f38c1b2caffb17",
+      "boards": 200,
+      "epochs": 3,
+      "candidate": {
+        "exact": 39.1,
+        "bid": 59.8
+      },
+      "incumbent": {
+        "exact": 39.7,
+        "bid": 58.6
+      },
+      "promoted": true,
+      "reason": "new 59.8% vs incumbent 58.6% (tolerance 0.0)",
+      "player_model_retrained": true,
+      "elapsed_sec": 755.0,
+      "checkpoint": "/Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt"
     }
   ],
   "last": {
-    "ts": "2026-09-03 21:07:46",
-    "dsl_sha256": "c6e2553f47e8212bb25353114a39da230a2556d9331adfdebdad16345ddec75a",
-    "corpus_sha256": "57f0fde4a8ea65590abdd24a9f44b1d728bb80e13d851266c00e6189abe7e963",
-    "boards": 500,
-    "epochs": 8,
+    "ts": "2026-09-05 11:18:53",
+    "dsl_sha256": "8b3a66c4308d4c8288ee915644b954ad9096e2d149fefa4d388fa9fb5aba4295",
+    "corpus_sha256": "f78769fa91e23e86f80b11f11f9c8fb2d66484d71f5c28d833f38c1b2caffb17",
+    "boards": 200,
+    "epochs": 3,
     "candidate": {
-      "exact": 46.8,
-      "bid": 62.4
+      "exact": 39.1,
+      "bid": 59.8
     },
     "incumbent": {
-      "exact": 19.3,
-      "bid": 51.5
+      "exact": 39.7,
+      "bid": 58.6
     },
     "promoted": true,
-    "reason": "new 62.4% vs incumbent 51.5% (tolerance 0.0)",
-    "elapsed_sec": 1705.6,
+    "reason": "new 59.8% vs incumbent 58.6% (tolerance 0.0)",
+    "player_model_retrained": true,
+    "elapsed_sec": 755.0,
     "checkpoint": "/Users/admin/Documents/GitHub/bid/data/cot_model/ckpt.pt"
   }
 }

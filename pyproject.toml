@@ -16,6 +16,7 @@ dependencies = [
 [project.scripts]
 bid-flywheel = "bid.flywheel:main"
 bid-autoloop = "bid.autoloop:main"
+bid-continuous = "bid.continuous:main"
 bid-refresh-student = "bid.refresh_student:main"
 bid-mine-disagreements = "bid.mine_disagreements:main"
 bid-rl-finetune = "bid.rl_finetune:main"
