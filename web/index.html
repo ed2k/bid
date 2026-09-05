@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bid Review — Static Browser UI for the Self-Improving Bidding Engine</title>
+  <script src="coi-serviceworker.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <!-- Double Dummy Solver: WASM build of Bo Haglund's C++ DDS
+       (vendored from ../dds/web, MIT; coi-serviceworker provides the
+        cross-origin isolation the pthread build needs on plain http) -->
+  <script src="vendor/dds_wasm_api.js"></script>
+  <script src="vendor/dds_api.js"></script>
+  <!-- Bid engine JS modules (ports of src/bid/*.py) -->
+  <script src="objects.js"></script>
+  <script src="features.js"></script>
+  <script src="bid_dsl.js"></script>
+  <script src="bid_net.js"></script>
+  <script src="auction.js"></script>
+  <!-- Generated snapshot: python3 -m bid.web_export -->
+  <script src="review_data.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="brand">
+        <h1>&#9824; Bid Review</h1>
+        <span class="badge" id="badge-dsl">loading&hellip;</span>
+      </div>
+      <nav class="tabs">
+        <button id="tab-auction" class="tab active">Auction Review</button>
+        <button id="tab-data" class="tab">Loop Data</button>
+      </nav>
+    </header>
+
+    <!-- ==================== AUCTION REVIEW ==================== -->
+    <main id="view-auction">
+      <div class="toolbar">
+        <button id="btn-new-deal" class="btn btn-primary">&#127922; New Deal</button>
+        <button id="btn-load-board" class="btn btn-accent">&#128203; Load board&hellip;</button>
+        <label class="inline-label">Dealer
+          <select id="sel-dealer">
+            <option value="0" selected>N</option><option value="1">E</option>
+            <option value="2">S</option><option value="3">W</option>
+          </select>
+        </label>
+        <label class="inline-label">Vuln
+          <select id="sel-vuln">
+            <option value="0" selected>None</option><option value="1">N/S</option>
+            <option value="2">E/W</option><option value="3">Both</option>
+          </select>
+        </label>
+        <span class="toolbar-sep"></span>
+        <label class="inline-label">Corpus
+          <select id="sel-board"><option value="">load a recorded board&hellip;</option></select>
+        </label>
+        <label class="inline-label">Disputes
+          <select id="sel-dispute"><option value="">load a disagreement&hellip;</option></select>
+        </label>
+        <span class="toolbar-sep"></span>
+        <button id="btn-auto-step" class="btn">System call</button>
+        <button id="btn-auto-run" class="btn btn-accent">Auto-play rest</button>
+        <button id="btn-reset" class="btn btn-secondary">Reset auction</button>
+      </div>
+
+      <div class="status-bar">
+        <div class="status-item"><span class="label">Source:</span>
+          <span id="info-source" class="val">live deal</span></div>
+        <div class="status-item"><span class="label">Dealer / Vuln:</span>
+          <span id="info-dealer-vuln" class="val">&ndash;</span></div>
+        <div class="status-item"><span class="label">Contract:</span>
+          <span id="info-contract" class="val">Undecided</span></div>
+        <div class="status-item"><span class="label">Par (DDS):</span>
+          <span id="info-par" class="val">&ndash;</span></div>
+        <div class="status-item"><span class="label">Status:</span>
+          <span id="info-status" class="val status-active">Ready</span></div>
+      </div>
+
+      <div class="review-grid">
+        <section class="table-area">
+          <div id="seat-N" class="seat seat-north"><div class="seat-header">
+            <span class="seat-name">North</span><span class="turn-indicator">to call</span>
+          </div><div class="hand-cards" id="hand-N"></div></div>
+          <div id="seat-W" class="seat seat-west"><div class="seat-header">
+            <span class="seat-name">West</span><span class="turn-indicator">to call</span>
+          </div><div class="hand-cards" id="hand-W"></div></div>
+          <div class="felt-table">
+            <div class="auction-history-box">
+              <div class="auction-title">Auction</div>
+              <table class="auction-table">
+                <thead><tr><th>W</th><th>N</th><th>E</th><th>S</th></tr></thead>
+                <tbody id="auction-bids-tbody"></tbody>
+              </table>
+            </div>
+            <div id="dd-panel" class="dd-panel hidden">
+              <div class="auction-title">Double-Dummy Table (vendored dds.js)</div>
+              <table class="dd-table" id="dd-table"></table>
+              <div id="dd-par" class="dd-par"></div>
+            </div>
+          </div>
+          <div id="seat-E" class="seat seat-east"><div class="seat-header">
+            <span class="seat-name">East</span><span class="turn-indicator">to call</span>
+          </div><div class="hand-cards" id="hand-E"></div></div>
+          <div id="seat-S" class="seat seat-south"><div class="seat-header">
+            <span class="seat-name">South</span><span class="turn-indicator">to call</span>
+          </div><div class="hand-cards" id="hand-S"></div></div>
+        </section>
+
+        <aside class="inspector">
+          <div class="inspector-card" id="decision-card">
+            <h3>Decision Inspector</h3>
+            <div id="inspector-body"><p class="muted">Start a deal or load a recorded board.</p></div>
+          </div>
+          <div class="inspector-card" id="bidding-card">
+            <h3>Bidding Box</h3>
+            <div id="bidding-note" class="muted small"></div>
+            <div class="bidding-controls">
+              <div class="special-bids">
+                <button class="bid-btn special pass-btn" data-bid="PASS">PASS</button>
+                <button class="bid-btn special db-btn" data-bid="X">X</button>
+                <button class="bid-btn special rdb-btn" data-bid="XX">XX</button>
+              </div>
+              <div class="level-selector" id="bidding-level-row"></div>
+              <div class="suit-selector" id="bidding-suit-row"></div>
+            </div>
+            <div id="system-call-hint" class="small"></div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <!-- ==================== LOOP DATA ==================== -->
+    <main id="view-data" class="hidden">
+      <div class="data-grid">
+        <section class="inspector-card">
+          <h3>Teacher (DSL flywheel)</h3>
+          <div id="teacher-body"></div>
+        </section>
+        <section class="inspector-card">
+          <h3>Student (CoT model gate)</h3>
+          <div id="student-body"></div>
+        </section>
+        <section class="inspector-card">
+          <h3>Mining (student &harr; teacher arbitration)</h3>
+          <div id="mining-body"></div>
+        </section>
+      </div>
+      <section class="inspector-card">
+        <h3>Disagreement rows <span class="muted small">(ARB_STUDENT_LEGAL = candidate teacher bug)</span></h3>
+        <table class="data-table" id="dispute-table"></table>
+      </section>
+    </main>
+
+    <!-- Load-a-board modal -->
+    <div id="board-modal" class="modal-overlay hidden">
+      <div class="board-box">
+        <h2>Load a board</h2>
+        <p class="muted small">Paste all four hands. Accepted per seat:
+          <code>SAK2 HKQJ DQJ9 C432</code> &middot;
+          <code>AKQJ.T98.765.432</code> (S.H.D.C) &middot;
+          <code>S : A K 2 H : &hellip;</code></p>
+        <div class="board-input-grid">
+          <label>North <input id="in-hand-N" spellcheck="false" placeholder="e.g. SAK3 HKQ2 DQJ9 C54"></label>
+          <label>East <input id="in-hand-E" spellcheck="false" placeholder="e.g. ST95 H75 DA82 KJ98"></label>
+          <label>South <input id="in-hand-S" spellcheck="false" placeholder="e.g. SQJ4 H963 DK63 Q72"></label>
+          <label>West <input id="in-hand-W" spellcheck="false" placeholder="e.g. S86 HAT84 AT75 C63"></label>
+        </div>
+        <div class="board-modal-row">
+          <label class="inline-label">Dealer
+            <select id="board-dealer">
+              <option value="0" selected>N</option><option value="1">E</option>
+              <option value="2">S</option><option value="3">W</option>
+            </select>
+          </label>
+          <label class="inline-label">Vuln
+            <select id="board-vuln">
+              <option value="0" selected>None</option><option value="1">N/S</option>
+              <option value="2">E/W</option><option value="3">Both</option>
+            </select>
+          </label>
+        </div>
+        <div id="board-error" class="board-error"></div>
+        <div class="result-actions">
+          <button id="btn-board-cancel" class="btn btn-secondary">Cancel</button>
+          <button id="btn-board-load" class="btn btn-primary">Load &amp; review</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      Static review UI &mdash; engine ported from <code>src/bid/</code> and cross-validated
+      against recorded traces by <code>tests/web/engine_test.mjs</code>.
+      Refresh the snapshot with <code>python3 -m bid.web_export</code>.
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

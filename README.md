@@ -322,6 +322,43 @@ python3 -m bid.player_model train    # soft P(call|ctx) -> data/player_models/
 # (recorded corpus sha in call_model.json meta drives the freshness check)
 ```
 
+### Human review UI (static browser app)
+
+```bash
+python3 -m bid.web_export          # snapshot repo state -> web/review_data.js
+python3 -m http.server 8765 -d web # then open http://127.0.0.1:8765/
+```
+
+`web/` is a fully static, no-build review UI (pattern follows `../dds/web`
+and `../ben/web`): vanilla JS modules, no framework, no server-side logic.
+
+- **Auction Review** — generate a deal, **paste your own four hands**
+  (`Load board…` accepts `SAK2 HKQJ DQJ9 C432`, dotted `AKQJ.T98.765.432`,
+  or the corpus `S : A K 2 …` format, with 13-card/duplicate validation), or
+  step through every decision of the *current* DSL system in the browser.
+  The inspector shows the extracted
+  features, every matched rule with per-condition ✓/✗, the candidate set
+  φ(s), legality filtering, and the deterministic system pick; you can bid
+  manually from the bidding box (any bridge-legal call) to probe the system.
+- **Replay review** — load any sampled corpus board or student↔teacher
+  disagreement; each recorded call is re-verified live against the re-computed
+  candidate set and feature values (`in φ(s) ✓`, `features match Python ✓`),
+  with `ARB_STUDENT_LEGAL` teacher-bug rows one click away.
+- **Loop Data** — the teacher's anchor ledger and applied patches, the
+  student's gate history, and mining statistics.
+- **Double-dummy tables** come from the vendored WASM DDS
+  (`../dds/web` build, MIT) — solved live in ~0.4 s per deal; the snapshot
+  also embeds export-time native-`libdds` tables as a fallback for
+  environments where the WASM module can't load (no `SharedArrayBuffer`).
+
+The browser engine (`web/objects.js`, `features.js`, `bid_dsl.js`,
+`bid_net.js`, `auction.js`) is a hand-ported, behaviour-exact copy of
+`src/bid`'s DSL parser, feature extractor, DecisionNet evaluation, and
+auction rules. It is cross-validated against Python-recorded ground truth by
+`tests/web/engine_test.mjs` (feature parity + candidate-set equality on every
+recorded corpus row), so what you review in the browser is what the Python
+loops actually compute.
+
 ### Adding an idea to the teacher
 
 The flywheel can only hill-climb over rules that are *expressible* and
@@ -364,6 +401,7 @@ patches — every rejection is cached by signature and never retried.
 | `rl_finetune.py --boards N [--tolerance t]` | D | REINFORCE beyond the teacher | ~1 min/4 boards | `ckpt_rl.pt` + gate |
 | `convention_search.py --boards N` | E | protocol mutation search | ~2 min/12 boards | `search_report.json` |
 | `player_model.py train` | support | soft world-consistency model | seconds | `call_model.json` |
+| `web_export.py [--boards N]` | review | snapshot repo state for the browser UI | ~1–2 min (native DD solves) | `web/review_data.js` |
 
 ---
 
@@ -591,7 +629,8 @@ bid/
 ├── README.md            # Comprehensive architecture guide & runbook
 ├── system/              # Bidding system definitions & DSL files (SAYC, Precision, Improved)
 ├── data/                # traces/, cot_dataset/, cot_model/, player_models/, conventions/
-├── tests/               # Unit and integration test suite (150 tests)
+├── web/                 # Static browser review UI (JS engine port + WASM DDS + snapshot)
+├── tests/               # Unit and integration test suite (155 tests)
 ├── research/
 │   ├── bid-invention.md # Research document on BIDI, RBMBMC, VOI, and CoT distillation
 │   └── experiments/     # Archived diagnostic and one-off experimental scripts
@@ -633,7 +672,8 @@ bid/
     ├── refresh_student.py # Loop B: freshness -> regen -> train -> gate -> promote
     ├── mine_disagreements.py # Loop C: student-vs-teacher disputes arbitrated by heavy PIDM
     ├── rl_finetune.py   # Loop D: REINFORCE self-play fine-tuning with eval gate
-    └── convention_search.py # Loop E: protocol mutation hill-climb
+    ├── convention_search.py # Loop E: protocol mutation hill-climb
+    └── web_export.py    # Human-review UI snapshot exporter (repo state -> web/)
 ```
 
 ---
