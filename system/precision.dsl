@@ -76,6 +76,13 @@ OPEN 3S:
   HCP: 6-10
   LEN S: 7+
 
+# Explicit PASS: everything below the openings above (0-10 HCP without a
+# 6-card major, 7+ carder or balanced 10).  Judgment: txt openings start at
+# 5-10 (weak two), 6-10 (preempt) and 10-12 (1NT) - weaker hands pass by
+# design; made explicit so the engine never falls through silently.
+OPEN PASS:
+  HCP: 0-10
+
 # ==========================================
 # RESPONSES TO 1C
 # ==========================================
@@ -180,22 +187,121 @@ OPEN 3S:
   HCP: 4-6
   LEN S: 6+
 
-# 1C - 2NT: 14+ HCP Balanced
+# 1C - 2NT: 14+ HCP Balanced and 4+ Controls
+# Text: "14+ HCP, balanced and 4+ controls"
 1C - 2NT:
   HCP: 14+
   SHAPE: BALANCED
+  CONTROLS: 4+
+
+# 1C - 3C: Black shortage (1=4=4=4 or 4=4=4=1), < 4 controls
+# Text: "mostly < 12 HCP" - 0-7 always bids the 1D negative (rule above wins ties)
+1C - 3C:
+  HCP: 8+
+  CONTROLS: 0-3
+  LEN C: 0-1
+  LEN H: 4
+  LEN S: 4
+  LEN D: 4
+
+# 1C - 3D: Red shortage (D or H singleton), < 4 controls
+1C - 3D:
+  HCP: 8+
+  CONTROLS: 0-3
+  LEN D: 0-1
+  LEN H: 4
+  LEN S: 4
+  LEN C: 4
+1C - 3D:
+  HCP: 8+
+  CONTROLS: 0-3
+  LEN H: 0-1
+  LEN S: 4
+  LEN D: 4
+  LEN C: 4
+
+# 1C - 3H: Spade shortage (1=4=4=4), 12+ HCP, 4+ controls
+1C - 3H:
+  HCP: 12+
+  CONTROLS: 4+
+  LEN S: 0-1
+  LEN H: 4
+  LEN D: 4
+  LEN C: 4
+
+# 1C - 3S: Club shortage (4=4=4=1), 12+ HCP, 4+ controls
+1C - 3S:
+  HCP: 12+
+  CONTROLS: 4+
+  LEN C: 0-1
+  LEN H: 4
+  LEN S: 4
+  LEN D: 4
+
+# 1C - 4C: Diamond shortage (4=4=1=4), 12+ HCP, 4+ controls
+1C - 4C:
+  HCP: 12+
+  CONTROLS: 4+
+  LEN D: 0-1
+  LEN H: 4
+  LEN S: 4
+  LEN C: 4
+
+# 1C - 4D: Heart shortage (4=1=4=4), 12+ HCP, 4+ controls
+1C - 4D:
+  HCP: 12+
+  CONTROLS: 4+
+  LEN H: 0-1
+  LEN S: 4
+  LEN D: 4
+  LEN C: 4
+
+# 1C - 1D: "Impossible negative" (txt Mark London: 8-pt 4441 hands respond 1D).
+# Judgment: generalised to the uncovered 8-11 HCP region with no 5-carder -
+# the shortage responses above need 12+ HCP (or <= 3 controls), so these
+# 4-4-4-1 shapes would otherwise fall through.  Kept AFTER the shortage
+# responses so they keep their 8-11 / <= 3-control hands.
+1C - 1D:
+  HCP: 8-11
+  LEN C: 1-4
+  LEN D: 1-4
+  LEN H: 1-4
+  LEN S: 1-4
+
+# 1C - 3NT: Solid running 7+ card suit (opener may pass for NT)
+# Approximation: "solid AKQ" honors are not expressible in this DSL;
+# approximated by 7+ length + 8+ HCP, priority-raised above suit positives.
+1C - 3NT:
+  HCP: 8+
+  LEN C: 7+
+  PRIORITY_BONUS: 5
+1C - 3NT:
+  HCP: 8+
+  LEN D: 7+
+  PRIORITY_BONUS: 5
+1C - 3NT:
+  HCP: 8+
+  LEN H: 7+
+  PRIORITY_BONUS: 5
+1C - 3NT:
+  HCP: 8+
+  LEN S: 7+
+  PRIORITY_BONUS: 5
 
 # ==========================================
 # RESPONSES TO 1NT (10-12)
 # ==========================================
 
 # 1NT - 2D: Forcing Stayman (Game Force)
+# Priority-raised so 4-card-major game forces outrank the 3NT signoff below.
 1NT - 2D:
   HCP: 13+
   LEN H: 4+ # Asking for major
+  PRIORITY_BONUS: 5
 1NT - 2D:
   HCP: 13+
   LEN S: 4+
+  PRIORITY_BONUS: 5
 
 # 1NT - 2C: Invitational / Garbage Stayman
 # Handling "Game Invitational, denies 4 major" AND "Crawling Stayman" is complex.
@@ -216,13 +322,190 @@ OPEN 3S:
   LEN S: 5+
 
 # 1NT - 3H/3S: Game Forcing 5-carder
+# Priority-raised so 5-carder game forces outrank the 3NT signoff below.
 1NT - 3H:
   HCP: 13+
   LEN H: 5+
+  PRIORITY_BONUS: 5
 
 1NT - 3S:
   HCP: 13+
   LEN S: 5+
+  PRIORITY_BONUS: 5
+
+# Note (txt): forcing Stayman "may not have 4 card major". A no-major game
+# force is simplified away here; balanced no-major hands route to the 3NT
+# signoff / 4C Gerber rules below.
+
+# 1NT - 2NT: Game invitational, denies a 4 card major
+1NT - 2NT:
+  HCP: 9-11
+
+# 1NT - 2NT - 3NT: opener accepts with the top of the 10-12 range
+1NT - 2NT - 3NT:
+  HCP: 12-12
+
+# 1NT - 3NT: Signoff (12-17 balanced, Mark London section)
+1NT - 3NT:
+  HCP: 12-17
+  SHAPE: BALANCED
+
+# 1NT - 3C/3D: To play (signoff in a long minor)
+1NT - 3C:
+  HCP: 0-9
+  LEN C: 6+
+1NT - 3D:
+  HCP: 0-9
+  LEN D: 6+
+
+# ==========================================
+# 2D OPENING DEVELOPMENT (11-15, short Diamonds)
+# ==========================================
+
+# 2D - 2H/2S/3C: To play, 0-11
+2D - 2H:
+  HCP: 0-11
+  LEN H: 4+
+2D - 2S:
+  HCP: 0-11
+  LEN S: 4+
+2D - 3C:
+  HCP: 0-11
+  LEN C: 4+
+
+# 2D - 2NT: Query; responder has 11+ HCP with shortness
+2D - 2NT:
+  HCP: 11+
+
+# Opener shape answers (txt: 3C=3=4=1=5, 3D=4=3=1=5, 3H/3S=4=4=1=4,
+# 3N=4=4=1=4 with DA/DK, 4C/4D=4=4=0=5)
+2D - 2NT - 3C:
+  HCP: 11-15
+  LEN S: 3
+  LEN H: 4
+  LEN D: 1
+  LEN C: 5
+2D - 2NT - 3D:
+  HCP: 11-15
+  LEN S: 4
+  LEN H: 3
+  LEN D: 1
+  LEN C: 5
+2D - 2NT - 3H:
+  HCP: 11-13
+  LEN S: 4
+  LEN H: 4
+  LEN D: 1
+  LEN C: 4
+2D - 2NT - 3S:
+  HCP: 14-15
+  LEN S: 4
+  LEN H: 4
+  LEN D: 1
+  LEN C: 4
+# 3NT: 4=4=1=4 with DA or DK (approximated by controls + top range)
+2D - 2NT - 3NT:
+  HCP: 14-15
+  CONTROLS: 4+
+  LEN S: 4
+  LEN H: 4
+  LEN D: 1
+  LEN C: 4
+  PRIORITY_BONUS: 5
+2D - 2NT - 4C:
+  HCP: 11-13
+  LEN S: 4
+  LEN H: 4
+  LEN D: 0
+  LEN C: 5
+2D - 2NT - 4D:
+  HCP: 14-15
+  LEN S: 4
+  LEN H: 4
+  LEN D: 0
+  LEN C: 5
+
+# 2D - 3H/3S: Responder sets game force, 5+ major
+2D - 3H:
+  HCP: 10+
+  LEN H: 5+
+  FORCING: GAME_FORCE
+2D - 3S:
+  HCP: 10+
+  LEN S: 5+
+  FORCING: GAME_FORCE
+
+# ==========================================
+# 2C OPENING DEVELOPMENT (11-15, 6+ Clubs)
+# ==========================================
+
+# Responder: 3H/3S game forcing, 6+ pieces, 14+ TP
+2C - 3H:
+  HCP: 14+
+  LEN H: 6+
+  FORCING: GAME_FORCE
+2C - 3S:
+  HCP: 14+
+  LEN S: 6+
+  FORCING: GAME_FORCE
+
+# Responder: 2H/2S invitational, 5-carder, 11-13 TP
+2C - 2H:
+  HCP: 11-13
+  LEN H: 5+
+2C - 2S:
+  HCP: 11-13
+  LEN S: 5+
+
+# Responder: 2NT invitational
+2C - 2NT:
+  HCP: 11-13
+
+# Responder: 3C competitive raise
+2C - 3C:
+  HCP: 6-10
+  LEN C: 4+
+
+# Responder: 3D inviting 3NT, no 4-card major, forcing to 4m
+2C - 3D:
+  HCP: 11-13
+  LEN D: 4+
+
+# Responder: 2D waiting/query relay (catch-all, kept last)
+2C - 2D:
+  HCP: 0-37
+
+# Opener answers to the 2D relay (txt: 2H/S=4 & 11-13, 2N=bal, 3C=Clubs,
+# 3D=4D & 5C, 3H/S=4 & 14-15, 3N=Solid Clubs & 14-15)
+2C - 2D - 2H:
+  HCP: 11-13
+  LEN H: 4
+  PRIORITY_BONUS: 5
+2C - 2D - 2S:
+  HCP: 11-13
+  LEN S: 4
+  PRIORITY_BONUS: 5
+2C - 2D - 2NT:
+  HCP: 11-15
+  SHAPE: BALANCED
+2C - 2D - 3C:
+  HCP: 11-15
+  LEN C: 6+
+2C - 2D - 3D:
+  HCP: 11-15
+  LEN D: 4
+  LEN C: 5
+2C - 2D - 3H:
+  HCP: 14-15
+  LEN H: 4
+2C - 2D - 3S:
+  HCP: 14-15
+  LEN S: 4
+# 3NT: solid clubs 14-15 (approximation: "solid" not expressible)
+2C - 2D - 3NT:
+  HCP: 14-15
+  LEN C: 7+
+  PRIORITY_BONUS: 5
 
 # ==========================================
 # REBIDS AFTER 1C - 1D (Negative)
@@ -233,18 +516,17 @@ OPEN 3S:
   HCP: 16-19
   SHAPE: BALANCED
 
-# 1C - 1D - 1H/1S: Non-Forcing 17+ (5+ Suit)
-# Text says: "1H/S ... 5+ card suit ... Non-forcing"
-# Note: 1C is 16+. 1D is 0-7.
-# If play is NF, range is probably capped? Or just describing hand.
-# We'll assume standard natural rebid showing the suit.
+# 1C - 1D - 1H/1S: Non-Forcing natural rebid
+# Text: "Usually 5+ card suit (could be 4=4=4=1 or 4=4=1=4), 5+ LTC" - so 4+
+# card suits are allowed; this also gives the otherwise-unmapped 4441 openers
+# (no 5-carder) a natural rebid.
 1C - 1D - 1H:
   HCP: 16+
-  LEN H: 5+
+  LEN H: 4+
 
 1C - 1D - 1S:
   HCP: 16+
-  LEN S: 5+
+  LEN S: 4+
 
 # 1C - 1D - 2C/2D: Non-Forcing 17+ (5+ Suit)
 1C - 1D - 2C:
@@ -255,9 +537,11 @@ OPEN 3S:
   HCP: 16+
   LEN D: 5+
 
-# 1C - 1D - 2NT: 20-21 Balanced
+# 1C - 1D - 2NT: 20-23 Balanced
+# Text: "20-21" - extended to 23 by judgment so the otherwise-unmapped
+# 22-23 balanced opener (3NT starts at 24-26) has a rebid.
 1C - 1D - 2NT:
-  HCP: 20-21
+  HCP: 20-23
   SHAPE: BALANCED
 
 # 1C - 1D - 2H/2S: Forcing (Very Strong, 0-4 LTC, 5+ Suit)
@@ -274,30 +558,169 @@ OPEN 3S:
   HCP: 22+
   LEN S: 5+
 
-# 1C - 1D - 3NT: 24-26 Balanced
+# 1C - 1D - 3NT: 24+ Balanced
+# Text: "24-26" - uncapped by judgment: 27+ balanced openers otherwise had
+# no rebid at all; 3NT is the practical destination opposite a 0-7 negative.
 1C - 1D - 3NT:
-  HCP: 24-26
+  HCP: 24+
   SHAPE: BALANCED
+
+# 1C - 1D - 3C/3D/3H/3S: 6+ card suit, 0-3 LTC, Forcing
+# Approximation: LTC is not expressible in this DSL; mapped as very strong hands.
+1C - 1D - 3C:
+  HCP: 24+
+  LEN C: 6+
+  FORCING: GAME_FORCE
+1C - 1D - 3D:
+  HCP: 24+
+  LEN D: 6+
+  FORCING: GAME_FORCE
+1C - 1D - 3H:
+  HCP: 24+
+  LEN H: 6+
+  FORCING: GAME_FORCE
+1C - 1D - 3S:
+  HCP: 24+
+  LEN S: 6+
+  FORCING: GAME_FORCE
+
+# 1C - 1D - 4H/4S: 8+ card suit, above NAMYATS
+1C - 1D - 4H:
+  HCP: 22+
+  LEN H: 8+
+1C - 1D - 4S:
+  HCP: 22+
+  LEN S: 8+
+
+# ==========================================
+# 1C - 1NT DEVELOPMENT (8-13 balanced positive)
+# ==========================================
+
+# 1C - 1NT - 2C: Stayman (transfer-approach rebids simplified)
+1C - 1NT - 2C:
+  HCP: 8-10
+
+# 1C - 1NT - 2D/2H/2S: Natural 4-carder (opener 16+)
+1C - 1NT - 2D:
+  HCP: 16+
+  LEN D: 4+
+1C - 1NT - 2H:
+  HCP: 16+
+  LEN H: 4+
+1C - 1NT - 2S:
+  HCP: 16+
+  LEN S: 4+
+
+# 1C - 1NT - 2NT: Artificial, shows 5+ Clubs
+1C - 1NT - 2NT:
+  HCP: 16+
+  LEN C: 5+
+
+# 1C - 2NT - 3C: Baron (bid 4-card suits up the line)
+1C - 2NT - 3C:
+  HCP: 16+
+
+# 1C - 2NT - 3D/3H/3S: Natural 5+ carder (Suit AB context)
+1C - 2NT - 3D:
+  HCP: 16+
+  LEN D: 5+
+1C - 2NT - 3H:
+  HCP: 16+
+  LEN H: 5+
+1C - 2NT - 3S:
+  HCP: 16+
+  LEN S: 5+
 
 # ==========================================
 # OTHER OPENING RESPONSES (Simple Natural)
 # ==========================================
 
-# 1D - 1H/1S: 6+ HCP, 4+ Suit
+# 1D - 1H/1S: 8-15 HCP, 4+ Suit (txt Mark London section: "8-15, 4 carder")
 1D - 1H:
-  HCP: 6+
+  HCP: 8-15
   LEN H: 4+
 
 1D - 1S:
-  HCP: 6+
+  HCP: 8-15
   LEN S: 4+
 
-# 1D - 1NT: 8-10 HCP (Standard-ish)
-# Text for 1D responses not explicitly detailed in full list but implied standard positive.
+# 1D - 1NT: 8-10 Balanced (txt Mark London section)
 # 1N (10-12) -> 1D opening handles 11-15 unbal or 2+D.
-# Responder 6+ bids suit. 
 1D - 1NT:
-  HCP: 6-10
+  HCP: 8-10
+  SHAPE: BALANCED
+
+# 1D - 2NT: Invitational balanced (txt: 11-13 simplified / 16+ Goren variant)
+1D - 2NT:
+  HCP: 11-13
+  SHAPE: BALANCED
+
+# 1D - 3NT: 14-15 balanced, 4 card major
+1D - 3NT:
+  HCP: 14-15
+  SHAPE: BALANCED
+
+# ==========================================
+# 1H/1S RESPONSES (txt Mark London section)
+# ==========================================
+
+# Single raise: 8-10, 3+ card support
+1H - 2H:
+  HCP: 8-10
+  LEN H: 3+
+1S - 2S:
+  HCP: 8-10
+  LEN S: 3+
+
+# Jump raise: 11-13, 3 card support (txt: Qxx or better simplified to HCP)
+1H - 3H:
+  HCP: 11-13
+  LEN H: 3+
+1S - 3S:
+  HCP: 11-13
+  LEN S: 3+
+
+# 1NT: 8-15 Forcing one round (no good suit, no support)
+1H - 1NT:
+  HCP: 8-15
+  FORCING: ONE_ROUND
+1S - 1NT:
+  HCP: 8-15
+  FORCING: ONE_ROUND
+
+# 3NT: 14-15 with good 3-card support (signoff)
+1H - 3NT:
+  HCP: 14-15
+  LEN H: 3+
+1S - 3NT:
+  HCP: 14-15
+  LEN S: 3+
+
+# ==========================================
+# 2NT RESPONSES (22-23 balanced; txt Mark London section)
+# ==========================================
+
+# 2NT - 3C: Stayman (txt simplified: "3 pts, stayman")
+2NT - 3C:
+  HCP: 0-9
+
+# 2NT - 3D/3H: Jacoby transfers (3D to H, 3H to S)
+2NT - 3D:
+  HCP: 0-9
+  LEN H: 5+
+2NT - 3H:
+  HCP: 0-9
+  LEN S: 5+
+
+# Transfer completions (opener, mandatory)
+2NT - 3D - 3H:
+  HCP: 22-23
+2NT - 3H - 3S:
+  HCP: 22-23
+
+# 2NT - 3NT: Signoff, no major, balanced
+2NT - 3NT:
+  HCP: 0-9
   SHAPE: BALANCED
 
 # ==========================================
@@ -444,6 +867,23 @@ OPEN 3S:
 (1S) - X:
   HCP: 13+
   LEN S: 0-2
+
+# ==========================================
+# INTERFERENCE OVER 1C (txt: general approach)
+# Parenthesized steps so the chain matches directly after the double.
+# ==========================================
+
+# 1C - (X) - PASS: 0-4 HCP
+(1C) - (X) - PASS:
+  HCP: 0-4
+
+# 1C - (X) - 1D: 5-7 HCP
+(1C) - (X) - 1D:
+  HCP: 5-7
+
+# 1C - (X) - XX: Game Forcing, usually balanced
+(1C) - (X) - XX:
+  HCP: 8+
 
 # ==========================================
 # DEFENSIVE BIDDING (Opponent Opened 1NT)

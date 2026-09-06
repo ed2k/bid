@@ -227,8 +227,12 @@ for (const [key, spec] of Object.entries(systems)) {
     check('systems: precision opens 1C on 21 HCP',
         r && r.call.toString() === '1C', r && r.call.toString());
     const weak = BidWeb.Hand.parse('S5432 H872 D962 CJ42');
+    // the explicit OPEN PASS rule (HCP 0-10) now matches weak hands; the
+    // intent of this check is that the chosen call is a pass
+    const weakRules = BidWeb.Legacy.appliedRules(prec, [], weak);
     check('systems: precision passes on 1 HCP opening set',
-        !BidWeb.Legacy.appliedRules(prec, [], weak).length);
+        weakRules.length === 0 || weakRules[0].call.toString() === 'PASS',
+        weakRules.length ? weakRules[0].call.toString() : 'no rule');
 }
 
 // mixed-partnership auction must run end-to-end (improved N/S vs precision E/W)

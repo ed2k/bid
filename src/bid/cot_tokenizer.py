@@ -175,6 +175,8 @@ def build_frozen_vocab(repo_root: Optional[str] = None) -> Dict[str, int]:
         try:
             with open(f) as fh:
                 for line in fh:
+                    if line.lstrip().startswith("#"):
+                        continue  # comments are prose, never semantic atoms
                     m = re.match(r"RULE\s+([A-Za-z0-9_]+)", line)
                     if m:
                         rules.add(m.group(1))
@@ -207,6 +209,8 @@ def build_frozen_vocab(repo_root: Optional[str] = None) -> Dict[str, int]:
         try:
             with open(f) as fh:
                 for line in fh:
+                    if line.lstrip().startswith("#"):
+                        continue  # comments are prose, never semantic atoms
                     m = re.findall(r"(\b[a-zA-Z_][a-zA-Z0-9_]*)\s*(?:==|!=|>=|<=|>|<|in\b|not_in\b)", line)
                     for k in m:
                         feat_keys.add(k)
@@ -226,6 +230,22 @@ def build_frozen_vocab(repo_root: Optional[str] = None) -> Dict[str, int]:
             if tok not in seen:
                 seen.add(tok)
                 all_atoms.append(tok)
+
+    # Frozen ids are immutable: trained checkpoints embed them.  Reconcile
+    # against data/cot_dataset/vocab.json — keep every existing assignment
+    # verbatim and APPEND only atoms the corpus gained since it was frozen.
+    # (Delete vocab.json deliberately to force a full remap.)
+    frozen_path = os.path.join(repo_root, "data", "cot_dataset", "vocab.json")
+    if os.path.exists(frozen_path):
+        with open(frozen_path) as fh:
+            frozen = json.load(fh)
+        vocab = dict(frozen)
+        next_id = max(frozen.values(), default=-1) + 1
+        for tok in all_atoms:
+            if tok not in vocab:
+                vocab[tok] = next_id
+                next_id += 1
+        return vocab
 
     return {tok: i for i, tok in enumerate(all_atoms)}
 
