@@ -81,27 +81,31 @@ select {
 .status-active { color: var(--success); }
 
 /* ---- review grid / desk panel (single-panel bridge table) ---- */
-.review-grid { display: grid; grid-template-columns: minmax(560px, 1fr) 460px; gap: 14px; }
+.review-grid { display: grid; grid-template-columns: minmax(0, 1fr) 460px; gap: 14px; }
 
 .desk-panel {
     background: linear-gradient(180deg, #141f36, #0e1626);
     border: 1px solid var(--border); border-radius: 14px; padding: 16px;
     display: grid;
-    grid-template-columns: 1fr minmax(290px, 400px) 1fr;
+    grid-template-columns: auto minmax(320px, 430px) auto;
     grid-template-areas:
         ".    north .    "
         "west felt  east "
         ".    south .    ";
     gap: 12px; align-items: start;
+    width: fit-content; max-width: 100%;
+    margin: 0 auto; justify-self: center;
 }
 .seat {
     background: rgba(30, 41, 59, 0.75); border: 1px solid var(--border);
     border-radius: 10px; padding: 7px 12px; min-width: 0;
 }
-.seat-north { grid-area: north; }
-.seat-west  { grid-area: west; }
-.seat-east  { grid-area: east; }
-.seat-south { grid-area: south; }
+.seat-north { grid-area: north; justify-self: center; width: fit-content;
+    min-width: 230px; }
+.seat-west  { grid-area: west; align-self: start; }
+.seat-east  { grid-area: east; align-self: start; }
+.seat-south { grid-area: south; justify-self: center; width: fit-content;
+    min-width: 230px; }
 .seat.to-call { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
 .seat-header { display: flex; justify-content: space-between; align-items: baseline;
     gap: 8px; margin-bottom: 2px; min-width: 0; }
@@ -114,7 +118,7 @@ select {
 .seat.to-call .turn-indicator { visibility: visible; }
 
 .hand-cards { font-family: ui-monospace, Menlo, Consolas, monospace;
-    font-size: 0.8rem; line-height: 1.42; }
+    font-size: 0.92rem; line-height: 1.42; }
 .hand-cards .suit-row { white-space: nowrap; }
 .hand-cards .sym { margin-right: 4px; }
 .sym-C { color: #7dd3fc; } .sym-D { color: #fca5a5; }
@@ -124,7 +128,7 @@ select {
 .felt-table {
     grid-area: felt; background: var(--felt); border-radius: 12px; padding: 10px;
     border: 3px solid #052e16; display: flex; flex-direction: column; gap: 10px;
-    align-self: stretch; justify-content: center; min-width: 0;
+    align-self: stretch; justify-content: center; min-width: 0; width: 100%;
 }
 .auction-history-box, .dd-panel {
     background: rgba(0, 0, 0, 0.45); border-radius: 8px; padding: 8px;
@@ -262,3 +266,17 @@ select {
 #rules-status .val.dirty { color: var(--warn); }
 #rules-status .val.applied { color: var(--success); }
 #rules-status .val.error { color: var(--danger); }
+
+/* ---- clickable auction cells + SDS ---- */
+.auction-table td.cell-click { cursor: pointer; }
+.auction-table td.cell-click:hover { background: rgba(56, 189, 248, 0.18); }
+.auction-table td.cell-selected { outline: 2px solid var(--warn); outline-offset: -2px; }
+.sds-body .candidate-row { align-items: center; }
+
+.cot-text {
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px; font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.78rem; line-height: 1.5; white-space: pre-wrap;
+    word-break: break-word; max-height: 300px; overflow-y: auto;
+    color: var(--success);
+}

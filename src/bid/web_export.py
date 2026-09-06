@@ -346,6 +346,16 @@ def main():
                 "globalThis.BID_REVIEW_DATA = ")
         f.write(payload)
         f.write(";\n")
+    # refresh the browser-side CoT student weights when the ckpt exists
+    try:
+        from bid.cot_export_web import main as cot_export
+        sys.argv = ['cot_export_web']
+        cot_export()
+    except SystemExit:
+        raise
+    except Exception as e:
+        print(f"(CoT student export skipped: {type(e).__name__}: {e})")
+
     size_kb = os.path.getsize(args.out) / 1024.0
     print(f"exported -> {args.out} ({size_kb:.0f} KB) | "
           f"dsl {snap['dsl_sha256']} v{snap['teacher']['version']} | "

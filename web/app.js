@@ -28,7 +28,7 @@
     const App = {
         net: null,
         mode: 'live',
-        live: {deal: null, runner: null},
+        live: {deal: null, runner: null, runnerId: 0},
         replay: null,
         boards: [],
         boardByKey: {},
@@ -38,6 +38,8 @@
         ddsFailed: false,
         systems: {ns: 'improved', ew: 'improved'},
         engines: {},        // key -> engine (parsed once)
+        reviewIdx: null,    // auction-table click: review this past decision
+        sdsCache: {},       // sdsKey -> result
     };
 
     /** Parse and cache a reviewable system from the snapshot. */
@@ -160,19 +162,29 @@
     function currentDecision() {
         if (App.mode === 'live') {
             const r = App.live.runner;
+            if (App.reviewIdx != null) {
+                const rec = r.record[App.reviewIdx];
+                if (!rec) return null;
+                return {seat: rec.seat, exp: rec.explanation,
+                    history: r.history.slice(0, App.reviewIdx),
+                    review: App.reviewIdx};
+            }
             if (!r || r.isOver()) return null;
             return {seat: r.currentSeat(), exp: r.explain(), history: r.history};
         }
         const rp = App.replay;
         if (!rp || rp.idx < 0 || rp.idx >= rp.rows.length) return null;
-        const row = rp.rows[rp.idx];
+        const idx = App.reviewIdx != null ? App.reviewIdx : rp.idx;
+        const row = rp.rows[idx];
+        if (!row) return null;
         if (!row.__exp) {
             row.__exp = Net.explain(App.net, BidWeb.Hand.parse(row.input.hand),
                 (row.input.auction || []).map(s => Call.parse(s)),
                 rowSeatValue(row.seat), rowSeatValue(row.board.dealer), row.board.vuln);
         }
         return {seat: rowSeatValue(row.seat), exp: row.__exp,
-            history: (row.input.auction || []).map(s => Call.parse(s)), row};
+            history: (row.input.auction || []).map(s => Call.parse(s)),
+            row, review: App.reviewIdx != null ? idx : null};
     }
 
     function knownHands() {
@@ -244,15 +256,21 @@
             if (cells.length === 4) { rows.push(cells); cells = []; }
         }
         if (cells.length) rows.push(cells);
+        // global call index of cell (r, c) — accounts for dealer offset
+        const callIndexOf = (r, c) => r * 4 + (c - colOf(dealer));
         for (let r = 0; r < Math.max(rows.length, 1); r++) {
             const tr = el('tr');
             for (let c = 0; c < 4; c++) {
                 const td = el('td');
                 const call = rows[r] ? rows[r][c] : undefined;
                 if (call) {
-                    td.className = call.type === C.PASS ? 'call-PASS'
-                        : call.type === C.BID ? 'call-bid' : 'call-X';
+                    const idx = callIndexOf(r, c);
+                    td.className = call.type === C.PASS ? 'call-PASS cell-click'
+                        : call.type === C.BID ? 'call-bid cell-click' : 'call-X cell-click';
                     td.textContent = call.toString();
+                    if (App.reviewIdx === idx) td.classList.add('cell-selected');
+                    td.title = 'click to review this decision';
+                    td.onclick = () => reviewCall(idx);
                 } else {
                     td.className = 'future';
                     td.textContent = '';
@@ -261,6 +279,17 @@
             }
             tbody.appendChild(tr);
         }
+    }
+
+    function reviewCall(idx) {
+        if (App.mode === 'replay') {
+            // jump the replay to the clicked recorded decision
+            App.replay.idx = Math.min(idx, App.replay.rows.length - 1);
+            render();
+            return;
+        }
+        App.reviewIdx = App.reviewIdx === idx ? null : idx;
+        render();
     }
 
     function featureChips(features) {
@@ -285,8 +314,19 @@
         const body = $('inspector-body');
         body.innerHTML = '';
         const dec = currentDecision();
-        if (auctionOver()) {
-            body.appendChild(el('p', 'muted', 'Auction complete.'));
+        if (App.reviewIdx != null) {
+            const bar = el('div');
+            bar.appendChild(el('span', 'tag tag-warn',
+                'reviewing past decision #' + (App.reviewIdx + 1)));
+            const back = el('button', 'btn btn-secondary', '← current');
+            back.style.marginLeft = '8px';
+            back.onclick = () => { App.reviewIdx = null; render(); };
+            bar.appendChild(back);
+            body.appendChild(bar);
+        }
+        if (auctionOver() && App.reviewIdx == null) {
+            body.appendChild(el('p', 'muted',
+                'Auction complete — click any bid in the auction table to review its explanation.'));
             return;
         }
         if (!dec) {
@@ -302,12 +342,16 @@
 
         if (App.mode === 'replay') {
             body.appendChild(replayVerification(dec));
+        } else if (App.reviewIdx == null) {
+            body.appendChild(renderBelief(dec));
         }
 
         if (exp.kind === 'legacy') {
             renderLegacyRules(body, exp, dec);
         } else if (exp.kind === 'student') {
             renderStudentRanking(body, exp);
+        } else if (exp.kind === 'cot') {
+            renderCotExplanation(body, exp);
         } else {
             const model = App.mode === 'live'
                 ? App.live.runner.modelFor(dec.seat) : null;
@@ -352,6 +396,28 @@
             'System pick: ' + auto.toString();
     }
 
+    /** Hidden-seat constraint estimates from the auction (legacy systems). */
+    function renderBelief(dec) {
+        const box = el('div');
+        const beliefs = [];
+        for (const s of [0, 1, 2, 3]) {
+            if (s === dec.seat) continue;
+            const m = App.live.runner.modelFor(s);
+            if (!m || m.kind !== 'legacy') continue;
+            const est = BidWeb.Belief.estimateDeal(m.system,
+                App.live.runner.history, App.live.deal.dealer);
+            if (est) beliefs.push([s, est[s]]);
+        }
+        if (!beliefs.length) return box;
+        box.appendChild(el('h4', 'muted small',
+            'hidden-hand estimates (bids intersect, passes carve — legacy systems)'));
+        for (const [s, c] of beliefs) {
+            box.appendChild(el('div', 'feature-chip',
+                `${Seat.name(s)}: ${BidWeb.Belief.format(c)}`));
+        }
+        return box;
+    }
+
     /** Inspector section for the neural student: probability ranking with
      *  legality marks and the constrained choice. */
     function renderStudentRanking(body, exp) {
@@ -391,6 +457,29 @@
         if (exp.fallbackPass) {
             body.appendChild(el('p', 'tag tag-warn', 'no legal bid in vocab → PASS'));
         }
+    }
+
+    /** Inspector for the CoT transformer: the generated reasoning, the
+     *  extracted bid, and the legality verdict. */
+    function renderCotExplanation(body, exp) {
+        const head = el('p');
+        head.appendChild(el('span', 'tag ' +
+            (exp.fallback ? 'tag-warn' : 'tag-ok'),
+            exp.fallback ? 'FALLBACK (' + exp.fallbackNote + ')' : 'generated bid'));
+        head.appendChild(document.createTextNode('  ' +
+            (exp.bid ? exp.bid.toString() : 'PASS')));
+        if (exp.confidence !== null && exp.confidence !== undefined) {
+            head.appendChild(document.createTextNode(
+                `  · avg token confidence ${(exp.confidence * 100).toFixed(0)}%`));
+        }
+        body.appendChild(head);
+        body.appendChild(el('h4', 'muted small', 'generated chain of thought'));
+        const pre = el('pre', 'cot-text', exp.cotText || '(empty)');
+        body.appendChild(pre);
+        body.appendChild(el('p', 'muted small',
+            'Greedy decode from the Python-trained transformer ' +
+            '(web/models/cot). Legality-constrained: an illegal or unparseable ' +
+            'bid falls back to the rule system.'));
     }
 
     /** Inspector section for legacy (translator) systems. */
@@ -521,8 +610,9 @@
 
     function renderBiddingBox() {
         const over = auctionOver();
+        const reviewing = App.reviewIdx != null;
         const dec = currentDecision();
-        const liveManual = App.mode === 'live' && !over;
+        const liveManual = App.mode === 'live' && !over && !reviewing;
         const buttons = document.querySelectorAll('.bid-btn');
         const legal = liveManual ? bridgeLegalCalls(dec && dec.exp) : [];
         buttons.forEach(btn => {
@@ -564,9 +654,11 @@
         });
         $('bidding-note').textContent = liveManual
             ? 'You are reviewing: pick any bridge-legal call, or use the system pick below.'
-            : (App.mode === 'replay'
-                ? 'Replay mode — recorded calls are stepped through and verified.'
-                : 'Auction complete — start a new deal or reset.');
+            : (App.reviewIdx != null
+                ? 'Reviewing a past call — click "← current" to resume.'
+                : (App.mode === 'replay'
+                    ? 'Replay mode — recorded calls are stepped through and verified.'
+                    : 'Auction complete — start a new deal or reset.'));
     }
 
     function humanBids(call) {
@@ -593,7 +685,8 @@
         $('info-status').className = 'val ' + (over ? '' : 'status-active');
 
         const panel = $('dd-panel');
-        if (!over) { panel.classList.add('hidden'); return; }
+        const sdsPanel = $('sds-panel');
+        if (!over) { panel.classList.add('hidden'); sdsPanel.classList.add('hidden'); return; }
 
         // need all four hands for the solver
         const hands = knownHands();
@@ -601,6 +694,7 @@
             panel.classList.remove('hidden');
             $('dd-table').innerHTML = '';
             $('dd-par').textContent = 'Hidden hands present — DD table unavailable.';
+            sdsPanel.classList.add('hidden');
             return;
         }
         const dealer = App.mode === 'live' ? App.live.deal.dealer
@@ -615,22 +709,27 @@
         const embedded = boardKey ? (DATA.boards || {})[boardKey] : null;
 
         let table = null, parContracts = null, parScore = null, source = '';
+        let parScoreNum = null;
         if (App.dds) {
             try {
                 table = App.dds.calcDDTablePBN(pbn);
                 const par = App.dds.calcParPBN(pbn, WASM_VULN[vuln] ?? 0);
                 parContracts = (par.parContracts || []).join(', ');
                 parScore = (par.parScore || []).join(' / ');
+                const m = (par.parScore || ['NS 0'])[0].match(/NS\s+(-?\d+)/);
+                parScoreNum = m ? parseInt(m[1], 10) : 0;
                 source = 'WASM DDS';
             } catch (e) {
                 $('dd-par').textContent = 'DDS error: ' + e.message;
                 panel.classList.remove('hidden');
+                renderSDS(deal, contract, null, embedded, boardKey);
                 return;
             }
         } else if (embedded) {
             table = {resTable: embedded.dd_table};
             parContracts = embedded.par_contract + ' (' + embedded.par_score + ')';
             parScore = String(embedded.par_score);
+            parScoreNum = embedded.par_score;
             source = 'native DDS @ export';
         } else {
             panel.classList.remove('hidden');
@@ -638,6 +737,7 @@
             $('dd-par').textContent = App.ddsFailed
                 ? 'WASM DDS unavailable here (needs http serving) — PBN: ' + pbn
                 : 'Initializing WASM DDS…';
+            renderSDS(deal, contract, null, embedded, boardKey);
             return;
         }
         panel.classList.remove('hidden');
@@ -651,6 +751,7 @@
         tbl.appendChild(thead);
         const tb = el('tbody');
         const rows = ['S', 'H', 'D', 'C', 'NT'];
+        let ddTricks = null;
         for (let strain = 0; strain < 5; strain++) {
             const tr = el('tr');
             tr.appendChild(el('th', null, rows[strain]));
@@ -660,6 +761,7 @@
                         ['C', 'D', 'H', 'S', 'NT'][contract.strain] &&
                     'NESW'[seat] === Seat.letter(contract.declarer)) {
                     td.classList.add('dd-cell-hit');
+                    ddTricks = table.resTable[strain][seat];
                 }
                 tr.appendChild(td);
             }
@@ -671,11 +773,133 @@
         $('dd-par').textContent = 'Par: ' + (parContracts || 'Pass out') +
             (parScore ? '  (' + parScore + ')' : '');
         $('info-par').textContent = parContracts || 'Pass out';
+        renderSDS(deal, contract, ddTricks, embedded, boardKey);
+        renderDiagnostics(deal, contract, ddTricks,
+            table ? table.resTable : null, parScoreNum, parContracts, history, vuln);
+    }
+
+    /** Diagnostics panel (port of diagnostics.py ParDiagnosticEngine). */
+    function renderDiagnostics(deal, contract, ddTricks, resTable,
+                               parScoreNum, parContractStr, history, vuln) {
+        const panel = $('diag-panel');
+        const body = $('diag-body');
+        if (!contract || !resTable || parScoreNum === null) {
+            panel.classList.add('hidden');
+            return;
+        }
+        panel.classList.remove('hidden');
+        body.innerHTML = '';
+        const actualScore = BidWeb.SDS.contractScore(contract.level,
+            ['C', 'D', 'H', 'S', 'NT'][contract.strain], contract.doubled,
+            BidWeb.Vulnerability.isVulnerable(vuln, contract.declarer), ddTricks ?? 0);
+        const d = BidWeb.Diagnostics.diagnose(deal, contract, actualScore,
+            parScoreNum, parContractStr, resTable, history, vuln);
+        const colors = {
+            OPTIMAL_PAR: 'tag-ok',
+            MISSED_GAME: 'tag-warn', MISSED_SLAM: 'tag-warn',
+            SOFT_DEFENSE: 'tag-bad', OVERBID_DOWN: 'tag-bad',
+            TAKEOUT_PASS: 'tag-bad',
+        };
+        const head = el('p');
+        head.appendChild(el('span', 'tag ' + (colors[d.flaw] || 'tag-warn'), d.flaw));
+        head.appendChild(document.createTextNode(
+            `  regret ${d.regret >= 0 ? '+' : ''}${d.regret.toFixed(0)} pts` +
+            (d.severity ? ` · severity ${d.severity.toFixed(0)}` : '')));
+        body.appendChild(head);
+        body.appendChild(el('p', 'small', d.advice));
+    }
+
+    /** SDS two-hand analysis panel (port of sds.py SDSScorer). */
+    function renderSDS(deal, contract, ddTricks, embedded) {
+        const panel = $('sds-panel');
+        const body = $('sds-body');
+        if (!contract) { panel.classList.add('hidden'); return; }
+        panel.classList.remove('hidden');
+        body.innerHTML = '';
+
+        const strainLetter = ['C', 'D', 'H', 'S', 'NT'][contract.strain];
+        const sdsKey = deal.toPBN().slice(0, 80) + ':' +
+            Auction.contractString(contract) + Seat.letter(contract.declarer);
+        if (App.sdsCache[sdsKey] === undefined) {
+            if (App.dds) {
+                let cond = null;
+                if (App.mode === 'live') {
+                    cond = {history: App.live.runner.history,
+                        engineFor: s => App.live.runner.modelFor(s),
+                        factor: 3};
+                }
+                const res = BidWeb.SDS.analyze(App.dds, deal, contract, 20, 42, cond);
+                res.mode = 'sampled';
+                App.sdsCache[sdsKey] = res;
+            } else {
+                // no WASM: report the exact-DD score from the embedded table
+                App.sdsCache[sdsKey] = embedded && ddTricks != null ? {
+                    mode: 'dd-only', ddTricks,
+                    meanScore: BidWeb.SDS.contractScore(contract.level,
+                        strainLetter, contract.doubled,
+                        BidWeb.Vulnerability.isVulnerable(deal.vuln,
+                            contract.declarer), ddTricks),
+                } : {mode: 'none'};
+            }
+        }
+        const sds = App.sdsCache[sdsKey];
+
+        if (sds.mode === 'none') {
+            body.appendChild(el('p', 'muted small',
+                'SDS needs the WASM DDS (serve over http in a normal browser).'));
+            return;
+        }
+
+        const needed = contract.level + 6;
+        if (sds.mode === 'dd-only') {
+            const p1 = el('p');
+            p1.appendChild(el('strong', null,
+                `exact-DD view: ${sds.ddTricks} tricks · score ${sds.meanScore}`));
+            body.appendChild(p1);
+            body.appendChild(el('p', 'muted small',
+                'Two-hand sampling (P(make), world spread) needs the WASM DDS.'));
+            return;
+        }
+
+        const head = el('p');
+        head.appendChild(el('strong', null,
+            `${sds.meanTricks.toFixed(2)} tricks ` +
+            `(need ${needed}, full-deck DD ${ddTricks})`));
+        body.appendChild(head);
+        const tags = el('p');
+        tags.appendChild(el('span', 'tag ' + (sds.pMake >= 0.5 ? 'tag-ok' : 'tag-warn'),
+            `P(make) ${(sds.pMake * 100).toFixed(0)}%`));
+        tags.appendChild(document.createTextNode(' '));
+        tags.appendChild(el('span', 'tag ' +
+            (sds.meanScore >= 0 ? 'tag-ok' : 'tag-bad'),
+            `expected score ${sds.meanScore >= 0 ? '+' : ''}${sds.meanScore.toFixed(0)} ` +
+            `(declarer view${sds.isVul ? ', vul' : ''})`));
+        body.appendChild(tags);
+
+        body.appendChild(el('h4', 'muted small', 'sampled worlds (green = makes)'));
+        sds.tricks.forEach((t, i) => {
+            const row = el('div', 'candidate-row');
+            row.style.margin = '1px 0';
+            const lbl = el('span', null, `#${i + 1} ${t}tr`);
+            lbl.style.cssText = 'flex:0 0 58px;font-size:0.7rem;' +
+                'font-family:ui-monospace,Menlo,monospace';
+            row.appendChild(lbl);
+            const bar = el('div');
+            bar.style.cssText = 'flex:0 0 60%;height:7px;border-radius:3px;background:' +
+                (t >= needed ? 'rgba(74,222,128,0.55)' : 'rgba(248,113,113,0.45)');
+            row.appendChild(bar);
+            body.appendChild(row);
+        });
+        body.appendChild(el('p', 'muted small',
+            'Opponent layouts sampled from the declarer+dummy view, each solved ' +
+            'double-dummy. A big gap vs full-deck DD means the contract relies ' +
+            'on favourable splits.'));
     }
 
     // ---------- sources ----------
 
     function newDeal() {
+        App.reviewIdx = null;
         const dealer = parseInt($('sel-dealer').value, 10);
         const vuln = parseInt($('sel-vuln').value, 10);
         App.mode = 'live';
@@ -767,6 +991,7 @@
 
     function resetAuction() {
         App.pendingLevel = null;
+        App.reviewIdx = null;
         if (App.mode === 'live') {
             App.live.runner = new Auction.AuctionRunner(App.live.deal, buildModels(), 'manual');
         } else if (App.replay) {
@@ -795,6 +1020,7 @@
     function loadReplay(rows, label, jumpToCall) {
         App.mode = 'replay';
         App.pendingLevel = null;
+        App.reviewIdx = null;
         App.live.runner = null;
         App.replay = {rows: rows.map(r => Object.assign({}, r)), idx: -1, label};
         $('info-source').textContent = label;
@@ -1104,7 +1330,8 @@
         const deals = Math.max(10, Math.min(400, parseInt($('in-student-deals').value, 10) || 100));
         labStatus(`generating ${deals} boards with ${engine.label}…`);
         await new Promise(r => setTimeout(r, 30));   // let the status paint
-        Lab.rows = BidWeb.StudentLab.buildCorpus(engine, deals, 7);
+        const stratify = $('sel-student-stratify') ? $('sel-student-stratify').value : 'uniform';
+        Lab.rows = BidWeb.StudentLab.buildCorpus(engine, deals, 7, null, stratify);
         Lab.dataset = BidWeb.StudentLab.encodeDataset(Lab.rows);
         $('student-info-corpus').textContent =
             `${Lab.rows.length} decisions / ${deals} boards · ` +
@@ -1230,6 +1457,28 @@
         }
     }
 
+    /** Load the Python-trained CoT transformer (web/models/cot/) as a
+     *  reviewable system.  The bid is generated greedily from the same
+     *  weights refresh_student.py trained, legality-constrained like the
+     *  Python side, with the reasoning shown in the inspector. */
+    async function loadCotStudent() {
+        try {
+            const res = await fetch('models/cot/manifest.json');
+            if (!res.ok) return;
+            const manifest = await res.json();
+            const wbuf = await (await fetch('models/cot/weights.bin')).arrayBuffer();
+            const model = new BidWeb.CotStudent.CotModel(manifest, wbuf);
+            const engine = BidWeb.CotStudent.makeEngine(model, manifest,
+                Net, App.net);
+            engine.key = 'student:cot';
+            App.engines[engine.key] = engine;
+            refreshSystemSelects();
+            console.log('CoT student loaded — select it as a team system');
+        } catch (e) {
+            console.warn('CoT student unavailable:', e.message);
+        }
+    }
+
     /** Load the shipped default student (web/student_default.js) if present. */
     function loadDefaultStudent() {
         const d = globalThis.BID_DEFAULT_STUDENT;
@@ -1243,7 +1492,10 @@
         }
     }
 
-    /** A/B: student vs teacher over N boards — contract-agreement stats. */
+    /** A/B: dual-room duplicate match, student vs teacher (arena.py-style).
+     *  Room A: teacher N/S vs student E/W.  Room B: student N/S vs teacher E/W.
+     *  Each board's final contracts are scored with exact double-dummy tricks
+     *  (WASM DDS) and converted to IMPs; contract-agreement stats reported too. */
     async function labCompare() {
         const teacher = labTeacherEngine();
         const studentLoaded = Lab.trained ? {model: Lab.trained, meta: {}}
@@ -1254,30 +1506,65 @@
         }
         const student = BidWeb.StudentEngine.make(studentLoaded, 'student');
         const boards = 20;
-        labStatus(`A/B over ${boards} boards: ${teacher.label} vs student…`);
+        if (!App.dds) {
+            labStatus('IMP scoring needs the WASM DDS — run in a normal browser tab');
+        }
+        labStatus(`dual-room match over ${boards} boards: ` +
+            `${teacher.label} vs student…`);
         await new Promise(r => setTimeout(r, 30));
 
-        let identical = 0, sameStrain = 0, levelDelta = 0, contracts = 0;
+        let impsStudent = 0, winsStudent = 0, winsTeacher = 0, ties = 0;
+        let identical = 0, sameStrain = 0, levelDelta = 0;
+        const scored = !!App.dds;
         for (let i = 0; i < boards; i++) {
             const deal = BidWeb.Deal.random(i % 4, (i + 1) % 4, 1000 + i);
-            const rt = new BidWeb.Auction.AuctionRunner(deal, teacher, 'manual');
-            rt.runOut();
-            const rs = new BidWeb.Auction.AuctionRunner(deal, student, 'manual');
-            rs.runOut();
-            const ct = rt.contract(), cs = rs.contract();
-            if (!ct && !cs) { identical++; continue; }
-            if (!ct || !cs) { contracts++; levelDelta += 1; continue; }
-            contracts++;
-            if (ct.level === cs.level && ct.strain === cs.strain &&
-                ct.declarer === cs.declarer) identical++;
-            if (ct.strain === cs.strain) sameStrain++;
-            levelDelta += Math.abs(ct.level - cs.level);
+            const runA = new BidWeb.Auction.AuctionRunner(deal,
+                {ns: teacher, ew: student}, 'manual');
+            runA.runOut();
+            const runB = new BidWeb.Auction.AuctionRunner(deal,
+                {ns: student, ew: teacher}, 'manual');
+            runB.runOut();
+            const cA = runA.contract(), cB = runB.contract();
+            if (cA && cB) {
+                if (cA.level === cB.level && cA.strain === cB.strain &&
+                    cA.declarer === cB.declarer) identical++;
+                if (cA.strain === cB.strain) sameStrain++;
+                levelDelta += Math.abs(cA.level - cB.level);
+            }
+            if (scored) {
+                let table;
+                try {
+                    table = App.dds.calcDDTablePBN(deal.toPBN()).resTable;
+                } catch (e) { continue; }
+                const tricksFor = c => c ? table[['S', 'H', 'D', 'C', 'NT']
+                    .indexOf(['C', 'D', 'H', 'S', 'NT'][c.strain])][c.declarer] : 0;
+                const scoreNS = c => c ? BidWeb.SDS.contractScore(c.level,
+                    ['C', 'D', 'H', 'S', 'NT'][c.strain], c.doubled,
+                    BidWeb.Vulnerability.isVulnerable(deal.vuln, c.declarer),
+                    tricksFor(c)) : 0;
+                const diff = scoreNS(cA) - scoreNS(cB);   // + favors room-A NS team
+                const imps = BidWeb.SDS.scoreToImp(diff);
+                // room A: teacher sits N/S; room B: student sits N/S
+                impsStudent += -imps;
+                if (imps > 0) winsTeacher++;
+                else if (imps < 0) winsStudent++;
+                else ties++;
+            }
+            if (i % 4 === 3) {
+                labStatus(`A/B board ${i + 1}/${boards}…`);
+                await new Promise(r => setTimeout(r));
+            }
         }
-        $('student-info-acc').textContent =
-            `identical contracts ${(identical / boards * 100).toFixed(0)}% · ` +
-            `same strain ${(sameStrain / boards * 100).toFixed(0)}% · ` +
-            `avg |level Δ| ${(levelDelta / boards).toFixed(2)}`;
-        labStatus(`A/B complete: student vs ${teacher.label} over ${boards} boards`);
+        const parts = [`identical contracts ${(identical / boards * 100).toFixed(0)}%`,
+            `same strain ${(sameStrain / boards * 100).toFixed(0)}%`,
+            `avg |level Δ| ${(levelDelta / boards).toFixed(2)}`];
+        if (scored) {
+            parts.push(`IMPs student-vs-teacher ${impsStudent >= 0 ? '+' : ''}${impsStudent}` +
+                ` (${winsStudent}W/${winsTeacher}L/${ties}T over ${boards})`);
+        }
+        $('student-info-acc').textContent = parts.join(' · ');
+        labStatus('A/B complete' + (scored ? ' (duplicate-scored)' :
+            ' (agreement only — WASM DDS unavailable)'));
     }
 
     // ---------- tabs / boot ----------
@@ -1351,14 +1638,33 @@
         $('board-modal').addEventListener('click', e => {
             if (e.target === $('board-modal')) closeBoardModal();
         });
-        $('btn-auto-step').onclick = () => {
-            if (App.mode === 'live') { App.live.runner.stepAuto(); render(); }
-            else replayStep(1);
+        $('btn-auto-step').onclick = async () => {
+            if (App.mode === 'live') {
+                await stepOnce();
+                render();
+            } else replayStep(1);
         };
-        $('btn-auto-run').onclick = () => {
-            if (App.mode === 'live') { App.live.runner.runOut(); render(); }
-            else replayStep(App.replay.rows.length);
+        $('btn-auto-run').onclick = async () => {
+            if (App.mode === 'live') {
+                while (!App.live.runner.isOver()) {
+                    await stepOnce();
+                }
+                render();
+            } else replayStep(App.replay.rows.length);
         };
+        async function stepOnce() {
+            const r = App.live.runner;
+            const usePidm = $('chk-pidm') && $('chk-pidm').checked;
+            if (usePidm && App.dds && !r.isOver()) {
+                const exp = r.explain();
+                if (exp.legal.length > 1) {
+                    const pick = BidWeb.PIDM.pick(App.dds, r, 4, 11);
+                    r.applyCall(pick.call, exp, true);
+                    return;
+                }
+            }
+            r.stepAuto();
+        }
         // per-team bidding-system selects (net + legacy engines)
         refreshSystemSelects();
         for (const side of ['ns', 'ew']) {
@@ -1385,6 +1691,27 @@
         $('btn-student-download').onclick = labDownload;
         $('btn-student-eval').onclick = labEvaluateLoaded;
         $('btn-student-ab').onclick = () => { labCompare(); };
+        $('btn-student-id3').onclick = () => {
+            if (!Lab.rows || !Lab.rows.length) { labStatus('generate a corpus first'); return; }
+            const eng = labTeacherEngine();
+            if (!eng || eng.kind !== 'net') {
+                labStatus('ID3 ambiguity resolution needs a net-engine teacher (improved/champion/edited)');
+                return;
+            }
+            const attached = BidWeb.ID3.resolveAmbiguities(eng.net, Lab.rows);
+            if (!attached.length) {
+                labStatus('no sufficiently-populated ambiguous decision groups found');
+                return;
+            }
+            const totalRows = attached.reduce((a, x) => a + x.rows, 0);
+            const avgAcc = attached.reduce((a, x) => a + x.acc * x.rows, 0) / totalRows;
+            labStatus(`ID3 attached ${attached.length} refinement group(s) covering ` +
+                `${totalRows} ambiguous decisions (fit accuracy ${(avgAcc * 100).toFixed(0)}%) ` +
+                `— teacher "${eng.label}" now resolves them in live review`);
+            $('student-info-acc').textContent =
+                `ID3 refinements: ${attached.length} groups, ${totalRows} rows, ` +
+                `fit ${(avgAcc * 100).toFixed(0)}%`;
+        };
         $('in-student-file').addEventListener('change', e => {
             if (e.target.files && e.target.files[0]) labLoadFile(e.target.files[0]);
         });
@@ -1414,6 +1741,7 @@
             registerStudentEngine('student:default', Lab.loaded,
                 'Student (default MLP)');
         }
+        loadCotStudent();       // the real transformer student, if exported
         newDeal();
     }
 

@@ -344,7 +344,14 @@ and `../ben/web`): vanilla JS modules, no framework, no server-side logic.
   bridge-legality marks, the legality-constrained choice, and any vetoed
   call — the student picks among the same rule-based table with its
   reasoning visible; trained/loaded students register automatically as
-  selectable systems.
+  selectable systems. **Every bid in the auction table is clickable** —
+  after (or during) an auction, clicking a call re-opens that decision's
+  full explanation (features, rules, candidate set). Completed auctions
+  also get an **SDS panel** (port of `sds.py`): opponents are sampled from
+  the declarer+dummy view and each world is double-dummy solved with the
+  WASM DDS, reporting mean tricks vs the full-deck DD result, P(make), and
+  expected duplicate score — revealing contracts that rely on favourable
+  splits.
   The inspector shows the extracted
   features, every matched rule with per-condition ✓/✗, the candidate set
   φ(s), legality filtering, and the deterministic system pick; you can bid

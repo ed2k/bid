@@ -88,6 +88,57 @@
             else if (hasJack && hasTen && len >= 3) stopper = 1;
             f[pre + '_stopper'] = stopper;
         }
+
+        // GIB total points (models.py Hand.total_points): HCP + redistribution
+        // points (void 3 / singleton 2 / doubleton 1) minus 1 per short suit
+        // (length < 3) holding an honor.
+        let distPoints = 0, penalty = 0;
+        for (const k of SUIT_KEYS) {
+            const len = hand.length(k);
+            if (len === 0) distPoints += 3;
+            else if (len === 1) distPoints += 2;
+            else if (len === 2) distPoints += 1;
+            if (len < 3 && (hand.hasRank(k, 14) || hand.hasRank(k, 13) ||
+                            hand.hasRank(k, 12) || hand.hasRank(k, 11))) {
+                penalty += 1;
+            }
+        }
+        f['total_points'] = f['hcp'] + distPoints - penalty;
+
+        // Losing Trick Count (features.py): per suit — void 0; singleton 1
+        // without the ace; doubleton 1 each missing A/K; 3+ 1 each missing A/K/Q.
+        let ltc = 0;
+        for (const k of SUIT_KEYS) {
+            const len = hand.length(k);
+            if (len === 0) continue;
+            const hasAce = hand.hasRank(k, 14), hasKing = hand.hasRank(k, 13),
+                hasQueen = hand.hasRank(k, 12);
+            if (len === 1) {
+                if (!hasAce) ltc += 1;
+            } else if (len === 2) {
+                if (!hasAce) ltc += 1;
+                if (!hasKing) ltc += 1;
+            } else {
+                if (!hasAce) ltc += 1;
+                if (!hasKing) ltc += 1;
+                if (!hasQueen) ltc += 1;
+            }
+        }
+        f['losing_trick_count'] = ltc;
+
+        // Quick Tricks (features.py): AK=2, AQ=1.5, A=1, KQ=1, K+guarded=0.5.
+        let quickTricks = 0;
+        for (const k of SUIT_KEYS) {
+            const len = hand.length(k);
+            const hasAce = hand.hasRank(k, 14), hasKing = hand.hasRank(k, 13),
+                hasQueen = hand.hasRank(k, 12);
+            if (hasAce && hasKing) quickTricks += 2.0;
+            else if (hasAce && hasQueen) quickTricks += 1.5;
+            else if (hasAce) quickTricks += 1.0;
+            else if (hasKing && hasQueen) quickTricks += 1.0;
+            else if (hasKing && len >= 2) quickTricks += 0.5;
+        }
+        f['quick_tricks'] = quickTricks;
         return f;
     }
 

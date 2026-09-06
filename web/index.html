@@ -20,6 +20,12 @@
   <script src="auction.js"></script>
   <script src="student_lab.js"></script>
   <script src="student_engine.js"></script>
+  <script src="sds.js"></script>
+  <script src="diagnostics.js"></script>
+  <script src="belief.js"></script>
+  <script src="pidm.js"></script>
+  <script src="id3.js"></script>
+  <script src="cot_model.js"></script>
   <!-- Generated snapshot: python3 -m bid.web_export -->
   <script src="review_data.js"></script>
   <!-- Default in-browser student: node web/build_default_student.mjs -->
@@ -56,6 +62,9 @@
             <option value="0" selected>None</option><option value="1">N/S</option>
             <option value="2">E/W</option><option value="3">Both</option>
           </select>
+        </label>
+        <label class="inline-label" title="PIMC: sample hidden hands, play out each candidate, score with the WASM DDS (slow, needs WASM)">
+          <input type="checkbox" id="chk-pidm"> PIDM pick
         </label>
         <label class="inline-label">N/S system
           <select id="sel-system-ns"></select>
@@ -109,6 +118,14 @@
               <div class="auction-title">Double-Dummy Table (vendored dds.js)</div>
               <table class="dd-table" id="dd-table"></table>
               <div id="dd-par" class="dd-par"></div>
+            </div>
+            <div id="sds-panel" class="dd-panel hidden">
+              <div class="auction-title">SDS — two-hand analysis (declarer + dummy known, opponents sampled)</div>
+              <div id="sds-body" class="sds-body"></div>
+            </div>
+            <div id="diag-panel" class="dd-panel hidden">
+              <div class="auction-title">Diagnostics (vs par, NS-centric — port of diagnostics.py)</div>
+              <div id="diag-body" class="sds-body"></div>
             </div>
           </div>
           <div id="seat-E" class="seat seat-east"><div class="seat-header">
@@ -236,6 +253,14 @@
         <label class="inline-label">Deals
           <input id="in-student-deals" type="number" value="100" min="10" max="400" style="width:70px">
         </label>
+        <label class="inline-label">Dealing
+          <select id="sel-student-stratify">
+            <option value="uniform" selected>uniform</option>
+            <option value="hcp22">22+ HCP hand</option>
+            <option value="suit8">8+ card suit</option>
+            <option value="void">void present</option>
+          </select>
+        </label>
         <button id="btn-student-generate" class="btn">1 &middot; Generate corpus</button>
         <label class="inline-label">Epochs
           <input id="in-student-epochs" type="number" value="12" min="2" max="60" style="width:60px">
@@ -248,6 +273,7 @@
         </label>
         <button id="btn-student-eval" class="btn">Evaluate loaded</button>
         <button id="btn-student-ab" class="btn btn-secondary">A/B vs teacher (20 boards)</button>
+        <button id="btn-student-id3" class="btn btn-secondary">ID3: resolve ambiguities</button>
       </div>
       <div class="status-bar">
         <div class="status-item"><span class="label">Corpus:</span>

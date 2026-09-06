@@ -91,7 +91,8 @@
             bySeat[0] = bySeat[2] = models.ns || null;
             bySeat[1] = bySeat[3] = models.ew || null;
         } else if (models.kind === 'net' || models.kind === 'legacy' ||
-                   models.kind === 'student' || models.rules !== undefined) {
+                   models.kind === 'student' || models.kind === 'cot' ||
+                   models.rules !== undefined) {
             for (let s = 0; s < 4; s++) bySeat[s] = models;
         } else {
             for (let s = 0; s < 4; s++) bySeat[s] = models[s] || null;
@@ -122,6 +123,10 @@
             return model.explain(this.deal.hands[s], this.history, s,
                 this.deal.dealer, this.deal.vuln);
         }
+        if (model && model.kind === 'cot') {
+            return model.explain(this.deal.hands[s], this.history, s,
+                this.deal.dealer, this.deal.vuln);
+        }
         const net = model ? model.net : null;
         return api.Net.explain(net, this.deal.hands[s], this.history,
             s, this.deal.dealer, this.deal.vuln);
@@ -134,7 +139,7 @@
             const exp = this.explain();
             return exp.chosen ? exp.chosen.call : new Call(C.PASS);
         }
-        if (model && model.kind === 'student') {
+        if (model && (model.kind === 'student' || model.kind === 'cot')) {
             return this.explain().chosen.call;
         }
         return api.Net.autoSelect(model ? model.net : null, this.explain());

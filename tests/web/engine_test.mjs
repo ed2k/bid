@@ -17,8 +17,9 @@ import {dirname, join} from 'node:path';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
 for (const f of ['objects.js', 'features.js', 'bid_dsl.js', 'system_dsl.js',
-                 'bid_net.js', 'auction.js', 'student_lab.js',
-                 'student_engine.js']) {
+                 'bid_net.js', 'auction.js', 'student_lab.js', 'sds.js',
+                 'student_engine.js', 'belief.js', 'pidm.js', 'id3.js',
+                 'cot_model.js']) {
     (0, eval)(readFileSync(join(root, 'web', f), 'utf8'));
 }
 let DEFAULT_STUDENT = null;
@@ -175,6 +176,7 @@ for (const [key, sol] of boardEntries.slice(0, 10)) {
 
 // ---- 6. WASM DDS solves a full deal quickly (node) -------------------------
 
+let wasmMod = null;
 try {
     const {createRequire} = await import('node:module');
     const require = createRequire(import.meta.url);
@@ -185,6 +187,7 @@ try {
             ? join(root, 'web', 'vendor', 'dds_wasm_api.wasm') : p}),
         new Promise((_, rej) => setTimeout(() => rej(new Error('WASM init timeout')), 20000)),
     ]);
+    wasmMod = mod;
     const deal = BidWeb.Deal.random(0, 0, 77);
     const t0 = Date.now();
     const table = mod.calcDDTablePBN(deal.toPBN());
@@ -332,6 +335,142 @@ for (const [key, spec] of Object.entries(systems)) {
             legal = ctx.isLegal(runner.history[t]);
         }
         check('student: produced auction is bridge-legal', legal);
+    }
+}
+
+// ---- 11. SDS: duplicate scoring parity + two-hand analysis -----------------
+
+{
+    // values cross-checked against bid.scoring.score in Python
+    const cases = [
+        [[1, 'NT', 0, false, 7], 90], [[1, 'NT', 0, false, 8], 120],
+        [[4, 'H', 0, true, 10], 620], [[4, 'S', 0, false, 10], 420],
+        [[3, 'NT', 0, false, 9], 400], [[3, 'NT', 0, false, 11], 460],
+        [[2, 'H', 1, false, 8], 470], [[2, 'H', 1, false, 7], -100],
+        [[2, 'H', 1, false, 9], 570], [[4, 'S', 2, true, 10], 1080],
+        [[6, 'NT', 0, true, 13], 1470], [[1, 'NT', 0, false, 5], -100],
+        [[4, 'S', 1, true, 9], -200], [[4, 'S', 1, true, 8], -500],
+        [[3, 'NT', 2, false, 6], -1000], [[3, 'NT', 2, false, 4], -2200],
+        [[2, 'D', 0, false, 8], 90], [[5, 'D', 1, false, 11], 550],
+    ];
+    let bad = 0;
+    for (const [[l, s, d, v, t], expected] of cases) {
+        const got = BidWeb.SDS.contractScore(l, s, d, v, t);
+        if (got !== expected) { bad++; console.error(`score ${l}${s} d${d} vul=${v} tricks=${t}: js ${got} py ${expected}`); }
+    }
+    check('sds: duplicate scoring matches Python', bad === 0, `${bad} mismatches`);
+
+    // two-hand PIMC analysis needs the WASM module (initialised in section 6)
+    if (wasmMod) {
+        const deal = BidWeb.Deal.random(0, 1, 42);
+        const runner = new BidWeb.Auction.AuctionRunner(deal,
+            {kind: 'net', net}, 'manual');
+        runner.runOut();
+        const contract = runner.contract();
+        if (contract) {
+            const sds = BidWeb.SDS.analyze(wasmMod, deal, contract, 20, 42);
+            const sds2 = BidWeb.SDS.analyze(wasmMod, deal, contract, 20, 42);
+            check('sds: analysis deterministic under seed',
+                JSON.stringify(sds.tricks) === JSON.stringify(sds2.tricks));
+            check('sds: mean tricks in range', sds.meanTricks >= 0 && sds.meanTricks <= 13);
+            check('sds: pMake in range', sds.pMake >= 0 && sds.pMake <= 1);
+        }
+    }
+}
+
+// ---- 12. gap-closure ports: IMPs, belief, ID3, stratified, PIDM-lite -------
+
+{
+    // IMP scale parity with scoring.py::diff_to_imps
+    const impCases = [[10, 0], [40, 1], [41, 2], [420, 9], [421, 10],
+        [740, 12], [741, 13], [1090, 14], [4000, 24], [-750, -13]];
+    let bad = 0;
+    for (const [d, expected] of impCases) {
+        if (BidWeb.SDS.scoreToImp(d) !== expected) bad++;
+    }
+    check('imps: scale matches Python', bad === 0, `${bad} mismatches`);
+
+    // belief: passing over Precision 1C bounds the dealer at hcp <= 15
+    const prec = BidWeb.Legacy.parse(systems.precision.text, 'precision');
+    const est = BidWeb.Belief.estimateDeal(prec,
+        [BidWeb.Call.parse('PASS')], 0);
+    check('belief: pass inference bounds hcp <= 15',
+        est[0].hcp.max < 16, JSON.stringify(est[0].hcp));
+
+    // ID3 speedup learning over a generated corpus
+    const rows = BidWeb.StudentLab.buildCorpus({kind: 'net', net}, 25, 5);
+    const attached = BidWeb.ID3.resolveAmbiguities(net, rows);
+    check('id3: resolver runs and attaches only valid groups',
+        Array.isArray(attached) &&
+        attached.every(a => a.rows >= 6 && a.acc >= 0 && a.acc <= 1),
+        JSON.stringify(attached.map(a => a.rows)));
+    if (attached.length) {
+        const key = attached[0].key;
+        check('id3: refinement registered on the net',
+            net.refinements && !!net.refinements[key], key);
+    }
+
+    // stratified corpus generation
+    const strat = BidWeb.StudentLab.buildCorpus({kind: 'net', net}, 6, 9, null, 'suit8');
+    check('student: stratified corpus generated', strat.length > 0,
+        String(strat.length));
+
+    // PIDM-lite picks a legal call on an ambiguous decision
+    if (wasmMod) {
+        const deal = BidWeb.Deal.random(0, 0, 33);
+        const r2 = new BidWeb.Auction.AuctionRunner(deal,
+            {kind: 'net', net}, 'manual');
+        let picked = null;
+        for (let t = 0; t < 20 && !r2.isOver(); t++) {
+            const exp = r2.explain();
+            if (exp.legal.length > 1) {
+                const pick = BidWeb.PIDM.pick(wasmMod, r2, 3, 5);
+                picked = pick;
+                check('pidm: pick is a legal candidate',
+                    exp.legal.some(c => c.equals(pick.call)),
+                    pick.call.toString());
+                break;
+            }
+            r2.stepAuto();
+        }
+        check('pidm: ran without error', picked !== undefined);
+    }
+}
+
+// ---- 13. CoT transformer student (exported ckpt) ----------------------------
+
+{
+    let manifest = null, buf = null;
+    try {
+        manifest = JSON.parse(readFileSync(join(root, 'web', 'models', 'cot',
+            'manifest.json'), 'utf8'));
+        buf = readFileSync(join(root, 'web', 'models', 'cot', 'weights.bin'));
+    } catch (e) { /* optional artifact */ }
+    check('cot: exported student ships with the UI', !!manifest && !!buf);
+    if (manifest && buf) {
+        const model = new BidWeb.CotStudent.CotModel(manifest, buf);
+        check('cot: config matches architecture',
+            model.cfg.vocab_size === 404 && model.cfg.n_layer === 6 &&
+            model.d === 256, JSON.stringify(model.cfg));
+        const net = BidWeb.DSL.parse(DATA.dsl, 'i');
+        const eng = BidWeb.CotStudent.makeEngine(model, manifest, BidWeb.Net,
+            net, 'CoT student');
+        // 16 HCP balanced opening -> the trained model bids 1NT with a
+        // well-formed explanation (validated against Python training data)
+        const exp = eng.explain(BidWeb.Hand.parse('SAK96 HQJ4 DAK83 CT5'),
+            [], 0, 0, 0);
+        check('cot: 16HCP balanced -> 1NT with CoT',
+            !exp.fallback && exp.bid.toString() === '1NT' &&
+            exp.cotText.includes('EXPLANATION') && exp.cotText.includes('R_1NT'),
+            `${exp.bid} | ${exp.cotText.slice(0, 60)}`);
+        // engine seats into the auction runner
+        const deal = BidWeb.Deal.random(0, 0, 77);
+        const runner = new BidWeb.Auction.AuctionRunner(deal,
+            {ns: eng, ew: {kind: 'net', net}}, 'manual');
+        runner.runOut();
+        check('cot: student-vs-rules auction completes',
+            runner.history.length >= 4,
+            `calls ${runner.history.length}`);
     }
 }
 

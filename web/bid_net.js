@@ -153,7 +153,27 @@
             });
         }
 
-        // intersection refinement (only RESOLVED_CALL classifiers exist in DSL)
+        // intersection refinement (attached ID3 refinements first, then
+        // DSL RESOLVED_CALL intersections — mirrors learner.py attach order)
+        let refinementApplied = null;
+        if (matchedIds.length > 1 && net.refinements) {
+            const exact = matchedIds.slice().sort().join('^');
+            let fn = net.refinements[exact];
+            if (!fn) {
+                for (const key of Object.keys(net.refinements)) {
+                    const ids = key.split('^');
+                    if (ids.every(id => matchedIds.indexOf(id) >= 0)) { fn = net.refinements[key]; break; }
+                }
+            }
+            if (fn) {
+                const predicted = fn(features);
+                const match = candidates.find(c => c.equals(predicted));
+                if (match) {
+                    candidates = [match];
+                    refinementApplied = exact;
+                }
+            }
+        }
         let intersectionApplied = null;
         if (matchedIds.length > 1) {
             const exact = matchedIds.slice().sort().join('^');
@@ -184,17 +204,21 @@
         }
         if (legal.length === 0) legal.push(new Call(C.PASS));
 
-        // stable ordering: priority first (set by the caller below), then call
-        const byStr = (a, b) => callOrderKey(a) < callOrderKey(b) ? -1 :
-            callOrderKey(a) > callOrderKey(b) ? 1 : 0;
-        legal.sort(byStr);
-        illegal.sort(byStr);
+        // deterministic ordering: priority desc, then call string (Python parity)
+        const byPriority = (a, b) => {
+            const pa = prioByCall.get(a.toString()) || 0;
+            const pb = prioByCall.get(b.toString()) || 0;
+            if (pa !== pb) return pb - pa;
+            return callOrderKey(a) < callOrderKey(b) ? -1 : 1;
+        };
+        legal.sort(byPriority);
+        illegal.sort(byPriority);
 
         return {
             features, ruleResults,
-            candidates: candidates.slice().sort(byStr),
+            candidates: candidates.slice(),
             legal, illegal,
-            fallbackPass, intersectionApplied, xOk, xxOk,
+            fallbackPass, intersectionApplied, refinementApplied, xOk, xxOk,
             matchedIds
         };
     }

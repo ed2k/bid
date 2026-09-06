@@ -68,13 +68,33 @@
 
     /** Play nDeals with the given engine (all four seats) and record every
      *  decision as a trace row, mirroring the Python corpus schema. */
-    function buildCorpus(engine, nDeals, seed, onProgress) {
+    function meetsStrat(deal, kind) {
+        if (!kind || kind === 'uniform') return true;
+        if (kind === 'hcp22') {
+            return [0, 1, 2, 3].some(s => deal.hands[s].hcp() >= 22);
+        }
+        if (kind === 'suit8') {
+            return [0, 1, 2, 3].some(s =>
+                api.SUIT_KEYS.some(k => deal.hands[s].length(k) >= 8));
+        }
+        if (kind === 'void') {
+            return [0, 1, 2, 3].some(s =>
+                api.SUIT_KEYS.some(k => deal.hands[s].length(k) === 0));
+        }
+        return true;
+    }
+
+    function buildCorpus(engine, nDeals, seed, onProgress, stratify) {
         const rows = [];
         const rng = api.mulberry32(seed === undefined ? 7 : seed);
-        for (let i = 0; i < nDeals; i++) {
+        let made = 0, tries = 0;
+        while (made < nDeals && tries < nDeals * 80) {
+            tries++;
             const dealer = Math.floor(rng() * 4);
             const vuln = Math.floor(rng() * 4);
             const deal = api.Deal.random(dealer, vuln, Math.floor(rng() * 0xffffffff));
+            if (!meetsStrat(deal, stratify)) continue;
+            made++;
             const runner = new api.Auction.AuctionRunner(deal, engine, 'manual');
             while (!runner.isOver()) {
                 const seat = runner.currentSeat();
@@ -89,13 +109,17 @@
                     auction: runner.history.map(c => c.toString()),
                     features: exp.features,
                     bid: bid.toString(),
+                    // speedup-learning inputs (net engines only)
+                    candidates: exp.legal.map(c => c.toString()),
+                    matchedIds: exp.matchedIds || [],
+                    multiCandidate: engine.kind !== 'legacy' && exp.legal.length > 1,
                     // 'forced' means the engine had exactly one legal call;
                     // legacy engines are always single-answer by design
                     forced: engine.kind === 'legacy' ? false : exp.legal.length === 1,
                 });
                 runner.applyCall(bid, exp, true);
             }
-            if (onProgress && i % 25 === 24) onProgress(i + 1, nDeals);
+            if (onProgress && made % 25 === 24) onProgress(made, nDeals);
         }
         return rows;
     }
