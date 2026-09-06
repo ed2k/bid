@@ -83,6 +83,8 @@
         <button id="btn-auto-step" class="btn">System call</button>
         <button id="btn-auto-run" class="btn btn-accent">Auto-play rest</button>
         <button id="btn-reset" class="btn btn-secondary">Reset auction</button>
+        <button id="btn-compare" class="btn btn-secondary">&#9878; Compare systems</button>
+        <button id="btn-contest" class="btn btn-secondary">&#127942; Team contest</button>
       </div>
 
       <div class="status-bar">
@@ -180,6 +182,39 @@
         <table class="data-table" id="dispute-table"></table>
       </section>
     </main>
+
+    <!-- Team contest modal -->
+    <div id="contest-modal" class="modal-overlay hidden">
+      <div class="board-box" style="width:min(980px, 96vw)">
+        <h2>&#127942; Team contest &mdash; round robin, duplicate IMPs</h2>
+        <div class="board-modal-row" style="margin-top:10px">
+          <label class="inline-label">Boards
+            <input id="in-contest-boards" type="number" value="8" min="1" max="40" style="width:60px">
+          </label>
+          <label class="inline-label" style="flex-direction:row;align-items:center;gap:6px">
+            <input type="checkbox" id="chk-contest-cot" checked> include CoT student (slow)
+          </label>
+          <button id="btn-contest-run" class="btn btn-primary">Run contest</button>
+        </div>
+        <p id="contest-status" class="muted small">idle</p>
+        <div id="contest-body"></div>
+        <div class="result-actions" style="margin-top:10px">
+          <button id="btn-contest-close" class="btn btn-secondary">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- System comparison modal -->
+    <div id="compare-modal" class="modal-overlay hidden">
+      <div class="board-box" style="width:min(980px, 96vw)">
+        <h2>System comparison &mdash; every system plays this board as N/S</h2>
+        <p id="compare-status" class="muted small">idle</p>
+        <div id="compare-body"></div>
+        <div class="result-actions">
+          <button id="btn-compare-close" class="btn btn-secondary">Close</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Load-a-board modal -->
     <div id="board-modal" class="modal-overlay hidden">

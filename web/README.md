@@ -19,7 +19,7 @@ and, just as importantly, what it does **not**.
 | Lint checks (duplicates, contradictions, shadowing) | `lint_dsl.py` | mirrored in `engine_test.mjs` |
 | IMP scale (`diff_to_imps`) | `scoring.py` | `sds.js::scoreToImp` |
 | Flaw diagnostics (OVERBID_DOWN, MISSED_GAME/SLAM, SOFT_DEFENSE, TAKEOUT_PASS) | `diagnostics.py` | `diagnostics.js` (per-board panel + advice) |
-| Dual-room duplicate-scored match with IMPs | `arena.py::play_match` | Lab "A/B vs teacher" |
+| Dual-room duplicate-scored match with IMPs | `arena.py::play_match` | Lab "A/B vs teacher" + **"Team contest"** round robin over all systems (Python-computed boards, exact-DD scoring, WBF IMP scale) |
 | Belief inference (`estimate_deal` + pass carving) | `engine.py`, `constraints.py` | `belief.js` (legacy systems; shown per hidden seat) |
 | ID3 speedup learning (ambiguity resolution) | `learner.py` | `id3.js` (Lab button; refinements attach to the live net) |
 | Stratified dealing (rare shapes) | `experience.py` | Lab "Dealing" select (22+ HCP / 8+ suit / void) |

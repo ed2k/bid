@@ -280,3 +280,15 @@ select {
     word-break: break-word; max-height: 300px; overflow-y: auto;
     color: var(--success);
 }
+
+.compare-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+.compare-table th, .compare-table td {
+    border: 1px solid var(--border); padding: 5px 8px; text-align: left;
+    vertical-align: top;
+}
+.compare-table th { background: rgba(255, 255, 255, 0.05); color: var(--primary); }
+.compare-table td.mono { font-family: ui-monospace, Menlo, monospace; }
+.compare-table tr.best td { background: rgba(74, 222, 128, 0.10); }
+.compare-auction { font-family: ui-monospace, Menlo, monospace; font-size: 0.72rem;
+    color: var(--text-muted); max-width: 340px; }
+.score-pos { color: var(--success); } .score-neg { color: var(--danger); }

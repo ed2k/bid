@@ -1567,7 +1567,371 @@
             ' (agreement only — WASM DDS unavailable)'));
     }
 
+    // ---------- system comparison (Python-first) --------------------------
+    // A board's DD table, par, and PYTHON reference auctions are computed by
+    // the Python engine at export time (web_export.py); every JS system then
+    // plays the same board and is checked against the Python reference.
+
+    async function compareSystems() {
+        const modal = $('compare-modal');
+        const statusEl = $('compare-status');
+        const body = $('compare-body');
+        modal.classList.remove('hidden');
+        body.innerHTML = '';
+
+        // board select (embedded, Python-computed boards)
+        const boardKeys = Object.keys(DATA.python_auctions || {});
+        if (!boardKeys.length) {
+            statusEl.textContent = 'no Python-computed boards in the snapshot';
+            return;
+        }
+        let sel = $('compare-board');
+        if (!sel) {
+            sel = el('select');
+            sel.id = 'compare-board';
+            sel.style.cssText = 'width:100%;margin-bottom:10px';
+            body.appendChild(sel);
+            sel.addEventListener('change', () => compareSystems());
+        }
+        const prev = sel.value;
+        sel.innerHTML = '';
+        for (const key of boardKeys) {
+            const spec = (DATA.boards || {})[key];
+            if (!spec) continue;
+            const opt = el('option', null,
+                `board ${key.replace(':', ' #')} — par ${spec.par_contract}`);
+            opt.value = key;
+            sel.appendChild(opt);
+        }
+        if (prev && boardKeys.includes(prev)) sel.value = prev;
+        const boardKey = sel.value;
+
+        const embedded = (DATA.boards || {})[boardKey];
+        const refs = (DATA.python_auctions || {})[boardKey] || {};
+        const resTable = embedded.dd_table;
+        parScoreNum_cmp = embedded.par_score;
+        const parContractStr = embedded.par_contract + ' (' + embedded.par_score + ')';
+        statusEl.textContent = 'reconstructing the board…';
+
+        // reconstruct the deal from the board's trace rows
+        const boardRows = (DATA.traces || []).filter(r =>
+            (r.board.seed + ':' + r.board.index) === boardKey);
+        const hands = [null, null, null, null];
+        for (const row of boardRows) {
+            const s = rowSeatValue(row.seat);
+            if (s !== undefined && !hands[s]) {
+                try { hands[s] = BidWeb.Hand.parse(row.input.hand); } catch (e) {}
+            }
+        }
+        if (hands.some(h => !h)) {
+            statusEl.textContent = 'board hands incomplete in the snapshot';
+            return;
+        }
+        const dealer = rowSeatValue(boardRows[0].board.dealer);
+        const vuln = boardRows[0].board.vuln;
+        const deal = new BidWeb.Deal(dealer, vuln, hands);
+
+        // every reviewable system plays the board
+        const entries = allSystemEntries();
+
+        const results = [];
+        for (let i = 0; i < entries.length; i++) {
+            const [key, eng] = entries[i];
+            statusEl.textContent = `(${i + 1}/${entries.length}) ${eng.label} bidding…`;
+            await new Promise(r => setTimeout(r));
+            try {
+                const runner = new BidWeb.Auction.AuctionRunner(deal,
+                    {ns: eng, ew: eng}, 'manual');
+                runner.runOut();
+                const contract = runner.contract();
+                let tricks = null, scoreNS = 0;
+                if (contract) {
+                    tricks = resTable[['S', 'H', 'D', 'C', 'NT']
+                        .indexOf(['C', 'D', 'H', 'S', 'NT'][contract.strain])][contract.declarer];
+                    scoreNS = BidWeb.SDS.contractScore(contract.level,
+                        ['C', 'D', 'H', 'S', 'NT'][contract.strain],
+                        contract.doubled,
+                        BidWeb.Vulnerability.isVulnerable(vuln, contract.declarer),
+                        tricks);
+                }
+                const diag = BidWeb.Diagnostics.diagnose(deal, contract,
+                    scoreNS, parScoreNum_cmp, parContractStr, resTable,
+                    runner.history.slice(), vuln);
+                const pyRef = refs[key] || null;
+                results.push({key, label: eng.label, contract,
+                    auction: runner.history.map(c => c.toString()).join(' '),
+                    pyAuction: pyRef ? pyRef.auction.join(' ') : null,
+                    pyContract: pyRef ? pyRef.contract : null,
+                    tricks, scoreNS, diag});
+            } catch (e) {
+                results.push({key, label: eng.label, error: e.message});
+            }
+        }
+
+        results.sort((a, b) => (b.scoreNS ?? -9999) - (a.scoreNS ?? -9999));
+        const best = results.length ? results[0].scoreNS : null;
+        statusEl.textContent = `par: ${parContractStr} — auctions checked ` +
+            'against the PYTHON engine reference';
+
+        const table = el('table', 'compare-table');
+        const thead = el('thead');
+        const hr = el('tr');
+        for (const h of ['system', 'JS auction', 'PYTHON auction', 'contract (JS / py)',
+                         'DD tricks', 'N/S score', 'vs par', 'diagnosis'])
+            hr.appendChild(el('th', null, h));
+        thead.appendChild(hr);
+        table.appendChild(thead);
+        const tb = el('tbody');
+        for (const r of results) {
+            const tr = el('tr');
+            if (best !== null && r.scoreNS === best) tr.classList.add('best');
+            tr.appendChild(el('td', null, r.label));
+            if (r.error) {
+                tr.appendChild(el('td', 'compare-auction', 'error: ' + r.error));
+                for (let i = 0; i < 6; i++) tr.appendChild(el('td', null, '–'));
+                tb.appendChild(tr);
+                continue;
+            }
+            tr.appendChild(el('td', 'compare-auction', r.auction || '(passed out)'));
+            // python reference + parity tag
+            const tdPy = el('td', 'compare-auction');
+            if (r.pyAuction !== null) {
+                tdPy.appendChild(el('div', null, r.pyAuction || '(passed out)'));
+                const suffix = r.contract.doubled === 1 ? 'X'
+                    : r.contract.doubled === 2 ? 'XX' : '';
+                const jsFull = r.contract.level +
+                    BidWeb.STRAIN_NAMES[r.contract.strain] + suffix +
+                    ' by ' + Seat.name(r.contract.declarer);
+                const same = r.pyContract !== null && jsFull === r.pyContract;
+                tdPy.appendChild(el('span', 'tag ' + (same ? 'tag-ok' : 'tag-warn'),
+                    same ? 'JS == PYTHON ✓' : 'differs from PYTHON'));
+            } else {
+                tdPy.appendChild(el('span', 'muted small', 'no reference'));
+            }
+            tr.appendChild(tdPy);
+            const suffix = r.contract.doubled === 1 ? 'X'
+                : r.contract.doubled === 2 ? 'XX' : '';
+            const jsContract = r.contract.level +
+                BidWeb.STRAIN_NAMES[r.contract.strain] + suffix + ' by ' +
+                Seat.name(r.contract.declarer);
+            const tdC = el('td', 'mono');
+            tdC.appendChild(el('div', null, jsContract));
+            if (r.pyContract) {
+                tdC.appendChild(el('div', 'muted small', r.pyContract));
+            }
+            tr.appendChild(tdC);
+            tr.appendChild(el('td', 'mono', String(r.tricks)));
+            const tdScore = el('td', 'mono ' + (r.scoreNS >= 0 ? 'score-pos' : 'score-neg'),
+                (r.scoreNS >= 0 ? '+' : '') + r.scoreNS);
+            tr.appendChild(tdScore);
+            const delta = r.scoreNS - parScoreNum_cmp;
+            tr.appendChild(el('td', 'mono ' + (delta >= 0 ? 'score-pos' : 'score-neg'),
+                (delta >= 0 ? '+' : '') + delta));
+            const tdDiag = el('td');
+            const cls = r.diag.flaw === 'OPTIMAL_PAR' ? 'tag-ok'
+                : (r.diag.flaw === 'MISSED_GAME' || r.diag.flaw === 'MISSED_SLAM') ? 'tag-warn'
+                : 'tag-bad';
+            tdDiag.appendChild(el('span', 'tag ' + cls, r.diag.flaw));
+            if (r.diag.flaw !== 'OPTIMAL_PAR') {
+                tdDiag.appendChild(el('div', 'muted small', r.diag.advice));
+            }
+            tr.appendChild(tdDiag);
+            tb.appendChild(tr);
+        }
+        table.appendChild(tb);
+        body.appendChild(table);
+    }
+
+    let parScoreNum_cmp = 0;
+
+    /** Every reviewable system: all snapshot systems (parsed on demand) plus
+     *  edited variants and student models, in stable display order. */
+    function allSystemEntries() {
+        const entries = [];
+        for (const key of Object.keys(DATA.systems || {})) {
+            const eng = engineFor(key);
+            if (eng) entries.push([key, eng]);
+        }
+        for (const [key, eng] of Object.entries(App.engines)) {
+            if (key.startsWith('edited:') || key.startsWith('student:')) {
+                entries.push([key, eng]);
+            }
+        }
+        const rank = k => k.startsWith('student:cot') ? 4
+            : k.startsWith('student:') ? 5 : k.startsWith('edited:') ? 3 : 2;
+        entries.sort(([a], [b]) => rank(a) - rank(b));
+        return entries;
+    }
+
+    globalThis.__compare = compareSystems;   // debugging / console access
+
+    // ---------- team contest: round robin, duplicate IMPs ------------------
+    // Every unordered system pair meets over N Python-computed boards in two
+    // rooms (A NS / B EW and B NS / A EW).  Each final contract is scored
+    // with exact DD tricks and the difference converted on the WBF IMP
+    // scale — a faithful port of arena.play_match's scoring.
+
+    function contestAuction(deal, nsEngine, ewEngine) {
+        const runner = new BidWeb.Auction.AuctionRunner(deal,
+            {ns: nsEngine, ew: ewEngine}, 'manual');
+        runner.runOut();
+        return runner;
+    }
+
+    function scoreContractNS(contract, resTable, vuln) {
+        if (!contract) return 0;
+        const tricks = resTable[['S', 'H', 'D', 'C', 'NT']
+            .indexOf(['C', 'D', 'H', 'S', 'NT'][contract.strain])][contract.declarer];
+        const score = BidWeb.SDS.contractScore(contract.level,
+            ['C', 'D', 'H', 'S', 'NT'][contract.strain], contract.doubled,
+            BidWeb.Vulnerability.isVulnerable(vuln, contract.declarer), tricks);
+        return {score, tricks};
+    }
+
+    async function runContest() {
+        const statusEl = $('contest-status');
+        const body = $('contest-body');
+        body.innerHTML = '';
+        const boardCount = Math.max(1, Math.min(40,
+            parseInt($('in-contest-boards').value, 10) || 8));
+        const includeCot = $('chk-contest-cot').checked;
+
+        const boardKeys = Object.keys(DATA.python_auctions || {}).slice(0, boardCount);
+        if (boardKeys.length < 1) {
+            statusEl.textContent = 'no Python-computed boards in the snapshot';
+            return;
+        }
+
+        const entries = allSystemEntries().filter(([key, eng]) =>
+            eng.kind !== 'cot' || includeCot);
+        if (entries.length < 2) {
+            statusEl.textContent = 'need at least two systems';
+            return;
+        }
+
+        // pre-reconstruct all boards once
+        const boards = [];
+        for (const key of boardKeys) {
+            const embedded = (DATA.boards || {})[key];
+            if (!embedded) continue;
+            const rows = (DATA.traces || []).filter(r =>
+                (r.board.seed + ':' + r.board.index) === key);
+            const hands = [null, null, null, null];
+            for (const row of rows) {
+                const s = rowSeatValue(row.seat);
+                if (s !== undefined && !hands[s]) {
+                    try { hands[s] = BidWeb.Hand.parse(row.input.hand); } catch (e) {}
+                }
+            }
+            if (hands.some(h => !h)) continue;
+            boards.push({key, deal: new BidWeb.Deal(
+                rowSeatValue(rows[0].board.dealer), rows[0].board.vuln, hands),
+                resTable: embedded.dd_table, vuln: rows[0].board.vuln});
+        }
+
+        const totalPairs = entries.length * (entries.length - 1) / 2;
+        const totalAuctions = totalPairs * 2 * boards.length;
+        let doneAuctions = 0;
+        statusEl.textContent = `0/${totalAuctions} auctions…`;
+
+        const table = {imps: {}, wins: {}, losses: {}, ties: {}};
+        for (const [, eng] of entries) {
+            table.imps[eng.key] = 0; table.wins[eng.key] = 0;
+            table.losses[eng.key] = 0; table.ties[eng.key] = 0;
+        }
+
+        const pairResults = [];
+        for (let a = 0; a < entries.length; a++) {
+            for (let b = a + 1; b < entries.length; b++) {
+                const [, engA] = entries[a];
+                const [, engB] = entries[b];
+                let pairImpsA = 0;
+                for (const board of boards) {
+                    // room 1: A NS vs B EW
+                    const cA = contestAuction(board.deal, engA, engB).contract();
+                    // room 2: B NS vs A EW
+                    const cB = contestAuction(board.deal, engB, engA).contract();
+                    const sA = scoreContractNS(cA, board.resTable, board.vuln).score;
+                    const sB = scoreContractNS(cB, board.resTable, board.vuln).score;
+                    // A's match total = room1 NS score − room2 (B's NS score)
+                    pairImpsA += BidWeb.SDS.scoreToImp(sA - sB);
+                    doneAuctions += 2;
+                    if (doneAuctions % 8 === 0) {
+                        statusEl.textContent =
+                            `${doneAuctions}/${totalAuctions} auctions · ` +
+                            `now: ${engA.label} vs ${engB.label}`;
+                        await new Promise(r => setTimeout(r));
+                    }
+                }
+                // attribute: team A = the room-A NS side
+                table.imps[engA.key] += pairImpsA;
+                table.imps[engB.key] -= pairImpsA;
+                if (pairImpsA > 0) { table.wins[engA.key]++; table.losses[engB.key]++; }
+                else if (pairImpsA < 0) { table.wins[engB.key]++; table.losses[engA.key]++; }
+                else { table.ties[engA.key]++; table.ties[engB.key]++; }
+                pairResults.push({a: engA.label, b: engB.label, impsA: pairImpsA});
+            }
+        }
+
+        const standings = entries.map(([, eng]) => ({
+            label: eng.label, key: eng.key,
+            imps: table.imps[eng.key], wins: table.wins[eng.key],
+            losses: table.losses[eng.key], ties: table.ties[eng.key],
+        })).sort((p, q) => q.imps - p.imps);
+
+        statusEl.textContent = `contest complete: ${totalPairs} pairs × ` +
+            `${boards.length} boards × 2 rooms (${totalAuctions} auctions)`;
+
+        const h3 = el('h3', null, 'Standings');
+        body.appendChild(h3);
+        const table2 = el('table', 'compare-table');
+        const thead = el('thead');
+        const hr = el('tr');
+        for (const h of ['#', 'system', 'IMPs', 'wins', 'losses', 'ties'])
+            hr.appendChild(el('th', null, h));
+        thead.appendChild(hr);
+        table2.appendChild(thead);
+        const tb = el('tbody');
+        standings.forEach((r, i) => {
+            const tr = el('tr');
+            if (i === 0) tr.classList.add('best');
+            tr.appendChild(el('td', null, String(i + 1)));
+            tr.appendChild(el('td', null, r.label));
+            const tdI = el('td', 'mono ' + (r.imps >= 0 ? 'score-pos' : 'score-neg'),
+                (r.imps >= 0 ? '+' : '') + r.imps);
+            tr.appendChild(tdI);
+            tr.appendChild(el('td', 'mono', String(r.wins)));
+            tr.appendChild(el('td', 'mono', String(r.losses)));
+            tr.appendChild(el('td', 'mono', String(r.ties)));
+            tb.appendChild(tr);
+        });
+        table2.appendChild(tb);
+        body.appendChild(table2);
+
+        body.appendChild(el('h3', null, 'Pair results (IMPs from A’s perspective)'));
+        const pt = el('table', 'compare-table');
+        const pthead = el('thead');
+        const phr = el('tr');
+        for (const h of ['room A NS', 'room B NS', 'IMPs (A)'])
+            phr.appendChild(el('th', null, h));
+        pthead.appendChild(phr);
+        pt.appendChild(pthead);
+        const ptb = el('tbody');
+        for (const pr of pairResults) {
+            const tr = el('tr');
+            tr.appendChild(el('td', null, pr.a));
+            tr.appendChild(el('td', null, pr.b));
+            tr.appendChild(el('td', 'mono ' + (pr.impsA >= 0 ? 'score-pos' : 'score-neg'),
+                (pr.impsA >= 0 ? '+' : '') + pr.impsA));
+            ptb.appendChild(tr);
+        }
+        pt.appendChild(ptb);
+        body.appendChild(pt);
+    }
+
     // ---------- tabs / boot ----------
+
+    // ---------- tabs / boot ----------    // ---------- tabs / boot ----------
 
     function showTab(name) {
         $('view-auction').classList.toggle('hidden', name !== 'auction');
@@ -1632,6 +1996,19 @@
 
         $('btn-new-deal').onclick = newDeal;
         $('btn-reset').onclick = resetAuction;
+        $('btn-compare').onclick = () => { compareSystems(); };
+        $('btn-contest').onclick = () => {
+            $('contest-modal').classList.remove('hidden');
+        };
+        $('btn-contest-close').onclick = () => $('contest-modal').classList.add('hidden');
+        $('contest-modal').addEventListener('click', e => {
+            if (e.target === $('contest-modal')) $('contest-modal').classList.add('hidden');
+        });
+        $('btn-contest-run').onclick = () => { runContest(); };
+        $('btn-compare-close').onclick = () => $('compare-modal').classList.add('hidden');
+        $('compare-modal').addEventListener('click', e => {
+            if (e.target === $('compare-modal')) $('compare-modal').classList.add('hidden');
+        });
         $('btn-load-board').onclick = openBoardModal;
         $('btn-board-cancel').onclick = closeBoardModal;
         $('btn-board-load').onclick = loadUserBoard;

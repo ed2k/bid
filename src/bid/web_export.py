@@ -105,6 +105,107 @@ def python_rule_count(text, fmt):
     return len(SystemTranslator().parse(text).rules)
 
 
+def python_reference_auction(engine_key, fmt, text, deal):
+    """Play one board with the PYTHON engine (deterministic priority pick —
+    the same policy as the browser's autoSelect) and return the auction and
+    contract.  This is the reference the JS comparison is checked against."""
+    from bid.models import Call, CallType, Seat
+    from bid.sampling import PartialState
+
+    def priority_pick(candidates):
+        return candidates[0] if candidates else Call(CallType.PASS)
+
+    history = []
+    seat = deal.dealer
+    ps = None
+    for _ in range(20):
+        if fmt == "net":
+            candidates = list(net_engine_for(engine_key, text).actions(
+                deal.hands[seat], history, seat, deal.dealer, deal.vuln))
+            call = priority_pick(candidates)
+        else:
+            rule = legacy_system_for(engine_key, text).get_bid(history, deal.hands[seat])
+            call = rule.call if rule else Call(CallType.PASS)
+        history.append(call)
+        seat = Seat((seat.value + 1) % 4)
+        ps = PartialState(Seat.SOUTH, deal.hands[Seat.SOUTH], history,
+                          deal.dealer, deal.vuln)
+        if ps.is_auction_over():
+            break
+
+    contract = ps.get_contract() if ps else None
+    cs = None
+    if contract:
+        sfx = {0: "", 1: "X", 2: "XX"}[contract[3]]
+        cs = f"{contract[0]}{['C', 'D', 'H', 'S', 'NT'][contract[1]]}{sfx} by {contract[2].name}"
+    return {"auction": [str(c) for c in history], "contract": cs}
+
+
+_LEGACY_CACHE = {}
+
+
+def legacy_system_for(key, text):
+    from bid.translator import SystemTranslator
+    if key not in _LEGACY_CACHE:
+        _LEGACY_CACHE[key] = SystemTranslator().parse(text)
+    return _LEGACY_CACHE[key]
+
+
+_NET_CACHE = {}
+
+
+def net_engine_for(key, text):
+    from bid.eval_vs_dds import load_decision_net_dsl
+    import tempfile
+    if key not in _NET_CACHE:
+        with tempfile.NamedTemporaryFile("w", suffix=".dsl", delete=False) as f:
+            f.write(text)
+            path = f.name
+        try:
+            _NET_CACHE[key] = load_decision_net_dsl(path)
+        finally:
+            os.unlink(path)
+    return _NET_CACHE[key]
+
+
+def export_board_references(sampled_rows, systems):
+    """Per-board PYTHON reference auctions for every exported system."""
+    out = {}
+    groups = {}
+    for row in sampled_rows:
+        key = f"{row['board'].get('seed')}:{row['board'].get('index')}"
+        groups.setdefault(key, []).append(row)
+    for key, rows in groups.items():
+        hands = {}
+        dealer = None
+        vuln = 0
+        for r in rows:
+            seat = str(r["seat"]).replace("Seat.", "")
+            if seat not in hands:
+                try:
+                    hands[_SEAT[seat]] = parse_trace_hand(r["input"]["hand"])
+                except (ValueError, KeyError):
+                    hands = {}
+                    break
+            dealer = dealer if dealer is not None else _SEAT.get(
+                str(r["board"]["dealer"]).replace("Seat.", ""))
+            vuln = r["board"].get("vuln", 0)
+        if len(hands) < 4 or dealer is None:
+            continue
+        deal = Deal(hands, Seat(dealer), vuln)
+        refs = {}
+        for key2, spec in systems.items():
+            if spec.get("python_rule_count") is None:
+                continue
+            try:
+                refs[key2] = python_reference_auction(
+                    key2, spec["format"], spec["text"], deal)
+            except Exception:
+                refs[key2] = None
+        out[key] = refs
+    return out
+
+
 def export_systems():
     systems = {}
     for key, (rel, fmt, label) in REVIEW_SYSTEMS.items():
@@ -292,6 +393,7 @@ def build_snapshot(boards=40):
     st = load_json(STUDENT_STATE) or {}
     mine_meta = load_json(DISAGREEMENTS_META) or {}
     sampled = sample_trace_rows(boards)
+    systems = export_systems()
 
     return {
         "generated_ts": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -323,7 +425,10 @@ def build_snapshot(boards=40):
         "boards": export_board_solutions(sampled),
         # every reviewable bidding system; JS parses these live and the
         # python_rule_count fields cross-validate the JS parsers
-        "systems": export_systems(),
+        "systems": systems,
+        # PYTHON engine reference auctions per sampled board per system —
+        # the browser comparison checks its own auctions against these
+        "python_auctions": export_board_references(sampled, systems),
     }
 
 
