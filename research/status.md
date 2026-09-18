@@ -4865,6 +4865,65 @@ though the gap to Brill is still 1.55.
 
 ---
 
+### 6.79 Two bits of plumbing: 3.2x memory per row, and the fit config was never written down
+
+Neither of these changes a number. Both were found because the data lever
+(§6.75) is the only one that has ever worked, and both were blocking a
+second pull on it.
+
+#### Compact feature rows
+
+`featurise` used to store one 129-key dict per trace. A dict costs **3.76
+kB/row**; a `__slots__` object exposing the same `row.get(k, default)` and
+`row.keys()` costs **1.19 kB/row** (measured over 200k rows, fresh
+process, peak RSS). ID3 touches rows through exactly those two methods,
+so it is a drop-in replacement — **3.2x more traces for the same peak
+RSS**, which is the difference between "the largest slice fits" and "the
+machine thrashes" (the 330k single-process fit died at 21 MB free).
+
+One trap, found by hitting it: **`keys()` must return the extractor's
+insertion order, not sorted order.** ID3 breaks information-gain ties by
+taking the first candidate it sees, so reordering the keys silently grows
+a *different* tree — held-out agreement moved 71.1% → 71.5% on identical
+data with no error anywhere. With insertion order the emitted DSL is
+**byte-identical** to the dict version (`diff` on a 296-rule fit).
+6 tests in `tests/test_brill_distill_rows.py` pin the dict-compatible
+surface, including the ordering invariant.
+
+#### The fit config was not recoverable from the repo, and that is a defect
+
+To swap one slice of the shipped model for a refit one, the refit has to
+use the *same* configuration — otherwise the comparison is a two-variable
+experiment (§6.76's one-component instrument depends on the slices
+differing in one way only). The configuration was nowhere in the repo:
+not in the DSL header ("Generated via Continuous Self-Improvement
+Pipeline"), not in `status.md`, not in git history.
+
+Recovered it two ways that agree:
+
+1. **From the artifact.** Max conditions per rule is tree depth + 2 guard
+   conditions. Every slice of every shipped model tops out at 12
+   conditions ⇒ `--max-depth 10`.
+2. **By reproduction.** `--group opening_contested --max-depth 10` on the
+   133k set gives **190** `BD_open_uncont_*` rules;
+   `brill_distilled_133k.dsl` contains exactly **190**. (Depth 8 gives
+   127, depth 12 gives 228 — the calibration is sharp.)
+
+So every distilled model in `system/` was built with
+
+    --group opening_contested --max-depth 10   (--folds 5 for reporting)
+
+`--folds` does not affect the emitted model: with `--folds > 1` the
+hold-out set is empty and the tree is fitted on everything, so CV is
+purely a diagnostic.
+
+Note the sizes this implies, because they decide what fits: on 330k
+traces the contested slice is ~194k rows and the two uncontested slices
+are ~65k and ~71k. Contested is the expensive one, and it is the one
+slice we deliberately do **not** refit.
+
+---
+
 ## 9. References
 
 - Amit & Markovitch, *Learning to Bid in Bridge*, MLJ 63(3), 2006 — BIDI/RBMBMC/PIDM/ID3/co-training foundations.
