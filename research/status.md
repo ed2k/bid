@@ -4824,6 +4824,45 @@ be treated as provisional.
 +2.455 (§6.71/§6.74, the 133k model) to **+1.555** — about 0.9 IMP/board
 closed over this programme, with roughly 1.6 still open.
 
+### 6.78 A tournament: every system in `system/` graded against the shipped one
+
+The repo had accumulated several systems with no common measurement, so
+here they all are against `brill_distilled.dsl` (the §6.76 hybrid,
+1,833 rules), 2,200 boards per match. Positive = that system is better.
+
+| system | rules | vs shipped | se | t |
+| --- | --- | --- | --- | --- |
+| **`brill_distilled.dsl`** (shipped) | 1,833 | — | — | — |
+| `brill_distilled_330k.dsl` | 1,910 | −0.084 | 0.032 | −2.59 |
+| `brill_distilled_133k.dsl` | 1,679 | −0.22 | — | — |
+| `champion_system.dsl` | 90 | −0.364 | 0.100 | −3.64 |
+| `improved_system.dsl` | 75 | **−2.08** | 0.17 | **−12.57** |
+| `brill.dsl` (captured Brill) | 1,932 | **−2.13** | 0.13 | **−16.76** |
+
+`champion_evolved.dsl` is **byte-identical** to `champion_system.dsl`
+and is not a separate system. `blue_club.dsl`, `gib.dsl` and
+`precision.dsl` are written in a different dialect and load as **0
+rules** through `load_decision_net_dsl`, so they are not playable here
+and were not graded.
+
+**The result that matters is the bottom row.** `brill.dsl` is the
+hand-translated rule capture of the *very system that beats us by 1.55
+IMP/board* — and it is **2.13 IMP/board worse** than our distillation
+of it, losing 1,190 of 2,200 boards. The capture only reproduces
+Brill's call 71.1% of the time (§6.65) while the distilled model
+reproduces it 84.9%.
+
+That gap is worth naming: **Brill's rule list is not what makes Brill
+strong.** A partial, inconsistently-resolved copy of its rules is one
+of the weakest systems in the directory — worse than the 90-rule
+hand-authored champion. What the distillation has that the capture does
+not is a *single consistent policy*: every position gets exactly one
+call, chosen by a model fitted to what Brill actually does when all its
+rules resolve together. Distilling behaviour, it turns out, beats
+transcribing rules by a wide margin, and that is the strongest
+available argument that this programme's approach is the right one even
+though the gap to Brill is still 1.55.
+
 ---
 
 ## 9. References
