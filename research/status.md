@@ -4924,6 +4924,102 @@ slice we deliberately do **not** refit.
 
 ---
 
+### 6.80 The data lever is finished: 1.75x more traces buys +0.01 ± 0.03
+
+§6.75 ended on "the obvious next experiment is to fit the contested slice
+on its own objective rather than trusting more of the same traces". §6.79
+removed the two obstacles to pulling the data lever *again* — the fit no
+longer thrashes (3.2x smaller rows) and the configuration is known
+(`--max-depth 10`) so a slice swap is genuinely one-component. So: pull
+it, on the two slices where data has actually paid.
+
+**New data.** 248,518 traces / 25,054 boards, `--boards 3000 --workers 6`
+over seeds 9002–9012 (small batches: throughput scales with workers,
+memory scales with `boards x workers`). **Zero board overlap** with the
+330k set; union 58,504 boards, **579,247 traces — 1.75x.**
+
+**Refits** at the recovered configuration, uncontested slices only
+(contested deliberately left at the 133k fit, per §6.76):
+
+| slice | rows | rules | CV | (was, at 330k) |
+| --- | --- | --- | --- | --- |
+| `open_uncont` | 113,737 | 295 | **99.2%** | 252 rules, 99.2% |
+| `later_uncont` | 136,231 | 781 | **75.5%** | 752 rules, 74.9% |
+
+**Candidate A** swaps *only* `later_uncont` (1,862 rules vs the shipped
+1,833). Five seeds, 2,200 boards each:
+
+| seed | net | se | t | contested | uncontested |
+| --- | --- | --- | --- | --- | --- |
+| 7 | +0.00 | 0.07 | +0.06 | +0.10 | −0.05 |
+| 42 | +0.10 | 0.06 | +1.64 | +0.04 | +0.13 |
+| 101 | −0.05 | 0.06 | −0.78 | −0.01 | −0.07 |
+| 202 | +0.06 | 0.06 | +0.87 | −0.02 | +0.09 |
+| 303 | −0.08 | 0.06 | −1.22 | +0.02 | −0.12 |
+
+> **Pooled over 11,000 boards: +0.006 IMP/board, se 0.028, t +0.22,
+> 95% CI [−0.049, +0.061].** Positive on 2 of 5, negative on 2, zero on 1.
+
+**Not promoted.**
+
+#### The confound, checked
+
+§6.75's "+0.28, entirely uncontested" changed *both* uncontested slices
+at once, and `open_uncont` changed a lot (190 → 252 rules). So the gain
+may never have been in `later_uncont`. **Candidate B** swaps both
+(1,905 rules): −0.01 / +0.09 / −0.05 on seeds 7/42/101 — within 0.01 of A
+on every seed. The opening slice is not hiding the gain either; at 99.2%
+CV it is saturated and 43 more rules change nothing.
+
+#### What this closes
+
+The series, end to end:
+
+| step | traces | gain |
+| --- | --- | --- |
+| 2.4k → 14.3k | 6x | **+1.49** |
+| 14.3k → 44k | 3x | +0.88 |
+| 44k → 133k | 3x | +0.20 |
+| 133k → 330k | 2.5x | +0.13 |
+| **330k → 578k** | **1.75x** | **+0.01 ± 0.03** |
+
+It is not a power problem. This is the sharpest instrument in the repo
+(one-component: sd 3.40, ~85% ties, ±0.064 per seed) and 11,000 boards
+resolve ±0.055 — the CI **excludes** the +0.12 that extrapolating the
+earlier series predicts. The effect is not there.
+
+It is also the fifth intervention where fidelity went up and IMP did not
+(`--pass-cap`, auction-identity features, DAgger, leaf margin, and now
+this): +0.6pp of agreement with Brill on 248k fresh traces, zero board
+result. §6.28's duality keeps holding — *per-decision agreement with
+Brill is not the currency the team match pays out in* — and this is the
+measurement that says it is not a small-sample artefact.
+
+**So: stop harvesting.** Every lever tried on this model class is now
+exhausted — data (flat as of this section), capacity (§6.62), DAgger
+(§6.61), pass-capping and stakes weighting (§6.68), leaf margin,
+vulnerability splits, per-slice specialisation (§6.73).
+
+#### What that implies
+
+The ceiling is not data and not tree size; it is **the objective**. The
+model is fitted to reproduce Brill's *call*, but the team match pays for
+the *contract the auction lands in*. Those diverge in a specific way: a
+call that agrees with Brill 75% of the time still lands in a different
+final contract on the boards where it disagrees, and those are exactly
+the expensive ones. Imitation gets the easy 75% right and has no opinion
+about the rest.
+
+The next lever has to score candidate **calls by board outcome** — pick
+the call at a node that maximises expected IMPs on that deal (DDS is
+already in the repo), rather than the call Brill would have made. That is
+a different training signal, not more of the same one, and it is the only
+untried direction left.
+
+**Central number unchanged: Brill's edge is +1.555 (§6.77).**
+
+---
+
 ## 9. References
 
 - Amit & Markovitch, *Learning to Bid in Bridge*, MLJ 63(3), 2006 — BIDI/RBMBMC/PIDM/ID3/co-training foundations.
