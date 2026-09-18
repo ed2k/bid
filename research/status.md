@@ -5110,6 +5110,32 @@ and Brill does not (`team_match.py`, so a Brill *win* is strong evidence
 and a Brill *loss* is unproven — here it is a win), and `contested` is
 labelled from table 1's auction only (§6.71).
 
+#### Is Brill overbidding and getting away with it? No.
+
+"Bid more" is exactly the kind of change §6.28's duality warns about:
+`mean_imp_diff` rewards optimism and `mean_imp_loss` punishes deviation,
+and §6.68's forced-aggression experiment made things worse. So
+`research/par_audit.py` grades both systems against par on the same 700
+boards (§6.81's replayed auctions):
+
+| | signed vs par | absolute loss vs par |
+| --- | --- | --- |
+| ours | −0.529 ± 0.297 | **6.237 ± 0.182** |
+| Brill | −0.189 ± 0.266 | **5.346 ± 0.174** |
+
+Both sit below par, but **Brill is closer on both measures** — +0.340
+signed, and 0.891 better on absolute deviation (paired, so the se on that
+difference is below either margin). Brill is not bidding reckless games
+and surviving; it is bidding contracts that are simply *nearer par* in
+both directions. That is the "unambiguously bid more" branch, not the
+"no free lunch" one — though "more" has to mean *more accurate*, since
+absolute deviation is what separates us and raw aggression would raise it.
+
+Note the two scales disagree by a factor of five (0.340 signed vs 1.780
+head-to-head). That is not a contradiction: par is a weak reference
+assuming double-dummy play both ways, while the head-to-head is paired on
+identical cards. The paired number is the one that decides matches.
+
 #### What it points at
 
 Not more fidelity, and not more data — a **level/aggression calibration**.
