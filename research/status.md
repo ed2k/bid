@@ -5020,6 +5020,107 @@ untried direction left.
 
 ---
 
+### 6.81 The gap is an interaction effect — and self-play is structurally blind to it
+
+§6.80 closed the data lever, so the next question is what the remaining
++1.555 actually *is*. `where_lost.py` answers that for two local systems;
+Brill is not one. But the harvest already recorded Brill's complete
+auction on every board it played, so **`research/brill_gap_where.py`
+replays those auctions and Brill becomes a local system** — no network,
+and it can be run on any board set, including held-out ones.
+
+Both measures below are on the **same 1,500 held-out boards**
+(`--boards 1500 --seed 5555`, a seed no model trained on):
+
+| measure | what it compares | result |
+| --- | --- | --- |
+| **self-play** (`brill_gap_where.py`) | NS score when *everyone* plays ours vs when *everyone* plays Brill | **−0.063 ± 0.148** (t −0.43) |
+| **mixed** (`team_match.py --remote-a`) | each system on the **same hand**, table 1 Brill NS / table 2 ours NS | **+1.780 ± 0.140** (t +12.58) |
+
+They are **1.84 ± 0.20 apart — about 9 standard errors** — on identical
+cards. Two measurements of "how much better is Brill" that disagree by
+more than either effect.
+
+#### Why: self-play cancels exactly the error that dominates
+
+Self-play compares NS's score under system A against NS's score under
+system B, with *both* partnerships using the same system each time. A
+**symmetric level bias** therefore applies to whoever holds the hand, and
+cancels:
+
+- board where **NS** has the values: Brill NS bids game (+620), ours NS
+  stops in partscore (+170) → we lose ~10 IMP
+- board where **EW** has the values: Brill EW bids game (NS −620), ours
+  EW stops in partscore (NS −170) → we *gain* ~10 IMP
+
+Over 1,500 boards that is a coin flip, and the measured split confirms it:
+on the 338 boards where Brill reached game and we stopped in partscore the
+result was **174 boards our way, 160 against**, net +0.31 IMP each. The
+single biggest contract difference in the data set nets to approximately
+zero.
+
+The mixed measure does not cancel. At table 1 Brill holds NS, at table 2
+we hold the *same* NS hand, so the net is Brill-as-NS minus us-as-NS — a
+paired comparison on one hand, where a level bias is fully exposed.
+
+#### The bias is real, and it is large
+
+Contract class reached, 1,500 boards, self-play:
+
+| class | ours | Brill |
+| --- | --- | --- |
+| passed out | 18 (1.2%) | 19 (1.3%) |
+| partscore | 905 (**60.3%**) | 648 (43.2%) |
+| game | 567 (37.8%) | 779 (**51.9%**) |
+| slam | 10 (**0.7%**) | 54 (3.6%) |
+
+We stop in partscore 60% of the time against Brill's 43%, reach game 38%
+against 52%, and bid **one fifth** as many slams. That is not a
+per-decision error; it is a uniform calibration offset — and it is
+precisely the kind of error that per-call agreement cannot see.
+
+Note the head-to-head split: **contested +2.37, uncontested +1.46**. The
+loss is not only Brill interfering with our auctions. Even on boards where
+nobody competes, holding the same cards we reach a lower contract.
+
+#### What this explains
+
+Everything in the last three sections, at once:
+
+* **Why five interventions raised fidelity and bought no IMPs (§6.80).**
+  A model can reproduce Brill's call 85% of the time and still be one
+  level light on exactly the calls that set the final contract. Fidelity
+  is close to orthogonal to a uniform level bias — which is §6.28's
+  duality with a concrete mechanism attached.
+* **Why §6.60 saw "fine in self-play (+0.20), loses head-to-head (−0.98)"
+  against champion.** Same phenomenon, previously only a suspicion, now
+  confirmed against Brill at 9 sigma.
+* **Why the contested slice resists everything (§6.76).** The slice was
+  being graded by an instrument that cannot see its dominant error.
+
+#### Methodological warning for this repo
+
+**Self-play attribution (`where_lost.py`, and now `brill_gap_where.py`) is
+blind to symmetric level bias.** Used alone it reports "our contracts are
+as good as theirs" — true, and useless. Any gap located with it must be
+confirmed with the mixed measure on the same boards.
+
+Two caveats carried forward: the local side gets PIDM one-seat lookahead
+and Brill does not (`team_match.py`, so a Brill *win* is strong evidence
+and a Brill *loss* is unproven — here it is a win), and `contested` is
+labelled from table 1's auction only (§6.71).
+
+#### What it points at
+
+Not more fidelity, and not more data — a **level/aggression calibration**.
+That is a different objective again, and it is now measurable: the mixed
+measure on 1,500 boards resolves ±0.28, which is sharp enough to grade a
+candidate that shifts the partscore/game boundary.
+
+**Central number: Brill's edge is +1.780 ± 0.140 on held-out boards.**
+
+---
+
 ## 9. References
 
 - Amit & Markovitch, *Learning to Bid in Bridge*, MLJ 63(3), 2006 — BIDI/RBMBMC/PIDM/ID3/co-training foundations.
