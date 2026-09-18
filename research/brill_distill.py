@@ -85,6 +85,34 @@ def _row_class(names: Tuple[str, ...]) -> Any:
                                    "keys": keys, "get": get})
 
 
+def _provenance(args: Any, n_rows: int) -> str:
+    """A comment block recording how this file was produced.
+
+    §6.79: nothing in the repo recorded the configuration behind the
+    shipped models -- the header said only "Generated via Continuous
+    Self-Improvement Pipeline". That matters because a one-component slice
+    swap (§6.76's instrument) is only one-component if the refit uses the
+    same configuration as the slice it replaces. Recovering `--max-depth
+    10` from the artifact took two independent calibrations and most of
+    an hour. Emit it instead.
+    """
+    import datetime
+    stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return "\n".join([
+        "# ---- distillation provenance ----",
+        "# generated  %s" % stamp,
+        "# command    %s" % " ".join(sys.argv),
+        "# traces     %s  (%d rows featurised)" % (args.traces, n_rows),
+        "# group      %s%s" % (args.group,
+                               "   [slice %s]" % args.only_group
+                               if args.only_group else ""),
+        "# depth      %d    min-samples %d    folds %d"
+        % (args.max_depth, args.min_samples, args.folds),
+        "# --------------------------------",
+        "",
+    ]) + "\n"
+
+
 def _compact_row(feats: Dict[str, Any]) -> Any:
     """Convert one feature dict to a compact row, fixing the key set once."""
     global _ROW_CLASS, _ROW_NAMES
@@ -622,6 +650,7 @@ def main():
               "majority-class baseline %.1f%% (%s)"
               % (acc, n, 100.0 * base[1] / n, base[0]))
     with open(args.out, "w") as fh:
+        fh.write(_provenance(args, len(X)))
         fh.write(net.export_dsl())
     print("wrote %s" % args.out)
 

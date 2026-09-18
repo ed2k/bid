@@ -50,6 +50,35 @@ def rule_id(block):
     return block[0].strip().rstrip(":").split(None, 1)[1]
 
 
+PROV_BEGIN = "# ---- distillation provenance ----"
+PROV_END = "# --------------------------------"
+
+
+def split_provenance(header):
+    """(provenance lines, remaining header) for one DSL file.
+
+    `brill_distill.py` stamps every file with how it was produced (§6.79).
+    Those lines are *supposed* to differ between slices -- different
+    `--only-group`, different trace counts -- so they are pulled out before
+    the "all inputs share one header" check, which is about format, not
+    provenance.
+    """
+    try:
+        i = header.index(PROV_BEGIN)
+        j = header.index(PROV_END, i)
+    except ValueError:
+        return [], list(header)
+    return header[i:j + 1], header[:i] + header[j + 1:]
+
+
+def prov_facts(prov):
+    """The one-line-per-source summary: which slice, which data, how deep."""
+    keep = ("# group", "# traces", "# depth")
+    return "  |  ".join(ln.strip().lstrip("# ").strip()
+                        for ln in prov
+                        if ln.strip().startswith(keep))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -66,16 +95,18 @@ def main() -> int:
 
     keep = tuple(p.strip() for p in args.only_prefix.split(",") if p.strip())
 
-    headers, blocks = None, []
+    headers, provs, blocks = None, [], []
     seen = {}
     for path in args.inputs:
         with open(path) as fh:
             header, blks = split_header(fh.read())
+        prov, header = split_provenance(header)
         if keep:
             before = len(blks)
             blks = [b for b in blks if rule_id(b).startswith(keep)]
             print("  %-46s kept %d/%d by prefix" % (os.path.basename(path),
                                                     len(blks), before))
+        provs.append((os.path.basename(path), prov))
         # A slice can come back empty (below --min-samples), and its file is
         # then just a header — or nothing. Take the first *real* header.
         if headers is None and any(h.strip() for h in header):
@@ -97,7 +128,17 @@ def main() -> int:
     if not blocks:
         sys.exit("no rules found in %s" % " ".join(args.inputs))
 
-    out = list(headers or [])
+    out = []
+    # A merged system is stitched from slices that were fitted separately,
+    # so the per-slice provenance is what actually matters. Keep it.
+    if any(p for _, p in provs):
+        out.append("# ---- merged from %d slice files ----" % len(args.inputs))
+        for name, prov in provs:
+            out.append("#   %-28s %s" % (name, prov_facts(prov)
+                                         or "(no provenance)"))
+        out.append("# --------------------------------")
+        out.append("")
+    out.extend(headers or [])
     if out and out[-1].strip():
         out.append("")
     for b in blocks:
