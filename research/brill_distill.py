@@ -85,6 +85,103 @@ def _row_class(names: Tuple[str, ...]) -> Any:
                                    "keys": keys, "get": get})
 
 
+def leaf_of(root: Any, feats: Any) -> Any:
+    """Walk one row to the leaf the tree actually puts it in.
+
+    Mirrors `ID3Node.predict` but returns the node, not the call, because
+    `--relabel outcome` needs to mutate the leaf's prediction in place.
+    """
+    node = root
+    while node is not None and not node.is_leaf:
+        val = feats.get(node.feature_name)
+        if val is None:
+            return node
+        if node.is_continuous:
+            go_left = (val is not None and val <= node.threshold)
+        else:
+            go_left = (val == node.threshold)
+        nxt = node.left_child if go_left else node.right_child
+        if nxt is None:
+            return node
+        node = nxt
+    return node
+
+
+def load_outcomes(patterns: List[str]) -> Dict[str, List[float]]:
+    """deal -> [outcome of call 0, call 1, ...] from `brill_outcomes.py`."""
+    import glob as _glob
+    out: Dict[str, List[float]] = {}
+    for pat in patterns:
+        for path in sorted(_glob.glob(pat)) or ([pat] if os.path.exists(pat)
+                                                else []):
+            for line in open(path):
+                line = line.strip()
+                if not line:
+                    continue
+                r = json.loads(line)
+                if r.get("deal"):
+                    out[r["deal"]] = r["out"]
+    return out
+
+
+def relabel_outcome_leaves(tree: Any,
+                           gx: List[Any],
+                           rows: List[Dict[str, Any]],
+                           outcomes: Dict[str, List[float]],
+                           min_support: int,
+                           margin: float) -> Tuple[int, int]:
+    """Replace each leaf's call with the best-scoring call *observed there*.
+
+    The tree is still fitted to imitate Brill, so the leaves are the ones
+    the imitation objective chose. This only changes what each leaf emits,
+    and it chooses by **on-policy outcome**: within a leaf the hand is
+    (by construction) homogeneous, so the mean score achieved after each
+    call is a usable estimate of what that call is worth from there.
+
+    Only calls Brill actually made in the leaf are candidates — there is no
+    data for anything else, and inventing a call the tree has never seen
+    its continuation for would be guessing. So this is one step of policy
+    improvement over Brill, choosing the best of the actions it explored.
+
+    `min_support` (rows behind a call) and `margin` (score advantage over
+    the current call) are the guards against relabelling on noise: a leaf
+    with 3 rows where 4S happened to make is not evidence.
+    """
+    from bid.brill.convert import parse_call
+    acc: Dict[int, Tuple[Any, Dict[str, List[float]]]] = {}
+    for feats, row in zip(gx, rows):
+        outs = outcomes.get(row.get("deal") or "")
+        if not outs:
+            continue
+        i = len([t for t in (row.get("ctx") or "").split("-") if t.strip()])
+        if i >= len(outs):
+            continue
+        node = leaf_of(tree.root, feats)
+        if node is None or not node.is_leaf:
+            continue
+        slot = acc.get(id(node))
+        if slot is None:
+            slot = acc[id(node)] = (node, {})
+        slot[1].setdefault(str(row.get("call")), []).append(outs[i])
+
+    changed = 0
+    for node, by_call in acc.values():
+        means = {c: sum(v) / len(v) for c, v in by_call.items()
+                 if len(v) >= min_support}
+        if not means:
+            continue
+        best = max(means, key=lambda c: means[c])
+        cur = str(node.prediction)
+        if best == cur:
+            continue
+        cur_mean = means.get(cur)
+        if cur_mean is not None and means[best] < cur_mean + margin:
+            continue
+        node.prediction = parse_call(best)
+        changed += 1
+    return changed, len(acc)
+
+
 def _provenance(args: Any, n_rows: int) -> str:
     """A comment block recording how this file was produced.
 
@@ -435,6 +532,17 @@ def main():
                     help="keep at most this many PASS traces per non-PASS "
                          "trace (0 = off). Trades fidelity for willingness "
                          "to bid; see cap_passes().")
+    ap.add_argument("--relabel", default="", nargs="*",
+                    help="outcome files/globs from research/brill_outcomes.py. "
+                         "With any, each leaf is relabelled with the "
+                         "best-scoring call actually observed in it, instead "
+                         "of the majority call. See relabel_outcome_leaves().")
+    ap.add_argument("--relabel-min", type=int, default=20,
+                    help="rows a call needs behind it in a leaf before it can "
+                         "be chosen")
+    ap.add_argument("--relabel-margin", type=float, default=0.0,
+                    help="score advantage a challenger needs over the "
+                         "majority call before the leaf is flipped")
     ap.add_argument("--learning-curve", action="store_true",
                     help="fidelity vs training size; answers 'is another "
                          "harvest worth it?' — a still-rising curve says "
@@ -489,6 +597,10 @@ def main():
               % len(skipped))
         random.Random(0).shuffle(order)
         fold_of = {i: pos % folds for pos, i in enumerate(order)}
+
+    relabel = load_outcomes(list(args.relabel)) if args.relabel else None
+    if relabel is not None:
+        print("outcome relabel: %d boards loaded" % len(relabel))
 
     def cap_passes(idx: List[int]) -> List[int]:
         """Thin out PASS traces so the tree cannot win by always passing.
@@ -563,11 +675,13 @@ def main():
         net = DecisionNet("brill_distilled")
         train_idx = boost_stakes(cap_passes(train_idx))
         groups: Dict[Any, Tuple[List[Dict[str, Any]], List[Any]]] = {}
+        gidx: Dict[Any, List[int]] = {}
         for i in train_idx:
             k = group_key(X[i], args.group)
             gx, gy = groups.setdefault(k, ([], []))
             gx.append(X[i])
             gy.append(y[i])
+            gidx.setdefault(k, []).append(i)
         for k in sorted(groups, key=lambda v: (isinstance(v, str), v)):
             gx, gy = groups[k]
             maj_call = Counter(gy).most_common(1)[0][0]
@@ -581,6 +695,15 @@ def main():
                 continue
             tree = ID3DecisionTree(max_depth=args.max_depth)
             tree.fit(gx, gy)
+            if relabel:
+                n_ch, n_lf = relabel_outcome_leaves(
+                    tree, gx, [ctxs[i] for i in gidx[k]], relabel,
+                    args.relabel_min, args.relabel_margin)
+                if n_ch:
+                    print("    outcome relabel: %d/%d leaves changed "
+                          "(min support %d, margin %.0f)"
+                          % (n_ch, n_lf, args.relabel_min,
+                             args.relabel_margin))
             for r in id3_tree_to_rules(tree, guard, "BD_%s" % key_label(k, args.group),
                                        base_priority=10,
                                        description="distilled from Brill /bid"):
