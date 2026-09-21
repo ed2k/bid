@@ -5322,6 +5322,77 @@ that could carry information. Everything cheap has now been tried.
 
 ---
 
+### 6.84 A counterfactual target: double-dummy value is safe, and says nothing
+
+**New tool, `research/brill_dd_value.py`.** One `CalcDDtable` per board
+returns the tricks each seat can take in each strain, from which the value
+of *any* contract is arithmetic: 33,450 boards in 30 min on 3 workers.
+
+**The label.** `--relabel-dd` scores a candidate call by the duplicate
+score of the contract it would produce — "if the auction stopped here".
+That is the counterfactual §6.83 asked for, and it fixes both defects of
+the outcome label at once: it is a function of the **deal alone**, so every
+candidate is scored on the same cards and nothing depends on what Brill did
+next; and it is **deterministic**, so a leaf's mean for a call is an
+expectation over the deals the leaf covers rather than a sample of what
+happened to work out. It can also say *this game does not make*, which the
+outcome label could only infer from what happened to happen.
+
+**Same experiment shape**, so only the label differs: `later_uncont` only,
+same tree, same guards as §6.82 (`--relabel-dd-min 12`, margin 0), same
+control. **204 of 767 leaves flip** — three times as many as the outcome
+label managed. CV agreement with Brill collapses 74.7% → 58.4%, which is
+the point rather than a problem: it is no longer imitating.
+
+| seed | net | se | t | contested | uncontested |
+| --- | --- | --- | --- | --- | --- |
+| 7 | −0.030 | 0.099 | −0.30 | +0.10 | −0.10 |
+| 42 | −0.205 | 0.101 | −2.02 | −0.05 | −0.29 |
+| 101 | +0.050 | 0.102 | +0.49 | +0.05 | +0.05 |
+
+**POOLED −0.062 ± 0.075, t −0.82, CI [−0.209, +0.086], 1 up / 2 down**
+(4,500 boards). The slice's call mix moved the way §6.81 said it should —
+mean level 3.02 → 3.22, game-or-higher 33% → 40% of bids — and it bought
+nothing.
+
+**Safe, and inert.** Compared with the outcome label, three times as many
+leaves changed for one thirtieth of the damage (−0.06 vs −1.89): the
+winner's curse really was an artefact of the label, and a deterministic
+target does not have one. But the target that had the best claim to being
+the *right* objective is worth zero, with a CI that excludes anything the
+size of §6.73's +0.30.
+
+Why it is inert is the interesting part, and it is not a bug:
+
+* **"Stopped here" is one step of lookahead.** The contract you actually
+  play is the product of partner's and opponents' later calls; crediting a
+  call with the contract it names is not the same as crediting it with the
+  auction it produces. That bias favours bidding, and it partly cancels
+  against the level bias being corrected.
+* **A leaf does not determine the hand.** The tree splits on ~10 features,
+  so the double-dummy best call *varies within a leaf* — the argmax is only
+  the best call *on average* over the deals it covers. And Brill's majority
+  call is already close to that average, because Brill is a strong bidder.
+  There is very little left to win by re-choosing it.
+* **IMP scoring is kinked.** Expected-point gains at the partscore/game
+  boundary have to be large before they register as IMPs.
+
+**What three targets now say.** Imitation: the baseline, and one level
+light. On-policy outcome: −1.89, and empty once guarded. DD
+counterfactual: −0.06 ± 0.08. The last is the strongest thing that can be
+computed from this data, and it is inert — so the ceiling is not "we are
+optimising the wrong thing we could compute". It is that a leaf's feature
+view does not determine the hand, so no per-leaf target can do better than
+the average-best call, and Brill's average call already is that.
+
+The remaining refinements are small by comparison: IMP units rather than
+points (to respect the kink), and a target that accounts for the
+continuation — partner's rebid, not just the contract named. Both are
+available from the tables now committed. Central number unchanged:
+Brill +1.780 ± 0.140.
+
+---
+
 ## 9. References
 
 - Amit & Markovitch, *Learning to Bid in Bridge*, MLJ 63(3), 2006 — BIDI/RBMBMC/PIDM/ID3/co-training foundations.

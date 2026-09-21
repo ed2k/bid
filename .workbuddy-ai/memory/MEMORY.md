@@ -38,10 +38,22 @@ every decision in a deal shares the same |score|, so the leaf compares
 --relabel-margin 300`) drops 69 flips to 15 and the effect to
 **−0.016 ± 0.043** — so the loudest, best-supported differences in that
 signal are worth nothing either. Per flip: −0.027 with guards off, −0.001
-with them on. Do not retry this without a *counterfactual* target (DDS par
-on the actual hand, or off-policy per-position scoring); on-policy
+with them on. Do not retry this without a *counterfactual* target; on-policy
 outcome labels answer "what did Brill's line earn on the deals where he
 chose it", not "what is this call worth here".
+
+**And the counterfactual replacement is inert too (§6.84).** `--relabel-dd`
+scores a call by the double-dummy value of the contract it names
+(`research/brill_dd_value.py`: one `CalcDDtable` per board, ~55 ms). It is
+deterministic, so no winner's curse: 204 leaves flip instead of 69, for
+**−0.062 ± 0.075** instead of −1.887. Agreement with Brill falls 74.7% →
+58.4% (it stopped imitating) and the mix rises a level, and it buys
+nothing. Three targets are now tested — imitation, on-policy outcome, DD
+counterfactual — so the ceiling is not "the wrong objective we could
+compute": a leaf's ~10 features do not determine the hand, the DD-best call
+varies *within* a leaf, and Brill's majority call is already the
+average-best. Untried and small: IMP units instead of points, and scoring
+the continuation (partner's rebid) rather than the contract named.
 
 Central number: Brill's edge is **+1.780 ± 0.140** IMP/board on held-out
 boards. The live hypothesis is a level/aggression calibration, not
