@@ -36,6 +36,11 @@ One DDS solve per board (~230 ms), not per decision. Shard with
 6 workers. Sharding is by CRC32 of the deal string, so it is stable
 across runs and no worker needs the whole file.
 
+That cost is why a long run is worth protecting: pass `--resume` after a
+kill (a crash, a Ctrl-C, or the machine giving out) and the shard files
+are topped up instead of rewritten. The first run here was killed at 62%
+of the 330k set; resuming costs the 38% that is missing, not the lot.
+
 UNITS
 -----
 Raw duplicate score (+620, -50, ...), not IMPs. IMP conversion needs par,
@@ -69,6 +74,27 @@ def shard_of(deal: str, shards: int) -> int:
     return zlib.crc32(deal.encode()) % shards
 
 
+def labelled_deals(path: str) -> set:
+    """Deals a shard file has already scored, for `--resume`.
+
+    A killed run can leave a torn last line on the file it was appending
+    to, so a line that will not parse is skipped rather than fatal: the
+    alternative is refusing to resume at all, which costs a full re-solve.
+    """
+    out: set = set()
+    if not os.path.exists(path):
+        return out
+    for line in open(path):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            out.add(json.loads(line)["deal"])
+        except ValueError:
+            continue
+    return out
+
+
 def run_shard(args, shard: int) -> None:
     calls_by_deal: Dict[str, Dict[int, str]] = defaultdict(dict)
     meta: Dict[str, Dict[str, Any]] = {}
@@ -91,12 +117,25 @@ def run_shard(args, shard: int) -> None:
 
     arena = BiddingArena()
     out_path = "%s.%d" % (args.out, shard)
+
+    # --resume: a killed run leaves its shard files full of good work, and a
+    # DDS solve per board is the whole cost of this tool. Re-solving 20,780
+    # boards to pick up 12,670 is pure waste, so skip what is already there
+    # and append. Sharding is by CRC32 of the deal, so a deal always lands
+    # in the same shard file and a resume cannot duplicate one.
+    already = labelled_deals(out_path) if args.resume else set()
+    if already:
+        print("  [shard %d] resuming, %d boards already labelled"
+              % (shard, len(already)), file=sys.stderr)
+
     done = 0
-    with open(out_path, "w") as fh:
+    with open(out_path, "a" if args.resume else "w") as fh:
         for k, deal in enumerate(sorted(calls_by_deal)):
             idx = sorted(calls_by_deal[deal])
             if idx != list(range(len(idx))):
                 continue                       # incomplete auction
+            if deal in already:
+                continue
             m = meta[deal]
             try:
                 dealer_letter, hands_pbn = deal.split(":", 1)
@@ -134,6 +173,9 @@ def main() -> int:
     ap.add_argument("--shard", type=int, default=0)
     ap.add_argument("--shards", type=int, default=1)
     ap.add_argument("--workers", type=int, default=1)
+    ap.add_argument("--resume", action="store_true",
+                    help="skip deals already present in the shard's output "
+                         "file and append to it, instead of starting over")
     ap.add_argument("--flush-every", type=int, default=500)
     args = ap.parse_args()
 
