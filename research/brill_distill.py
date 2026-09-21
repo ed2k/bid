@@ -56,6 +56,9 @@ from bid.brill.convert import (deal_pbn as deal_pbn_of, hand_from_pbn,  # noqa: 
 from bid.decision_net import DecisionNet, DecisionNetRule, RuleCondition  # noqa: E402
 from bid.features import BridgeFeatures                        # noqa: E402
 from bid.learner import ID3DecisionTree, id3_tree_to_rules    # noqa: E402
+from bid.models import CallType, Seat                         # noqa: E402
+from bid.scoring import (Vulnerability,                       # noqa: E402
+                         calculate_contract_score)
 
 SYSTEM_DIR = os.path.join(REPO, "system")
 
@@ -167,6 +170,171 @@ def relabel_outcome_leaves(tree: Any,
     changed = 0
     for node, by_call in acc.values():
         means = {c: sum(v) / len(v) for c, v in by_call.items()
+                 if len(v) >= min_support}
+        if not means:
+            continue
+        best = max(means, key=lambda c: means[c])
+        cur = str(node.prediction)
+        if best == cur:
+            continue
+        cur_mean = means.get(cur)
+        if cur_mean is not None and means[best] < cur_mean + margin:
+            continue
+        node.prediction = parse_call(best)
+        changed += 1
+    return changed, len(acc)
+
+
+def last_bid(ctx: List[str], dealer: Any) -> Optional[Tuple[int, Any, Any, int]]:
+    """(level, strain, bidder's seat, doubled) of the auction's last bid.
+
+    Doubles attach to the bid they follow, which is why this walks the
+    whole prefix rather than taking the last token: a PASS value is the
+    score of the contract that is standing, and `4H X` is not `4H`.
+    """
+    out: Optional[Tuple[int, Any, Any, int]] = None
+    for i, tok in enumerate(ctx):
+        try:
+            c = parse_call(tok)
+        except Exception:                      # noqa: BLE001
+            continue
+        if c.type == CallType.BID:
+            out = (c.level, c.strain, Seat((dealer.value + i) % 4), 0)
+        elif c.type == CallType.DOUBLE and out:
+            out = (out[0], out[1], out[2], 1)
+        elif c.type == CallType.REDOUBLE and out:
+            out = (out[0], out[1], out[2], 2)
+    return out
+
+
+def bid_beats(level: int, strain: Any, last: Optional[Tuple[int, Any, Any, int]]
+              ) -> bool:
+    """Bridge legality for a bid over `last` (None = no bid yet).
+
+    A call that is illegal where it lands is dropped silently by
+    `DecisionNet.actions` and falls back to PASS, so a relabelling that
+    ignored this would be quietly training passes.
+    """
+    if last is None:
+        return True
+    return level > last[0] or (level == last[0] and strain.value > last[1].value)
+
+
+def side_tricks(tricks: Dict[str, int], strain: Any, seat: Any) -> int:
+    """Tricks the partnership can take in `strain`, best of the two seats.
+
+    Which partner declares is a later decision the label cannot see, so
+    take the better of them: that is what the side would choose, and the
+    alternative (picking the caller's own seat) would penalise hands whose
+    partner is the right declarer.
+    """
+    return max(tricks.get("%s:%s" % (strain.name, seat.name), 0),
+               tricks.get("%s:%s" % (strain.name, seat.partner.name), 0))
+
+
+def call_value(call: str, ctx: List[str], dealer: Any, vul: int,
+               tricks: Dict[str, int]) -> Optional[float]:
+    """Points for the caller's side if the auction stopped with `call`.
+
+    This is the counterfactual label §6.83 asked for. `tricks` is one
+    deal's double-dummy table, so the value of every candidate call is
+    computed on the **same** deal, and nothing in it depends on what Brill
+    did next — which is exactly what the on-policy outcome label could not
+    do (§6.82: within a leaf it compares which *deals* each call was made
+    on, not what the call achieved).
+
+    "Stopped there" is the one approximation: a bid is scored as if it
+    became the final contract. It is one step of lookahead, not a solved
+    continuation, and it is the same approximation for every candidate, so
+    it does not bias the comparison — only the absolute level.
+
+    Returns None where the call is illegal at this position.
+    """
+    try:
+        c = parse_call(call)
+    except Exception:                          # noqa: BLE001
+        return None
+    seat = Seat((dealer.value + len(ctx)) % 4)
+    last = last_bid(ctx, dealer)
+
+    if c.type == CallType.BID:
+        if not bid_beats(c.level, c.strain, last):
+            return None
+        t = side_tricks(tricks, c.strain, seat)
+        return float(calculate_contract_score(
+            c.level, c.strain, t, Vulnerability.is_vulnerable(vul, seat)))
+
+    if c.type == CallType.DOUBLE:
+        # Only an opponent's bid can be doubled; own-side is illegal.
+        if last is None or last[2] in (seat, seat.partner):
+            return None
+        lvl, st, decl, _dbl = last
+        t = side_tricks(tricks, st, decl)
+        return -float(calculate_contract_score(
+            lvl, st, t, Vulnerability.is_vulnerable(vul, decl), doubled=1))
+
+    if c.type == CallType.REDOUBLE:
+        if last is None or last[2] not in (seat, seat.partner) or last[3] != 1:
+            return None
+        lvl, st, decl, _dbl = last
+        t = side_tricks(tricks, st, decl)
+        return float(calculate_contract_score(
+            lvl, st, t, Vulnerability.is_vulnerable(vul, decl), doubled=2))
+
+    # PASS: the contract that is standing, or nothing at all.
+    if last is None:
+        return 0.0
+    lvl, st, decl, dbl = last
+    t = side_tricks(tricks, st, decl)
+    s = float(calculate_contract_score(
+        lvl, st, t, Vulnerability.is_vulnerable(vul, decl), doubled=dbl))
+    return s if decl in (seat, seat.partner) else -s
+
+
+def relabel_dd_leaves(tree: Any,
+                      gx: List[Any],
+                      rows: List[Dict[str, Any]],
+                      tables: Dict[str, Dict[str, int]],
+                      min_support: int,
+                      margin: float) -> Tuple[int, int]:
+    """Replace each leaf's call with the highest-value call observed in it.
+
+    Same shape as `relabel_outcome_leaves`, including the restriction to
+    calls Brill actually made in the leaf, so the two differ in exactly one
+    thing: where the score comes from.
+
+    The value is a deterministic function of the deal, so a leaf's mean for
+    a call is an expectation over the deals the leaf covers rather than a
+    sample of what happened to work out. That is the whole point — the
+    argmax is no longer mining noise (§6.83), which is why the guards can
+    stay loose here without reproducing the winner's curse.
+    """
+    acc: Dict[int, Tuple[Any, List[Tuple[Dict[str, Any], Dict[str, int]]]]] = {}
+    for feats, row in zip(gx, rows):
+        tricks = tables.get(row.get("deal") or "")
+        if not tricks:
+            continue
+        node = leaf_of(tree.root, feats)
+        if node is None or not node.is_leaf:
+            continue
+        acc.setdefault(id(node), (node, []))[1].append((row, tricks))
+
+    changed = 0
+    for node, rs in acc.values():
+        cands = {str(r.get("call")) for r, _ in rs}
+        vals: Dict[str, List[float]] = {}
+        for row, tricks in rs:
+            ctx = [t for t in (row.get("ctx") or "").split("-") if t.strip()]
+            try:
+                dealer = seat_from_letter(str(row.get("dealer", "N")).strip())
+            except Exception:                  # noqa: BLE001
+                continue
+            for c in cands:
+                v = call_value(c, ctx, dealer, int(row.get("vul", 0)), tricks)
+                if v is None:
+                    continue
+                vals.setdefault(c, []).append(v)
+        means = {c: sum(v) / len(v) for c, v in vals.items()
                  if len(v) >= min_support}
         if not means:
             continue
@@ -543,6 +711,19 @@ def main():
     ap.add_argument("--relabel-margin", type=float, default=0.0,
                     help="score advantage a challenger needs over the "
                          "majority call before the leaf is flipped")
+    ap.add_argument("--relabel-dd", default="", nargs="*",
+                    help="DD tables from research/brill_dd_value.py. With "
+                         "any, each leaf is relabelled with the "
+                         "highest-VALUED call observed in it, where value "
+                         "is the double-dummy score if the auction stopped "
+                         "there -- a counterfactual target, unlike "
+                         "--relabel's record of what Brill's line earned.")
+    ap.add_argument("--relabel-dd-min", type=int, default=20,
+                    help="rows a call needs behind it in a leaf before it "
+                         "can be chosen")
+    ap.add_argument("--relabel-dd-margin", type=float, default=0.0,
+                    help="value advantage a challenger needs over the "
+                         "majority call before the leaf is flipped")
     ap.add_argument("--learning-curve", action="store_true",
                     help="fidelity vs training size; answers 'is another "
                          "harvest worth it?' — a still-rising curve says "
@@ -601,6 +782,12 @@ def main():
     relabel = load_outcomes(list(args.relabel)) if args.relabel else None
     if relabel is not None:
         print("outcome relabel: %d boards loaded" % len(relabel))
+
+    dd: Dict[str, Dict[str, int]] = {}
+    if args.relabel_dd:
+        from brill_dd_value import load_dd_tables
+        dd = load_dd_tables(list(args.relabel_dd))
+        print("dd relabel: %d board tables loaded" % len(dd))
 
     def cap_passes(idx: List[int]) -> List[int]:
         """Thin out PASS traces so the tree cannot win by always passing.
@@ -704,6 +891,15 @@ def main():
                           "(min support %d, margin %.0f)"
                           % (n_ch, n_lf, args.relabel_min,
                              args.relabel_margin))
+            if dd:
+                n_ch, n_lf = relabel_dd_leaves(
+                    tree, gx, [ctxs[i] for i in gidx[k]], dd,
+                    args.relabel_dd_min, args.relabel_dd_margin)
+                if n_ch:
+                    print("    dd relabel: %d/%d leaves changed "
+                          "(min support %d, margin %.0f)"
+                          % (n_ch, n_lf, args.relabel_dd_min,
+                             args.relabel_dd_margin))
             for r in id3_tree_to_rules(tree, guard, "BD_%s" % key_label(k, args.group),
                                        base_priority=10,
                                        description="distilled from Brill /bid"):
