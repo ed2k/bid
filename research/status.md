@@ -5253,30 +5253,72 @@ rows is worth −0.06, i.e. nothing, which is §6.80's flat data curve
 repeating itself. The verdict on the outcome objective does not rest on the
 confound.
 
-**Harvest left unfinished, deliberately.** `data/brill_outcomes.{0,1,2}`
-hold 20,780 boards; shards .3/.4/.5 are 431/500/480-line leftovers of a
-killed 6-way run whose deals are a subset of .0–.2 (CRC32 `%6` ⊂ `%3`), so
-they are redundant rather than wrong. All 33,450 deals in the 330k set have
-contiguous auctions, so the 38% gap is an interrupted job, not missing
-input; and since 330k ⊂ 578k, the 578k set is 35% labelled. It was not
-re-run: the objective it feeds is refuted in its current form, and 58,504
-DDS solves is ~1 h of a machine that resets under sustained load. To resume
-it anyway:
-
-    .venv/bin/python3 research/brill_outcomes.py \
-        --traces data/brill_traces_578k.jsonl --out data/brill_outcomes \
-        --shards 3 --workers 3     # overwrites .0-.2, ~75 min
+**Data, after the fact.** The harvest behind this was killed at 62%
+(20,780 / 33,450 boards); every deal in the set has a contiguous auction,
+so the gap was an interrupted job and not missing input. It has since been
+finished with a new `--resume` flag — **33,450/33,450 boards labelled**,
+11m41s on 3 workers for the 13,224 that were missing — so the numbers above
+were computed on 62% of the labels and the retry in §6.83 is not. The
+stale shards .3/.4/.5 were dropped: 1,411 deals, all of them already in
+.0–.2. Still open: the 578k set (58,504 boards), of which 330k's subset is
+now complete and the remaining 25,054 boards are not labelled.
 
 **What this closes, and what it does not.** Six interventions have now
 failed to convert fidelity into IMPs (§6.80's list plus this one), but this
 is the first to make things *worse* by a margin no instrument can dispute.
 Imitation is bad in a way we can now name (a uniform level bias, §6.81) —
 but "bid what scored best" is worse, because it optimises a noisy estimate
-of value with no guard against selection. A second attempt would need, at
-minimum: a margin calibrated on held-out data instead of 0; IMP units
-relative to par rather than raw score; comparisons restricted to calls at
-the *same* auction position; and enough labels per leaf that the argmax is
-signal rather than noise. Central number unchanged: Brill +1.780 ± 0.140.
+of value with no guard against selection. Central number unchanged:
+Brill +1.780 ± 0.140.
+
+---
+
+### 6.83 Turning the guards on: the effect *was* the noise
+
+§6.82 blamed a winner's curse — `--relabel-margin 0` takes an argmax over
+per-leaf sample means, so the leaves that flip are the ones whose sample
+was lucky. That is testable: raise the guards, and the damage should shrink
+with the number of flips, while whatever survives the filter should be
+worth roughly nothing.
+
+Retry, same command and same tree, with `--relabel-min 40 --relabel-margin
+300` (was min 12, margin 0), on the now-complete 33,450-board label set:
+**15 of 767 leaves flip**, against 69 before. Compared against the same
+control (identical tree, identical untouched slices).
+
+| seed | net | se | t | contested | uncontested |
+| --- | --- | --- | --- | --- | --- |
+| 7 | +0.023 | 0.070 | +0.33 | +0.00 | +0.03 |
+| 42 | +0.031 | 0.066 | +0.48 | −0.00 | +0.05 |
+| 101 | −0.101 | 0.061 | −1.66 | +0.01 | −0.15 |
+
+**POOLED −0.016 ± 0.043, t −0.36, CI [−0.100, +0.069], 2 up / 1 down**
+(4,500 boards).
+
+The per-flip arithmetic is the result. 69 flips cost −1.887, so −0.027 per
+flip on average; 15 flips cost −0.016, so −0.001 per flip. The flips that
+survive a 300-point margin are an order of magnitude less damaging than the
+average flip, which means the ones the guard removed carried essentially
+all of the loss. The diagnosis was right, and it was the whole story.
+
+It also closes the door rather than leaving a tuning problem behind. The
+loudest, best-supported differences in this signal — the ones with 40+
+boards of support and a 300-point gap — are worth **nothing**: the CI is
+±0.07, smaller than any effect this repo has ever chased (§6.73's real win
+was +0.30). So the outcome objective is not mis-tuned; in this form it is
+empty. That is consistent with its structure: the label is on-policy with
+respect to Brill's continuation, and every position of a deal carries the
+same |score|, so even a perfect estimator of it answers "what did Brill's
+line earn on the deals where he chose it", not "what is this call worth
+here".
+
+**Where that leaves the programme.** The objective is the ceiling (§6.81),
+and both objectives tried so far are dead ends in a complementary way:
+imitation is systematically one level light, and outcome-maximisation has
+nothing to say. What neither has attempted is a *counterfactual* target —
+DDS par on the actual hand, or a per-position comparison of candidate calls
+scored off-policy — which is the only remaining thing in this direction
+that could carry information. Everything cheap has now been tried.
 
 ---
 

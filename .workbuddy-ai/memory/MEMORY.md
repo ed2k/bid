@@ -29,14 +29,19 @@ Data (§6.80: 330k→578k buys +0.01 ± 0.03), tree capacity (§6.62), DAgger
 vulnerability splits, per-slice specialisation (§6.73), fidelity itself
 (five interventions raised it and bought nothing).
 
-**The outcome objective is refuted as implemented (§6.82).** Relabelling
+**The outcome objective is dead, not mis-tuned (§6.82, §6.83).** Relabelling
 each leaf with the best-scoring call observed in it costs −1.95 ± 0.04
-(−1.89 ± 0.07 isolated against a control with the identical tree). Failure
-mode: argmax over per-leaf sample means with `--relabel-margin 0` is a
-winner's curse, and every decision in a deal shares the same |score|, so
-the leaf compares *which deals* a call was made on. A retry needs held-out
-margin calibration, IMP-vs-par units, and same-auction-position
-comparisons.
+(−1.89 ± 0.07 against a control with the identical tree): argmax over
+per-leaf sample means with `--relabel-margin 0` is a winner's curse, and
+every decision in a deal shares the same |score|, so the leaf compares
+*which deals* a call was made on. Turning the guards on (`--relabel-min 40
+--relabel-margin 300`) drops 69 flips to 15 and the effect to
+**−0.016 ± 0.043** — so the loudest, best-supported differences in that
+signal are worth nothing either. Per flip: −0.027 with guards off, −0.001
+with them on. Do not retry this without a *counterfactual* target (DDS par
+on the actual hand, or off-policy per-position scoring); on-policy
+outcome labels answer "what did Brill's line earn on the deals where he
+chose it", not "what is this call worth here".
 
 Central number: Brill's edge is **+1.780 ± 0.140** IMP/board on held-out
 boards. The live hypothesis is a level/aggression calibration, not
