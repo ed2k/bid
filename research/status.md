@@ -5147,6 +5147,139 @@ candidate that shifts the partscore/game boundary.
 
 ---
 
+### 6.82 The outcome objective: relabel every leaf by what the board paid — −1.95 ± 0.04
+
+§6.81 concluded that the ceiling is the *objective*: every model here is
+fitted to reproduce Brill's CALL, the team match pays for the CONTRACT the
+auction lands in, and five interventions that raised fidelity bought no
+IMPs. This section builds the obvious alternative signal — score each
+candidate call by what the board actually paid — and grades it.
+
+**New tool, `research/brill_outcomes.py`.** The harvest recorded Brill's
+complete auction for every board, so the final contract is known and DDS can
+score it exactly: one solve per *board* (~230 ms), not per decision. The
+score is attributed to the side that made each decision:
+
+    outcome(deal, i) =  NS score  if caller i sits N/S
+                       −NS score  if caller i sits E/W
+
+That is an on-policy value estimate: *we were here, we made this call, the
+rest of the auction followed Brill, and this is what our side scored*.
+
+**`--relabel` in `brill_distill.py` consumes it.** The tree is still fitted
+to imitate Brill, so the leaves are the ones imitation chose; relabelling
+only changes what each leaf *emits*, replacing the majority call with the
+best-scoring call **observed in that leaf** (`--relabel-min` rows of support
+and `--relabel-margin` advantage over the current call are the guards).
+Only calls Brill actually made in the leaf are candidates, so this is one
+step of policy improvement over Brill, not invention. 13 tests in
+`tests/test_brill_distill_relabel.py` pin the four ways it can silently go
+wrong (leaf walk drifting from `predict`, reading the outcome at the wrong
+auction position, choosing a call never observed, guards not biting).
+
+**Data**: 20,780 boards labelled out of 33,450 — the harvest was **killed at
+62%** (see the end of this section).
+
+**Candidate**: the shipped model with **only `later_uncont` relabelled** —
+`open_uncont` (252 rules) and `later_cont` (829) are identical to shipped,
+so the instrument is one-component. Fit was `--max-depth 10 --folds 2
+--relabel-min 12`, margin left at its default 0.
+
+| seed | net | se | t | contested | uncontested |
+| --- | --- | --- | --- | --- | --- |
+| 7 | −1.83 | 0.14 | −12.88 | +0.04 | −2.73 |
+| 42 | −2.01 | 0.14 | −14.45 | +0.02 | −2.96 |
+| 101 | −2.05 | 0.14 | −15.01 | −0.06 | −2.98 |
+| 202 | −1.94 | 0.15 | −13.18 | −0.05 | −2.80 |
+| 303 | −1.91 | 0.14 | −13.96 | −0.13 | −2.81 |
+
+**POOLED −1.948 ± 0.039, t −49.80, CI [−2.025, −1.872], 0 up / 5 down**
+(1,500 boards/seed, 7,500 total).
+
+Two things make this unambiguous rather than merely negative:
+
+* **The loss is entirely in the slice that was changed.** Contested boards
+  average −0.04 (both systems share the `later_cont` slice, so this is the
+  instrument's null reading) and uncontested −2.85. Whatever the objective
+  did, it did in the leaves it was applied to.
+* **Not a power problem, and not a small effect.** The CI excludes zero by
+  50 sigma; it also excludes the −0.3 to −1.0 range you would expect from a
+  merely bad idea. This is the largest single-slice effect in the log.
+
+**Not the mechanism we suspected first.** A relabelled leaf can emit a call
+that is *illegal* at the auction position it lands in, and
+`DecisionNet.actions` silently drops illegal candidates and falls back to
+PASS — which would produce exactly this pattern. It did not: pass-outs are
+identical on both sides on every seed (20/20, 16/16, … every pass-out is
+mutual). No auction died that would not have died anyway.
+
+**What actually changed is small.** 44 leaves changed call (of the 336 rule
+condition-sets the two slices share), and the slice's mix shifted slightly
+upward: mean bid level 3.01 → 3.07, game-or-higher 32% → 35% of non-PASS
+rules. So relabelling bought a modest, systematic contract-level upgrade —
+and ~6% of the leaves' worth of it costs 1.95 IMP/board. That is not
+surprising in hindsight: `later_uncont` is where the contract gets set.
+
+**Why this is the expected failure, not bad luck.** Within a leaf, each
+call's mean outcome is a *sample* mean over the deals that happened to land
+there, and relabelling takes the argmax with `--relabel-margin 0`. That is a
+winner's curse: the calls that win the argmax are the ones whose sample was
+lucky, and out of sample they regress. It is compounded by the label's
+structure — every decision in a deal carries the same |score| (`outcome` is
+±the board's NS score), so what a leaf really compares is *which deals* each
+call was made on, not what the call achieved. The result is
+indistinguishable from §6.68's forced aggression (−1.31 to −2.10), which is
+the same error administered by hand.
+
+**The confound, and the control.** The candidate was not purely
+"shipped + relabelled": its slice was refit at `--folds 2`, which trains on
+100% of the rows, while the shipped slice carries a 20% holdout — hence 767
+rules instead of 752, and only 336 of 752 condition-sets shared. So the
+−1.95 above bundles the objective with a refit. Refitting the slice with the
+*same* command and no `--relabel` settles it: the control also comes out at
+**767 rules** (relabelling cannot change tree structure — `id3_leaf_paths`
+emits one rule per leaf), so control and candidate are the same tree and
+differ only in what the leaves say. Of 767 leaves, **69 changed call**: 24
+up a level, 7 down, 16 PASS→bid, 1 bid→PASS.
+
+| comparison | what it isolates | pooled | se | t |
+| --- | --- | --- | --- | --- |
+| relab vs shipped | refit + relabel | −1.948 | 0.039 | −49.8 |
+| **relab vs control** | **relabel only** | **−1.887** | **0.074** | **−25.4** |
+| (implied) | refit only | −0.061 | — | — |
+
+So ~97% of the damage is the objective itself; training on the extra 20% of
+rows is worth −0.06, i.e. nothing, which is §6.80's flat data curve
+repeating itself. The verdict on the outcome objective does not rest on the
+confound.
+
+**Harvest left unfinished, deliberately.** `data/brill_outcomes.{0,1,2}`
+hold 20,780 boards; shards .3/.4/.5 are 431/500/480-line leftovers of a
+killed 6-way run whose deals are a subset of .0–.2 (CRC32 `%6` ⊂ `%3`), so
+they are redundant rather than wrong. All 33,450 deals in the 330k set have
+contiguous auctions, so the 38% gap is an interrupted job, not missing
+input; and since 330k ⊂ 578k, the 578k set is 35% labelled. It was not
+re-run: the objective it feeds is refuted in its current form, and 58,504
+DDS solves is ~1 h of a machine that resets under sustained load. To resume
+it anyway:
+
+    .venv/bin/python3 research/brill_outcomes.py \
+        --traces data/brill_traces_578k.jsonl --out data/brill_outcomes \
+        --shards 3 --workers 3     # overwrites .0-.2, ~75 min
+
+**What this closes, and what it does not.** Six interventions have now
+failed to convert fidelity into IMPs (§6.80's list plus this one), but this
+is the first to make things *worse* by a margin no instrument can dispute.
+Imitation is bad in a way we can now name (a uniform level bias, §6.81) —
+but "bid what scored best" is worse, because it optimises a noisy estimate
+of value with no guard against selection. A second attempt would need, at
+minimum: a margin calibrated on held-out data instead of 0; IMP units
+relative to par rather than raw score; comparisons restricted to calls at
+the *same* auction position; and enough labels per leaf that the argmax is
+signal rather than noise. Central number unchanged: Brill +1.780 ± 0.140.
+
+---
+
 ## 9. References
 
 - Amit & Markovitch, *Learning to Bid in Bridge*, MLJ 63(3), 2006 — BIDI/RBMBMC/PIDM/ID3/co-training foundations.

@@ -21,7 +21,9 @@ quietly optimises something else. Four things have to hold:
   noise (three lucky slams), so they must actually bite.
 """
 import os
+import shutil
 import sys
+import tempfile
 
 import pytest
 
@@ -208,20 +210,32 @@ def test_a_row_past_the_end_of_the_labelled_auction_is_skipped():
 
 # --- load_outcomes -----------------------------------------------------
 
-def test_load_outcomes_merges_shards_behind_a_glob(tmp_path):
-    for shard, deals in enumerate((("A", 10.0), ("B", 20.0))):
-        p = tmp_path / ("out.%d" % shard)
-        p.write_text('{"deal": "%s", "n": 1, "out": [%f]}\n'
-                     % (deals[0], deals[1]))
-    got = load_outcomes([str(tmp_path / "out.*")])
-    assert got == {"A": [10.0], "B": [20.0]}
+def test_load_outcomes_merges_shards_behind_a_glob():
+    """Shards are separate files precisely so they can be written in
+    parallel; `load_outcomes` has to see them as one mapping."""
+    d = tempfile.mkdtemp()
+    try:
+        for shard, (deal, val) in enumerate((("A", 10.0), ("B", 20.0))):
+            with open(os.path.join(d, "out.%d" % shard), "w") as fh:
+                fh.write('{"deal": "%s", "n": 1, "out": [%f]}\n' % (deal, val))
+        assert load_outcomes([os.path.join(d, "out.*")]) == {"A": [10.0],
+                                                             "B": [20.0]}
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
 
 
-def test_load_outcomes_ignores_blank_lines_and_missing_files(tmp_path):
-    p = tmp_path / "out.0"
-    p.write_text('{"deal": "A", "n": 1, "out": [1.0]}\n\n')
-    assert load_outcomes([str(p)]) == {"A": [1.0]}
-    assert load_outcomes([str(tmp_path / "nope.*")]) == {}
+def test_load_outcomes_ignores_blank_lines_and_missing_files():
+    d = tempfile.mkdtemp()
+    try:
+        p = os.path.join(d, "out.0")
+        with open(p, "w") as fh:
+            fh.write('{"deal": "A", "n": 1, "out": [1.0]}\n\n')
+        assert load_outcomes([p]) == {"A": [1.0]}
+        # a glob that matches nothing is not an error: the harvest is run
+        # shard by shard, so early callers see partial output.
+        assert load_outcomes([os.path.join(d, "nope.*")]) == {}
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
 
 
 if __name__ == "__main__":
