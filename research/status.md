@@ -5434,6 +5434,121 @@ and objective (§6.82–6.85). What is left is the feature space and the
 model class itself — a tree over ~10 features may simply not be able to
 express the auction's dependence on the actual hand.
 
+**[Withdrawn by §6.86.]** The "objective is flat" half of that sentence is
+wrong. §6.84's argmax was taken in-fold; taken out-of-fold the same target
+on the same tree measures **+0.083 ± 0.035**. The objective was never the
+ceiling — the estimator was. The structural half of the argument (within a
+leaf the best call varies) is confirmed, and is now measured rather than
+asserted: 7.7 distinct best calls per leaf, 45.3% agreement.
+
+Central number unchanged: Brill +1.780 ± 0.140.
+
+---
+
+### 6.86 An objective cannot be graded by its own training signal
+
+**New tool, `research/leaf_ceiling.py`.** §6.85 closed the objective lever
+with an argument about the representation. That argument is a claim about
+a *bound*, and the bound had not been measured. This measures it — and the
+first version of the measurement was worthless in an instructive way.
+
+For every decision in `later_uncont` it values three calls off the
+committed DD tables (no new solves): `brill`, what Brill actually did;
+`leaf_best`, the best single call per leaf chosen **out of fold**; and
+`oracle`, the best call for that actual deal.
+
+```
+within-leaf agreement on the best call: 45.3% of rows
+  (762 leaves, 7.7 distinct best calls per leaf)
+
+value of the call, IMPs/board, over 77482 rows
+  Brill's own call     +2.466
+  best call per leaf   +2.863   (+0.396 vs Brill)
+  per-deal oracle      +7.053   (+4.586 vs Brill)
+
+  representation cost, oracle - leaf_best  +4.190
+```
+
+The structural claim survives and is now a number: the deals that share a
+leaf want **7.7 different best calls between them** and agree on one only
+45.3% of the time. No single call can serve such a leaf, and no training
+target can fix that — only a finer partition can.
+
+**Then the metric contradicted the match.** `--against LABEL=path` scores a
+shipped `.dsl` in the same per-row metric:
+
+| model | metric | vs control | match (measured) |
+| --- | --- | --- | --- |
+| `control` | +2.218 | — | — |
+| `relab` (outcome target, §6.82) | +1.308 | −0.910 | **−1.887** |
+| `dd` (DD points, §6.84) | +2.885 | +0.667 | **−0.062 ± 0.075** |
+| `ddimp` (DD IMPs, §6.85) | +2.930 | +0.712 | **−0.050 ± 0.065** |
+
+The metric is not simply flattering everything: on `relab`, whose labels
+come from a different target entirely, it predicts −0.910 and the match
+measured −1.887 — right sign, right order. But on the two models whose
+labels *it* generated, it says +0.667 and +0.712 where the match says
+−0.062 and −0.050. `--relabel-dd` chooses each leaf's call by maximising
+this exact one-step valuation; scoring the result with that same
+valuation can only agree with itself. **The one model the metric is
+independent of is the one it grades correctly.**
+
+The bias behind it, checked against ground truth (`data/brill_outcomes.*`):
+over 77,880 slice rows the one-step value of Brill's call is **+198
+points**, the board actually paid **+299**, and the best contract that side
+could reach was **+540**. One-step equals the outcome on only **50.9%** of
+rows. It is not that the auction goes on — 94% of Brill's bids in this
+slice *do* become the final contract — it is that a call made before any
+contract is standing scores 0 while a call naming a making contract scores
+in full. One-step systematically prefers ending the auction in a making
+contract now, which is exactly the shape a DD retarget will exploit.
+
+**So play the bound instead of scoring it.** `--emit` writes a `.dsl` whose
+`later_uncont` leaf calls are the out-of-fold argmax, fitted on fold-0
+rows only, under §6.84's guard (≥12 rows in which the call is legal).
+**111 of 767 calls change** — *fewer* than §6.84's 204, because a leaf
+often re-selects the call it already had. Same control, same tree, same
+candidate set, same guard; the only change is that the leaf's call is
+chosen on half the rows instead of on all of them.
+
+| seed | 7 | 42 | 101 | 202 | 303 | 404 | 505 | 606 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| net | +0.12 | +0.13 | +0.05 | −0.03 | +0.25 | +0.06 | +0.14 | −0.06 |
+
+**POOLED +0.083 ± 0.035, t +2.34, CI [+0.013, +0.152], 6 up / 2 down**
+(12,000 boards). The between-seed dispersion (0.100) and the mean per-seed
+standard error (0.098) are the same number, so there is no seed-to-seed
+heterogeneity beyond sampling noise — the eight seeds are consistent with
+one common effect. Pass-outs are identical on both sides on every seed, so
+the illegal-call→PASS fallback is not carrying it.
+
+**The objective lever is open again.** §6.84 measured −0.062 ± 0.075 and
+this measures +0.083 ± 0.035; the difference is 0.145 ± 0.083 (t +1.75),
+so *the fold* is the likely mechanism but is not by itself proven. What is
+established is the part that matters: a double-dummy retarget of this tree
+**can** be worth something, which §6.84–6.85 concluded it could not. Four
+variants were measured here and this is the one with an a-priori reason
+(§6.83's winner's curse: an argmax taken on the rows it is fitted to
+selects noise), so it is not a draw from a fishing expedition — but the CI
+lower bound is +0.013 and it should be treated as a direction, not a
+trophy.
+
+**The metric mis-ranks too.** `--candidates all` lets a leaf choose any
+legal call rather than only calls Brill made there, and in the metric that
+is worth nearly twice as much (+0.959 vs +0.396). Played, it is worth
+nothing: **+0.017 ± 0.064** (3 seeds). The metric preferred the variant
+the match likes least — consistent with the bias above, since `all` gives
+it more room to stop the auction in a making contract (PASS 43% of rows,
+3NT 29%, against Brill's 29% and 7%).
+
+**What this changes.** Data (§6.80) and capacity (§6.62) remain flat. The
+objective is not flat, and §6.85's closure of it is withdrawn. The next
+step is the cheap one: the fold was the only difference, so sweep it
+(2-fold, 5-fold, proper cross-fitting) before touching anything else, and
+re-examine §6.82's outcome label under the same treatment — it failed by
+far the hardest (−1.887) and was diagnosed as a winner's curse on the
+same grounds, but it was never re-run out-of-fold.
+
 Central number unchanged: Brill +1.780 ± 0.140.
 
 ---
