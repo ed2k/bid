@@ -49,3 +49,24 @@ data/cot_model/*.candidate.pt
 data/cot_model/*.candidate.pt.vocab.json
 data/cot_model/refresh_last.log*
 data/examples.txt
+
+# ---------------------------------------------------------------------------
+# Superseded Brill-distillation variants.
+#
+# These are rungs of tuning ladders whose conclusions are recorded in
+# research/status.md (§6.86-6.89) and whose recipes are written down there,
+# so they are regenerable rather than inputs. Nothing loads them: not by
+# path, not by stem, and not as a script default. They are also inert for
+# the frozen vocabulary -- cot_tokenizer.build_frozen_vocab globs system/,
+# but excludes anything matching "brill*.dsl", which covers every
+# brill_distilled* file.
+#
+# Deliberately NOT a blanket `system/brill_distilled_*.dsl`: the shipped
+# system (brill_distilled.dsl), the leaf_ceiling default (…_control.dsl) and
+# the promotion candidate (…_shipdd.dsl) must stay committable.
+system/brill_distilled_578k*.dsl
+system/brill_distilled_ddimp.dsl
+system/brill_distilled_ddin_m*.dsl
+system/brill_distilled_ddoof*.dsl
+system/brill_distilled_relab_m300.dsl
+system/brill_distilled_shipdd_o.dsl
