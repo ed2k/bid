@@ -217,7 +217,34 @@ whole directories:
   else.
 
 Vocab currently measures **431** tokens; the shipped `manifest.json` says
-**404**. That drift pre-dates the 2026-09-22 cleanup and is unresolved.
+**404**. **This is by design, not a bug** — investigated 2026-09-22:
+
+- `build_frozen_vocab()` (431) unions all 129 `BridgeFeatures.extract_all`
+  keys, because the **dataset** encodes rule constraints as text containing
+  feature *names*. `data/cot_dataset/vocab.json` is also 431 and is guarded
+  by `test_frozen_vocab_file_integrity`. It is the canonical vocab.
+- `data/cot_model/ckpt.pt.vocab.json` (404) is a **sidecar written at
+  training time** (`cot_model.py:194`). It predates 27 features. The 431 set
+  is a strict superset: 27 added, 0 removed.
+- `cot_model.py cmd_generate` takes its vocab from the **dataset**, not the
+  sidecar, and `_grow_vocab_tensors` grows a smaller checkpoint's embedding
+  and head to fit. A 404 checkpoint running against a 431 vocab is the
+  intended path.
+- `cot_export_web.py` deliberately defaults `--vocab` to the sidecar, which
+  is why `web/models/cot/manifest.json` declares 404 — the web model is
+  self-consistent.
+- `mine_disagreements.py` loads the sidecar, but builds prompts only via
+  `format_state_prefix`, which emits `STATE`/`seat`/`AUCTION`/`HAND` — no
+  feature names. Verified: all 30 atoms in a real state prefix are known to
+  **both** vocabs, so nothing is dropped.
+
+**Residual hazard (unfixed, deliberate):** `mine_disagreements.prefix_ids`
+does `ids += [V[t] for t in tokenize_line(ln) if t in V]` — it *silently
+drops* unknown atoms, whereas `Tokenizer.encode_line(strict=True)` raises
+`KeyError: ... Frozen vocabulary violated!`. If `format_state_prefix` ever
+starts emitting a feature name, the student would degrade quietly instead of
+raising. This repo treats quiet failures as the dangerous kind, so it is
+worth a strict check there if that function changes.
 
 **Untracked 2026-09-22 (regenerable by-products, files still on disk):**
 `data/brill_traces*.jsonl` (97 files, 515 MB), `data/brill_dd.[0-9]*`,
