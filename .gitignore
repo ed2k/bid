@@ -51,6 +51,25 @@ data/cot_model/refresh_last.log*
 data/examples.txt
 
 # ---------------------------------------------------------------------------
+# Generated trace corpora -- written by scripts, not inputs.
+#
+#   data/traces/corpus_combined.jsonl    refresh_student.py concatenates
+#                                        traces.jsonl + disagreements.jsonl
+#                                        into it
+#   data/traces/disagreements.jsonl      mine_disagreements.py (Loop C)
+#   data/traces/disagreements.meta.json  its stats sidecar, written by the
+#                                        same run (mine_disagreements.py:244)
+#
+# Deliberately NOT a blanket `data/traces/*.jsonl`: traces.jsonl is the
+# canonical corpus and the default for cot_bidder.py (CORPUS_DEFAULT),
+# build_cot_dataset.py and web_export.py, and traces.meta.json is its
+# provenance manifest (README: "regenerate traces when the teacher
+# changes"). Both stay tracked.
+data/traces/corpus_combined.jsonl
+data/traces/disagreements.jsonl
+data/traces/disagreements.meta.json
+
+# ---------------------------------------------------------------------------
 # Superseded Brill-distillation variants.
 #
 # These are rungs of tuning ladders whose conclusions are recorded in
