@@ -5691,11 +5691,18 @@ by deleting twelve doubles and otherwise changing nothing about the
 target. §6.84 and §6.85 concluded the DD counterfactual was inert; it was
 worth this all along.
 
+**Harness check.** Every number above puts the control or the shipped
+system as `--a` and the candidate as `--b`, so a harness that favoured
+`b` would manufacture all of it. `--swap` runs the mirror match: seed 7
+gives shipped −0.09 with `shipdd` as `b`, and `shipdd` +0.09 with shipped
+as `b` — totals −133 / +133, boards won/lost 154/167 against 167/154.
+Exactly mirrored, no asymmetry.
+
 **What is not yet done.** `shipdd` has been measured only against the
 shipped system, not against Brill — the central number has not been
 re-taken, so it is not promoted to default here. Promoting it should
-follow a `team_match --remote-a` run, and a `--swap` sanity check, on a
-board count that resolves 0.08. The §6.87 to-do also still stands: make
+follow a `team_match --remote-a` run on a board count that resolves 0.08.
+The §6.87 to-do also still stands: make
 `--relabel-dd`'s candidate set a declared argument (it is currently
 "whatever Brill happened to do in this leaf"), and re-run §6.82's outcome
 label with X and XX excluded, since it drew from the same pool and failed
