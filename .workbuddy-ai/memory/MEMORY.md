@@ -108,10 +108,46 @@ non-double call** (+0.212 vs +0.107).
 manufacture the whole result. `--swap` mirrored exactly (−0.09 / +0.09,
 totals ∓133).
 
+**§6.89: do not extend it to the other slices — it is a `later_uncont`
+effect.** Ceiling vs realised, all three slices, same metric:
+
+    slice           rows     leaves  ceiling  oracle-Brill  realised
+    later_uncont    77,482   762     +0.396   +4.586        +0.082 +/- 0.020
+    later_cont     187,628   829     +0.092   +2.988        +0.005 +/- 0.049
+    open_uncont     65,048   252     +0.021   +4.309        14 leaves, n/a
+
+`shipdd_c` (shipdd + 279/829 contested leaves) vs `shipdd`, 6 seeds:
++0.11, −0.00, −0.16, −0.08, +0.17, −0.01 → **+0.005 ± 0.049, CI
+[−0.092, +0.102]**. Null, and tight enough to exclude the +0.082. Doubles
+were deliberately left IN for this slice (opponents have bid, so X is
+legal and a real call) — made no difference.
+
+Realised tracks the ceiling, and the ceiling is where one-step lookahead
+is *valid*: in `later_uncont` the chosen call IS the contract, so "score
+as if the auction stopped here" is nearly true. An opening bid never is.
+**But believe the oracle column, not the ceiling** — openings have the
+largest oracle gap and the smallest reachable ceiling. The ceiling bounds
+what this procedure can find, not what exists.
+
+**"Within-leaf agreement" is not a heterogeneity signal on its own.**
+`open_uncont` has the lowest agreement (28.6%) and the smallest ceiling: a
+near-tied metric makes the argmax arbitrary — high apparent disagreement,
+zero gain. `later_uncont` is the only slice with both (45.3%).
+
+**`leaf_ceiling.py` flag trap:** `--prefix` selects which RULES are
+rewritten, `--only-group` selects which ROWS are featurised — independent
+flags. Default `False,False` = `later_uncont`, so `--prefix BD_later_cont_`
+scores **0 rows** and prints "77882 no leaf" rather than failing. Mapping:
+`later_cont` → `False,True`; `open_uncont` → `True,False`.
+
+Closed here: `--relabel-dd-candidates {observed,bids,legal}` is now
+declared (was "whatever Brill happened to do in this leaf"); and §6.82's
+outcome label needs **no** X/XX re-run, because `relab`/`relab_m300` flip
+zero leaves to a double — removing a never-selected candidate cannot move
+an argmax.
+
 Still open: not measured against Brill, so **not promoted to default** —
-needs `team_match --remote-a` on a board count that resolves 0.08. Also:
-make `--relabel-dd`'s candidate set a declared argument; re-run §6.82's
-outcome label with X/XX excluded (same defect, failed hardest at −1.887).
+needs `team_match --remote-a` on a board count that resolves 0.08.
 
 Structural part of §6.85 still stands and is now measured: within a leaf
 the deals want **7.7 distinct best calls** and agree on one only **45.3%**
