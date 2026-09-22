@@ -221,6 +221,50 @@ def test_emit_train_all_ignores_the_fold_tables(dsl, tmpdir):
     assert calls["P_low"] == "PASS"
 
 
+def test_candidates_omit_doubles_by_default():
+    """§6.87: this omission is why every --emit model differed from `dd`.
+    It is deliberate now, and it has to stay visible -- an accidental
+    re-addition would silently reintroduce the 12 leaves that cost
+    0.331 IMP/board."""
+    r = _row(["2S"], TRICKS)
+    v = leaf_ceiling._candidates(r.ctx, r.dealer, r.vul, r.tricks, r.ref)
+    assert "X" not in v
+    assert "XX" not in v
+
+
+def test_with_penalties_adds_the_double_over_an_opponents_bid(r=None):
+    """A double is legal here: NORTH bid 2S and the caller is EAST."""
+    r = _row(["2S"], TRICKS)
+    v = leaf_ceiling._candidates(r.ctx, r.dealer, r.vul, r.tricks, r.ref,
+                                 penalties=True)
+    assert "X" in v
+
+
+def _emit_nox(tmpdir, dsl, **kw):
+    out = os.path.join(tmpdir, "o.dsl")
+    args = _FakeArgs(dsl=dsl, emit=out, **kw)
+    tot_all = {"P_low": {"PASS": [0.0, 30], "X": [99.0, 30]}}
+    seen_all = {"P_low": {"PASS": 30, "X": 30}}
+    n = leaf_ceiling.emit(args, {}, {}, tot_all, seen_all)
+    calls = {rid: c for rid, _conds, c in leaf_ceiling.leaf_rules(out, "P_")}
+    return n, calls["P_low"]
+
+
+def test_emit_no_doubles_leaves_that_leaf_at_brills_call(dsl, tmpdir):
+    """The best call is a double and is worth far more on this metric, so
+    without the flag this leaf gets relabelled to X. With it, the leaf is
+    left alone -- which is what `ddimp_nox` does, and it is worth +0.331
+    over changing it."""
+    n, call = _emit_nox(tmpdir, dsl, emit_train="all", with_penalties=True,
+                        emit_no_doubles=True)
+    assert (n, call) == (0, "PASS")
+
+
+def test_without_the_flag_the_same_leaf_becomes_a_double(dsl, tmpdir):
+    n, call = _emit_nox(tmpdir, dsl, emit_train="all", with_penalties=True)
+    assert (n, call) == (1, "X")
+
+
 def test_emit_preserves_conditions_and_priority(dsl, tmpdir):
     out = os.path.join(tmpdir, "o.dsl")
     args = _FakeArgs(dsl=dsl, emit=out)

@@ -90,6 +90,11 @@ from brill_distill import (best_side_score, call_value, featurise)  # noqa: E402
 
 BIDS = ["%d%s" % (lvl, st) for lvl in range(1, 8) for st in Strain]
 CANDS = ["PASS"] + BIDS
+# `--relabel-dd` draws its candidate set from the calls Brill actually made
+# in the leaf, and Brill doubles, so X and XX are candidates there. Leaving
+# them out is what made every `--emit` model differ from `dd` (§6.87), so
+# they are opt-in rather than absent.
+PENALTIES = ("X", "XX")
 
 
 def leaf_rules(path: str, prefix: str) -> List[Tuple[str, List[Any], str]]:
@@ -119,11 +124,16 @@ def leaf_of_row(rules: List[Tuple[str, List[Any], str]],
 
 
 def _candidates(ctx: List[str], dealer: Any, vul: int,
-                tricks: Dict[str, int],
-                ref: Optional[float]) -> Dict[str, float]:
-    """IMP value of every legal call at this position."""
+                tricks: Dict[str, int], ref: Optional[float],
+                penalties: bool = False) -> Dict[str, float]:
+    """IMP value of every legal call at this position.
+
+    `penalties` adds X and XX. They are off by default so the numbers
+    §6.86 published stay reproducible; turn them on to reproduce
+    `--relabel-dd`'s candidate set exactly.
+    """
     out: Dict[str, float] = {}
-    for c in CANDS:
+    for c in CANDS + (list(PENALTIES) if penalties else []):
         v = call_value(c, ctx, dealer, vul, tricks, ref)
         if v is not None:
             out[c] = v
@@ -209,6 +219,18 @@ def emit(args: Any, leaf_best: Dict[Tuple[str, int], str],
     chosen = {leaf: c for leaf, c in chosen.items()
               if support.get((leaf, c), 0) >= args.emit_min}
 
+    if getattr(args, "emit_no_doubles", False):
+        if not getattr(args, "with_penalties", False):
+            print("  --emit-no-doubles without --with-penalties does nothing: "
+                  "X and XX are not candidates, so no leaf can choose one",
+                  file=sys.stderr)
+        else:
+            n_pen = sum(1 for c in chosen.values() if c in PENALTIES)
+            chosen = {leaf: c for leaf, c in chosen.items()
+                      if c not in PENALTIES}
+            print("  --emit-no-doubles: left %d leaves at Brill's call because "
+                  "their best call was a double" % n_pen, file=sys.stderr)
+
     out: List[str] = []
     cur = None
     n_changed = 0
@@ -267,6 +289,17 @@ def main() -> int:
                     help="write a .dsl whose leaf calls are the out-of-fold "
                          "choice, so the ceiling can be PLAYED instead of "
                          "scored by the metric that produced it")
+    ap.add_argument("--with-penalties", action="store_true",
+                    help="add X and XX to the candidate set, which "
+                         "is what --relabel-dd sees (Brill doubles, so "
+                         "doubles are among the calls observed in a leaf)")
+    ap.add_argument("--emit-no-doubles", action="store_true",
+                    help="skip any leaf whose chosen call is X or XX, "
+                         "leaving Brill's call in place. §6.87: those "
+                         "leaves are where the DD argmax wants to "
+                         "penalise, and any change there costs ~0.1 "
+                         "IMP/board -- including changing it to the best "
+                         "non-double call.")
     ap.add_argument("--emit-train", default="fold", choices=("fold", "all"),
                     help="'fold' (default) chooses each leaf's call on "
                          "fold-0 rows only; 'all' chooses it on every row, "
@@ -358,7 +391,8 @@ def main() -> int:
         theirs = tuple(s for s in Seat if s not in (mine, mine.partner))
         ref = best_side_score(tricks, theirs, vul) if args.units == "imp" \
             else None
-        vals = _candidates(ctx, dealer, vul, tricks, ref)
+        vals = _candidates(ctx, dealer, vul, tricks, ref,
+                            args.with_penalties)
         mine_str = str(call)
         if mine_str not in vals or not vals:
             n_ill += 1

@@ -5646,6 +5646,65 @@ Central number unchanged: Brill +1.780 ± 0.140.
 
 ---
 
+### 6.88 Against the shipped system, not the control: +0.082 ± 0.020
+
+Everything in §6.82–6.87 was measured against `brill_distilled_control`,
+which is **not** what ships. It is a refit (`--folds 2`, 767 rules) built
+only so the relabelling would have an otherwise-identical twin. That costs
+something, and §6.87's +0.212 is measured from that lower baseline.
+
+**The refit costs −0.120.** Shipped vs control, three seeds: +0.10, +0.05,
++0.21. So the retarget's true value against what actually ships is
++0.212 − 0.120 ≈ **+0.09**, and measuring it directly confirms that:
+`ddimp_nox` vs shipped over six seeds gives **+0.093 ± 0.039** (5 up /
+1 down). Two routes, one number.
+
+**So retarget the shipped tree instead.** Rather than pay the refit and
+then win it back, `--dsl system/brill_distilled.dsl --with-penalties
+--emit-no-doubles --emit-train all --emit-min 12` applies the same
+procedure to the shipped `later_uncont` slice: **148 of 752 leaves**, no
+doubles. `system/brill_distilled_shipdd.dsl`.
+
+The estimator is the one §6.87 validated, not a new one: run on the
+control tree it reproduces `ddimp_nox` with **134 identical changes and
+zero conflicts** (`ddimp_nox` additionally acts on 6 leaves). It differs
+from the shipped system in one component only — 148 leaf calls, all in
+`later_uncont`, rule ids identical, no X or XX anywhere.
+
+| seed | 7 | 42 | 101 | 202 | 303 | 404 |
+| --- | --- | --- | --- | --- | --- | --- |
+| net vs shipped | +0.09 | +0.17 | +0.07 | +0.04 | +0.08 | +0.04 |
+
+**POOLED +0.082 ± 0.020, t +4.17, CI [+0.043, +0.120], 6 up / 0 down**
+(9,000 boards). The between-seed dispersion (0.048) is well inside the
+per-seed standard error (0.087), so the seeds agree; on the conservative
+per-seed reading it is +0.082 ± 0.035, t +2.30, still positive.
+
+Against `ddimp_nox` (+0.093 ± 0.039, 5 up / 1 down) the two are
+statistically the same, but `shipdd` is positive on every seed, has half
+the dispersion, and needs no refit — so it is the one to keep.
+
+**This is a real improvement to the shipped system, and it is the first
+gain the objective lever has produced.** +0.082 against a Brill gap of
++1.780 ± 0.140 is 4.6% of it, from 148 leaf calls in one slice, obtained
+by deleting twelve doubles and otherwise changing nothing about the
+target. §6.84 and §6.85 concluded the DD counterfactual was inert; it was
+worth this all along.
+
+**What is not yet done.** `shipdd` has been measured only against the
+shipped system, not against Brill — the central number has not been
+re-taken, so it is not promoted to default here. Promoting it should
+follow a `team_match --remote-a` run, and a `--swap` sanity check, on a
+board count that resolves 0.08. The §6.87 to-do also still stands: make
+`--relabel-dd`'s candidate set a declared argument (it is currently
+"whatever Brill happened to do in this leaf"), and re-run §6.82's outcome
+label with X and XX excluded, since it drew from the same pool and failed
+by far the hardest.
+
+Central number unchanged: Brill +1.780 ± 0.140.
+
+---
+
 ## 9. References
 
 - Amit & Markovitch, *Learning to Bid in Bridge*, MLJ 63(3), 2006 — BIDI/RBMBMC/PIDM/ID3/co-training foundations.
