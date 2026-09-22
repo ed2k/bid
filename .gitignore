@@ -19,3 +19,33 @@ dist/
 
 # python venv
 .venv/
+
+# ---------------------------------------------------------------------------
+# Research intermediates -- regenerable by-products, deliberately unversioned.
+#
+# None of these are inputs. They are what the scripts in research/ write out,
+# and together they are ~596 MB of a ~673 MB working tree:
+#
+#   data/brill_traces*.jsonl      Brill harvests (--traces). 97 files, 515 MB.
+#                                 Re-harvest with research/brill_remote_eval.py.
+#   data/brill_dd.[0-9]*          DD tables, research/brill_dd_value.py
+#   data/brill_outcomes.[0-9]*    per-board outcomes, research/brill_outcomes.py
+#   data/cot_model/rejected/      superseded checkpoints the trainer kept
+#   data/cot_model/*.candidate.pt an un-promoted checkpoint
+#   data/cot_model/refresh_last.log*  trainer logs
+#   data/examples.txt             scratch notes
+#
+# The canonical dataset is the layout README documents -- traces/,
+# cot_dataset/, cot_model/ckpt.pt, player_models/, conventions/. Everything
+# listed above sits outside it.
+#
+# NOTE: these files are still on disk and still in history. Ignoring them
+# stops them being re-added; it does not reclaim the space in .git.
+data/brill_traces*.jsonl
+data/brill_dd.[0-9]*
+data/brill_outcomes.[0-9]*
+data/cot_model/rejected/
+data/cot_model/*.candidate.pt
+data/cot_model/*.candidate.pt.vocab.json
+data/cot_model/refresh_last.log*
+data/examples.txt
