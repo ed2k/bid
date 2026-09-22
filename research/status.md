@@ -5702,11 +5702,122 @@ Exactly mirrored, no asymmetry.
 shipped system, not against Brill — the central number has not been
 re-taken, so it is not promoted to default here. Promoting it should
 follow a `team_match --remote-a` run on a board count that resolves 0.08.
-The §6.87 to-do also still stands: make
-`--relabel-dd`'s candidate set a declared argument (it is currently
-"whatever Brill happened to do in this leaf"), and re-run §6.82's outcome
-label with X and XX excluded, since it drew from the same pool and failed
-by far the hardest.
+The two §6.87 to-dos are closed by §6.89. The retarget has also been tried
+on the other two slices; it does not generalise.
+
+Central number unchanged: Brill +1.780 ± 0.140.
+
+---
+
+### 6.89 The retarget is a `later_uncont` effect: contested +0.005 ± 0.049
+
+§6.88's +0.082 retargeted 148 of the 752 `later_uncont` leaves. The shipped
+tree has three slices and the other two had not been tried, so the obvious
+move was to apply the same procedure to them. Both are null, and the reason
+is worth more than the result.
+
+**A harness trap, first.** `--prefix` selects which *rules* are rewritten;
+`--only-group` selects which *rows* are featurised. They are independent,
+and the default `--only-group False,False` is `later_uncont`. So
+`--prefix BD_later_cont_` scores **zero rows** and reports "77882 no leaf"
+rather than failing, because no featurised row can reach a contested leaf.
+The mapping, which the rule conditions state directly (`is_opening`,
+`opponents_bid`):
+
+| slice | rules | `--only-group` |
+| --- | --- | --- |
+| `BD_later_uncont_` | 752 | `False,False` |
+| `BD_later_cont_` | 829 | `False,True` |
+| `BD_open_uncont_` | 252 | `True,False` |
+
+**The ceilings, all three slices, same metric.**
+
+| slice | rows | leaves | Brill | leaf_best | oracle | ceiling (`leaf_best`−Brill) | oracle−Brill |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `later_uncont` | 77,482 | 762 | +2.466 | +2.863 | +7.053 | **+0.396** | +4.586 |
+| `later_cont` | 187,628 | 829 | −7.057 | −6.965 | −4.068 | **+0.092** | +2.988 |
+| `open_uncont` | 65,048 | 252 | −3.191 | −3.170 | +1.118 | **+0.021** | +4.309 |
+
+**Contested: +0.005 ± 0.049.** `system/brill_distilled_shipdd_c.dsl` is
+`shipdd` with **279 of 829** contested leaves retargeted (verified: all 279
+changes are in `BD_later_cont_`, the other two slices byte-identical, so it
+is still a one-component swap). Measured head-to-head against `shipdd`,
+which isolates the contested slice's marginal contribution:
+
+| seed | 7 | 42 | 101 | 202 | 303 | 404 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `shipdd_c` − `shipdd` | +0.11 | −0.00 | −0.16 | −0.08 | +0.17 | −0.01 |
+
+**POOLED +0.005 ± 0.049, t +0.10, CI [−0.092, +0.102], 2 up / 3 down**
+(9,000 boards). Nothing, and tight enough to exclude the +0.082 that
+`later_uncont` produced. Doubles were left **in** for this slice, unlike
+§6.87 — the opponents have bid here, so X is legal and is a real call, and
+`leaf_best` chooses it on 14% of rows against Brill's 4%. That was the
+right call to make and it changed nothing.
+
+**Openings: not measured, because there is nothing to measure.** The
+procedure changes **14 of 252** leaves and its ceiling is +0.021. Even
+capturing that ceiling whole is far inside the noise of any match this
+machine can run. `--emit-no-doubles` left 0 leaves at Brill's call, so
+§6.87's defect does not reach this slice.
+
+**Realised gain tracks the ceiling, and the ceiling is where one-step
+lookahead is valid.** `later_uncont` gets +0.082 from a +0.396 ceiling;
+contested gets +0.005 from +0.092. That is the same story as §6.86's
+"94% of Brill's bids become the final contract": in `later_uncont` the
+call you are choosing *is* the contract, so "score it as if the auction
+stopped here" is nearly true. An opening bid is never the final contract,
+so the valuation is nearly blind there — which is exactly why its ceiling
+is the smallest of the three despite having the most rows.
+
+**But the oracle column says the opposite, and it is the one to believe.**
+Openings have the **largest** oracle gap of the three (+4.309) and the
+smallest reachable ceiling (+0.021). The ceiling is measured in the biased
+one-step metric, so it bounds what *this procedure* can find, not what is
+there. What is there in the openings is enormous and unreachable by swapping
+calls: 8.2 distinct best calls per leaf, agreeing on one only 28.6% of the
+time. The binding constraint in the opening slice is the **partition**, not
+the label — no relabelling of a leaf fixes a leaf whose deals want eight
+different things.
+
+**So "within-leaf agreement" is not a heterogeneity signal on its own.**
+Openings have the *lowest* agreement (28.6%) and the *smallest* ceiling.
+If the metric's values inside a leaf are nearly tied, the argmax is
+arbitrary: high apparent disagreement, zero gain. `later_uncont` is the
+only slice with both real disagreement (45.3%) and a ceiling worth chasing.
+
+**Two §6.88 to-dos closed.**
+
+1. `--relabel-dd-candidates` now exists (`observed`, the historical
+   default, or `bids`/`legal`, which enumerate and then keep only calls
+   legal where the leaf lands). §6.87's candidate set was load-bearing, not
+   neutral, and it is now declared rather than inherited from the data.
+   Two traps the tests pin: the enumerated pool is spelled canonically
+   (`1S` via `parse_call`, not `1SPADES` — a long-form candidate is never
+   `== str(node.prediction)`, so it reads as a change where it is the same
+   call and misses the margin guard), and X is absent when the last bid is
+   our own side's.
+2. §6.82's outcome label does not need re-running with X/XX excluded.
+   `relab` (78 changes) and `relab_m300` (15) flip **zero** leaves to a
+   double, against 12 each for `dd`/`ddimp`. Removing a candidate that was
+   never selected cannot move an argmax, so the exclusion is a no-op by
+   construction. §6.83's winner's-curse diagnosis stands.
+
+**Refining §6.87's mechanism:** all 12 of those flips are to **XX**
+(redouble), not X. And `features.py:363` sets `opponents_bid` from bids
+only — `any(c.type == CallType.BID ...)` — so in `later_uncont` a redouble
+is legal only where an opponent doubled without ever bidding. At the rest,
+`DecisionNet.actions` drops it silently and plays PASS.
+
+**Conclusion: do not extend the retarget further.** It is a `later_uncont`
+effect, it is already shipped as `system/brill_distilled_shipdd.dsl`, and
+the other two slices are dead ends for this procedure. The headroom the
+oracle column shows is real and large in every slice; reaching it needs a
+finer partition or a different model class, not a better call per leaf.
+
+Still open: `shipdd` is measured against the shipped system but not against
+Brill, so it is **not promoted to default**; the central number has not
+been re-taken.
 
 Central number unchanged: Brill +1.780 ± 0.140.
 
