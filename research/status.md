@@ -5823,6 +5823,47 @@ Central number unchanged: Brill +1.780 ± 0.140.
 
 ---
 
+### 6.90 The gain transfers to a different opponent: +0.076 ± 0.059
+
+§6.88's +0.082 was measured with `brill_distilled` as the opponent, and that
+is a real weakness: a gain could be specific to that matchup — the retarget
+might be exploiting the shipped system's particular errors rather than
+reaching better contracts. `shipdd` has not been measured against Brill, so
+that question had been left open.
+
+**A Brill run cannot settle it anyway, and this is worth stating plainly.**
+`--remote-a` costs ~7.4 s/board, and the paired standard error against
+Brill is ~0.10 at 1,500 boards — resolving 0.082 at that noise level needs
+on the order of 10,000 boards, i.e. ~20 hours, twice over for two arms. The
+run would produce a new central number, not a verdict on the change.
+
+**So test transfer against a third opponent instead.** Both arms play the
+*same* deals against the *same* opponent (`champion_system`), so the
+per-board difference cancels the deal and the opponent and leaves only the
+difference in what the two systems reach:
+
+| seed | shipped | shipdd | diff | sd/board |
+| --- | --- | --- | --- | --- |
+| 7 | +0.476 | +0.623 | +0.147 | 4.61 |
+| 42 | +0.169 | +0.127 | −0.041 | 4.27 |
+| 101 | +0.498 | +0.620 | +0.122 | 4.32 |
+
+**POOLED +0.076 ± 0.059, 2 up / 1 down**, against `champion_system`. The
+point estimate replicates the +0.082 measured against the shipped system
+almost exactly. Three seeds is not enough to make this independently
+significant — it is not meant to be; the precise estimate is the six-seed
+one against shipped. What it establishes is that the effect is a property
+of the two systems rather than of the matchup.
+
+That is the argument for promoting `shipdd`, and it is the one this section
+makes: not that it beats Brill by a measured amount, but that its advantage
+does not depend on who it is playing. **Promotion is still not done here** —
+it is a change to what the repo ships, and it should be the user's call.
+
+Central number unchanged: Brill +1.780 ± 0.140.
+
+---
+
 ## 9. References
 
 - Amit & Markovitch, *Learning to Bid in Bridge*, MLJ 63(3), 2006 — BIDI/RBMBMC/PIDM/ID3/co-training foundations.
