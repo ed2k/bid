@@ -5393,6 +5393,51 @@ Brill +1.780 ± 0.140.
 
 ---
 
+### 6.85 IMP units instead of points: no difference either
+
+The one concrete objection to §6.84 is that it optimised the wrong
+currency. Matches are scored in IMPs, and the scale is kinked — 30 points
+is 1 IMP, 500 is 11 — so a leaf averaging *points* will chase a 250-point
+swing that is worth 6 IMPs ahead of a 30-point edge that is worth 1, and
+the two orders differ. `--relabel-dd-units imp` measures each call against
+the other table instead, taken as the best contract the opponents can reach
+on the same cards (read off the same DD table, so no extra solves).
+
+Everything else is identical to §6.84: same slice, same tree, same guards,
+same control. **187 of 767 leaves flip** against 204, CV agreement 58.7%.
+
+| seed | net | se | t | contested | uncontested |
+| --- | --- | --- | --- | --- | --- |
+| 7 | −0.016 | 0.095 | −0.17 | +0.12 | −0.09 |
+| 42 | −0.175 | 0.099 | −1.76 | −0.05 | −0.24 |
+| 101 | +0.041 | 0.100 | +0.42 | +0.04 | +0.04 |
+
+**POOLED −0.050 ± 0.065, t −0.77, CI [−0.176, +0.077], 1 up / 2 down**
+(4,500 boards). Against the points version (−0.062 ± 0.075) the two are
+the same number; the currencies were not the problem.
+
+**Four targets, and the shape of the dead end.** Imitation (the baseline,
+one level light); on-policy outcome (−1.89, empty once guarded); DD value
+in points (−0.062 ± 0.075); DD value in IMPs (−0.050 ± 0.065). Every
+objective that can be computed from this data has now been tried, and
+none of them moves the needle — including the one that knows, exactly and
+in advance, what every contract on the board is worth.
+
+That is a statement about the *representation*, not the objective. A leaf
+is a conjunction of ~10 features; the double-dummy best call varies among
+the hands that satisfy it, so the best any per-leaf target can do is name
+the call that is best on average — and Brill's majority call is already
+close to that average. Relabelling cannot fix that because relabelling
+does not change which hands share a leaf. The three levers of this model
+class are now all measured and all flat: data (§6.80), capacity (§6.62),
+and objective (§6.82–6.85). What is left is the feature space and the
+model class itself — a tree over ~10 features may simply not be able to
+express the auction's dependence on the actual hand.
+
+Central number unchanged: Brill +1.780 ± 0.140.
+
+---
+
 ## 9. References
 
 - Amit & Markovitch, *Learning to Bid in Bridge*, MLJ 63(3), 2006 — BIDI/RBMBMC/PIDM/ID3/co-training foundations.

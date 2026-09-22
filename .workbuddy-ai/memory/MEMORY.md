@@ -52,9 +52,16 @@ nothing. Three targets are now tested — imitation, on-policy outcome, DD
 counterfactual — so the ceiling is not "the wrong objective we could
 compute": a leaf's ~10 features do not determine the hand, the DD-best call
 varies *within* a leaf, and Brill's majority call is already the
-average-best. Untried and small: IMP units instead of points, and scoring
-the continuation (partner's rebid) rather than the contract named.
+average-best.
+
+**IMP units instead of points did nothing either (§6.85): −0.050 ± 0.065,**
+against −0.062 ± 0.075 for points — the currency was not the problem.
+Four targets are now tested (imitation / outcome / DD-points / DD-IMPs)
+and **all three levers of this model class are measured and flat: data
+(§6.80), capacity (§6.62), objective (§6.82–6.85)**. Do not pull those
+three again without a genuinely new mechanism. What is left is the feature
+space and the model class: a tree over ~10 features may not be able to
+express the auction's dependence on the actual hand.
 
 Central number: Brill's edge is **+1.780 ± 0.140** IMP/board on held-out
-boards. The live hypothesis is a level/aggression calibration, not
-fidelity and not data.
+boards.
