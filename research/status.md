@@ -5874,7 +5874,14 @@ still reachable from `main` — hence from GitHub — and restore with
 the `c90xx`/`held` shards survive only in `backup/pre-rewrite-20260922`.
 Otherwise re-harvest with `research/brill_harvest.py`. Note that reproducing
 §6.88/§6.89 needs `data/brill_traces_330k.jsonl`, which is
-`leaf_ceiling.py`'s default.
+`leaf_ceiling.py`'s default — restore it from git before running.
+
+**Only three Brill variants are kept** (2026-09-22): `brill_distilled.dsl`
+(the shipped system), `brill_distilled_control.dsl` (`leaf_ceiling.py`'s
+default) and `brill_distilled_shipdd.dsl` (the promotion candidate). The
+other 19 rungs of the tuning ladders were trashed; every conclusion drawn
+from them is recorded above, and each is regenerable from the recipe given
+in its own section.
 
 ---
 

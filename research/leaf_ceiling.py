@@ -56,7 +56,7 @@ SCORING A MODEL YOU ALREADY BUILT  (`--against LABEL=path`)
 metric, so the bound and the thing it bounds are stated in the same units:
 
     --against control=system/brill_distilled_control.dsl
-    --against dd=system/brill_distilled_dd.dsl
+    --against dd=<a tree built by --relabel-dd; see research/status.md 6.84>
 
 Its main use is the one above: exposing the circularity by showing the
 metric agreeing with a DD target and disagreeing with the match.
