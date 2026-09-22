@@ -56,12 +56,55 @@ average-best.
 
 **IMP units instead of points did nothing either (§6.85): −0.050 ± 0.065,**
 against −0.062 ± 0.075 for points — the currency was not the problem.
-Four targets are now tested (imitation / outcome / DD-points / DD-IMPs)
-and **all three levers of this model class are measured and flat: data
-(§6.80), capacity (§6.62), objective (§6.82–6.85)**. Do not pull those
-three again without a genuinely new mechanism. What is left is the feature
-space and the model class: a tree over ~10 features may not be able to
-express the auction's dependence on the actual hand.
+
+**BUT §6.86 withdraws the "objective is flat" conclusion.** Those four
+targets were all selected by an argmax taken **in-fold**. Taken
+out-of-fold (`leaf_ceiling.py --emit`, leaf call chosen on fold-0 rows
+only) the same DD target on the same tree measures **+0.083 ± 0.035, t
++2.34, 6 up / 2 down, 12,000 boards** — the first positive result in the
+whole thread. Data (§6.80) and capacity (§6.62) are still flat; the
+objective is **not**, and §6.82's outcome label should be re-run
+out-of-fold too before it is written off (it failed hardest, −1.887, on
+the same winner's-curse diagnosis). Cheapest next step: sweep the fold
+count (2 / 5 / cross-fit) before touching anything else.
+
+Structural part of §6.85 still stands and is now measured: within a leaf
+the deals want **7.7 distinct best calls** and agree on one only **45.3%**
+of the time. That is what a finer partition has to beat.
+
+## Evaluation discipline (learned the hard way)
+
+- **Never grade an objective with its own training signal.** `--relabel-dd`
+  picks a leaf's call by maximising the one-step DD valuation; scoring the
+  result with that same valuation says +0.667 where a team match says
+  −0.062. The same metric grades `relab` (a different target) correctly:
+  −0.910 predicted vs −1.887 measured. A metric that is independent of the
+  target is the only one that counts.
+- **One-step value is a biased estimator of board value.** Over 77,880
+  rows it is +198 pts where the board paid +299 and the best contract was
+  +540; it matches the outcome on only 50.9% of rows. It rewards ending
+  the auction in a making contract now (94% of Brill's bids here *do*
+  become the final contract — the bias is that a call before any standing
+  contract scores 0). It also mis-ranks: `--candidates all` scores nearly
+  twice `observed` in the metric and nothing when played.
+- **Pooling convention in status.md:** `pooled = mean(per-seed nets)`,
+  `se = sample_sd(per-seed nets) / sqrt(n_seeds)` — the between-seed
+  dispersion, *not* the per-seed standard errors. Report both when they
+  disagree; when they agree there is no seed heterogeneity.
+- **`team_match` prints A's net (A − B).** status.md's tables report
+  *candidate − control*, so if you run `--a control --b candidate` you
+  must negate. Check against §6.84 seed 7 = −0.030.
+- **Fewer changed calls can be better.** The out-of-fold retarget changed
+  111 of 767 calls and won; the in-fold one changed 204 and lost. A leaf
+  often re-selects the call it already had, so count *changed* calls, not
+  "retargeted" leaves.
+
+## Environment quirks (this repo, this box)
+
+- pytest's `tmp_path` cannot mkdir `/private/var/folders/.../pytest-of-`
+  under this sandbox — use `tempfile.mkdtemp()` + `shutil.rmtree`.
+- Foreground bash >120 s is SIGTERMed, and a full `pytest tests/` takes
+  ~4 min: run it with `run_in_background=true`.
 
 Central number: Brill's edge is **+1.780 ± 0.140** IMP/board on held-out
 boards.
