@@ -193,6 +193,45 @@ of the time. That is what a finer partition has to beat.
   under this sandbox — use `tempfile.mkdtemp()` + `shutil.rmtree`.
 - Foreground bash >120 s is SIGTERMed, and a full `pytest tests/` takes
   ~4 min: run it with `run_in_background=true`.
+- `grep "a\|b"` alternation silently fails in this shell — use
+  `grep -n -e "a" -e "b"`. Same for `grep --include=...`: BSD grep here
+  rejects it, use the Grep tool.
+
+## Repo layout: what is load-bearing vs what is a by-product
+
+**Never assume "unreferenced by path" means "unused".** Three loaders read
+whole directories:
+
+- `cot_tokenizer.build_frozen_vocab()` globs `system/*.dsl` **and**
+  `system/history/*.dsl` for `RULE <id>` and unions them into a *frozen*
+  vocabulary. Exclusion is `_VOCAB_EXCLUDED_DSL_GLOBS = ("brill*.dsl",)`,
+  and `fnmatch` makes that cover every `brill_distilled*.dsl`.
+  → `system/history/improved_system_v5..v27.dsl` supply 4 rule ids found
+  nowhere else (`FW_2NT_ACCEPT_H/S`, `FW_2NT_FORCE`, `SLAM_DRIVE_6NT`).
+  Untracking them changes the vocab and breaks the shipped CoT checkpoint.
+- `translator.py:147-150` resolves `system/conventions/<name>.dsl` and
+  `system/cuebids/<name>.dsl` by name on demand (also via the
+  `CONVENTIONS:` DSL directive). ~230 files, all <3 KB — a live library.
+- `research/leaf_ceiling.py` / `team_match.py` take DSL paths as CLI
+  defaults, so a file can be a default without being mentioned anywhere
+  else.
+
+Vocab currently measures **431** tokens; the shipped `manifest.json` says
+**404**. That drift pre-dates the 2026-09-22 cleanup and is unresolved.
+
+**Untracked 2026-09-22 (regenerable by-products, files still on disk):**
+`data/brill_traces*.jsonl` (97 files, 515 MB), `data/brill_dd.[0-9]*`,
+`data/brill_outcomes.[0-9]*`, `data/cot_model/rejected/`,
+`data/cot_model/*.candidate.pt`, `data/cot_model/refresh_last.log*`,
+`data/examples.txt`, and 13 tuning-ladder DSL rungs (`578k{A,B}`,
+`ddin_m{6,12,24,48}`, `ddoof*`, `ddimp`, `relab_m300`, `shipdd_o`).
+Kept: the README-documented dataset dirs, `web/review_data.js` and
+`web/models/cot/weights.bin` (live app assets), `bin/libdds.dylib`
+(vendored third-party, loaded by `src/bid/dds.py`).
+
+**`.git` is still ~311 MB** — untracking does not reclaim history.
+Shrinking it needs `git filter-repo`/BFG, which rewrites every commit hash
+and breaks clones. Not done; needs explicit sign-off.
 
 Central number: Brill's edge is **+1.780 ± 0.140** IMP/board on held-out
 boards.
