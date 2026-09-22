@@ -57,16 +57,36 @@ average-best.
 **IMP units instead of points did nothing either (§6.85): −0.050 ± 0.065,**
 against −0.062 ± 0.075 for points — the currency was not the problem.
 
-**BUT §6.86 withdraws the "objective is flat" conclusion.** Those four
-targets were all selected by an argmax taken **in-fold**. Taken
-out-of-fold (`leaf_ceiling.py --emit`, leaf call chosen on fold-0 rows
-only) the same DD target on the same tree measures **+0.083 ± 0.035, t
-+2.34, 6 up / 2 down, 12,000 boards** — the first positive result in the
-whole thread. Data (§6.80) and capacity (§6.62) are still flat; the
-objective is **not**, and §6.82's outcome label should be re-run
-out-of-fold too before it is written off (it failed hardest, −1.887, on
-the same winner's-curse diagnosis). Cheapest next step: sweep the fold
-count (2 / 5 / cross-fit) before touching anything else.
+**§6.86/§6.87 withdraw the "objective is flat" conclusion — and the
+mechanism is neither of the two obvious suspects.** `dd` was worth
+**+0.212 ± 0.041** (6 seeds, 9,000 boards, 6 up / 0 down) and measured
+−0.050 because **12 of its 163 retargeted leaves were relabelled to
+DOUBLE/REDOUBLE**. Reverting exactly those 12 (`ddimp_nox`, other 140
+untouched): paired on identical boards, `ddimp − ddimp_nox` =
+**+0.331 ± 0.040, t +8.30**. Twelve calls, a third of an IMP per board.
+
+Both suspects were tested and cleared, so do not re-pull them:
+- **the fold**: `--emit-train all` reproduces `--relabel-dd`'s estimator,
+  so a fold run and an all run can be tuned to flip the same number of
+  calls (111 vs 116). Paired: −0.011 ± 0.029, t −0.38.
+- **the support guard**: holding the fold fixed, 162 / 145 / 116 / 88
+  flips give +0.107 / +0.107 / +0.110 / +0.100. Flat. (§6.83's guard
+  lesson applies to the *outcome* label, not this one.)
+
+Why: `relabel_dd_leaves` draws candidates from the calls Brill made in the
+leaf, and Brill doubles, so X/XX are candidates. In `later_uncont` the
+opponents have not bid, so an X is illegal at most of those positions and
+is silently played as PASS; where legal it is a penalty double.
+
+**Standing lesson: a pooled net is a property of the MODEL, not of the
+objective.** One bad component in a 767-leaf slice is invisible in it.
+Before concluding "the objective is flat", diff the emitted calls —
+`dd` vs `ddimp` vs a control is a 3-line script and it is what found this.
+
+Next: run `ddimp_nox` against the shipped champion and against Brill, not
+only against the control; re-run §6.82's outcome label with X/XX excluded
+(its candidate pool had the same defect and it failed hardest, −1.887);
+make `--relabel-dd`'s candidate set a declared argument.
 
 Structural part of §6.85 still stands and is now measured: within a leaf
 the deals want **7.7 distinct best calls** and agree on one only **45.3%**
@@ -94,10 +114,17 @@ of the time. That is what a finer partition has to beat.
 - **`team_match` prints A's net (A − B).** status.md's tables report
   *candidate − control*, so if you run `--a control --b candidate` you
   must negate. Check against §6.84 seed 7 = −0.030.
-- **Fewer changed calls can be better.** The out-of-fold retarget changed
-  111 of 767 calls and won; the in-fold one changed 204 and lost. A leaf
-  often re-selects the call it already had, so count *changed* calls, not
-  "retargeted" leaves.
+- **Fewer changed calls can be better.** §6.86's retarget changed 111 of
+  767 calls and §6.84's changed 163 — but that was not why they differed,
+  and the flip count alone predicted nothing (88–162 flips all measured
+  the same). Count *changed* calls, not "retargeted" leaves, and then
+  diff **which** calls, not how many.
+- **Paired beats pooled, by ~10x.** Two matches on the same seeds share the
+  same deals, so differencing their per-board `imps` arrays cancels the
+  control's board noise: per-board sd of the difference 0.40–2.7 against
+  3.8 unpaired, and a 0.1 IMP/board effect resolves at ±0.03 instead of
+  ±0.10. Use `--dump` and pair whenever two variants are being compared to
+  each other rather than to the control.
 
 ## Environment quirks (this repo, this box)
 
