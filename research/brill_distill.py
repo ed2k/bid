@@ -338,24 +338,88 @@ def call_value(call: str, ctx: List[str], dealer: Any, vul: int,
     return signed_imps(pts - ref) if ref is not None else pts
 
 
+# Every contract call, for `--relabel-dd-candidates legal|bids`. 7 levels x
+# 5 strains plus PASS; level 7 is only ever legal after an insane auction
+# but including it costs one call_value() per row and keeps the list
+# obviously complete rather than subtly truncated.
+#
+# Spelling matters. These are spelled through parse_call on purpose: the
+# candidate set has to be comparable with `str(node.prediction)` and with
+# the observed calls, both of which are in the canonical short form ("1S",
+# not "1SPADES"). A long-form candidate is never == the current call, so it
+# would look like a change even when it is the same call — and because
+# `means.get(cur)` then misses, the margin guard would be skipped too.
+DD_BID_CALLS = ["PASS"] + [str(parse_call("%d%s" % (lvl, st.name)))
+                           for lvl in range(1, 8) for st in Strain]
+DD_PENALTY_CALLS = ("X", "XX")
+
+
+def dd_candidates(mode: str, observed: set, ctx: List[str], dealer: Any,
+                  vul: int, tricks: Dict[str, int],
+                  ref: Optional[float] = None,
+                  cache: Optional[Dict[Any, List[str]]] = None) -> List[str]:
+    """The calls a leaf is allowed to choose between, for one row.
+
+    `observed` is the historical behaviour -- the calls Brill happened to
+    make in this leaf. §6.87 found that this default is not neutral: it is
+    the only reason X and XX were ever candidates, and twelve leaves
+    relabelled to a double cost +0.331 ± 0.040 IMP/board because in
+    `later_uncont` an X is illegal at most positions and
+    `DecisionNet.actions` silently plays it as PASS. A candidate set that
+    is an accident of the training data cannot be audited, so declare it.
+
+    `legal` and `bids` enumerate instead, keeping only the calls
+    `_call_points` accepts at this position (it returns None for an
+    insufficient bid, and for a double of your own side's bid).
+
+    `cache` is worth having: whether a call is *legal* depends on the
+    auction alone, not on the deal, so it is the same for every row that
+    shares a position. Without it `legal` mode pays 37 `call_value` calls
+    per row instead of the handful `observed` costs.
+    """
+    if mode == "observed":
+        return sorted(observed)
+    key = (tuple(ctx), dealer)
+    if cache is not None and key in cache:
+        return cache[key]
+    pool = list(DD_BID_CALLS)
+    if mode == "legal":
+        pool.extend(DD_PENALTY_CALLS)
+    out = []
+    for c in pool:
+        if call_value(c, ctx, dealer, vul, tricks, ref) is not None:
+            out.append(c)
+    if cache is not None:
+        cache[key] = out
+    return out
+
+
 def relabel_dd_leaves(tree: Any,
                       gx: List[Any],
                       rows: List[Dict[str, Any]],
                       tables: Dict[str, Dict[str, int]],
                       min_support: int,
                       margin: float,
-                      units: str = "points") -> Tuple[int, int]:
-    """Replace each leaf's call with the highest-value call observed in it.
+                      units: str = "points",
+                      candidates: str = "observed") -> Tuple[int, int]:
+    """Replace each leaf's call with the highest-value call it may choose.
 
-    Same shape as `relabel_outcome_leaves`, including the restriction to
-    calls Brill actually made in the leaf, so the two differ in exactly one
-    thing: where the score comes from.
+    Same shape as `relabel_outcome_leaves`, including the default
+    restriction to calls Brill actually made in the leaf, so the two differ
+    in exactly one thing: where the score comes from.
 
     The value is a deterministic function of the deal, so a leaf's mean for
     a call is an expectation over the deals the leaf covers rather than a
     sample of what happened to work out. That is the whole point — the
     argmax is no longer mining noise (§6.83), which is why the guards can
     stay loose here without reproducing the winner's curse.
+
+    `candidates` is that restriction, and it is a declared argument rather
+    than a hardcoded choice because §6.87 showed it is not neutral: it is
+    the only reason X and XX were ever reachable, and twelve leaves
+    relabelled to a double cost +0.331 ± 0.040 IMP/board. `observed`
+    reproduces the historical behaviour; `bids` and `legal` enumerate
+    instead. See dd_candidates().
     """
     acc: Dict[int, Tuple[Any, List[Tuple[Dict[str, Any], Dict[str, int]]]]] = {}
     for feats, row in zip(gx, rows):
@@ -368,8 +432,9 @@ def relabel_dd_leaves(tree: Any,
         acc.setdefault(id(node), (node, []))[1].append((row, tricks))
 
     changed = 0
+    cache: Dict[Any, List[str]] = {}
     for node, rs in acc.values():
-        cands = {str(r.get("call")) for r, _ in rs}
+        observed = {str(r.get("call")) for r, _ in rs}
         vals: Dict[str, List[float]] = {}
         for row, tricks in rs:
             ctx = [t for t in (row.get("ctx") or "").split("-") if t.strip()]
@@ -383,7 +448,8 @@ def relabel_dd_leaves(tree: Any,
                 mine = Seat((dealer.value + len(ctx)) % 4)
                 theirs = tuple(s for s in Seat if s not in (mine, mine.partner))
                 ref = best_side_score(tricks, theirs, vul)
-            for c in cands:
+            for c in dd_candidates(candidates, observed, ctx, dealer, vul,
+                                   tricks, ref, cache):
                 v = call_value(c, ctx, dealer, vul, tricks, ref)
                 if v is None:
                     continue
@@ -778,6 +844,16 @@ def main():
     ap.add_argument("--relabel-dd-margin", type=float, default=0.0,
                     help="value advantage a challenger needs over the "
                          "majority call before the leaf is flipped")
+    ap.add_argument("--relabel-dd-candidates", default="observed",
+                    choices=("observed", "bids", "legal"),
+                    help="which calls a leaf may choose between. "
+                         "'observed' (the historical default) is the calls "
+                         "Brill actually made in that leaf; 'bids' is every "
+                         "legal bid plus PASS; 'legal' adds X and XX. "
+                         "§6.87: the default is what let twelve leaves be "
+                         "relabelled to a double, worth +0.331 +/- 0.040 "
+                         "IMP/board against. Declare it rather than inherit "
+                         "it from the training data.")
     ap.add_argument("--relabel-dd-units", default="points",
                     choices=("points", "imp"),
                     help="score in duplicate points, or in IMPs against the "
@@ -955,12 +1031,13 @@ def main():
                 n_ch, n_lf = relabel_dd_leaves(
                     tree, gx, [ctxs[i] for i in gidx[k]], dd,
                     args.relabel_dd_min, args.relabel_dd_margin,
-                    args.relabel_dd_units)
+                    args.relabel_dd_units, args.relabel_dd_candidates)
                 if n_ch:
                     print("    dd relabel: %d/%d leaves changed "
-                          "(min support %d, margin %.0f)"
+                          "(min support %d, margin %.0f, candidates %s)"
                           % (n_ch, n_lf, args.relabel_dd_min,
-                             args.relabel_dd_margin))
+                             args.relabel_dd_margin,
+                             args.relabel_dd_candidates))
             for r in id3_tree_to_rules(tree, guard, "BD_%s" % key_label(k, args.group),
                                        base_priority=10,
                                        description="distilled from Brill /bid"):
