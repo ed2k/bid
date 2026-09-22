@@ -34,8 +34,8 @@ sys.path.insert(0, os.path.join(REPO, "research"))
 
 from bid.brill.convert import seat_from_letter                      # noqa: E402
 from bid.models import Seat, Strain                                 # noqa: E402
-from brill_distill import (bid_beats, call_value, last_bid,         # noqa: E402
-                           side_tricks)
+from brill_distill import (best_side_score, bid_beats, call_value,  # noqa: E402
+                           last_bid, side_tricks, signed_imps)
 
 N = seat_from_letter("N")
 
@@ -130,6 +130,34 @@ def test_redouble_needs_a_double_first():
     assert call_value("XX", ["2H", "X"], seat_from_letter("W"), 0, TRICKS) \
         is not None
     assert call_value("XX", ["2H"], seat_from_letter("W"), 0, TRICKS) is None
+
+
+def test_the_imp_scale_is_kinked_and_signed():
+    # 30 points is 1 IMP, 500 is 11, and the sign survives: this is the
+    # scale the match is scored on, not a linear rescaling of points.
+    assert signed_imps(30.0) == 1
+    assert signed_imps(500.0) == 11
+    assert signed_imps(-500.0) == -11
+
+
+def test_the_reference_is_what_the_other_table_scores():
+    """IMPs are a difference, so a target in IMPs needs the other side of
+    it: the same cards played at the other table."""
+    assert best_side_score(TRICKS, (Seat.NORTH, Seat.SOUTH), 0) == 420.0
+    assert best_side_score(TRICKS, (Seat.EAST, Seat.WEST), 0) == 140.0
+
+
+def test_imps_and_points_rank_a_single_deal_the_same_but_not_a_leaf():
+    """Monotone per deal, so any single board agrees. The difference only
+    appears when a leaf averages several — which is why units matter."""
+    ref = best_side_score(TRICKS, (Seat.EAST, Seat.WEST), 0)
+    pts_4h = call_value("4H", [], N, 0, TRICKS)
+    imp_4h = call_value("4H", [], N, 0, TRICKS, ref=ref)
+    assert pts_4h == 420.0 and imp_4h == 7
+    # 2H also takes 10 tricks: 170 vs their 140 is +1 IMP, where in points
+    # it is a 250-point gap from game. The kink is the whole difference.
+    assert call_value("2H", [], N, 0, TRICKS) == 170.0
+    assert call_value("2H", [], N, 0, TRICKS, ref=ref) == 1
 
 
 def test_a_failing_game_is_worse_than_the_partscore_it_replaces():

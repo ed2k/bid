@@ -56,9 +56,9 @@ from bid.brill.convert import (deal_pbn as deal_pbn_of, hand_from_pbn,  # noqa: 
 from bid.decision_net import DecisionNet, DecisionNetRule, RuleCondition  # noqa: E402
 from bid.features import BridgeFeatures                        # noqa: E402
 from bid.learner import ID3DecisionTree, id3_tree_to_rules    # noqa: E402
-from bid.models import CallType, Seat                         # noqa: E402
-from bid.scoring import (Vulnerability,                       # noqa: E402
-                         calculate_contract_score)
+from bid.models import CallType, Seat, Strain                  # noqa: E402
+from bid.scoring import (Vulnerability, calculate_contract_score,  # noqa: E402
+                         diff_to_imps)
 
 SYSTEM_DIR = os.path.join(REPO, "system")
 
@@ -232,8 +232,36 @@ def side_tricks(tricks: Dict[str, int], strain: Any, seat: Any) -> int:
                tricks.get("%s:%s" % (strain.name, seat.partner.name), 0))
 
 
-def call_value(call: str, ctx: List[str], dealer: Any, vul: int,
-               tricks: Dict[str, int]) -> Optional[float]:
+def signed_imps(points: float) -> float:
+    """`diff_to_imps` is magnitude only; a team match score is signed."""
+    n = int(round(points))
+    mag = diff_to_imps(abs(n))
+    return -mag if n < 0 else mag
+
+
+def best_side_score(tricks: Dict[str, int], seats: Tuple[Any, ...],
+                    vul: int) -> float:
+    """The best contract score this partnership could reach on the deal.
+
+    This is the reference an IMP target needs. A team match does not pay
+    for the contract you reach, it pays for the *difference* between your
+    result and the other table's — and the other table holds the same
+    cards, so the opponents' best contract is the natural yardstick.
+    """
+    best = -10 ** 9
+    for strain in Strain:
+        for level in range(1, 8):
+            for decl in seats:
+                t = tricks.get("%s:%s" % (strain.name, decl.name), 0)
+                s = calculate_contract_score(
+                    level, strain, t, Vulnerability.is_vulnerable(vul, decl))
+                if s > best:
+                    best = s
+    return float(max(best, 0.0))
+
+
+def _call_points(call: str, ctx: List[str], dealer: Any, vul: int,
+                 tricks: Dict[str, int]) -> Optional[float]:
     """Points for the caller's side if the auction stopped with `call`.
 
     This is the counterfactual label §6.83 asked for. `tricks` is one
@@ -291,12 +319,32 @@ def call_value(call: str, ctx: List[str], dealer: Any, vul: int,
     return s if decl in (seat, seat.partner) else -s
 
 
+def call_value(call: str, ctx: List[str], dealer: Any, vul: int,
+               tricks: Dict[str, int],
+               ref: Optional[float] = None) -> Optional[float]:
+    """The value of `call`, in points, or in IMPs against `ref`.
+
+    `ref` is what the other table is expected to score (typically the
+    opponents' best contract). Matches are scored in IMPs and the IMP
+    scale is kinked — 30 points is 1 IMP, 500 is 11 — so an argmax over
+    mean *points* and an argmax over mean *IMPs* pick different calls once
+    the margin varies within a leaf, even though both are monotone in the
+    score of any single deal. Averaging happens inside the leaf, so the
+    units have to be the ones the match pays in.
+    """
+    pts = _call_points(call, ctx, dealer, vul, tricks)
+    if pts is None:
+        return None
+    return signed_imps(pts - ref) if ref is not None else pts
+
+
 def relabel_dd_leaves(tree: Any,
                       gx: List[Any],
                       rows: List[Dict[str, Any]],
                       tables: Dict[str, Dict[str, int]],
                       min_support: int,
-                      margin: float) -> Tuple[int, int]:
+                      margin: float,
+                      units: str = "points") -> Tuple[int, int]:
     """Replace each leaf's call with the highest-value call observed in it.
 
     Same shape as `relabel_outcome_leaves`, including the restriction to
@@ -329,8 +377,14 @@ def relabel_dd_leaves(tree: Any,
                 dealer = seat_from_letter(str(row.get("dealer", "N")).strip())
             except Exception:                  # noqa: BLE001
                 continue
+            vul = int(row.get("vul", 0))
+            ref = None
+            if units == "imp":
+                mine = Seat((dealer.value + len(ctx)) % 4)
+                theirs = tuple(s for s in Seat if s not in (mine, mine.partner))
+                ref = best_side_score(tricks, theirs, vul)
             for c in cands:
-                v = call_value(c, ctx, dealer, int(row.get("vul", 0)), tricks)
+                v = call_value(c, ctx, dealer, vul, tricks, ref)
                 if v is None:
                     continue
                 vals.setdefault(c, []).append(v)
@@ -724,6 +778,12 @@ def main():
     ap.add_argument("--relabel-dd-margin", type=float, default=0.0,
                     help="value advantage a challenger needs over the "
                          "majority call before the leaf is flipped")
+    ap.add_argument("--relabel-dd-units", default="points",
+                    choices=("points", "imp"),
+                    help="score in duplicate points, or in IMPs against the "
+                         "other table (the opponents' best contract). The "
+                         "match pays in IMPs and the scale is kinked, so "
+                         "the two rank calls differently within a leaf.")
     ap.add_argument("--learning-curve", action="store_true",
                     help="fidelity vs training size; answers 'is another "
                          "harvest worth it?' — a still-rising curve says "
@@ -894,7 +954,8 @@ def main():
             if dd:
                 n_ch, n_lf = relabel_dd_leaves(
                     tree, gx, [ctxs[i] for i in gidx[k]], dd,
-                    args.relabel_dd_min, args.relabel_dd_margin)
+                    args.relabel_dd_min, args.relabel_dd_margin,
+                    args.relabel_dd_units)
                 if n_ch:
                     print("    dd relabel: %d/%d leaves changed "
                           "(min support %d, margin %.0f)"
