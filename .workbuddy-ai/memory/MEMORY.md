@@ -83,10 +83,35 @@ objective.** One bad component in a 767-leaf slice is invisible in it.
 Before concluding "the objective is flat", diff the emitted calls —
 `dd` vs `ddimp` vs a control is a 3-line script and it is what found this.
 
-Next: run `ddimp_nox` against the shipped champion and against Brill, not
-only against the control; re-run §6.82's outcome label with X/XX excluded
-(its candidate pool had the same defect and it failed hardest, −1.887);
-make `--relabel-dd`'s candidate set a declared argument.
+**§6.88: it beats what actually ships, +0.082 ± 0.020.** Note the
+baseline: `brill_distilled_control` is NOT the shipped system — it is a
+refit (**--folds 2**, 767 rules) that costs **−0.120** vs shipped. So a
+result measured against the control overstates by ~0.12. Measured
+directly against `brill_distilled.dsl`, 6 seeds, 9,000 boards:
+**+0.082 ± 0.020, t +4.17, 6 up / 0 down** (`brill_distilled_shipdd.dsl`,
+148 of 752 later_uncont leaf calls). ~4.6% of the Brill gap.
+
+Recipe (validated — reproduces `ddimp_nox` with 134 identical changes, 0
+conflicts, when run on the control tree):
+
+    leaf_ceiling.py --dsl system/brill_distilled.dsl --candidates observed \
+        --with-penalties --emit-no-doubles --emit-train all --emit-min 12 \
+        --emit <out.dsl>
+
+`--with-penalties` adds X/XX so the argmax matches `--relabel-dd`'s;
+`--emit-no-doubles` then leaves any leaf whose best call is a double at
+Brill's call. **Leaving them alone beats relabelling them to the best
+non-double call** (+0.212 vs +0.107).
+
+**Always run `--swap` once.** Every comparison above puts the baseline as
+`--a` and the candidate as `--b`; a harness favouring `b` would
+manufacture the whole result. `--swap` mirrored exactly (−0.09 / +0.09,
+totals ∓133).
+
+Still open: not measured against Brill, so **not promoted to default** —
+needs `team_match --remote-a` on a board count that resolves 0.08. Also:
+make `--relabel-dd`'s candidate set a declared argument; re-run §6.82's
+outcome label with X/XX excluded (same defect, failed hardest at −1.887).
 
 Structural part of §6.85 still stands and is now measured: within a leaf
 the deals want **7.7 distinct best calls** and agree on one only **45.3%**
