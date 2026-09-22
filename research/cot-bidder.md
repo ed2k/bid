@@ -90,7 +90,8 @@ Invariants enforced by the factory:
 | `cot_bidder.py` | constraint verifier + retrieval reasoner + constrained decode (CLI: play/evaluate) |
 | `tests/test_trace_factory.py` | schema/invariant tests |
 | `tests/test_cot_bidder.py` | verifier + retrieval legality tests |
-| `data/traces/*.jsonl` | corpora (gitignored) |
+| `data/traces/traces.jsonl` | the canonical corpus (tracked, with `traces.meta.json`) |
+| `data/traces/{corpus_combined,disagreements}.jsonl` | generated corpora (gitignored) |
 
 ---
 

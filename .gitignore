@@ -23,11 +23,13 @@ dist/
 # ---------------------------------------------------------------------------
 # Research intermediates -- regenerable by-products, deliberately unversioned.
 #
-# None of these are inputs. They are what the scripts in research/ write out,
-# and together they are ~596 MB of a ~673 MB working tree:
+# None of these are inputs. They are what the scripts in research/ write out.
+# On 2026-09-22 they were moved to the Trash (577 MB) and the oversized trace
+# was purged from main's history; the patterns stay so they cannot be
+# re-added. See .workbuddy-ai/memory/2026-09-22.md.
 #
-#   data/brill_traces*.jsonl      Brill harvests (--traces). 97 files, 515 MB.
-#                                 Re-harvest with research/brill_remote_eval.py.
+#   data/brill_traces*.jsonl      Brill harvests (--traces). 97 files, 518 MB.
+#                                 Re-harvest with research/brill_harvest.py.
 #   data/brill_dd.[0-9]*          DD tables, research/brill_dd_value.py
 #   data/brill_outcomes.[0-9]*    per-board outcomes, research/brill_outcomes.py
 #   data/cot_model/rejected/      superseded checkpoints the trainer kept
@@ -39,8 +41,9 @@ dist/
 # cot_dataset/, cot_model/ckpt.pt, player_models/, conventions/. Everything
 # listed above sits outside it.
 #
-# NOTE: these files are still on disk and still in history. Ignoring them
-# stops them being re-added; it does not reclaim the space in .git.
+# NOTE: some of these survive as blobs in backup/pre-rewrite-20260922, which
+# is what keeps .git at ~273 MB. Ignoring them stops them being re-added; it
+# does not reclaim space in .git.
 data/brill_traces*.jsonl
 data/brill_dd.[0-9]*
 data/brill_outcomes.[0-9]*

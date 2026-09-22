@@ -5864,6 +5864,20 @@ Central number unchanged: Brill +1.780 ± 0.140.
 
 ---
 
+**Data availability (2026-09-22).** The Brill traces these sections were
+measured on are regenerable by-products and were moved to the Trash
+(`data/brill_traces*.jsonl`, 97 files, 518 MB), along with the DD tables and
+the outcome dumps. Nothing tracked was removed. Most remain recoverable:
+`brill_traces_{330k,ab,final,huge}.jsonl` and the `_ab_{0..5}` shards are
+still reachable from `main` — hence from GitHub — and restore with
+`git cat-file blob <sha> > <path>`; `brill_traces_578k.jsonl` (147 MB) and
+the `c90xx`/`held` shards survive only in `backup/pre-rewrite-20260922`.
+Otherwise re-harvest with `research/brill_harvest.py`. Note that reproducing
+§6.88/§6.89 needs `data/brill_traces_330k.jsonl`, which is
+`leaf_ceiling.py`'s default.
+
+---
+
 ## 9. References
 
 - Amit & Markovitch, *Learning to Bid in Bridge*, MLJ 63(3), 2006 — BIDI/RBMBMC/PIDM/ID3/co-training foundations.
