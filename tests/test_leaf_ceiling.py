@@ -83,6 +83,7 @@ class _FakeArgs:
         self.dsl = ""
         self.emit = ""
         self.emit_min = 12
+        self.emit_train = "fold"
         self.candidates = "observed"
         self.units = "imp"
         self.__dict__.update(kw)
@@ -191,6 +192,33 @@ def test_emit_support_is_legality_not_observation(dsl, tmpdir):
     leaf_ceiling.emit(args, {("P_low", 1): "7NT"}, tot)
     calls = {rid: c for rid, _conds, c in leaf_ceiling.leaf_rules(out, "P_")}
     assert calls["P_low"] == "7NT"
+
+
+def test_emit_train_all_chooses_from_every_row(dsl, tmpdir):
+    """`--emit-train all` is --relabel-dd's estimator. Its only legitimate
+    use is building the control for the fold experiment: tune --emit-min
+    until it changes the same number of calls as a `fold` run, and the
+    choice's data is then the only difference between the two models."""
+    out = os.path.join(tmpdir, "o.dsl")
+    args = _FakeArgs(dsl=dsl, emit=out, emit_train="all")
+    tot_all = {"P_low": {"PASS": [0.0, 30], "2H": [10.0, 40]}}
+    seen_all = {"P_low": {"PASS": 30, "2H": 40}}
+    n = leaf_ceiling.emit(args, {}, {}, tot_all, seen_all)
+    assert n == 1
+    calls = {rid: c for rid, _conds, c in leaf_ceiling.leaf_rules(out, "P_")}
+    assert calls["P_low"] == "2H"
+
+
+def test_emit_train_all_ignores_the_fold_tables(dsl, tmpdir):
+    """With `all`, the fold accumulators are not consulted at all -- a
+    silent fallback to them would make the control indistinguishable from
+    the thing it is meant to control for."""
+    out = os.path.join(tmpdir, "o.dsl")
+    args = _FakeArgs(dsl=dsl, emit=out, emit_train="all")
+    n = leaf_ceiling.emit(args, {("P_low", 1): "2H"}, _tot(), {}, {})
+    assert n == 0
+    calls = {rid: c for rid, _conds, c in leaf_ceiling.leaf_rules(out, "P_")}
+    assert calls["P_low"] == "PASS"
 
 
 def test_emit_preserves_conditions_and_priority(dsl, tmpdir):

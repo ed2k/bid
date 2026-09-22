@@ -5434,12 +5434,15 @@ and objective (§6.82–6.85). What is left is the feature space and the
 model class itself — a tree over ~10 features may simply not be able to
 express the auction's dependence on the actual hand.
 
-**[Withdrawn by §6.86.]** The "objective is flat" half of that sentence is
-wrong. §6.84's argmax was taken in-fold; taken out-of-fold the same target
-on the same tree measures **+0.083 ± 0.035**. The objective was never the
-ceiling — the estimator was. The structural half of the argument (within a
-leaf the best call varies) is confirmed, and is now measured rather than
-asserted: 7.7 distinct best calls per leaf, 45.3% agreement.
+**[Withdrawn by §6.86, mechanism corrected by §6.87.]** The "objective is
+flat" half of that sentence is wrong. §6.84's `dd` was worth
+**+0.212 ± 0.041**; it measured −0.050 because 12 of its 163 retargeted
+leaves were relabelled to DOUBLE/REDOUBLE, and those twelve cost
+0.331 ± 0.040 (§6.87). The objective was never the ceiling, and it was not
+the estimator either — it was twelve calls. The structural half of the
+argument (within a leaf the best call varies) is confirmed, and is now
+measured rather than asserted: 7.7 distinct best calls per leaf, 45.3%
+agreement.
 
 Central number unchanged: Brill +1.780 ± 0.140.
 
@@ -5548,6 +5551,96 @@ step is the cheap one: the fold was the only difference, so sweep it
 re-examine §6.82's outcome label under the same treatment — it failed by
 far the hardest (−1.887) and was diagnosed as a winner's curse on the
 same grounds, but it was never re-run out-of-fold.
+
+**[Attribution corrected by §6.87.]** The fold is *not* the mechanism —
+a paired test at matched flip count cannot tell the two apart. Neither is
+the support threshold. The real difference between §6.84's `dd` and §6.86's
+`ddoof` was that `dd` retargeted **12 leaves to DOUBLE/REDOUBLE** and
+`ddoof` cannot. Those 12 calls cost 0.331 ± 0.040 IMP/board.
+
+Central number unchanged: Brill +1.780 ± 0.140.
+
+---
+
+### 6.87 The retarget was never inert — twelve doubles ate it
+
+§6.86 credited the out-of-fold retarget's +0.083 to the fold. It was wrong,
+and the way it was wrong is the useful part: the fold and the support guard
+were both tested and both cleared, and the thing that actually differed was
+a dozen calls nobody had looked at.
+
+**The fold is exonerated.** `--emit-train all` makes the leaf's choice on
+every row, which is `--relabel-dd`'s estimator, so a `fold` run and an `all`
+run can be tuned to flip the same number of calls and differ in nothing
+else. `--emit-min 24 --emit-train all` flips 116; `ddoof` flips 111. Both
+against the same control, on the same 4,500 boards, paired so the control's
+board noise cancels (per-board sd of the difference 1.97 against 3.79
+unpaired):
+
+**−0.011 ± 0.029, t −0.38.** Indistinguishable. The fold does nothing.
+
+**The guard is exonerated too.** Holding the fold fixed at `all` and
+sweeping the threshold — 162 / 145 / 116 / 88 flips — gives +0.107, +0.107,
++0.110 and (from the `fold` path, 111 flips) +0.100. Flat. §6.83 taught
+that guards matter for the *outcome* label; for this one they do not.
+
+**What actually differed.** Comparing the emitted calls, not the settings:
+
+| model | calls changed | of them to X / XX |
+| --- | --- | --- |
+| `dd` (§6.84) | 163 | **12** |
+| `ddimp` (§6.85) | 152 | **12** |
+| every `leaf_ceiling --emit` variant | 111–145 | **0** |
+
+`relabel_dd_leaves` takes its candidate set from the calls Brill actually
+made in the leaf, and Brill doubles — so X and XX are candidates.
+`leaf_ceiling`'s candidate list is PASS plus the 35 bids; it can never
+choose a double. That was an accident of the tool, not a design decision,
+and it is the entire difference between a −0.05 model and a +0.10 one.
+
+**Isolating exactly that.** `system/brill_distilled_ddimp_nox.dsl` is
+`ddimp` with those 12 calls put back to the control's; the other 140 are
+untouched. What they had been is the tell — `ddimp` had replaced
+constructive low-level bids (`1H`, `1S`, `1NT`, `2C`, `2D`) with doubles.
+
+| seed | 7 | 42 | 101 | 202 | 303 | 404 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `ddimp` | −0.02 | −0.17 | +0.04 | | | |
+| `ddimp_nox` | +0.23 | +0.28 | +0.33 | +0.05 | +0.24 | +0.14 |
+
+**POOLED +0.212 ± 0.041, t +5.13, CI [+0.131, +0.293], 6 up / 0 down**
+(9,000 boards). Paired on identical boards, `ddimp − ddimp_nox` =
+**+0.331 ± 0.040, t +8.30, CI [+0.253, +0.409]** — twelve leaves, a third
+of an IMP per board. My `ddimp` reproduction is −0.050 ± 0.062 against
+§6.85's published −0.050 ± 0.065, so the pipeline agrees.
+
+**Why a double is costly here.** In `later_uncont` the opponents have not
+bid, so an X is illegal at most of the positions those leaves reach —
+`DecisionNet.actions` drops it silently and plays PASS, which is a pass in
+the middle of an auction the system was constructed to continue. Where it
+*is* legal it is a penalty double, the highest-variance call in the game.
+Pass-outs are identical on both sides on every seed, so it is not passing
+out whole boards; it is this.
+
+**§6.84 and §6.85 are withdrawn.** The DD counterfactual was not inert, and
+it was not "safe but uninformative": it was worth **+0.212 ± 0.041**, which
+is 12% of the Brill gap, and 12 leaves took all of it back and more. The
+mistake was reading a pooled net as a property of the objective. A pooled
+net is a property of the model, and one bad component in a 767-leaf slice
+is invisible in it.
+
+**Two things this does not explain, and one to do next.** (i) `ddimp_nox`
+at +0.212 is roughly twice my emit variants at ~+0.11; the flip sets are
+not the same, and on the 12 double leaves my emit substitutes the best
+non-X call where `nox` restores Brill's. That gap is not chased here.
+(ii) the metric agreement in §6.86 is still circular; that part stands.
+
+Next, in order: run `ddimp_nox` against the shipped champion and against
+Brill rather than only against the control; re-run §6.82's outcome label
+with X and XX excluded from its candidate set, since it drew from the same
+"calls Brill made in this leaf" pool and failed by far the hardest
+(−1.887); and fix `--relabel-dd` so the candidate set is a declared
+argument rather than an accident of what Brill happened to do.
 
 Central number unchanged: Brill +1.780 ± 0.140.
 

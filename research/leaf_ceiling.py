@@ -155,7 +155,9 @@ def _model_value(call: str, row: Any) -> Optional[float]:
 
 
 def emit(args: Any, leaf_best: Dict[Tuple[str, int], str],
-         tot: Dict[Tuple[str, int], Dict[str, List[float]]]) -> int:
+         tot: Dict[Tuple[str, int], Dict[str, List[float]]],
+         tot_all: Optional[Dict[str, Dict[str, List[float]]]] = None,
+         seen_all: Optional[Dict[str, Dict[str, int]]] = None) -> int:
     """Write a playable .dsl carrying the out-of-fold leaf choice.
 
     The whole point is to break the circularity: scoring a DD-retargeted
@@ -176,19 +178,36 @@ def emit(args: Any, leaf_best: Dict[Tuple[str, int], str],
     # which Brill happened to make the call instead would silently drop
     # every unobserved call and reduce `--candidates all` to `observed`.
     support: Dict[str, int] = {}
-    for (leaf, f), by_call in tot.items():
-        if f != 0:
-            continue
-        for c, _s in by_call.items():
-            support[(leaf, c)] = _s[1]
+    chosen: Dict[str, str] = {}
 
-    chosen = {}
-    for (leaf, f), call in leaf_best.items():
-        if f != 1:
-            continue
-        if support.get((leaf, call), 0) < args.emit_min:
-            continue
-        chosen[leaf] = call
+    if args.emit_train == "all":
+        # Every row is a selection row, which is --relabel-dd's estimator.
+        # The emitted model is then only fit to be PLAYED -- there is no
+        # held-out half, and the diagnostic cannot score it without
+        # grading the target by its own signal.
+        for leaf, by_call in (tot_all or {}).items():
+            for c, s in by_call.items():
+                support[(leaf, c)] = s[1]
+            pool = by_call
+            if args.candidates == "observed":
+                obs = (seen_all or {}).get(leaf) or {}
+                pool = {c: v for c, v in by_call.items() if c in obs}
+            if pool:
+                chosen[leaf] = max(pool,
+                                   key=lambda c: pool[c][0] / max(1, pool[c][1]))
+    else:
+        for (leaf, f), by_call in tot.items():
+            if f != 0:
+                continue
+            for c, s in by_call.items():
+                support[(leaf, c)] = s[1]
+        for (leaf, f), call in leaf_best.items():
+            if f != 1:
+                continue
+            chosen[leaf] = call
+
+    chosen = {leaf: c for leaf, c in chosen.items()
+              if support.get((leaf, c), 0) >= args.emit_min}
 
     out: List[str] = []
     cur = None
@@ -248,9 +267,23 @@ def main() -> int:
                     help="write a .dsl whose leaf calls are the out-of-fold "
                          "choice, so the ceiling can be PLAYED instead of "
                          "scored by the metric that produced it")
+    ap.add_argument("--emit-train", default="fold", choices=("fold", "all"),
+                    help="'fold' (default) chooses each leaf's call on "
+                         "fold-0 rows only; 'all' chooses it on every row, "
+                         "which is what --relabel-dd does. Use 'all' to "
+                         "isolate the fold: tuning --emit-min until an "
+                         "'all' run changes the same number of calls as a "
+                         "'fold' run leaves the choice's data as the only "
+                         "difference between them.")
     ap.add_argument("--emit-min", type=int, default=12,
-                    help="minimum fold-0 observations of the chosen call "
-                         "(default 12, the guard §6.84 used)")
+                    help="minimum observations of the chosen call among the "
+                         "SELECTION rows (default 12). Counted on fold 0 of "
+                         "2, so the effective total-row threshold is about "
+                         "twice this -- use 6 to match §6.84's --relabel-dd-"
+                         "min 12, which counted every row in the leaf. The "
+                         "guard and the fold are confounded otherwise: an "
+                         "out-of-fold run at 12 is stricter than an in-fold "
+                         "one at 12, and changes half as many calls.")
     ap.add_argument("--dump", default="")
     args = ap.parse_args()
 
@@ -293,6 +326,10 @@ def main() -> int:
         lambda: defaultdict(lambda: [0.0, 0]))
     seen: Dict[Tuple[str, int], Dict[str, int]] = defaultdict(
         lambda: defaultdict(int))
+    # leaf -> call -> (sum, count) over EVERY row, for `--emit-train all`
+    tot_all: Dict[str, Dict[str, List[float]]] = defaultdict(
+        lambda: defaultdict(lambda: [0.0, 0]))
+    seen_all: Dict[str, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
 
     class Row:
         """Everything pass 2 needs, without holding 35 candidate values."""
@@ -328,8 +365,13 @@ def main() -> int:
             continue
         slot = tot[(leaf, fold[deal])]
         seen[(leaf, fold[deal])][mine_str] += 1
+        all_slot = tot_all[leaf]
+        seen_all[leaf][mine_str] += 1
         for c, v in vals.items():
             acc = slot[c]
+            acc[0] += v
+            acc[1] += 1
+            acc = all_slot[c]
             acc[0] += v
             acc[1] += 1
         r = Row()
@@ -436,7 +478,7 @@ def main() -> int:
               % (name, 100.0 * c.get("PASS", 0) / n, top))
 
     if args.emit:
-        n_ch = emit(args, leaf_best, tot)
+        n_ch = emit(args, leaf_best, tot, tot_all, seen_all)
         print("\n  emitted %s: %d of %d leaves changed call"
               % (args.emit, n_ch, len(rules)))
 
