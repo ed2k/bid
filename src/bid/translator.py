@@ -133,7 +133,6 @@ class LegacyTrigger:
 
 class SystemTranslator:
     def __init__(self):
-        print("DEBUG: SystemTranslator Moving Steps Logic Outside")
         pass
 
     def load_convention(self, convention_name: str, system: Optional[BiddingSystem] = None, is_common: bool = False) -> BiddingSystem:

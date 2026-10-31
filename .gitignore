@@ -32,6 +32,7 @@ dist/
 #                                 Re-harvest with research/brill_harvest.py.
 #   data/brill_dd.[0-9]*          DD tables, research/brill_dd_value.py
 #   data/brill_outcomes.[0-9]*    per-board outcomes, research/brill_outcomes.py
+#   data/colab_bundle*.pt         pre-packed DealBundle tensors, research/gpu_arena.py
 #   data/cot_model/rejected/      superseded checkpoints the trainer kept
 #   data/cot_model/*.candidate.pt an un-promoted checkpoint
 #   data/cot_model/refresh_last.log*  trainer logs
@@ -47,6 +48,7 @@ dist/
 data/brill_traces*.jsonl
 data/brill_dd.[0-9]*
 data/brill_outcomes.[0-9]*
+data/colab_bundle*.pt
 data/cot_model/rejected/
 data/cot_model/*.candidate.pt
 data/cot_model/*.candidate.pt.vocab.json

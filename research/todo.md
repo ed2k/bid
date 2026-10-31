@@ -1,68 +1,42 @@
-# Todo — implementation status
+# Todo — Next Steps
 
-All items from the original list are now implemented (2026-09-05). The
-original analysis is preserved below each status line.
+### 1. Promote `brill_gpu_evolved.dsl` (or `brill_distilled_shipdd.dsl`) to Shipped Default
+- `system/brill_distilled_shipdd.dsl` retargets 148 `later_uncont` leaves on the shipped tree using one-step DD IMP value with doubles/redoubles excluded (`research/status.md` §6.88–6.90, **+0.082 ± 0.020 IMP/board** over 9,000 boards).
+- `system/brill_gpu_evolved.dsl` (produced by a 6-minute Colab `L4` full-continuation coordinate-ascent run via `research/gpu_evolve_dsl.py` across 5,000 Train + 2,500 multi-opponent Validation boards; 54 rules retargeted, 7 noisy rules ablated across all three slices `BD_open_uncont_`, `BD_later_uncont_`, `BD_later_cont_`) beats both systems on 2,500 untouched Held-Out Test boards:
+  - vs `system/brill_distilled.dsl`: **`+0.333 ± 0.077 IMP/board` (`t = +4.31`, `+833 IMP`)**
+  - vs `system/brill_distilled_shipdd.dsl`: **`+0.302 ± 0.055 IMP/board` (`t = +5.54`, `+755 IMP`)**
+  - vs `system/champion_system.dsl` (third-party transfer): **`+1.267 ± 0.131 IMP/board`** (vs `shipdd`'s `+0.941 IMP/board`, a **`+0.326 IMP/board` transfer gain**).
+- **Action**: Promote `system/brill_gpu_evolved.dsl` to `system/brill_distilled.dsl` and refresh the browser assets via `web/build_default_student.mjs` / `src/bid/web_export.py`.
 
-## ✅ 1. priority was dead code in DecisionNet — FIXED
+### 2. Break the Representation Bottleneck in Distillation
+Data scaling (up to 578k traces, §6.80), tree depth sweeps (§6.62), and one-step leaf relabelling on the existing feature partition (§6.89) have reached their ceiling: within each leaf (~10 conditions), deals still want **7.7–8.2 distinct best calls** and agree on a single best call only **45.3%** of the time in `later_uncont` and **28.6%** in `open_uncont` (§6.86, §6.89).
+- **Encode bridge evaluation heuristics from `system/cuebids/rules.txt` as first-class features in `src/bid/features.py` (`BridgeFeatures`)**:
+  - **Rule of 15**: 4th-seat opening test (`hcp + spade_len >= 15`).
+  - **Rule of 17**: Responder over partner's weak-two (`hcp + support_in_partner_suit >= 17`).
+  - **Rule of 24 (LTC)**: Partnership trick projection (`24 - 7 - losing_trick_count`).
+  - **Rule of 44**: Strong 2♣ suit-hand gate (`losing_trick_count <= 4 and quick_tricks >= 4`).
+  - **Rule of 64**: 6–4 major suit selection comparing HCP in the 4-card vs 6-card suit.
+- **Continuation-aware (2-step) counterfactual target for `open_uncont`**:
+  - One-step DD relabelling failed on `open_uncont` (ceiling +0.021 vs oracle +4.309, §6.89) because an opening bid is never the final contract. Score opening candidates by rolling out 1–2 partner/responder steps with `brill_distilled` before reading the DD table.
 
-`DecisionNet.actions()` now returns a **priority-ordered list**: per call,
-the max matched rule priority wins; candidates sort by (-priority, call
-string). Deterministic consumers can take `actions()[0]` (or the new
-`DecisionNet.best_call()`), so `PRIORITY:` fields finally bite on the
-DecisionNet path. The full candidate frontier is still returned — PIDM's
-value search is unchanged, only arbitrary ordering is gone. Mirrored in the
-browser engine (`web/bid_net.js`), asserted by `tests/web/engine_test.mjs`.
+### 3. Complete the Slam / RKCB 0314 Layer (`research/brill_slam.md`)
+- Wire the 148 RKCB 0314 response rules in `research/brill_slam.md` into `research/brill_to_dsl.py` (or as a high-priority slam layer on top of `brill_distilled`) using the `agreed_trump`, `has_trump_queen`, and `keycard_count_agreed` features, and remove the stale blocker note in `research/brill_slam.md`.
 
-> Original: 🔴 1. priority is dead code in DecisionNet (critical correctness bug) DecisionNetRule.priority is stored and exported, but DecisionNet.actions() never reads it — all matched rules' calls go into a set, and tie-breaking among multiple candidates is arbitrary. Compare with BiddingSystem.get_bid (engine.py), which does sort by priority. So the same DSL behaves differently depending on which path evaluates it, and all your flywheel PRIORITY: 30/35 tuning is silently ignored on the DecisionNet path. Fix: return highest-priority matched call per call, or order candidates by priority.
+### 4. Refresh the CoT Student on the Distilled Teacher
+- `data/cot_model/ckpt.pt` was trained on the earlier 404-token vocabulary and 1,635 traces (§6.10), predating the 27 newest features (`agreed_trump*`, `combined_hcp_*`, `rule_of_21`, etc.) and `brill_distilled_shipdd.dsl`.
+- **Action**: Regenerate traces from the promoted teacher (`src/bid/trace_factory.py`), retrain the seq2seq student on the 431-token vocabulary (`src/bid/cot_model.py` / `src/bid/refresh_student.py`), and re-export weights to `web/models/cot/` via `src/bid/cot_export_web.py`.
 
-## ✅ 2. Negative rules were exported twice — FIXED + DSL cleaned
+### 5. Code & Hygiene Fixes
+- **Seed `Hand.random()` in `BiddingGapDetector`** (`tests/test_bidding_gaps.py:39-118`): Pass `rng` into `Hand.random(rng)` in `find_opening_gaps`, `find_response_gaps`, and `find_rebid_gaps` so gap counts are reproducible.
+- **Deep-M αμ play-search boundary in `PlaySearcher`** (`src/bid/sds.py`): Fix paper-exact `stop()` semantics so $M$ counts every Max node including in-flight tricks (`tests/test_play_search.py::test_full_depth_single_world_equals_dd`, §6.1).
+- **Port the 27 newer `BridgeFeatures` keys to `web/features.js`**: Add `agreed_trump*`, `*_is_longest`, `*_realsolid`, `partner_hcp_*`, `combined_hcp_*`, `*_first_call`, `opening_bid`, `rule20_total`, `rule_of_21`, `keycard_count_agreed`, and `has_trump_*` so the browser engine matches all 129 Python features (and remove the stale `total_points`/`quick_tricks`/`losing_trick_count` caveat in `web/README.md:54`).
 
-The missing `continue` in `export_dsl()` is in; a save→load→save cycle is now
-byte-stable (regression test in `tests/test_lint_dsl.py`). `DecisionNet.add_rule`
-also skips exact duplicate bodies, so squared duplicates can never come back.
-One-time cleanup applied: **improved_system.dsl went from 159 RULE blocks to
-78** (81 squared duplicates removed; champion was already clean at 90). Lint
-over the live systems: 0 issues.
+### 6. Colab A100 GPU Acceleration Plan (`research/gpu_arena.py`)
+`research/gpu_arena.py` (`TensorDecisionNet`, `DealBundle`, `BatchedAuctionEnv`, `gpu_team_match`, `gpu_continuation_q_values`) and `data/colab_bundle_500.pt` are implemented and verified on a Colab **NVIDIA A100-SXM4-40GB** (`0` call/feature mismatches vs Python `DecisionNet`; **371 ms** for a 500-board duplicate match, **595 ms** / **16,817 boards/sec** for a 10,000-board match, and **4.15 s** for 17,420 full continuation rollouts). Next steps using the GPU arena:
+- **6.1 Full-Continuation Leaf Retargeting on A100 (`open_uncont` & `later_cont`)**:
+  - Use `gpu_continuation_q_values` in `research/gpu_arena.py` to replace 1-step "stopped here" DD valuation (`research/leaf_ceiling.py`) with multi-step on-policy continuation rollouts $Q^{\pi}(s, a)$ to `PASS-PASS-PASS` and screen leaf retargets over 10,000+ paired boards on Colab A100.
+- **6.2 Differentiable Soft / Oblique Decision Trees → `.dsl` Export**:
+  - Train temperature-annealed soft decision trees ($\sigma((x_f - \tau_f)/T)$) on A100 directly optimizing expected continuation DD IMP score $\sum_a p_\ell(a) Q(s, a)$, then snap thresholds $\tau_f$ back to standard `RULE BD_*` blocks.
+- **6.3 FlashAttention + Batched RL (`src/bid/cot_model.py`, `src/bid/rl_finetune.py`)**:
+  - Upgrade `CausalSelfAttention` to `F.scaled_dot_product_attention`, vectorize `rl_finetune.py` across batched boards/trajectories using `BatchedAuctionEnv`, and distill winning trajectories back into `.dsl` via `src/bid/mine_disagreements.py`.
 
-> Original: 🔴 2. Negative rules are exported twice — this is why SLAM_EXPLORE_6S appears 5× and NO_D_WITH_MAJOR_HEA 24× In export_dsl() the if r.is_negative: block prints the rule, then the code falls through and prints the same rule again (missing continue). Each save→load→save cycle squares the duplicates. Your improved_system.dsl is currently 145 blocks where ~⅓ are floaters from this bug. Fix is one continue; then clean the DSL once.
-
-## ✅ 3. Duplicate-rule linting — IMPLEMENTED
-
-`src/bid/lint_dsl.py` (CLI: `python3 -m bid.lint_dsl <files>`) checks exact
-duplicate bodies, rule-id reuse (informational warning), contradicted
-conditions (`hcp >= 15` + `hcp <= 14`, `==` clashes), and priority shadowing
-(same call, superset guard, not-higher priority). Enforced as tests in
-`tests/test_lint_dsl.py` — the live systems must stay lint-clean.
-
-> Original: 🔴 3. Duplicate-rule linting is absent BiddingSystem.add_rule dedupes common rules but DecisionNet dedupes nothing — you have 24 identical NO_D_WITH_MAJOR_HEA rules and 7 NEGATIVE blocks in the DSL. A 20-line lint_dsl.py (duplicate ID, contradicted conditions e.g. hcp >= 15 + hcp <= 14, unreachable priority shadowing) run as a test catches this whole class.
-
-## ✅ 4. Pass inference in Engine.estimate_deal — IMPLEMENTED
-
-A PASS now carves declined lower-bound system rules out of the seat's
-constraint estimate: for every triggered, bridge-legal non-pass call the
-player declined whose constraints have exactly one binding `X+` lower bound,
-the matching upper bound is capped (`cap_above` in constraints.py, e.g.
-passing over "1C: HCP 16+" bounds the hand at hcp <= 15). Multi-field rules
-are skipped (negating a conjunction is ambiguous). Tested in
-`tests/test_pass_inference.py`.
-
-> Original: 🟡 4. Engine.estimate_deal is intentionally weak on passes "PASS implies no rule matched" → currently pass ("do nothing if no explicit rule matches"), so your belief inference gives zero information from partner passing. Even a crude "constraints = complement of opening rules" would materially improve RBMBMC world filtering — and the player model's job gets easier.
-
-## ✅ 5. Opponent-aggression features — ALREADY LANDED (item was stale)
-
-The todo's grep predated the feature work: `features.py` now has
-`opp_bid_count`, `opp_first_bid_level`, `opp_preempted`, `opp_strength_class`,
-`competition_level`, `auction_altitude`, `opp_fit_shown`, `our_fit_shown`,
-`vuln_pressure`, `opp_suit_stoppers` — all numeric/stratified and documented
-in the README. They propagate into traces and the flywheel's AGGRESSION
-patch family.
-
-> Original: 🟡 5. Still missing from the last conversation, now confirmed against actually-landed code: No opponent-aggression features (nothing matching opp_*count*, competitive_*, preempt* in features.py — only opponents_bid, is_competitive booleans). Validation: grep -c "opp_" features.py = a handful of strings, none numeric. Rules can't yet count how much the opponents bid.
-
-## Order-of-work note (from the original list)
-
-> (1) priority dead-code fix — correctness; (2) export-dsl double-write — one continue; (3) lint + cleans the DSL down to a sane size; then the design-level stuff (opponent-aggression features, PASS inference). The first three are bugs; fixing them will change evaluation numbers, so do them before any retraining or DSL cleanup of conventions.
-
-Followed in that order. Evaluation numbers DID change: the cleaned 78-rule
-system is what future flywheel rounds, trace regeneration, and student
-refreshes build on (snapshot hash `c2a60a063f27…`).
