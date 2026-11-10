@@ -488,7 +488,8 @@ class DealBundle:
                  suit_has_king: torch.Tensor,
                  suit_has_queen: torch.Tensor,
                  suit_stopper_q: torch.Tensor,
-                 ace_counts: torch.Tensor):
+                 ace_counts: torch.Tensor,
+                 suit_intermediates: Optional[torch.Tensor] = None):
         # hand_features: (B, 4, NUM_FEATURES) static baseline per seat (N=0, E=1, S=2, W=3)
         self.hand_features = hand_features
         self.dealers = dealers              # (B,) int64 in 0..3
@@ -499,6 +500,11 @@ class DealBundle:
         self.suit_has_queen = suit_has_queen  # (B, 4, 4) bool
         self.suit_stopper_q = suit_stopper_q  # (B, 4, 4) float32 stopper quality (2.0, 1.0, 0.5, 0.0)
         self.ace_counts = ace_counts        # (B, 4) int64
+        self.suit_intermediates = (
+            suit_intermediates
+            if suit_intermediates is not None
+            else torch.zeros_like(suit_lengths)
+        )  # (B, 4, 4) int64 count of T,9,8 per suit
 
     @property
     def num_boards(self) -> int:
@@ -516,6 +522,7 @@ class DealBundle:
             self.suit_has_queen.to(dev),
             self.suit_stopper_q.to(dev),
             self.ace_counts.to(dev),
+            self.suit_intermediates.to(dev),
         )
 
     def save(self, path: str) -> None:
@@ -531,6 +538,7 @@ class DealBundle:
             "suit_has_queen": self.suit_has_queen.cpu(),
             "suit_stopper_q": self.suit_stopper_q.cpu(),
             "ace_counts": self.ace_counts.cpu(),
+            "suit_intermediates": self.suit_intermediates.cpu(),
         }, path)
 
     @classmethod
@@ -539,12 +547,21 @@ class DealBundle:
             d = torch.load(path, map_location="cpu", weights_only=False)
         except TypeError:
             d = torch.load(path, map_location="cpu")
-        if d.get("feature_keys") != FEATURE_KEYS:
-            raise ValueError("DealBundle feature_keys mismatch with current BridgeFeatures")
+        saved_keys = d.get("feature_keys")
+        hf = d["hand_features"]
+        if saved_keys != FEATURE_KEYS:
+            if not saved_keys:
+                raise ValueError("DealBundle missing feature_keys")
+            remapped = torch.zeros((hf.shape[0], hf.shape[1], NUM_FEATURES), dtype=hf.dtype)
+            for old_idx, k in enumerate(saved_keys):
+                if k in FEAT_TO_COL:
+                    remapped[:, :, FEAT_TO_COL[k]] = hf[:, :, old_idx]
+            hf = remapped
         return cls(
-            d["hand_features"], d["dealers"], d["vulns"], d["dd_tricks"],
+            hf, d["dealers"], d["vulns"], d["dd_tricks"],
             d["suit_lengths"], d["suit_has_king"], d["suit_has_queen"],
-            d["suit_stopper_q"], d["ace_counts"]
+            d["suit_stopper_q"], d["ace_counts"],
+            d.get("suit_intermediates"),
         ).to(device)
 
     @classmethod
@@ -563,6 +580,7 @@ class DealBundle:
         suit_has_queen = torch.zeros((B, 4, 4), dtype=torch.bool)
         suit_stopper_q = torch.zeros((B, 4, 4), dtype=torch.float32)
         ace_counts = torch.zeros((B, 4), dtype=torch.long)
+        suit_intermediates = torch.zeros((B, 4, 4), dtype=torch.long)
 
         strains = (Strain.CLUBS, Strain.DIAMONDS, Strain.HEARTS, Strain.SPADES, Strain.NT)
         suits = (Suit.CLUBS, Suit.DIAMONDS, Suit.HEARTS, Suit.SPADES)
@@ -583,6 +601,9 @@ class DealBundle:
                     suit_lengths[b, s_idx, su_idx] = L
                     suit_has_king[b, s_idx, su_idx] = Rank.KING in ranks
                     suit_has_queen[b, s_idx, su_idx] = Rank.QUEEN in ranks
+                    suit_intermediates[b, s_idx, su_idx] = sum(
+                        1 for r in (Rank.TEN, Rank.NINE, Rank.EIGHT) if r in ranks
+                    )
                     if Rank.ACE in ranks:
                         sq = 2.0
                     elif Rank.KING in ranks and L >= 2:
@@ -601,7 +622,8 @@ class DealBundle:
 
         return cls(
             hand_features, dealers, vulns, dd_tricks,
-            suit_lengths, suit_has_king, suit_has_queen, suit_stopper_q, ace_counts
+            suit_lengths, suit_has_king, suit_has_queen, suit_stopper_q,
+            ace_counts, suit_intermediates,
         ).to(device)
 
 
@@ -848,12 +870,18 @@ class BatchedAuctionEnv:
         has_tk = has_agreed & self.bundle.suit_has_king[b_idx, my_seat, clamped_ag]
         has_tq = has_agreed & self.bundle.suit_has_queen[b_idx, my_seat, clamped_ag]
         kc_agreed = self.bundle.ace_counts[b_idx, my_seat] + has_tk.to(torch.long)
+        tr_interm = torch.where(
+            has_agreed,
+            self.bundle.suit_intermediates[b_idx, my_seat, clamped_ag],
+            torch.zeros((B,), dtype=torch.long, device=dev),
+        )
 
         X[:, FEAT_TO_COL["agreed_trump"]] = agreed.to(torch.float32)
         X[:, FEAT_TO_COL["agreed_trump_len"]] = ag_len.to(torch.float32)
         X[:, FEAT_TO_COL["has_trump_king"]] = has_tk.to(torch.float32)
         X[:, FEAT_TO_COL["has_trump_queen"]] = has_tq.to(torch.float32)
         X[:, FEAT_TO_COL["keycard_count_agreed"]] = kc_agreed.to(torch.float32)
+        X[:, FEAT_TO_COL["trump_intermediates"]] = tr_interm.to(torch.float32)
 
         # Opponent suit stoppers
         in_opp_suits = (opp_s_mask[:, None] & suit_bits) != 0  # (B, 4)

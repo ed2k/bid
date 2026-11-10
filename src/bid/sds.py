@@ -108,11 +108,86 @@ class SDSScorer:
         scored.sort(key=lambda t: (t[0], t[1]))
         return [w for _, _, w in scored[:num_worlds]], [t[0] for t in scored[:num_worlds]]
 
+        # ---------- vacant places (SuitC create_all_boards.c) ----------
+
+    @staticmethod
+    def infer_vacant_places(history, dealer: Seat, viewer_seats) -> Dict[Seat, int]:
+        """
+        Infer opponent vacant places from their suit bids in `history`
+        (Gerrit van der Velde, SuitC/docs/usage.md).
+
+        Standard length promises subtracted from 13:
+          - 1- or 2-level suit bid -> 5 cards shown -> 8 vacant places
+          - 3-level suit bid       -> 7 cards shown -> 6 vacant places
+          - 4-level+ suit bid      -> 8 cards shown -> 5 vacant places
+        """
+        from bid.models import CallType
+
+        vacant = {s: 13 for s in Seat if s not in viewer_seats}
+        if not history:
+            return vacant
+
+        shown_by_seat: Dict[Seat, Dict[Suit, int]] = {s: {} for s in vacant}
+        curr = dealer
+        for call in history:
+            if curr in shown_by_seat and call.type == CallType.BID:
+                if call.strain is not None and call.strain != Strain.NT:
+                    suit = Suit(call.strain.value)
+                    if call.level <= 2:
+                        promised = 5
+                    elif call.level == 3:
+                        promised = 7
+                    else:
+                        promised = 8
+                    prev = shown_by_seat[curr].get(suit, 0)
+                    if promised > prev:
+                        shown_by_seat[curr][suit] = promised
+            curr = Seat((curr.value + 1) % 4)
+
+        for s in vacant:
+            used = sum(shown_by_seat[s].values())
+            vacant[s] = max(1, 13 - used)
+        return vacant
+
+    @staticmethod
+    def hypergeometric_suit_weight(
+        world: Dict[Seat, List[Card]],
+        viewer_seats: Tuple[Seat, Seat],
+        suit: Suit,
+        vacant_places: Dict[Seat, int],
+    ) -> float:
+        """
+        Compute SuitC's vacant-places hypergeometric importance weight for how
+        the hidden cards in `suit` split between the two opponents relative to a
+        uniform 13/13 deal.
+        """
+        import math
+
+        opps = [s for s in Seat if s not in viewer_seats]
+        if len(opps) != 2:
+            return 1.0
+        sa, sb = opps
+        va = int(vacant_places.get(sa, 13))
+        vb = int(vacant_places.get(sb, 13))
+        if va == 13 and vb == 13:
+            return 1.0
+
+        ka = sum(1 for c in world[sa] if c.suit == suit)
+        kb = sum(1 for c in world[sb] if c.suit == suit)
+        n = ka + kb
+        if ka > va or kb > vb or (va + vb) < n:
+            return 0.0
+
+        p_vac = (math.comb(va, ka) * math.comb(vb, kb)) / max(1, math.comb(va + vb, n))
+        p_uni = (math.comb(13, ka) * math.comb(13, kb)) / max(1, math.comb(26, n))
+        return (p_vac / p_uni) if p_uni > 0 else 1.0
+
     # ---------- scoring ----------
 
     def score_contract(self, deal, level: int, strain: Strain, declarer: Seat,
                        doubled: int = 0, vuln: int = 0,
-                       history=None, models=None) -> SDSResult:
+                       history=None, models=None,
+                       vacant_places: Optional[Dict[Seat, int]] = None) -> SDSResult:
         from bid.scoring import calculate_contract_score, Vulnerability
 
         dummy = declarer.partner
@@ -129,23 +204,33 @@ class SDSScorer:
 
         is_vul = Vulnerability.is_vulnerable(vuln, declarer)
         needed = level + 6
+        target_suit = None if strain == Strain.NT else Suit(strain.value)
 
         total_score = 0.0
-        makes = 0
-        total_tricks = 0
+        makes = 0.0
+        total_tricks = 0.0
+        total_weight = 0.0
 
         for w in worlds:
+            weight = 1.0
+            if vacant_places is not None and target_suit is not None:
+                weight = self.hypergeometric_suit_weight(
+                    w, viewers, target_suit, vacant_places
+                )
+                if weight <= 0.0:
+                    continue
             world = type(deal)(hands={s: Hand(list(w[s])) for s in Seat},
                                dealer=deal.dealer, vuln=deal.vuln)
             tricks = DDSolver.get_tricks(world, strain, declarer)
-            total_tricks += tricks
+            total_tricks += weight * tricks
             if tricks >= needed:
-                makes += 1
-            total_score += calculate_contract_score(
+                makes += weight
+            total_score += weight * calculate_contract_score(
                 level=level, strain=strain, doubled=doubled,
                 is_vulnerable=is_vul, tricks_taken=tricks)
+            total_weight += weight
 
-        k = max(1, len(worlds))
+        k = total_weight if total_weight > 0.0 else max(1.0, float(len(worlds)))
         return SDSResult(total_score / k, makes / k, total_tricks / k, len(worlds))
 
 # ======================================================================
@@ -185,6 +270,34 @@ def legal_cards(hand: List, trick: List[Tuple[Seat, object]]) -> List:
     return follow if follow else list(hand)
 
 
+def canonical_legal_cards(hand: List, trick: List[Tuple[Seat, object]]) -> List:
+    """
+    Return legal cards with touching-rank sequence equivalence pruning
+    (Gerrit van der Velde, SuitC/src/create_tree.c).
+
+    Within each suit, contiguous ranks held in `hand` (e.g. Q-J-T or 5-4)
+    are strategically equivalent when played from the same hand; keeping one
+    canonical representative per contiguous sequence avoids redundant sibling
+    subtrees without altering minimax trick values.
+    """
+    cards = legal_cards(hand, trick)
+    if len(cards) <= 1:
+        return cards
+    ordered = sorted(cards, key=lambda c: (_key(c)[0], -_key(c)[1]))
+    out = []
+    prev_suit = None
+    prev_rank = None
+    for c in ordered:
+        s_v, r_v = _key(c)
+        if s_v == prev_suit and prev_rank is not None and prev_rank == r_v + 1:
+            prev_rank = r_v
+            continue
+        out.append(c)
+        prev_suit = s_v
+        prev_rank = r_v
+    return out
+
+
 def _key(c) -> Tuple[int, int]:
     suit_v = getattr(c.suit, "value", c.suit)
     rank_v = getattr(c.rank, "value", c.rank)
@@ -222,10 +335,146 @@ class OutcomeVector:
         return OutcomeVector([max(x, y) for x, y in zip(a.values, b.values)])
 
 
+class Front:
+    """
+    Non-dominated Pareto front of OutcomeVectors (SuitC `QUIRK` representation,
+    Gerrit van der Velde, SuitC/src/merge_quirk.c & clean_quirk.c).
+
+    Prevents strategy fusion at interior Max nodes:
+      - At Max nodes, child fronts are combined via `Front.union` (each vector
+        represents a single committed Max strategy across worlds).
+      - At Min nodes, child fronts across defender responses are combined via
+        `Front.min_merge` (taking per-world minimums across legal defender plays
+        and Pareto-pruning dominated combinations).
+    """
+
+    def __init__(self, vectors: List[OutcomeVector]):
+        self.vectors = list(vectors)
+
+    @staticmethod
+    def pareto_prune(vectors: List[OutcomeVector], cap: int = 64) -> List[OutcomeVector]:
+        if not vectors:
+            return []
+        unique: List[OutcomeVector] = []
+        seen = set()
+        for v in vectors:
+            tup = tuple(v.values)
+            if tup not in seen:
+                seen.add(tup)
+                unique.append(v)
+        if len(unique) <= 1:
+            return unique
+
+        # Sort descending by mean then lexicographically so dominators come first
+        unique.sort(key=lambda v: (-v.mean(), tuple(-x for x in v.values)))
+        kept: List[OutcomeVector] = []
+        for cand in unique:
+            cv = cand.values
+            dominated = False
+            for dom in kept:
+                dv = dom.values
+                if all(d >= c for d, c in zip(dv, cv)):
+                    dominated = True
+                    break
+            if not dominated:
+                kept.append(cand)
+                if cap and len(kept) >= cap:
+                    break
+        return kept
+
+    @classmethod
+    def union(cls, fronts: List["Front"], cap: int = 64) -> "Front":
+        pool: List[OutcomeVector] = []
+        for f in fronts:
+            pool.extend(f.vectors)
+        return cls(cls.pareto_prune(pool, cap=cap))
+
+    @classmethod
+    def min_merge(
+        cls,
+        branch_fronts: List[Tuple[List[int], "Front"]],
+        num_worlds: int,
+        cap: int = 64,
+    ) -> "Front":
+        if not branch_fronts:
+            return cls([OutcomeVector([0] * num_worlds)])
+
+        acc: Optional[List[List[Optional[int]]]] = None
+        for sub_idx, front in branch_fronts:
+            lifted_branch: List[List[Optional[int]]] = []
+            for vec in front.vectors:
+                row: List[Optional[int]] = [None] * num_worlds
+                for k_i, j in enumerate(sub_idx):
+                    row[j] = vec.values[k_i]
+                lifted_branch.append(row)
+            if not lifted_branch:
+                continue
+            if acc is None:
+                acc = lifted_branch
+                continue
+
+            combined: List[List[Optional[int]]] = []
+            seen_tuples = set()
+            for a in acc:
+                for b in lifted_branch:
+                    merged: List[Optional[int]] = [None] * num_worlds
+                    for j in range(num_worlds):
+                        aj, bj = a[j], b[j]
+                        if aj is not None and bj is not None:
+                            merged[j] = aj if aj < bj else bj
+                        elif aj is not None:
+                            merged[j] = aj
+                        else:
+                            merged[j] = bj
+                    tup = tuple(merged)
+                    if tup not in seen_tuples:
+                        seen_tuples.add(tup)
+                        combined.append(merged)
+
+            # Prune dominated partial vectors (SuitC clean_quirk.c)
+            combined.sort(
+                key=lambda r: (
+                    -sum(x for x in r if x is not None),
+                    tuple(0 if x is None else -x for x in r),
+                )
+            )
+            pruned: List[List[Optional[int]]] = []
+            for cand in combined:
+                dominated = False
+                for dom in pruned:
+                    if all(
+                        (d == c) or (d is not None and c is not None and d >= c)
+                        for d, c in zip(dom, cand)
+                    ):
+                        dominated = True
+                        break
+                if not dominated:
+                    pruned.append(cand)
+                    if cap and len(pruned) >= cap:
+                        break
+            acc = pruned
+
+        if not acc:
+            return cls([OutcomeVector([0] * num_worlds)])
+        final_vecs = [OutcomeVector([0 if x is None else x for x in r]) for r in acc]
+        return cls(cls.pareto_prune(final_vecs, cap=cap))
+
+    def best_vector(self, target: Optional[int] = None) -> OutcomeVector:
+        if not self.vectors:
+            return OutcomeVector([])
+        if target is not None:
+            return max(
+                self.vectors,
+                key=lambda v: (v.mean(), v.p_at_least(target), tuple(v.values)),
+            )
+        return max(self.vectors, key=lambda v: (v.mean(), tuple(v.values)))
+
+
 @dataclass
 class SearchConfig:
     target: int = 10
     front_cap: int = 64
+    prune_sequences: bool = True
 
 
 @dataclass
@@ -346,29 +595,38 @@ class PlaySearcher:
 
     # ---------- recursion ----------
 
-    def _search(self, st, worlds):
+    def _moves_for_hand(self, hand: List, trick: List[Tuple[Seat, object]]) -> List:
+        if self.cfg.prune_sequences:
+            return canonical_legal_cards(hand, trick)
+        return legal_cards(hand, trick)
+
+    def _search_front(self, st, worlds, m_remaining: Optional[int] = None) -> Front:
         if self._decided(st, worlds):
-            return self._leaf(st, worlds)
+            return Front([self._leaf(st, worlds)])
+        if m_remaining is not None and m_remaining <= 0 and not st["trick"]:
+            return Front([self._leaf(st, worlds)])
 
         if st["to_play"] in st["max_side"]:
-            moves = legal_cards(st["max_hands"][st["to_play"]], st["trick"])
-            best = None
+            moves = self._moves_for_hand(st["max_hands"][st["to_play"]], st["trick"])
+            if not moves:
+                return Front([self._leaf(st, worlds)])
+            next_m = None if m_remaining is None else m_remaining - 1
+            child_fronts: List[Front] = []
             for c in moves:
                 ns, nw = self._apply(st, worlds, c)
-                vec = self._search(ns, nw)
-                best = vec if best is None else OutcomeVector.elementwise_max(best, vec)
-            return best if best is not None else self._leaf(st, worlds)
+                child_fronts.append(self._search_front(ns, nw, next_m))
+            return Front.union(child_fronts, cap=self.cfg.front_cap)
 
         seat = st["to_play"]
         union_moves, seen = [], set()
         for w in worlds:
-            for c in legal_cards(w[seat], st["trick"]):
+            for c in self._moves_for_hand(w[seat], st["trick"]):
                 k = _key(c)
                 if k not in seen:
                     seen.add(k)
                     union_moves.append(c)
 
-        expanded: List[List[Optional[int]]] = []
+        branch_fronts: List[Tuple[List[int], Front]] = []
         n = len(worlds)
         for c in union_moves:
             sub_idx, sub_worlds = [], []
@@ -379,22 +637,18 @@ class PlaySearcher:
             if not sub_idx:
                 continue
             ns, nw = self._apply(st, sub_worlds, c)
-            vec = self._search(ns, nw)
-            vals: List[Optional[int]] = [None] * n
-            for k_i, j in enumerate(sub_idx):
-                vals[j] = vec.values[k_i]
-            expanded.append(vals)
+            sub_front = self._search_front(ns, nw, m_remaining)
+            branch_fronts.append((sub_idx, sub_front))
 
-        out: List[Optional[int]] = [None] * n
-        for vals in expanded:
-            for j, v in enumerate(vals):
-                if v is not None and (out[j] is None or v < out[j]):
-                    out[j] = v
-        return OutcomeVector([0 if v is None else v for v in out])
+        return Front.min_merge(branch_fronts, n, cap=self.cfg.front_cap)
+
+    def _search(self, st, worlds, m_remaining: Optional[int] = None) -> OutcomeVector:
+        front = self._search_front(st, worlds, m_remaining)
+        return front.best_vector(self.cfg.target)
 
     # ---------- public entries ----------
 
-    def _solve(self, pos: PlayPosition, worlds) -> SearchResult:
+    def _solve(self, pos: PlayPosition, worlds, M: Optional[int] = None) -> SearchResult:
         assert pos.to_play in pos.max_side, "root must be a declarer-side seat"
         worlds = [dict(w) for w in worlds]
         for w in worlds:
@@ -402,34 +656,36 @@ class PlaySearcher:
                 w[s] = list(pos.hands[s])
         st = self._make_root_state(pos)
         self.leaf_solves = 0
+        # At the root, evaluate every legal move so per_move has an entry for each card
         moves = legal_cards(st["max_hands"][pos.to_play], st["trick"])
+        next_m = None if M is None else M - 1
         per_move = {}
         for c in moves:
             ns, nw = self._apply(st, worlds, c)
-            per_move[c] = self._search(ns, nw)
-        best = max(per_move.items(), key=lambda kv: kv[1].mean())
+            front = self._search_front(ns, nw, next_m)
+            per_move[c] = front.best_vector(self.cfg.target)
+        best = max(per_move.items(), key=lambda kv: (kv[1].mean(), kv[1].p_at_least(self.cfg.target)))
         return SearchResult(best_card=best[0], per_move=per_move,
                             num_worlds=len(worlds),
                             num_leaf_solves=self.leaf_solves)
 
-    def _solve_exact(self, pos: PlayPosition, worlds) -> SearchResult:
+    def _solve_exact(self, pos: PlayPosition, worlds, M: Optional[int] = None) -> SearchResult:
         """
-        Exact committed-strategy search: Max commits one card across all valid
-        worlds at every declarer-side decision (fusion forbidden, sds.md K9);
-        Min defends per world. Leaves evaluate only at empty-trick boundaries,
-        where this dds3 build's solver is verified exact. Equivalent to
-        alpha-mu with M >= remaining Max plays; the truncated-PIMC variant
-        (Algorithm 1) is deferred until reliable mid-trick solving exists.
+        Exact committed-strategy search using SuitC's Pareto-front (`QUIRK`)
+        propagation: Max commits one card across all valid worlds at every
+        declarer-side decision (fusion forbidden, sds.md K9); Min defends per
+        world. Leaves evaluate only at empty-trick boundaries, where this dds3
+        build's solver is verified exact.
         """
-        return self._solve(pos, worlds)
+        return self._solve(pos, worlds, M=M)
 
     def solve_pimc(self, pos: PlayPosition, worlds) -> SearchResult:
         """Alias kept for API stability; runs the exact search above."""
         return self._solve_exact(pos, worlds)
 
     def solve_amu(self, pos: PlayPosition, worlds, M: int = None) -> SearchResult:
-        """Alias kept for API stability; runs the exact search above."""
-        return self._solve_exact(pos, worlds)
+        """Run alpha-mu Pareto-front play search with optional Max depth limit `M`."""
+        return self._solve_exact(pos, worlds, M=M)
 
 
 def sample_worlds_two_hands(deal, declarer: Seat, num_worlds: int, seed: int = 0):

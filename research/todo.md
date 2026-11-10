@@ -16,6 +16,8 @@ Data scaling (up to 578k traces, §6.80), tree depth sweeps (§6.62), and one-st
   - **Rule of 24 (LTC)**: Partnership trick projection (`24 - 7 - losing_trick_count`).
   - **Rule of 44**: Strong 2♣ suit-hand gate (`losing_trick_count <= 4 and quick_tricks >= 4`).
   - **Rule of 64**: 6–4 major suit selection comparing HCP in the 4-card vs 6-card suit.
+- **Use the new `SuitC` hand-valuation features in tree distillation (`docs/SUITC_INTEGRATION.md` §1)**:
+  - `long_suit_intermediates`, `trump_intermediates`, `long_suit_hcp`, and `short_suit_wasted_hcp` are now implemented in `src/bid/features.py` and `research/gpu_arena.py`; re-distill `later_uncont` / `open_uncont` trees to allow splits on them.
 - **Continuation-aware (2-step) counterfactual target for `open_uncont`**:
   - One-step DD relabelling failed on `open_uncont` (ceiling +0.021 vs oracle +4.309, §6.89) because an opening bid is never the final contract. Score opening candidates by rolling out 1–2 partner/responder steps with `brill_distilled` before reading the DD table.
 
@@ -28,8 +30,7 @@ Data scaling (up to 578k traces, §6.80), tree depth sweeps (§6.62), and one-st
 
 ### 5. Code & Hygiene Fixes
 - **Seed `Hand.random()` in `BiddingGapDetector`** (`tests/test_bidding_gaps.py:39-118`): Pass `rng` into `Hand.random(rng)` in `find_opening_gaps`, `find_response_gaps`, and `find_rebid_gaps` so gap counts are reproducible.
-- **Deep-M αμ play-search boundary in `PlaySearcher`** (`src/bid/sds.py`): Fix paper-exact `stop()` semantics so $M$ counts every Max node including in-flight tricks (`tests/test_play_search.py::test_full_depth_single_world_equals_dd`, §6.1).
-- **Port the 27 newer `BridgeFeatures` keys to `web/features.js`**: Add `agreed_trump*`, `*_is_longest`, `*_realsolid`, `partner_hcp_*`, `combined_hcp_*`, `*_first_call`, `opening_bid`, `rule20_total`, `rule_of_21`, `keycard_count_agreed`, and `has_trump_*` so the browser engine matches all 129 Python features (and remove the stale `total_points`/`quick_tricks`/`losing_trick_count` caveat in `web/README.md:54`).
+- **Port the 31 newer `BridgeFeatures` keys to `web/features.js`**: Add `agreed_trump*`, `*_is_longest`, `*_realsolid`, `partner_hcp_*`, `combined_hcp_*`, `*_first_call`, `opening_bid`, `rule20_total`, `rule_of_21`, `keycard_count_agreed`, `has_trump_*`, `long_suit_intermediates`, `trump_intermediates`, `long_suit_hcp`, and `short_suit_wasted_hcp` so the browser engine matches all 133 Python features (and remove the stale `total_points`/`quick_tricks`/`losing_trick_count` caveat in `web/README.md:54`).
 
 ### 6. Colab A100 GPU Acceleration Plan (`research/gpu_arena.py`)
 `research/gpu_arena.py` (`TensorDecisionNet`, `DealBundle`, `BatchedAuctionEnv`, `gpu_team_match`, `gpu_continuation_q_values`) and `data/colab_bundle_500.pt` are implemented and verified on a Colab **NVIDIA A100-SXM4-40GB** (`0` call/feature mismatches vs Python `DecisionNet`; **371 ms** for a 500-board duplicate match, **595 ms** / **16,817 boards/sec** for a 10,000-board match, and **4.15 s** for 17,420 full continuation rollouts). Next steps using the GPU arena:

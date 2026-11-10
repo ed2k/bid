@@ -287,6 +287,33 @@ class BridgeFeatures:
                 quick_tricks += 0.5
         features["quick_tricks"] = quick_tricks
 
+        # 7. SuitC Hand-Valuation Features (Gerrit van der Velde, SuitC/docs/hand-valuation.md)
+        # - Intermediates (T, 9, 8) in long suits (length >= 5, or longest suit if 4333):
+        #   SuitC shows QT982 opposite 743 produces 2.84 tricks vs Q5432's 2.26 (+0.58 tricks,
+        #   nearly equal to KQ432's 2.91 despite 3 fewer HCP).
+        # - Long-suit vs wasted short-suit honours: HCP concentrated in 5+ card suits works
+        #   for trick generation, whereas singleton/doubleton K/Q/J without the Ace is wasted.
+        long_suit_intermediates = 0
+        long_suit_hcp = 0
+        short_suit_wasted_hcp = 0
+        for mask, s_len, s_hcp_val in (
+            (c_mask, c_len, c_hcp),
+            (d_mask, d_len, d_hcp),
+            (h_mask, h_len, h_hcp),
+            (s_mask, s_len, s_hcp),
+        ):
+            interm_cnt = ((mask >> 8) & 1) + ((mask >> 7) & 1) + ((mask >> 6) & 1)
+            if s_len >= 5 or s_len == longest:
+                long_suit_intermediates += interm_cnt
+            if s_len >= 5:
+                long_suit_hcp += s_hcp_val
+            if s_len <= 2 and not (mask & (1 << 12)):
+                short_suit_wasted_hcp += s_hcp_val
+
+        features["long_suit_intermediates"] = long_suit_intermediates
+        features["long_suit_hcp"] = long_suit_hcp
+        features["short_suit_wasted_hcp"] = short_suit_wasted_hcp
+
         hand._cached_features = features
         return dict(features)
 
@@ -519,12 +546,16 @@ class BridgeFeatures:
             features["has_trump_queen"] = Rank.QUEEN in trump_ranks
             # RKCB 1430/0314: four aces plus the king of trump.
             features["keycard_count_agreed"] = hand.ace_count + (1 if has_tk else 0)
+            features["trump_intermediates"] = sum(
+                1 for r in (Rank.TEN, Rank.NINE, Rank.EIGHT) if r in trump_ranks
+            )
         else:
             features["agreed_trump_len"] = -1
             features["has_trump_king"] = False
             features["has_trump_queen"] = False
             # No agreed suit (NT auctions, Gerber): keycards are plain aces.
             features["keycard_count_agreed"] = hand.ace_count if hand is not None else -1
+            features["trump_intermediates"] = 0
 
         # ---- NT stopper quality in opponents' bid suits ---------------------
         # Deterministic holding check: A=2, guarded K (K + 1 other)=1,

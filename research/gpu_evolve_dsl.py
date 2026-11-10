@@ -62,6 +62,7 @@ def slice_bundle(bundle: ga.DealBundle, indices: torch.Tensor) -> ga.DealBundle:
         bundle.suit_has_queen[indices],
         bundle.suit_stopper_q[indices],
         bundle.ace_counts[indices],
+        bundle.suit_intermediates[indices],
     )
 
 

@@ -30405,3 +30405,251 @@ RULE BD_later_cont_P828:
   CONDITION: partner_last_call != '5NT'
   CONDITION: my_side_bid_count > 4.5
   # distilled from Brill /bid
+
+# --- SuitC Hand-Valuation Feature Splits (validated on 10k-board split) ---
+RULE BD_later_cont_P110_suitc:
+  CALL: 2H
+  PRIORITY: 11
+  CONDITION: is_opening == False
+  CONDITION: opponents_bid == True
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: combined_hcp_min <= 9.5
+  CONDITION: spade_len <= 4.5
+  CONDITION: partner_last_call != 'X'
+  CONDITION: heart_len > 4.5
+  CONDITION: longest_suit_len > 5.5
+  CONDITION: losing_trick_count > 6.5
+  CONDITION: hcp > 5.5
+  CONDITION: last_bid_strain != 'D'
+  CONDITION: last_bid_strain != 'C'
+  # distilled from Brill /bid
+  CONDITION: short_suit_wasted_hcp == 0
+
+RULE BD_open_uncont_P183_suitc:
+  CALL: 1NT
+  PRIORITY: 11
+  CONDITION: is_opening == True
+  CONDITION: opponents_bid == False
+  CONDITION: hcp > 11.5
+  CONDITION: spade_len <= 4.5
+  CONDITION: heart_len <= 4.5
+  CONDITION: d_is_longest > 0.5
+  CONDITION: hcp > 14.5
+  CONDITION: total_points > 17.5
+  CONDITION: hcp <= 19.5
+  CONDITION: hcp > 17.5
+  # distilled from Brill /bid
+  CONDITION: short_suit_wasted_hcp >= 3
+
+RULE BD_later_uncont_P139_suitc:
+  CALL: PASS
+  PRIORITY: 11
+  CONDITION: is_opening == False
+  CONDITION: opponents_bid == False
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: spade_len <= 3.5
+  CONDITION: combined_hcp_max > 26.5
+  CONDITION: partner_last_call != '1C'
+  CONDITION: partner_last_call != '1D'
+  CONDITION: hcp <= 9.5
+  CONDITION: support_in_partner_suit <= 2.5
+  CONDITION: competition_level <= 1.5
+  # distilled from Brill /bid
+  CONDITION: short_suit_wasted_hcp == 0
+
+RULE BD_later_cont_P240_suitc:
+  CALL: 1NT
+  PRIORITY: 11
+  CONDITION: is_opening == False
+  CONDITION: opponents_bid == True
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: combined_hcp_min > 9.5
+  CONDITION: spade_len <= 4.5
+  CONDITION: heart_len <= 4.5
+  CONDITION: combined_hcp_min > 14.5
+  CONDITION: support_in_partner_suit > 2.5
+  CONDITION: combined_hcp_max > 27.5
+  CONDITION: partner_last_call != '1S'
+  CONDITION: last_bid_strain == 'S'
+  CONDITION: partner_last_call != '1H'
+  # distilled from Brill /bid
+  CONDITION: short_suit_wasted_hcp == 0
+
+RULE BD_later_cont_P722_suitc:
+  CALL: 2S
+  PRIORITY: 11
+  CONDITION: is_opening == False
+  CONDITION: opponents_bid == True
+  CONDITION: last_bid_level > 1.5
+  CONDITION: partner_last_call != 'PASS'
+  CONDITION: last_bid_level <= 2.5
+  CONDITION: hcp > 6.5
+  CONDITION: last_bid_strain != 'C'
+  CONDITION: last_bid_strain != 'D'
+  CONDITION: partner_last_call != '2NT'
+  CONDITION: partner_last_call != '2S'
+  CONDITION: partner_last_call != '2H'
+  CONDITION: support_in_partner_suit > 2.5
+  # distilled from Brill /bid
+  CONDITION: short_suit_wasted_hcp == 0
+
+RULE BD_later_cont_P224_suitc:
+  CALL: PASS
+  PRIORITY: 11
+  CONDITION: is_opening == False
+  CONDITION: opponents_bid == True
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: combined_hcp_min > 9.5
+  CONDITION: spade_len <= 4.5
+  CONDITION: heart_len <= 4.5
+  CONDITION: combined_hcp_min > 14.5
+  CONDITION: support_in_partner_suit <= 2.5
+  CONDITION: combined_hcp_max > 29.5
+  CONDITION: competition_level > 2.5
+  CONDITION: longest_suit_len <= 5.5
+  CONDITION: last_bid_strain != 'NT'
+  # distilled from Brill /bid
+  CONDITION: short_suit_wasted_hcp == 0
+
+RULE BD_later_uncont_P52_suitc:
+  CALL: 2NT
+  PRIORITY: 11
+  CONDITION: is_opening == False
+  CONDITION: opponents_bid == False
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: spade_len <= 3.5
+  CONDITION: combined_hcp_max <= 26.5
+  CONDITION: hcp > 7.5
+  CONDITION: heart_len <= 4.5
+  CONDITION: auction_len <= 5.5
+  CONDITION: longest_suit_len <= 5.5
+  CONDITION: spade_len > 1.5
+  # distilled from Brill /bid
+  CONDITION: short_suit_wasted_hcp == 0
+
+RULE BD_later_cont_P504_suitc:
+  CALL: 2S
+  PRIORITY: 11
+  CONDITION: is_opening == False
+  CONDITION: opponents_bid == True
+  CONDITION: last_bid_level > 1.5
+  CONDITION: partner_last_call == 'PASS'
+  CONDITION: combined_hcp_min > 11.5
+  CONDITION: last_bid_level <= 2.5
+  CONDITION: rule20_total <= 22.5
+  CONDITION: my_side_bid_count > 1.5
+  CONDITION: partner_last_bid_strain != 'H'
+  CONDITION: d_is_longest <= 0.5
+  CONDITION: competition_level <= 4.5
+  CONDITION: rule20_total <= 17.5
+  # distilled from Brill /bid
+  CONDITION: short_suit_wasted_hcp >= 2
+
+RULE BD_later_cont_P386_suitc:
+  CALL: 2S
+  PRIORITY: 11
+  CONDITION: is_opening == False
+  CONDITION: opponents_bid == True
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: combined_hcp_min > 9.5
+  CONDITION: spade_len > 4.5
+  CONDITION: last_bid_strain != 'NT'
+  CONDITION: last_bid_strain != 'S'
+  CONDITION: second_longest_len > 4.5
+  CONDITION: opening_bid != '1H'
+  CONDITION: heart_len <= 4.0
+  CONDITION: opp_bid_count <= 1.5
+  CONDITION: s_is_longest > 0.5
+  # distilled from Brill /bid
+  CONDITION: short_suit_wasted_hcp >= 2
+
+RULE BD_later_uncont_P160_suitc:
+  CALL: 2C
+  PRIORITY: 11
+  CONDITION: is_opening == False
+  CONDITION: opponents_bid == False
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: spade_len <= 3.5
+  CONDITION: combined_hcp_max > 26.5
+  CONDITION: partner_last_call != '1C'
+  CONDITION: partner_last_call != '1D'
+  CONDITION: hcp > 9.5
+  CONDITION: is_balanced > 0.5
+  CONDITION: last_bid_strain == 'NT'
+  CONDITION: heart_len > 3.5
+  CONDITION: competition_level > 1.5
+  # distilled from Brill /bid
+  CONDITION: short_suit_wasted_hcp == 0
+
+RULE BD_later_cont_P492_suitc:
+  CALL: 2S
+  PRIORITY: 11
+  CONDITION: is_opening == False
+  CONDITION: opponents_bid == True
+  CONDITION: last_bid_level > 1.5
+  CONDITION: partner_last_call == 'PASS'
+  CONDITION: combined_hcp_min > 11.5
+  CONDITION: last_bid_level <= 2.5
+  CONDITION: rule20_total <= 22.5
+  CONDITION: my_side_bid_count <= 1.5
+  CONDITION: auction_len > 3.5
+  CONDITION: partner_first_call == '1S'
+  CONDITION: spade_len > 2.5
+  CONDITION: competition_level > 3.5
+  # distilled from Brill /bid
+  CONDITION: long_suit_hcp <= 2
+
+RULE BD_later_cont_P239_suitc:
+  CALL: 3H
+  PRIORITY: 11
+  CONDITION: is_opening == False
+  CONDITION: opponents_bid == True
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: combined_hcp_min > 9.5
+  CONDITION: spade_len <= 4.5
+  CONDITION: heart_len <= 4.5
+  CONDITION: combined_hcp_min > 14.5
+  CONDITION: support_in_partner_suit > 2.5
+  CONDITION: combined_hcp_max > 27.5
+  CONDITION: partner_last_call != '1S'
+  CONDITION: last_bid_strain == 'S'
+  CONDITION: partner_last_call == '1H'
+  # distilled from Brill /bid
+  CONDITION: long_suit_hcp >= 6
+
+RULE BD_later_cont_P238_suitc:
+  CALL: PASS
+  PRIORITY: 11
+  CONDITION: is_opening == False
+  CONDITION: opponents_bid == True
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: combined_hcp_min > 9.5
+  CONDITION: spade_len <= 4.5
+  CONDITION: heart_len <= 4.5
+  CONDITION: combined_hcp_min > 14.5
+  CONDITION: support_in_partner_suit > 2.5
+  CONDITION: combined_hcp_max > 27.5
+  CONDITION: partner_last_call == '1S'
+  CONDITION: hcp > 9.5
+  CONDITION: opp_last_call != '1C'
+  # distilled from Brill /bid
+  CONDITION: short_suit_wasted_hcp == 0
+
+RULE BD_later_uncont_P245_suitc:
+  CALL: 3S
+  PRIORITY: 11
+  CONDITION: is_opening == False
+  CONDITION: opponents_bid == False
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: spade_len > 3.5
+  CONDITION: last_bid_strain == 'NT'
+  CONDITION: spade_len > 4.5
+  CONDITION: opening_bid != '1NT'
+  CONDITION: spade_len > 5.5
+  CONDITION: hcp > 13.5
+  CONDITION: spade_len <= 6.5
+  CONDITION: second_longest_len <= 4.5
+  CONDITION: competition_level <= 2.5
+  # distilled from Brill /bid
+  CONDITION: short_suit_wasted_hcp >= 3
+
