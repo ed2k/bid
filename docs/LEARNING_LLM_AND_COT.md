@@ -8,13 +8,13 @@ $$\text{Hand} \implies \text{Bid}$$
 In modern Large Language Model (LLM) research, **Chain-of-Thought (CoT)** reasoning demonstrates that models achieve dramatically higher accuracy when they emit step-by-step intermediate thoughts before producing their final answer:
 $$\text{Hand} \implies \text{Intermediate Reasoning Steps (HCP, shape, rule matching)} \implies \text{Bid}$$
 
-This repository implements a complete, self-contained Transformer from scratch in PyTorch ([`src/bid/cot_model.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/cot_model.py)) and a neuro-symbolic reasoning engine ([`src/bid/cot_bidder.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/cot_bidder.py)).
+This repository implements a complete, self-contained Transformer from scratch in PyTorch ([`src/bid/cot_model.py`](../src/bid/cot_model.py)) and a neuro-symbolic reasoning engine ([`src/bid/cot_bidder.py`](../src/bid/cot_bidder.py)).
 
 ---
 
 ## 1. The Transformer Architecture from Scratch
 
-Rather than importing black-box third-party libraries, [`src/bid/cot_model.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/cot_model.py) implements a clean GPT-style decoder-only Transformer in under 300 lines of standard PyTorch.
+Rather than importing black-box third-party libraries, [`src/bid/cot_model.py`](../src/bid/cot_model.py) implements a clean GPT-style decoder-only Transformer in under 300 lines of standard PyTorch.
 
 ### 1.1 Structural Overview
 ```text
@@ -68,7 +68,7 @@ Output: 2C
 The model must compute hand evaluation, shape categorization, and convention rule retrieval in a single forward pass. Complex reasoning frequently fails.
 
 ### 2.2 The Chain-of-Thought Solution
-In this repository, [`src/bid/trace_factory.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/trace_factory.py) formats training examples with explicit intermediate thoughts:
+In this repository, [`src/bid/trace_factory.py`](../src/bid/trace_factory.py) formats training examples with explicit intermediate thoughts:
 
 ```text
 Input:
@@ -117,7 +117,7 @@ The symbolic system acts as the **Teacher**, generating thousands of rich, trans
 ## 4. Inference Optimization & Uncertainty Estimation
 
 ### 4.1 Vectorized Batched Decoding (`generate_batch`)
-During inference, naive single-sequence generation is bound by GPU memory transfer latency. In [`src/bid/cot_model.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/cot_model.py), `generate_batch`:
+During inference, naive single-sequence generation is bound by GPU memory transfer latency. In [`src/bid/cot_model.py`](../src/bid/cot_model.py), `generate_batch`:
 1. Packs $B$ sequences into a right-padded 2D tensor on CPU.
 2. Transfers the entire batch to the device (Apple Silicon `mps` or NVIDIA `cuda`) in a single transfer.
 3. Steps forward autoregressively, computing softmax probabilities, Shannon entropy, and greedy/multinomial next tokens simultaneously across all batch elements.
@@ -139,7 +139,7 @@ This entropy signal is used by `mine_disagreements.py` to trigger active learnin
 
 A notorious flaw of pure deep learning models is **hallucination**: a neural network might output an illegal bid (e.g. bidding `1H` after `2S`) or invent hand features it does not actually possess.
 
-In [`src/bid/cot_bidder.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/cot_bidder.py), this repository implements **Neuro-Symbolic Verification**:
+In [`src/bid/cot_bidder.py`](../src/bid/cot_bidder.py), this repository implements **Neuro-Symbolic Verification**:
 
 ```text
                      Neural Model Generates:

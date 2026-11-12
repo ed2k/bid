@@ -1,6 +1,6 @@
 # Borrowing from `../SuitC`: Hand Valuation, Single-Dummy Scoring, and Pareto-Front Play Search
 
-This document outlines what the `bid` repository can borrow from Gerrit A. van der Velde's [`../SuitC`](file:///Users/admin/Documents/GitHub/SuitC/README.md) repository (containing the `SuitC` single-dummy suit-combination analyzer, the multi-layout `dds` solver, the `playc` combination enumerator, and Gerrit's hand-valuation studies).
+This document outlines what the `bid` repository can borrow from Gerrit A. van der Velde's [`../SuitC`](../../SuitC/README.md) repository (containing the `SuitC` single-dummy suit-combination analyzer, the multi-layout `dds` solver, the `playc` combination enumerator, and Gerrit's hand-valuation studies).
 
 ---
 
@@ -8,7 +8,7 @@ This document outlines what the `bid` repository can borrow from Gerrit A. van d
 
 ### Background (`../SuitC/docs/hand-valuation.md` & `../SuitC/examples/strength/`)
 
-In [`hand-valuation.md`](file:///Users/admin/Documents/GitHub/SuitC/docs/hand-valuation.md) and [`examples/strength/KQ`](file:///Users/admin/Documents/GitHub/SuitC/examples/strength/KQ), Gerrit analyzed all 105 partnership suit-length splits (`11.xp` … `b1.xp`) using exact single-dummy play to measure where standard Milton Work `hcp` + length evaluation breaks down. Even with the **exact same partnership card count (7 cards) and the exact same high-card points (5 HCP: K and Q)**, expected playing strength ranges from **1.73 tricks to 3.43 tricks** (**1.70 tricks difference**) due to three factors:
+In [`hand-valuation.md`](../../SuitC/docs/hand-valuation.md) and [`examples/strength/KQ`](../../SuitC/examples/strength/KQ), Gerrit analyzed all 105 partnership suit-length splits (`11.xp` … `b1.xp`) using exact single-dummy play to measure where standard Milton Work `hcp` + length evaluation breaks down. Even with the **exact same partnership card count (7 cards) and the exact same high-card points (5 HCP: K and Q)**, expected playing strength ranges from **1.73 tricks to 3.43 tricks** (**1.70 tricks difference**) due to three factors:
 
 1. **Intermediate Cards (`T`, `9`, `8`) in Long Suits Are Worth Nearly a Full Trick**:
    - In a 2–5 fit with divided honors (`Kx` opposite `Qxxxx`), adding `T, 9, 8` increases expected tricks from **2.37** (`Q5432`, 46.8% chance of 3 tricks) to **3.30** (`QT982`, 100.0% chance of 3 tricks) — **+0.93 tricks with 0 additional HCP**.
@@ -36,7 +36,7 @@ Currently, `BridgeFeatures` tracks `tens_count` across the whole hand and `*_hon
 
 ### Background (`../SuitC/examples/dds/TA` & `../SuitC/docs/database.md`)
 
-In [`examples/dds/TA`](file:///Users/admin/Documents/GitHub/SuitC/examples/dds/TA), Gerrit compares Double-Dummy (`DDS`) against Single-Dummy (`SuitC`) across 14 layouts of the same ending:
+In [`examples/dds/TA`](../../SuitC/examples/dds/TA), Gerrit compares Double-Dummy (`DDS`) against Single-Dummy (`SuitC`) across 14 layouts of the same ending:
 - **Double-Dummy** claims declarer wins 4 tricks on **7 of 14 layouts** (because DD peeks at East–West's cards on each layout and picks the line that works for that specific layout).
 - **Single-Dummy** shows that any single declarer strategy wins 4 tricks on **at most 4 of 14 layouts**.
 
@@ -59,7 +59,7 @@ In our codebase, both `research/leaf_ceiling.py` and `research/gpu_arena.py` eva
 
 ### The Strategy-Fusion Bug in `src/bid/sds.py`
 
-In [`src/bid/sds.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/sds.py#L353-L360) (`PlaySearcher._search`), interior Max nodes (declarer/dummy turns after trick 1) currently do:
+In [`src/bid/sds.py`](../src/bid/sds.py#L353-L360) (`PlaySearcher._search`), interior Max nodes (declarer/dummy turns after trick 1) currently do:
 
 ```python
         if st["to_play"] in st["max_side"]:
@@ -76,7 +76,7 @@ Calling `OutcomeVector.elementwise_max(best, vec)` at an interior Max node commi
 
 ### How `SuitC` Solves This (`../SuitC/src/merge_quirk.c`, `clean_quirk.c`, `use_suit_entries.c`)
 
-In [`../SuitC/docs/algorithm.md`](file:///Users/admin/Documents/GitHub/SuitC/docs/algorithm.md#L41-L54), `SuitC` eliminates strategy fusion by propagating a **Pareto front of non-dominated strategy outcome vectors** (`QUIRK` tree) bottom-up:
+In [`../SuitC/docs/algorithm.md`](../../SuitC/docs/algorithm.md#L41-L54), `SuitC` eliminates strategy fusion by propagating a **Pareto front of non-dominated strategy outcome vectors** (`QUIRK` tree) bottom-up:
 
 1. **Representation (`Front = List[OutcomeVector]`)**:
    - A strategy vector $v = (v_1, \dots, v_W)$ dominates $u = (u_1, \dots, u_W)$ iff $v_w \ge u_w$ for all worlds $w$ and $v_w > u_w$ for at least one $w$ (`add_quirk.c` / `check_quirk.c`).
@@ -127,7 +127,7 @@ In `../SuitC`:
 
 ## 6. Implemented Architecture & Measured Results
 
-All three phases above have been implemented and verified across [`src/bid/suitc.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/suitc.py), [`src/bid/sds.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/sds.py), [`src/bid/features.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/features.py), [`research/gpu_arena.py`](file:///Users/admin/Documents/GitHub/bid/research/gpu_arena.py), [`system/brill_gpu_evolved.dsl`](file:///Users/admin/Documents/GitHub/bid/system/brill_gpu_evolved.dsl), and [`tests/test_suitc.py`](file:///Users/admin/Documents/GitHub/bid/tests/test_suitc.py).
+All three phases above have been implemented and verified across [`src/bid/suitc.py`](../src/bid/suitc.py), [`src/bid/sds.py`](../src/bid/sds.py), [`src/bid/features.py`](../src/bid/features.py), [`research/gpu_arena.py`](../research/gpu_arena.py), [`system/brill_gpu_evolved.dsl`](../system/brill_gpu_evolved.dsl), and [`tests/test_suitc.py`](../tests/test_suitc.py).
 
 ### 6.1 Empirical Validation of `SuitC` Hand-Valuation Features on 40,000 Solved Hands
 
@@ -147,25 +147,25 @@ To verify whether Gerrit's single-suit findings transfer to full 52-card Double-
 
 ### 6.2 Duplicate Bidding Improvement on Held-Out Test Boards (`+0.067` to `+0.069 IMP/board`)
 
-Using the 3-way split on `data/colab_bundle_10k.pt` (`5,000` Train / `2,500` Validation / `2,500` untouched Held-Out Test), we screened candidate rule splits on `short_suit_wasted_hcp`, `long_suit_hcp`, `long_suit_intermediates`, and `trump_intermediates` and greedily accepted **14 rule splits** ([`system/brill_gpu_evolved.dsl`](file:///Users/admin/Documents/GitHub/bid/system/brill_gpu_evolved.dsl#L30479-L30690)) that improved Validation scores across all three benchmark opponents (`brill_distilled.dsl`, `brill_distilled_shipdd.dsl`, and `champion_system.dsl`).
+Using the 3-way split on `data/colab_bundle_10k.pt` (`5,000` Train / `2,500` Validation / `2,500` untouched Held-Out Test), we screened candidate rule splits on `short_suit_wasted_hcp`, `long_suit_hcp`, `long_suit_intermediates`, and `trump_intermediates` and greedily accepted **14 rule splits** ([`system/brill_gpu_evolved.dsl`](../system/brill_gpu_evolved.dsl#L30479-L30690)) that improved Validation scores across all three benchmark opponents (`brill_distilled.dsl`, `brill_distilled_shipdd.dsl`, and `champion_system.dsl`).
 
 On the **2,500 untouched Held-Out Test boards**, adding the 14 `SuitC`-feature rule splits improves duplicate IMP/board against every opponent:
 
 | Opponent System (`2,500` Held-Out Test Boards) | Before `SuitC` Splits | After `SuitC` Splits | Additional Gain from `SuitC` | Total Held-Out Edge |
 | :--- | ---: | ---: | ---: | ---: |
-| vs [`system/brill_distilled.dsl`](file:///Users/admin/Documents/GitHub/bid/system/brill_distilled.dsl) | `+0.2896 IMP/bd` (`+724 IMP`) | **`+0.3584 ± 0.0737 IMP/bd`** (`t = +4.86`) | **`+0.0688 IMP/bd` (`+172 IMP`)** | **`+896 IMP`** |
-| vs [`system/brill_distilled_shipdd.dsl`](file:///Users/admin/Documents/GitHub/bid/system/brill_distilled_shipdd.dsl) | `+0.2652 IMP/bd` (`+663 IMP`) | **`+0.3320 ± 0.0544 IMP/bd`** (`t = +6.10`) | **`+0.0668 IMP/bd` (`+167 IMP`)** | **`+830 IMP`** |
-| vs [`system/champion_system.dsl`](file:///Users/admin/Documents/GitHub/bid/system/champion_system.dsl) | `+1.2596 IMP/bd` (`+3,149 IMP`) | **`+1.3016 ± 0.1217 IMP/bd`** (`t = +10.69`) | **`+0.0420 IMP/bd` (`+105 IMP`)** | **`+3,254 IMP`** |
+| vs [`system/brill_distilled.dsl`](../system/brill_distilled.dsl) | `+0.2896 IMP/bd` (`+724 IMP`) | **`+0.3584 ± 0.0737 IMP/bd`** (`t = +4.86`) | **`+0.0688 IMP/bd` (`+172 IMP`)** | **`+896 IMP`** |
+| vs [`system/brill_distilled_shipdd.dsl`](../system/brill_distilled_shipdd.dsl) | `+0.2652 IMP/bd` (`+663 IMP`) | **`+0.3320 ± 0.0544 IMP/bd`** (`t = +6.10`) | **`+0.0668 IMP/bd` (`+167 IMP`)** | **`+830 IMP`** |
+| vs [`system/champion_system.dsl`](../system/champion_system.dsl) | `+1.2596 IMP/bd` (`+3,149 IMP`) | **`+1.3016 ± 0.1217 IMP/bd`** (`t = +10.69`) | **`+0.0420 IMP/bd` (`+105 IMP`)** | **`+3,254 IMP`** |
 
 ### 6.3 Single-Dummy Play Search Speedup & Strategy-Fusion Elimination (`src/bid/sds.py`)
 
-1. **`2.06x` Search Speedup from Touching-Card Sequence Pruning ([`canonical_legal_cards`](file:///Users/admin/Documents/GitHub/bid/src/bid/sds.py#L358-L384))**:
-   - Across 25 4-trick, 4-world single-dummy endgames, collapsing contiguous touching cards held in the same hand (`Q-J-T`, `5-4`, etc.) reduces [`PlaySearcher.solve_amu`](file:///Users/admin/Documents/GitHub/bid/src/bid/sds.py#L714-L716) wall-clock runtime from **`182.7s` to `88.7s` (`2.06x` speedup, `-51.5%` search time)** with zero loss of exactness.
-2. **Elimination of Interior Max-Node Strategy Fusion ([`Front`](file:///Users/admin/Documents/GitHub/bid/src/bid/sds.py#L420-L542) / `QUIRK`)**:
-   - Propagating non-dominated Pareto fronts (`Front.union` at Max nodes, `Front.min_merge` at Min nodes) eliminates interior declarer-side strategy fusion, which previously inflated expected trick counts on **`5.0%` of random 3-trick, 6-world endgames** and by up to **`+0.50` fake tricks** on two-way discard/guess positions ([`test_front_prevents_strategy_fusion_at_interior_max_node`](file:///Users/admin/Documents/GitHub/bid/tests/test_suitc.py#L94-L173)).
+1. **`2.06x` Search Speedup from Touching-Card Sequence Pruning ([`canonical_legal_cards`](../src/bid/sds.py#L358-L384))**:
+   - Across 25 4-trick, 4-world single-dummy endgames, collapsing contiguous touching cards held in the same hand (`Q-J-T`, `5-4`, etc.) reduces [`PlaySearcher.solve_amu`](../src/bid/sds.py#L714-L716) wall-clock runtime from **`182.7s` to `88.7s` (`2.06x` speedup, `-51.5%` search time)** with zero loss of exactness.
+2. **Elimination of Interior Max-Node Strategy Fusion ([`Front`](../src/bid/sds.py#L420-L542) / `QUIRK`)**:
+   - Propagating non-dominated Pareto fronts (`Front.union` at Max nodes, `Front.min_merge` at Min nodes) eliminates interior declarer-side strategy fusion, which previously inflated expected trick counts on **`5.0%` of random 3-trick, 6-world endgames** and by up to **`+0.50` fake tricks** on two-way discard/guess positions ([`test_front_prevents_strategy_fusion_at_interior_max_node`](../tests/test_suitc.py#L94-L173)).
 
 ### 6.4 Native `SuitC` Solver & Vacant-Places Weighting (`src/bid/suitc.py`, `src/bid/sds.py`)
 
-- **[`SuitCSolver`](file:///Users/admin/Documents/GitHub/bid/src/bid/suitc.py#L67-L280)** wraps [`bin/SuitC`](file:///Users/admin/Documents/GitHub/bid/bin/SuitC) with `@lru_cache(maxsize=4096)`, solving single-dummy expected tricks (`expected_tricks`), safety-play probabilities ([`p_at_least`](file:///Users/admin/Documents/GitHub/bid/src/bid/suitc.py#L57-L63)), entry limits (`north_entries`, `south_entries`), and defensive NT stoppers ([`stopper_tricks`](file:///Users/admin/Documents/GitHub/bid/src/bid/suitc.py#L266-L280)) in **`~2 ms` uncached / `<1 µs` cached**.
-- **[`SDSScorer.infer_vacant_places`](file:///Users/admin/Documents/GitHub/bid/src/bid/sds.py#L114-L148)** and **[`SDSScorer.hypergeometric_suit_weight`](file:///Users/admin/Documents/GitHub/bid/src/bid/sds.py#L151-L179)** apply `SuitC`'s exact hypergeometric vacant-places weighting when opponents have bid or preempted a suit during the auction (e.g., shifting `AQ2` opposite `543` from `50.48%` a priori to `33.34%` when West has shown 7 cards in another suit).
+- **[`SuitCSolver`](../src/bid/suitc.py#L67-L280)** wraps [`bin/SuitC`](../bin/SuitC) with `@lru_cache(maxsize=4096)`, solving single-dummy expected tricks (`expected_tricks`), safety-play probabilities ([`p_at_least`](../src/bid/suitc.py#L57-L63)), entry limits (`north_entries`, `south_entries`), and defensive NT stoppers ([`stopper_tricks`](../src/bid/suitc.py#L266-L280)) in **`~2 ms` uncached / `<1 µs` cached**.
+- **[`SDSScorer.infer_vacant_places`](../src/bid/sds.py#L114-L148)** and **[`SDSScorer.hypergeometric_suit_weight`](../src/bid/sds.py#L151-L179)** apply `SuitC`'s exact hypergeometric vacant-places weighting when opponents have bid or preempted a suit during the auction (e.g., shifting `AQ2` opposite `543` from `50.48%` a priori to `33.34%` when West has shown 7 cards in another suit).
 

@@ -42,7 +42,7 @@ Where:
 - $P(b \mid D) = 1$ if hand $H_{\text{North}}$ satisfies the rule conditions (`hcp in [15, 17]` and `balanced == True`), and $0$ otherwise.
 - $P(b)$ is the total probability mass of hands satisfying `1NT`.
 
-In this codebase, [`src/bid/sampling.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/sampling.py) implements **RBMBMC (Rule-Based Model-Based Monte Carlo)** sampling: instead of computing all $3.45 \times 10^{16}$ deals, it draws representative sample worlds consistent with the accumulated constraints.
+In this codebase, [`src/bid/sampling.py`](../src/bid/sampling.py) implements **RBMBMC (Rule-Based Model-Based Monte Carlo)** sampling: instead of computing all $3.45 \times 10^{16}$ deals, it draws representative sample worlds consistent with the accumulated constraints.
 
 ---
 
@@ -84,7 +84,7 @@ A core game-theoretic weapon in bridge is **preemption**: jumping to a high leve
 
 ## 4. Competitive Value of Information (VOI)
 
-In this repository, [`src/bid/convention_search.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/convention_search.py) models the exact mathematical trade-off of any proposed bidding convention using **Competitive VOI**:
+In this repository, [`src/bid/convention_search.py`](../src/bid/convention_search.py) models the exact mathematical trade-off of any proposed bidding convention using **Competitive VOI**:
 
 $$\text{Net VOI}(b) = \text{VOI}_{\text{partner}}(b) - \lambda_{\text{leak}} \cdot \text{Leakage}_{\text{defenders}}(b) + \lambda_{\text{preempt}} \cdot \text{Disruption}_{\text{opponents}}(b)$$
 
@@ -115,7 +115,7 @@ In casual rubber bridge, receiving good cards wins the game. In competitive brid
 - Your score is compared against the counterpart. Winning or losing depends entirely on making superior strategic decisions on the identical board.
 
 ### 5.2 The IMP Conversion Function
-Scores are converted to **International Match Points (IMPs)** via a non-linear concave function ([`src/bid/scoring.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/scoring.py)):
+Scores are converted to **International Match Points (IMPs)** via a non-linear concave function ([`src/bid/scoring.py`](../src/bid/scoring.py)):
 
 | Point Difference | IMPs | Strategic Implication |
 | :---: | :---: | :--- |
@@ -128,7 +128,7 @@ Because the payoff curve heavily rewards games and slams, optimal game-theoretic
 ### 5.3 Double Dummy Par
 The theoretical game-theoretic equilibrium of a bridge deal is its **Par**:
 - The contract and score reached if all four players could see all 52 cards and played minimax card play.
-- Calculated via the Double Dummy Solver ([`src/bid/dds.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/dds.py)).
+- Calculated via the Double Dummy Solver ([`src/bid/dds.py`](../src/bid/dds.py)).
 
 When benchmarking a bidding system (`eval_vs_dds.py`), we measure **Average IMP Loss vs Par**:
 $$\text{Average IMP Loss} = \frac{1}{N} \sum_{i=1}^N \text{ScoreToIMP}(\text{ParScore}_i - \text{SystemScore}_i)$$

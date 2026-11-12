@@ -79,7 +79,7 @@ DEFENSE PASS OVER ANY PRIO 1 IF True
 ```
 
 ### 2.2 Available Condition Primitives
-The feature engine ([`src/bid/features.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/features.py)) provides bitmask-accelerated features:
+The feature engine ([`src/bid/features.py`](../src/bid/features.py)) provides bitmask-accelerated features:
 
 | Feature Key | Type | Description | Example |
 | :--- | :--- | :--- | :--- |
@@ -112,7 +112,7 @@ print(f"Successfully compiled system '{decision_net.name}' with {len(decision_ne
 ```
 
 ### 3.2 Detect Unhandled Hands (Gap Diagnostics)
-Use [`ParDiagnosticEngine`](file:///Users/admin/Documents/GitHub/bid/src/bid/diagnostics.py) to simulate 1,000 random hands and detect auctions where the system falls through without an appropriate bid:
+Use [`ParDiagnosticEngine`](../src/bid/diagnostics.py) to simulate 1,000 random hands and detect auctions where the system falls through without an appropriate bid:
 
 ```bash
 .venv/bin/python3 -c "
@@ -130,7 +130,7 @@ for gap in report.sample_gaps[:3]:
 
 ## 4. Step 3: Benchmarking Against Double Dummy Par
 
-Use [`eval_vs_dds.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/eval_vs_dds.py) to evaluate how close your contracts are to theoretical double-dummy par over hundreds of randomized boards.
+Use [`eval_vs_dds.py`](../src/bid/eval_vs_dds.py) to evaluate how close your contracts are to theoretical double-dummy par over hundreds of randomized boards.
 
 ```bash
 .venv/bin/python3 -m bid.eval_vs_dds --system system/my_system.dsl --boards 100 --seed 42
@@ -169,7 +169,7 @@ To test whether `my_system.dsl` beats an established benchmark (like Standard Am
 
 Double Dummy Solver (DDS) evaluates contracts assuming all four hands are visible during card play. In real bidding, you must make decisions under partial information.
 
-[`SDSScorer`](file:///Users/admin/Documents/GitHub/bid/src/bid/sds.py) uses Monte Carlo belief sampling:
+[`SDSScorer`](../src/bid/sds.py) uses Monte Carlo belief sampling:
 - It samples $N$ hidden partner and opponent hands consistent with the auction history.
 - It computes the expected score distribution across hidden worlds.
 
@@ -197,7 +197,7 @@ print('SDS Realistic Score:', res.get('avg_score_sds'))
 
 ## 7. Step 6: Automated Convention Synthesis & Competitive VOI
 
-If you want to discover new conventions or optimize thresholds (e.g. 1NT HCP bounds, Bergen raises, Stayman variations), use [`convention_search.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/convention_search.py).
+If you want to discover new conventions or optimize thresholds (e.g. 1NT HCP bounds, Bergen raises, Stayman variations), use [`convention_search.py`](../src/bid/convention_search.py).
 
 ```bash
 .venv/bin/python3 -m bid.convention_search \
@@ -224,7 +224,7 @@ Results and ranked candidate systems are saved to `data/conventions/search_repor
 
 ## 8. Step 7: Autonomous Continuous Improvement (The Flywheel)
 
-Run [`autoloop.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/autoloop.py) to let the system improve itself autonomously:
+Run [`autoloop.py`](../src/bid/autoloop.py) to let the system improve itself autonomously:
 
 ```bash
 .venv/bin/python3 -m bid.autoloop \

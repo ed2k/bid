@@ -20,10 +20,10 @@ A naive Monte Carlo approach randomly deals 39 cards to the remaining 3 players,
 - **Problem**: As an auction grows longer, the probability that a random deal matches all four players' previous bids drops to $< 10^{-7}$. Rejection sampling will freeze your computer.
 
 ### 1.2 Rule-Based Model-Based Monte Carlo (RBMBMC)
-In [`src/bid/sampling.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/sampling.py), the `RBMBMCSampler` uses **Constraint Satisfaction and Soft Player Models**:
+In [`src/bid/sampling.py`](../src/bid/sampling.py), the `RBMBMCSampler` uses **Constraint Satisfaction and Soft Player Models**:
 1. It maintains intervals for High Card Points (e.g., North opened 1NT $\implies$ HCP $\in [15, 17]$) and suit lengths (spades $\in [2, 5]$).
 2. It assigns cards using a prioritized bipartite card assignment algorithm that satisfies known hard constraints directly.
-3. For soft style traits, it scores deals using a trained logistic model (`SoftInconsistencyScorer` in [`src/bid/player_model.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/player_model.py)).
+3. For soft style traits, it scores deals using a trained logistic model (`SoftInconsistencyScorer` in [`src/bid/player_model.py`](../src/bid/player_model.py)).
 
 ```python
 from bid.sampling import RBMBMCSampler, Deal
@@ -42,12 +42,12 @@ Standard Minimax search assumes the opponent will choose the move that minimizes
 
 $$\text{Action}^* = \arg\max_{a \in \mathcal{A}} \mathbb{E}_{w \sim \mathcal{W}} [ \text{Utility}(a, w) ]$$
 
-In [`src/bid/pidm.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/pidm.py), the `PIDMEngine`:
+In [`src/bid/pidm.py`](../src/bid/pidm.py), the `PIDMEngine`:
 1. Samples $K$ plausible worlds $w_1, \dots, w_K$ from the belief distribution.
 2. For each legal candidate call $a \in \mathcal{A}$, simulates the forward progression of the auction:
    - Partner's response in world $w_i$.
    - Opponents' competitive overcalls or passes.
-3. Evaluates the resulting terminal contracts using Double Dummy trick solving ([`src/bid/dds.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/dds.py)).
+3. Evaluates the resulting terminal contracts using Double Dummy trick solving ([`src/bid/dds.py`](../src/bid/dds.py)).
 4. Converts score outcomes to IMP payoffs and selects the action with the highest expected value.
 
 ---
@@ -78,7 +78,7 @@ This is the classic AI problem of **Speedup Learning** (Mitchell, 1983): convert
 ```
 
 ### 3.1 Information Gain (ID3)
-In [`src/bid/learner.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/learner.py), the learner extracts features $f \in \mathcal{F}$ (e.g. `spades >= 5`, `hcp >= 12`) and computes Shannon Information Gain:
+In [`src/bid/learner.py`](../src/bid/learner.py), the learner extracts features $f \in \mathcal{F}$ (e.g. `spades >= 5`, `hcp >= 12`) and computes Shannon Information Gain:
 
 $$\text{Gain}(S, f) = H(S) - \sum_{v \in \{\text{True}, \text{False}\}} \frac{|S_v|}{|S|} H(S_v)$$
 
@@ -118,14 +118,14 @@ High Confidence                   Low Confidence / High Entropy
 ```
 
 ### 4.1 Shannon Entropy as Uncertainty Metric
-In [`src/bid/cot_model.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/cot_model.py), the student model computes the Shannon entropy across token logits:
+In [`src/bid/cot_model.py`](../src/bid/cot_model.py), the student model computes the Shannon entropy across token logits:
 
 $$H(p) = -\sum_{i=1}^V p_i \log p_i$$
 
 - $H(p) \approx 0$: The model is completely certain of its choice.
 - $H(p) > 1.5$: The model is guessing between multiple plausible calls.
 
-In [`src/bid/mine_disagreements.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/mine_disagreements.py), deals where the student exhibits high uncertainty or disagrees with the oracle are automatically mined, labeled, and appended to `data/traces/disagreements.jsonl`.
+In [`src/bid/mine_disagreements.py`](../src/bid/mine_disagreements.py), deals where the student exhibits high uncertainty or disagrees with the oracle are automatically mined, labeled, and appended to `data/traces/disagreements.jsonl`.
 
 ---
 
@@ -133,7 +133,7 @@ In [`src/bid/mine_disagreements.py`](file:///Users/admin/Documents/GitHub/bid/sr
 
 How do we systematically discover improvements to our bidding system without human intervention?
 
-[`src/bid/autoloop.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/autoloop.py) implements a staged genetic/evolutionary search:
+[`src/bid/autoloop.py`](../src/bid/autoloop.py) implements a staged genetic/evolutionary search:
 
 ### 5.1 The Mutation Operators
 The engine generates mutant rule variants:

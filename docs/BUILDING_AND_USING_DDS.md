@@ -2,7 +2,7 @@
 
 The **Double Dummy Solver (DDS)**, originally created by Bo Haglund and maintained by Soren Hein and Martin Nygren, is the global gold standard for contract bridge analysis. It computes exact, optimal minimax card play assuming all four hands are visible.
 
-In this repository, [`src/bid/dds.py`](file:///Users/admin/Documents/GitHub/bid/src/bid/dds.py) wraps DDS to compute:
+In this repository, [`src/bid/dds.py`](../src/bid/dds.py) wraps DDS to compute:
 - **All 20 contract trick values** (5 strains $\times$ 4 declarers) via `CalcDDtablePBN`.
 - **Double Dummy Par contracts & scores** (game-theoretic minimax equilibrium) via `CalcParPBN`.
 - **Mid-play trick expectations** for specific leads and remaining cards via `SolveBoardPBN`.
