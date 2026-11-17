@@ -314,6 +314,11 @@ class BridgeFeatures:
         features["long_suit_hcp"] = long_suit_hcp
         features["short_suit_wasted_hcp"] = short_suit_wasted_hcp
 
+        # 8. Program 1 Control & Pearson Rule-of-15 Features
+        features["rule_of_15"] = (hand.hcp + s_len) >= 15
+        features["first_round_controls"] = hand.ace_count + voids
+        features["second_round_controls"] = king_count + singletons
+
         hand._cached_features = features
         return dict(features)
 
@@ -485,6 +490,10 @@ class BridgeFeatures:
         my_suits = {c.strain for c in my_side_calls
                     if c.strain is not None and c.strain != Strain.NT}
         features["opp_fit_shown"] = len(opp_suits) >= 2
+        features["opp_bid_clubs"] = Strain.CLUBS in opp_suits
+        features["opp_bid_diamonds"] = Strain.DIAMONDS in opp_suits
+        features["opp_bid_hearts"] = Strain.HEARTS in opp_suits
+        features["opp_bid_spades"] = Strain.SPADES in opp_suits
         partner_suits = {c.strain for c in bids_by_seat[my_seat.partner]
                          if c.type == CallType.BID and c.strain is not None
                          and c.strain != Strain.NT}
@@ -583,6 +592,167 @@ class BridgeFeatures:
         features["is_balancing"] = (passes_since_last_bid == 2) and (last_bid_seat in (opp1, opp2))
         features["is_competitive"] = features["opponents_bid"] and not features["is_opening"]
 
+        # ---- Program 1: Sequence-Exact Convention & Slam State Machine ----
+        first_bid_seat = None
+        for i, c in enumerate(history):
+            if c.type == CallType.BID:
+                first_bid_seat = _seat_of(i)
+                break
+
+        partner_is_opener = (first_bid_seat == my_seat.partner)
+        i_am_opener = (first_bid_seat == my_seat)
+        opps_bid = bool(features["opponents_bid"])
+
+        p_first_str = features["partner_first_call"]
+        p_last_str = features["partner_last_call"]
+        my_first_str = features["my_first_call"]
+        my_last_str = features["my_last_call"]
+        p_last_suit_str = features["partner_last_bid_strain"]
+
+        my_last_suit_bid = None
+        for c in reversed(bids_by_seat[my_seat]):
+            if c.type == CallType.BID and c.strain is not None and c.strain != Strain.NT:
+                my_last_suit_bid = c
+                break
+        my_last_suit_str = str(my_last_suit_bid.strain) if my_last_suit_bid is not None else "NONE"
+
+        if my_last_str == "5NT" and p_last_str in ("6C", "6D", "6H", "6S"):
+            conv_state = 8
+        elif p_last_str == "5NT" and my_last_str in ("5C", "5D", "5H", "5S"):
+            conv_state = 7
+        elif my_last_str == "4NT" and p_last_str in ("5C", "5D", "5H", "5S"):
+            conv_state = 6
+        elif p_last_str == "4NT" and (p_last_suit_str != "NONE" or my_last_suit_str != "NONE"):
+            conv_state = 5
+        elif (not opps_bid) and (
+            (i_am_opener and my_first_str in ("1H", "1S") and p_first_str == "2NT" and my_last_str == my_first_str)
+            or (partner_is_opener and p_first_str in ("1H", "1S") and my_first_str == "2NT" and my_last_str == "2NT")
+        ):
+            conv_state = 4
+        elif (not opps_bid) and i_am_opener and my_first_str == "1NT" and my_last_str == "1NT" and p_last_str in ("2D", "2H"):
+            conv_state = 3
+        elif (not opps_bid) and (
+            (i_am_opener and my_first_str == "1NT" and my_last_str == "1NT" and p_last_str == "2C")
+            or (partner_is_opener and p_first_str == "1NT" and my_last_str == "2C" and p_last_str in ("2D", "2H", "2S"))
+        ):
+            conv_state = 2
+        elif (not opps_bid) and partner_is_opener and p_first_str == "1NT" and my_last_str == "NONE":
+            conv_state = 1
+        elif (partner_is_opener and p_first_str == "2C" and my_last_str == "NONE") or (i_am_opener and my_first_str == "2C" and my_last_str == "2C"):
+            conv_state = 9
+        elif opps_bid and (not partner_is_opener) and (not i_am_opener) and (p_last_suit_str != "NONE") and (my_last_suit_str == "NONE"):
+            conv_state = 10
+        else:
+            conv_state = 0
+        features["conv_state"] = conv_state
+
+        # Effective trump strain (resolves Jacoby 2NT, Transfers, and 4NT before formal raise)
+        if features["agreed_trump"] != "NONE":
+            eff_trump_str = features["agreed_trump"]
+        elif conv_state == 4:
+            if i_am_opener:
+                eff_trump_str = "H" if my_first_str == "1H" else "S"
+            else:
+                eff_trump_str = "H" if p_first_str == "1H" else "S"
+        elif conv_state == 3:
+            eff_trump_str = "H" if p_last_str == "2D" else "S"
+        elif p_last_suit_str != "NONE":
+            eff_trump_str = p_last_suit_str
+        elif my_last_suit_str != "NONE":
+            eff_trump_str = my_last_suit_str
+        else:
+            eff_trump_str = "NONE"
+        features["effective_trump"] = eff_trump_str
+
+        _str_to_suit = {"C": Suit.CLUBS, "D": Suit.DIAMONDS, "H": Suit.HEARTS, "S": Suit.SPADES}
+        total_kings = sum(1 for su in Suit for c in hand.by_suit.get(su, []) if c.rank == Rank.KING) if hand is not None else 0
+        if eff_trump_str in _str_to_suit and hand is not None:
+            eff_suit = _str_to_suit[eff_trump_str]
+            eff_cards = hand.by_suit.get(eff_suit, [])
+            eff_ranks = {c.rank for c in eff_cards}
+            eff_has_k = Rank.KING in eff_ranks
+            eff_has_q = Rank.QUEEN in eff_ranks
+            eff_len = len(eff_cards)
+            rkcb_kc = hand.ace_count + (1 if eff_has_k else 0)
+            outside_k = total_kings - (1 if eff_has_k else 0)
+            if rkcb_kc in (0, 3):
+                rkcb_step = 1
+            elif rkcb_kc in (1, 4):
+                rkcb_step = 2
+            else:
+                rkcb_step = 4 if eff_has_q else 3
+        else:
+            eff_len = -1
+            rkcb_kc = hand.ace_count if hand is not None else -1
+            eff_has_q = False
+            outside_k = total_kings
+            rkcb_step = 0
+
+        features["effective_trump_len"] = eff_len
+        features["rkcb_keycards"] = rkcb_kc
+        features["rkcb_has_queen"] = eff_has_q
+        features["rkcb_0314_step"] = rkcb_step
+        features["outside_king_count"] = outside_k
+
+        # Sequence-aware partner HCP minimum
+        seq_plo = int(plo)
+        if partner_is_opener and p_first_str in ("1C", "1D", "1H", "1S"):
+            seq_plo = max(seq_plo, 12)
+        if conv_state == 4 and i_am_opener:
+            seq_plo = max(seq_plo, 13)
+        if (not opps_bid) and i_am_opener and my_first_str in ("1C", "1D", "1H", "1S"):
+            if p_first_str in ("2C", "2D", "2H") and p_first_str[1:] != my_first_str[1:]:
+                seq_plo = max(seq_plo, 10)
+            elif p_first_str in ("3C", "3D", "3H", "3S") and p_first_str[1:] == my_first_str[1:]:
+                seq_plo = max(seq_plo, 10)
+            elif p_first_str in ("1D", "1H", "1S", "1NT", "2C", "2D", "2H", "2S"):
+                seq_plo = max(seq_plo, 6)
+        if conv_state == 10:
+            if p_last_str in ("1C", "1D", "1H", "1S"):
+                seq_plo = max(seq_plo, 8)
+            elif p_last_str in ("2C", "2D", "2H", "2S"):
+                seq_plo = max(seq_plo, 10)
+        features["seq_partner_hcp_min"] = seq_plo
+
+        # Partner promised keycards from RKCB 0314 response
+        kc_safe = max(0, rkcb_kc)
+        if conv_state == 6:
+            if p_last_str == "5C":
+                partner_kc = 3 if (kc_safe <= 2 and seq_plo >= 11) else 0
+            elif p_last_str == "5D":
+                partner_kc = 4 if (kc_safe <= 1 and seq_plo >= 15) else 1
+            else:
+                partner_kc = 5 if (kc_safe == 0 and seq_plo >= 18) else 2
+        elif conv_state == 8:
+            partner_kc = max(0, 5 - kc_safe)
+        else:
+            partner_kc = 0
+        features["partner_kc_promised"] = partner_kc
+        features["total_partnership_keycards"] = kc_safe + partner_kc
+
+        # Estimated combined trump length in effective_trump
+        if eff_trump_str == "NONE" or eff_len < 0:
+            comb_fit_len = 0
+        else:
+            if conv_state == 4:
+                p_len_est = 4 if i_am_opener else 5
+            elif conv_state == 3:
+                p_len_est = 5
+            elif p_last_suit_str == eff_trump_str:
+                if eff_trump_str in ("H", "S"):
+                    if my_last_suit_str == eff_trump_str and p_first_str not in ("1H", "1S", "2H", "2S", "3H", "3S", "4H", "4S"):
+                        p_len_est = 3
+                    elif (not partner_is_opener) and (not opps_bid) and p_first_str in ("1H", "1S"):
+                        p_len_est = 4
+                    else:
+                        p_len_est = 5
+                else:
+                    p_len_est = 3 if p_first_str == "1C" else 4
+            else:
+                p_len_est = 2
+            comb_fit_len = eff_len + p_len_est
+        features["combined_fit_len_est"] = comb_fit_len
+
         return features
 
     @staticmethod
@@ -635,4 +805,5 @@ class BridgeFeatures:
         feats["combined_hcp_min"] = my_hcp + int(a_feats.get("partner_hcp_min", 0))
         feats["combined_hcp_max"] = min(
             40, my_hcp + int(a_feats.get("partner_hcp_max", 37)))
+        feats["seq_combined_hcp_min"] = my_hcp + int(a_feats.get("seq_partner_hcp_min", 0))
         return feats

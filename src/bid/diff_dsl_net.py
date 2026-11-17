@@ -78,6 +78,12 @@ _BOOL_FEATURES = {
     "are_they_vulnerable",
     "partner_bid_current_suit",
     "has_fit_with_partner",
+    "rule_of_15",
+    "opp_bid_clubs",
+    "opp_bid_diamonds",
+    "opp_bid_hearts",
+    "opp_bid_spades",
+    "rkcb_has_queen",
 }
 
 _CALL_CODED_FEATURES = {
@@ -98,6 +104,7 @@ _STRAIN_CODED_FEATURES = {
     "second_suit",
     "shortest_suit",
     "agreed_trump",
+    "effective_trump",
     "partner_last_bid_strain",
     "current_contract_strain",
     "opening_strain",
@@ -288,6 +295,12 @@ class DiffDSLNet(nn.Module):
             nn.ReLU(),
             nn.Linear(64, 1),
         ).to(self.device)
+        # Program 3: 10-strain partnership Double-Dummy trick predictor (my_seat C..NT, partner_seat C..NT)
+        self.dd_pred_head = nn.Sequential(
+            nn.Linear(in_v_dim + 5, 64),
+            nn.ReLU(),
+            nn.Linear(64, 10),
+        ).to(self.device)
 
     @classmethod
     def from_dsl(
@@ -474,11 +487,13 @@ class DiffDSLNet(nn.Module):
             matched_v = F.pad(matched_v, (0, self._init_num_rules - matched_v.shape[1]))
         v_in = torch.cat([X, matched_v, p_belief], dim=-1)
         v = self.value_head(v_in)
+        pred_dd = self.dd_pred_head(v_in)
         return {
             "pi": pi_or_mask,
             "best_calls": best_calls,
             "v": v,
             "infer_partner": p_belief,
+            "pred_dd_tricks": pred_dd,
             "rule_activations": matched_f,
         }
 

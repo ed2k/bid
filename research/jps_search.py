@@ -383,6 +383,7 @@ def train_belief_and_value_heads(
     x_rows: List[torch.Tensor] = []
     belief_targets: List[torch.Tensor] = []
     val_targets: List[torch.Tensor] = []
+    dd_targets: List[torch.Tensor] = []
 
     for X_t, seat_t, act_t in zip(traj_X, traj_seat, traj_active):
         if not bool(act_t.any().item()):
@@ -393,19 +394,28 @@ def train_belief_and_value_heads(
         p_target = torch.cat([p_hcp[:, None], p_suits], dim=-1)  # (B, 5)
         is_ns = ((seat_t % 2) == 0).to(torch.float32)
         v_target = torch.where(is_ns > 0.5, term_ns_norm, -term_ns_norm)[:, None]  # (B, 1)
+        my_dd = sub.dd_tricks[b_arange, seat_t, :].to(torch.float32) / 13.0       # (B, 5)
+        part_dd = sub.dd_tricks[b_arange, p_seat, :].to(torch.float32) / 13.0     # (B, 5)
+        dd_target = torch.cat([my_dd, part_dd], dim=-1)                           # (B, 10)
 
         x_rows.append(X_t[act_t])
         belief_targets.append(p_target[act_t])
         val_targets.append(v_target[act_t])
+        dd_targets.append(dd_target[act_t])
 
     if not x_rows:
-        return {"belief_mse": 0.0, "val_mse": 0.0}
+        return {"belief_mse": 0.0, "val_mse": 0.0, "dd_mse": 0.0}
 
     X_all = torch.cat(x_rows, dim=0)
     B_target_all = torch.cat(belief_targets, dim=0)
     V_target_all = torch.cat(val_targets, dim=0)
+    DD_target_all = torch.cat(dd_targets, dim=0)
 
-    params = list(diff_net.partner_belief_net.parameters()) + list(diff_net.value_head.parameters())
+    params = (
+        list(diff_net.partner_belief_net.parameters())
+        + list(diff_net.value_head.parameters())
+        + list(diff_net.dd_pred_head.parameters())
+    )
     opt = torch.optim.AdamW(params, lr=lr, weight_decay=1e-4)
 
     with torch.no_grad():
@@ -423,21 +433,30 @@ def train_belief_and_value_heads(
 
     belief_loss_val = 0.0
     val_loss_val = 0.0
+    dd_loss_val = 0.0
     for _ in range(steps):
         opt.zero_grad()
         pred_belief = diff_net.partner_belief_net(X_all)
         v_in = torch.cat([X_all, rule_acts_v, pred_belief], dim=-1)
         pred_v = torch.tanh(diff_net.value_head(v_in))
+        pred_dd = torch.sigmoid(diff_net.dd_pred_head(v_in))
         b_loss = F.mse_loss(pred_belief, B_target_all)
         v_loss = F.mse_loss(pred_v, V_target_all)
-        loss = b_loss + v_loss
+        dd_loss = F.mse_loss(pred_dd, DD_target_all)
+        loss = b_loss + v_loss + dd_loss
         loss.backward()
         opt.step()
         belief_loss_val = float(b_loss.item())
         val_loss_val = float(v_loss.item())
+        dd_loss_val = float(dd_loss.item())
 
     diff_net.zero_grad()
-    return {"belief_mse": belief_loss_val, "val_mse": val_loss_val, "n_decisions": int(X_all.shape[0])}
+    return {
+        "belief_mse": belief_loss_val,
+        "val_mse": val_loss_val,
+        "dd_mse": dd_loss_val,
+        "n_decisions": int(X_all.shape[0]),
+    }
 
 
 def compute_ste_gradient_importance(
@@ -520,7 +539,7 @@ def search_threshold_shifts_on_diff_net(
     val_multi_base: Optional[torch.Tensor] = None
 
     accepted_shifts: List[Dict[str, Any]] = []
-    max_atoms_scan = 64 if gpu_scale else 28
+    max_atoms_scan = 110 if gpu_scale else 28
     deltas_scan = (-1.0, +1.0, -2.0, +2.0) if gpu_scale else (-1.0, +1.0)
 
     for u_i in tunable_u[:max_atoms_scan]:
@@ -613,6 +632,93 @@ def search_threshold_shifts_on_diff_net(
     return accepted_shifts
 
 
+def run_packed_split_probe_batch(
+    base_bundle: ga.DealBundle,
+    cand_net: ga.TensorDecisionNet,
+    opp_net: ga.TensorDecisionNet,
+    board_idx: torch.Tensor,
+    sp_parent_r: torch.Tensor,
+    sp_feat_col: torch.Tensor,
+    sp_op_code: torch.Tensor,
+    sp_val: torch.Tensor,
+    sp_new_c: torch.Tensor,
+    sp_score: torch.Tensor,
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    """Run Table 1 and Table 2 on a packed mega-batch of candidate rule splits
+    `(parent_r + (feat op val) -> new_c at prio + 1)` simultaneously.
+    """
+    sub = slice_bundle(base_bundle, board_idx)
+    B_tot = sub.num_boards
+    dev = sub.hand_features.device
+    R = cand_net.num_rules
+    b_arange = torch.arange(B_tot, device=dev)
+
+    def _select_with_split(X: torch.Tensor, lmask: torch.Tensor) -> torch.Tensor:
+        matched = cand_net.match_rules(X)  # (B_tot, R)
+        if cand_net.has_neg_rules:
+            neg_matched = (matched & cand_net.rule_neg[None, :]).to(torch.float32)
+            vetoed_calls = (neg_matched @ cand_net.neg_rule_call_mat) > 0.5
+        else:
+            vetoed_calls = torch.zeros((B_tot, 38), dtype=torch.bool, device=dev)
+
+        rule_vetoed = vetoed_calls[:, cand_net.rule_call]
+        rule_legal = lmask[:, cand_net.rule_call]
+        pos_matched = matched & (~cand_net.rule_neg[None, :])
+        valid_pos = pos_matched & (~rule_vetoed) & rule_legal
+
+        # Evaluate extra split condition on each packed board row
+        f_vals = X[b_arange, sp_feat_col]
+        cond_ge = (sp_op_code == ga.OP_GE) & (f_vals >= sp_val - 1e-5)
+        cond_le = (sp_op_code == ga.OP_LE) & (f_vals <= sp_val + 1e-5)
+        cond_eq = (sp_op_code == ga.OP_EQ) & ((f_vals - sp_val).abs() < 1e-4)
+        cond_sat = cond_ge | cond_le | cond_eq
+
+        child_valid = (
+            pos_matched[b_arange, sp_parent_r]
+            & cond_sat
+            & (~vetoed_calls[b_arange, sp_new_c])
+            & lmask[b_arange, sp_new_c]
+        )
+
+        # When child_valid is True, the split child rule is valid and has higher priority (+1.0)
+        # than sp_parent_r, so it dominates sp_parent_r on that turn.
+        valid_pos[b_arange, sp_parent_r] = valid_pos[b_arange, sp_parent_r] | child_valid
+
+        NEG_INF = -1e9
+        scores = cand_net.rule_score[None, :].expand(B_tot, R).clone()
+        orig_parent_scores = scores[b_arange, sp_parent_r]
+        scores[b_arange, sp_parent_r] = torch.where(child_valid, sp_score, orig_parent_scores)
+        masked_scores = torch.where(valid_pos, scores, torch.full_like(scores, NEG_INF))
+
+        max_score, best_r = masked_scores.max(dim=1)
+        has_match = max_score > (NEG_INF / 2)
+        base_chosen = cand_net.rule_call[best_r]
+        chosen = torch.where(
+            (best_r == sp_parent_r) & child_valid,
+            sp_new_c,
+            base_chosen,
+        )
+        return torch.where(has_match, chosen, torch.full_like(chosen, ga.IDX_PASS))
+
+    def _run_table(cand_is_ns: bool) -> torch.Tensor:
+        env = ga.BatchedAuctionEnv(sub)
+        env.passes_since_last_np = torch.zeros(B_tot, dtype=torch.long, device=dev)
+        for _ in range(20):
+            if bool(env.done.all().item()):
+                break
+            X, seat = env.build_features()
+            lmask = env.legal_mask(seat)
+            is_ns = (seat % 2) == 0
+            cand_turn = is_ns if cand_is_ns else (~is_ns)
+            cand_calls_out = _select_with_split(X, lmask)
+            _, opp_calls_out = opp_net.call_scores(X, lmask)
+            calls = torch.where(cand_turn, cand_calls_out, opp_calls_out)
+            env.step(calls)
+        return env.terminal_ns_scores()
+
+    return _run_table(cand_is_ns=True), _run_table(cand_is_ns=False)
+
+
 def search_jps_partner_belief_splits_on_diff_net(
     tr_bundle: ga.DealBundle,
     val_bundle: ga.DealBundle,
@@ -624,29 +730,22 @@ def search_jps_partner_belief_splits_on_diff_net(
     gpu_scale: bool = False,
     gen_idx: int = 1,
 ) -> List[Dict[str, Any]]:
-    """Stage 3: Search JPS Partner-Belief & Fit Condition Splits directly on `DiffDSLNet`,
-    refining top high-traffic partnership rules with conditions on:
-      - `combined_hcp_min` (>= 23, >= 24, >= 25, >= 26, <= 21, <= 19)
-      - `support_in_partner_suit` (>= 3, >= 4, <= 2)
-      - `agreed_trump_len` (>= 4, >= 5)
-      - `partner_hcp_min` (>= 12, >= 15)
-      - `trump_intermediates` (>= 1, >= 2)
-      - `long_suit_intermediates` (>= 2)
-      - `losing_trick_count` (<= 6, <= 5)
-      - `short_suit_wasted_hcp` (== 0)
+    """Stage 3: Mega-batched JPS Partner-Belief, Stopper, Control & `SuitC` Condition Splits
+    directly on `DiffDSLNet`.
     """
+    dev = tr_bundle.hand_features.device
     primary_opp = opp_nets[0]
     cand_t = diff_net.to_tensor_decision_net()
     s1, s2, tr_active, _ = record_jps_coupling_and_baseline(tr_bundle, cand_t, primary_opp)
     tr_prim_base = ga.points_to_imps_tensor(s1 - s2).to(torch.float32)
 
-    max_rules_scan = 45 if gpu_scale else 25
+    max_rules_scan = 75 if gpu_scale else 25
     rule_counts = tr_active.sum(dim=0)
     top_rules = sorted(
         [
             (int(rule_counts[r].item()), r)
             for r in range(cand_t.num_rules)
-            if not bool(cand_t.rule_neg[r].item()) and int(rule_counts[r].item()) >= 16
+            if not bool(cand_t.rule_neg[r].item()) and int(rule_counts[r].item()) >= 14
         ],
         reverse=True,
     )[:max_rules_scan]
@@ -655,10 +754,17 @@ def search_jps_partner_belief_splits_on_diff_net(
         ("combined_hcp_min", ">=", 24.0),
         ("combined_hcp_min", ">=", 26.0),
         ("combined_hcp_min", "<=", 21.0),
+        ("seq_combined_hcp_min", ">=", 25.0),
+        ("seq_combined_hcp_min", "<=", 21.0),
+        ("combined_fit_len_est", ">=", 8.0),
+        ("combined_fit_len_est", ">=", 9.0),
         ("support_in_partner_suit", ">=", 3.0),
         ("support_in_partner_suit", ">=", 4.0),
         ("agreed_trump_len", ">=", 4.0),
+        ("effective_trump_len", ">=", 4.0),
         ("partner_hcp_min", ">=", 12.0),
+        ("first_round_controls", ">=", 2.0),
+        ("second_round_controls", ">=", 2.0),
         ("trump_intermediates", ">=", 1.0),
         ("long_suit_intermediates", ">=", 2.0),
     ]
@@ -670,8 +776,112 @@ def search_jps_partner_belief_splits_on_diff_net(
             ("agreed_trump_len", ">=", 5.0),
             ("partner_hcp_min", ">=", 15.0),
             ("losing_trick_count", "<=", 6.0),
+            ("losing_trick_count", "<=", 5.0),
+            ("losing_trick_count", ">=", 8.0),
             ("short_suit_wasted_hcp", "==", 0.0),
+            ("controls", ">=", 4.0),
+            ("controls", ">=", 5.0),
+            ("controls", "<=", 2.0),
+            ("quick_tricks", ">=", 2.0),
+            ("opp_suit_stoppers", ">=", 1.0),
+            ("opp_suit_stoppers", "==", 0.0),
+            ("zar_points", ">=", 26.0),
+            ("total_points", ">=", 14.0),
+            ("is_favorable_vuln", "==", 1.0),
         ])
+
+    op_str_to_code = {">=": ga.OP_GE, "<=": ga.OP_LE, "==": ga.OP_EQ}
+    existing_rids = set(diff_net.rule_ids)
+    lex_ranks = ga.CALL_LEX_RANK
+
+    # Build all split probe tasks and evaluate them in packed mega-batches
+    split_tasks: List[Tuple[int, str, str, float, int, str, torch.Tensor]] = []
+    for _cnt, r_i in top_rules:
+        active_b = torch.where(tr_active[:, r_i])[0]
+        if int(active_b.numel()) < 10:
+            continue
+        old_c = int(diff_net.rule_call[r_i].item())
+        allow_dbl = gpu_scale and ("_cont_" in diff_net.rule_ids[r_i])
+        cands = [c for c in candidate_calls_for_rule(old_c, allow_doubles=allow_dbl)[:8] if c >= 0]
+        parent_id = diff_net.rule_ids[r_i]
+        for feat_k, op_s, val_f in split_predicates:
+            if feat_k not in ga.FEAT_TO_COL:
+                continue
+            for new_c in cands:
+                new_rid = f"{parent_id}_JPS_G{gen_idx}_{feat_k}_{int(val_f)}_{ga.CALL_NAMES[new_c]}"
+                if new_rid in existing_rids:
+                    continue
+                split_tasks.append((r_i, feat_k, op_s, val_f, new_c, new_rid, active_b))
+
+    print(f"  [JPS Stage 3] Evaluating {len(split_tasks)} candidate rule splits in packed mega-batches...")
+    max_batch_rows = 24576 if gpu_scale else 8192
+    best_per_rule: Dict[int, Tuple[float, str, str, float, int, str, float, float, int]] = {}
+
+    idx = 0
+    num_tasks = len(split_tasks)
+    while idx < num_tasks:
+        b_list, pr_list, fc_list, op_list, val_list, nc_list, sc_list = [], [], [], [], [], [], []
+        slices: List[Tuple[int, str, str, float, int, str, int, int]] = []
+        cur_rows = 0
+
+        while idx < num_tasks:
+            r_i, feat_k, op_s, val_f, new_c, new_rid, active_b = split_tasks[idx]
+            m = int(active_b.numel())
+            if cur_rows > 0 and cur_rows + m > max_batch_rows:
+                break
+            p_prio = float(cand_t.rule_prio[r_i].item()) + 1.0
+            sc_v = p_prio * 64.0 - float(lex_ranks[new_c])
+            f_col = ga.FEAT_TO_COL[feat_k]
+            op_c = op_str_to_code[op_s]
+
+            b_list.append(active_b)
+            pr_list.append(torch.full((m,), r_i, dtype=torch.long, device=dev))
+            fc_list.append(torch.full((m,), f_col, dtype=torch.long, device=dev))
+            op_list.append(torch.full((m,), op_c, dtype=torch.uint8, device=dev))
+            val_list.append(torch.full((m,), val_f, dtype=torch.float32, device=dev))
+            nc_list.append(torch.full((m,), new_c, dtype=torch.long, device=dev))
+            sc_list.append(torch.full((m,), sc_v, dtype=torch.float32, device=dev))
+
+            slices.append((r_i, feat_k, op_s, val_f, new_c, new_rid, cur_rows, cur_rows + m))
+            cur_rows += m
+            idx += 1
+
+        b_cat = torch.cat(b_list)
+        s1_out, s2_out = run_packed_split_probe_batch(
+            tr_bundle,
+            cand_t,
+            primary_opp,
+            b_cat,
+            torch.cat(pr_list),
+            torch.cat(fc_list),
+            torch.cat(op_list),
+            torch.cat(val_list),
+            torch.cat(nc_list),
+            torch.cat(sc_list),
+        )
+        imps_out = ga.points_to_imps_tensor(s1_out - s2_out).to(torch.float32)
+        diff_out = imps_out - tr_prim_base[b_cat]
+
+        for r_i, feat_k, op_s, val_f, new_c, new_rid, st, en in slices:
+            d_vec = diff_out[st:en]
+            gain = float(d_vec.sum().item())
+            if gain < min_train_gain:
+                continue
+            changed_mask = d_vec.abs() > 1e-4
+            n_ch = int(changed_mask.sum().item())
+            if n_ch < 3:
+                continue
+            act_d = d_vec[changed_mask]
+            mean_d = float(act_d.mean().item())
+            sd_d = float(act_d.std(unbiased=True).item()) if n_ch > 1 else 0.0
+            se_d = sd_d / math.sqrt(n_ch) if n_ch > 0 else 0.0
+            t_val = (mean_d / se_d) if se_d > 1e-6 else 0.0
+            if t_val < min_train_t:
+                continue
+            shrunk = jps_shrink_edge(gain, n_ch, tr_bundle.num_boards, lambda_shrink)
+            prev = best_per_rule.get(r_i)
+            if prev is None or shrunk > prev[0]:
+                best_per_rule[r_i] = (shrunk, feat_k, op_s, val_f, new_c, new_rid, gain, t_val, n_ch)
 
     def _eval_single_opp(bundle: ga.DealBundle, net: ga.TensorDecisionNet, opp: ga.TensorDecisionNet) -> torch.Tensor:
         _, s1_o = ga.play_boards_batched(bundle, net, opp)
@@ -684,136 +894,66 @@ def search_jps_partner_belief_splits_on_diff_net(
     tr_multi_base = _eval_multi_opp(tr_bundle, cand_t)
     val_multi_base = _eval_multi_opp(val_bundle, cand_t)
     accepted_splits: List[Dict[str, Any]] = []
-    existing_rids = set(diff_net.rule_ids)
 
-    for _cnt, r_i in top_rules:
-        active_b = torch.where(tr_active[:, r_i])[0]
-        if int(active_b.numel()) < 12:
-            continue
-        sub_tr = slice_bundle(tr_bundle, active_b)
-        sub_base_imps = tr_prim_base[active_b]
+    ranked_splits = sorted(best_per_rule.items(), key=lambda kv: kv[1][0], reverse=True)
+    for r_i, (best_shrunk, feat_k, op_s, val_f, new_c, new_rid, gain, t_val, n_ch) in ranked_splits[:35]:
         old_c = int(diff_net.rule_call[r_i].item())
-        cands = [c for c in candidate_calls_for_rule(old_c, allow_doubles=False)[:8] if c >= 0]
         parent_id = diff_net.rule_ids[r_i]
+        orig_num_rules = diff_net.num_rules
+        orig_num_atoms = diff_net.num_atoms
+        diff_net.clone_and_split_rule(r_i, new_rid, feat_k, op_s, val_f, new_c, prio_bump=1.0)
+        cand_now = diff_net.to_tensor_decision_net()
+        tr_m_cand = _eval_multi_opp(tr_bundle, cand_now)
+        tr_m_gain = float((tr_m_cand - tr_multi_base).sum().item())
+        val_m_cand = _eval_multi_opp(val_bundle, cand_now)
+        val_m_gain = float((val_m_cand - val_multi_base).sum().item())
 
-        best_split = None
-        best_shrunk = 0.0
-
-        for feat_k, op_s, val_f in split_predicates:
-            if feat_k not in ga.FEAT_TO_COL:
-                continue
-            for new_c in cands:
-                new_rid = f"{parent_id}_JPS_G{gen_idx}_{feat_k}_{int(val_f)}_{ga.CALL_NAMES[new_c]}"
-                if new_rid in existing_rids:
-                    continue
-                # Snapshot diff_net state sizes before temporary split
-                orig_num_rules = diff_net.num_rules
-                orig_num_atoms = diff_net.num_atoms
-                diff_net.clone_and_split_rule(r_i, new_rid, feat_k, op_s, val_f, new_c, prio_bump=1.0)
-                sub_cand_imps = _eval_single_opp(sub_tr, diff_net.to_tensor_decision_net(), primary_opp)
-                diff_vec = sub_cand_imps - sub_base_imps
-
-                # Roll back the temporary split
-                diff_net.num_rules = orig_num_rules
-                diff_net.rule_ids.pop()
-                diff_net._orig_conditions.pop()
-                diff_net.rule_atom_mat = diff_net.rule_atom_mat[:orig_num_rules]
+        if tr_m_gain >= min_train_gain * 0.5 and val_m_gain > 0.0:
+            tr_multi_base = tr_m_cand
+            val_multi_base = val_m_cand
+            existing_rids.add(new_rid)
+            accepted_splits.append({
+                "type": "jps_partner_belief_split",
+                "parent_rule": parent_id,
+                "new_rule_id": new_rid,
+                "condition": f"{feat_k} {op_s} {val_f:g}",
+                "old_call": ga.CALL_NAMES[old_c],
+                "new_call": ga.CALL_NAMES[new_c],
+                "shrunk_edge": best_shrunk,
+                "train_gain_imps": tr_m_gain,
+                "train_t": t_val,
+                "val_gain_imps": val_m_gain,
+                "n_changed": n_ch,
+            })
+            print(
+                f"  [ACCEPT JPS SPLIT] {new_rid} ({feat_k} {op_s} {val_f:g}): "
+                f"{ga.CALL_NAMES[old_c]}->{ga.CALL_NAMES[new_c]} | "
+                f"shrunk={best_shrunk:+.4f} | train {tr_m_gain:+.1f} IMP (t={t_val:+.2f}, n={n_ch}) | "
+                f"val {val_m_gain:+.1f} IMP"
+            )
+        else:
+            diff_net.num_rules = orig_num_rules
+            diff_net.rule_ids.pop()
+            diff_net._orig_conditions.pop()
+            diff_net.rule_atom_mat = diff_net.rule_atom_mat[:orig_num_rules]
+            diff_net.rule_atom_logits = torch.nn.Parameter(diff_net.rule_atom_mat.clone())
+            diff_net.rule_n_atoms = diff_net.rule_n_atoms[:orig_num_rules]
+            diff_net.rule_neg = diff_net.rule_neg[:orig_num_rules]
+            diff_net.rule_disabled = diff_net.rule_disabled[:orig_num_rules]
+            diff_net.neg_rule_call_mat = diff_net.neg_rule_call_mat[:orig_num_rules]
+            diff_net.rule_prio_param = torch.nn.Parameter(diff_net.rule_prio_param.data[:orig_num_rules])
+            diff_net.rule_call_logits = torch.nn.Parameter(diff_net.rule_call_logits.data[:orig_num_rules])
+            if diff_net.num_atoms > orig_num_atoms:
+                diff_net.num_atoms = orig_num_atoms
+                diff_net.atom_feat = diff_net.atom_feat[:orig_num_atoms]
+                diff_net.atom_op = diff_net.atom_op[:orig_num_atoms]
+                diff_net.atom_val = torch.nn.Parameter(diff_net.atom_val.data[:orig_num_atoms])
+                diff_net.atom_in_mask = diff_net.atom_in_mask[:orig_num_atoms]
+                diff_net.atom_in_lut = diff_net.atom_in_lut[:orig_num_atoms]
+                diff_net.u_arange = torch.arange(orig_num_atoms, dtype=torch.long, device=diff_net.device)
+                diff_net.atom_tunable_mask = diff_net.atom_tunable_mask[:orig_num_atoms]
+                diff_net.rule_atom_mat = diff_net.rule_atom_mat[:, :orig_num_atoms]
                 diff_net.rule_atom_logits = torch.nn.Parameter(diff_net.rule_atom_mat.clone())
-                diff_net.rule_n_atoms = diff_net.rule_n_atoms[:orig_num_rules]
-                diff_net.rule_neg = diff_net.rule_neg[:orig_num_rules]
-                diff_net.rule_disabled = diff_net.rule_disabled[:orig_num_rules]
-                diff_net.neg_rule_call_mat = diff_net.neg_rule_call_mat[:orig_num_rules]
-                diff_net.rule_prio_param = torch.nn.Parameter(diff_net.rule_prio_param.data[:orig_num_rules])
-                diff_net.rule_call_logits = torch.nn.Parameter(diff_net.rule_call_logits.data[:orig_num_rules])
-                if diff_net.num_atoms > orig_num_atoms:
-                    diff_net.num_atoms = orig_num_atoms
-                    diff_net.atom_feat = diff_net.atom_feat[:orig_num_atoms]
-                    diff_net.atom_op = diff_net.atom_op[:orig_num_atoms]
-                    diff_net.atom_val = torch.nn.Parameter(diff_net.atom_val.data[:orig_num_atoms])
-                    diff_net.atom_in_mask = diff_net.atom_in_mask[:orig_num_atoms]
-                    diff_net.atom_in_lut = diff_net.atom_in_lut[:orig_num_atoms]
-                    diff_net.u_arange = torch.arange(orig_num_atoms, dtype=torch.long, device=diff_net.device)
-                    diff_net.atom_tunable_mask = diff_net.atom_tunable_mask[:orig_num_atoms]
-                    diff_net.rule_atom_mat = diff_net.rule_atom_mat[:, :orig_num_atoms]
-                    diff_net.rule_atom_logits = torch.nn.Parameter(diff_net.rule_atom_mat.clone())
-
-                changed_mask = diff_vec.abs() > 1e-4
-                n_ch = int(changed_mask.sum().item())
-                if n_ch < 3:
-                    continue
-                gain = float(diff_vec.sum().item())
-                if gain < min_train_gain:
-                    continue
-                act_d = diff_vec[changed_mask]
-                mean_d = float(act_d.mean().item())
-                sd_d = float(act_d.std(unbiased=True).item()) if n_ch > 1 else 0.0
-                se_d = sd_d / math.sqrt(n_ch) if n_ch > 0 else 0.0
-                t_val = (mean_d / se_d) if se_d > 1e-6 else 0.0
-                if t_val < min_train_t:
-                    continue
-                shrunk = jps_shrink_edge(gain, n_ch, tr_bundle.num_boards, lambda_shrink)
-                if shrunk > best_shrunk:
-                    best_shrunk = shrunk
-                    best_split = (feat_k, op_s, val_f, new_c, new_rid, gain, t_val, n_ch)
-
-        if best_split is not None:
-            feat_k, op_s, val_f, new_c, new_rid, gain, t_val, n_ch = best_split
-            orig_num_rules = diff_net.num_rules
-            orig_num_atoms = diff_net.num_atoms
-            diff_net.clone_and_split_rule(r_i, new_rid, feat_k, op_s, val_f, new_c, prio_bump=1.0)
-            cand_now = diff_net.to_tensor_decision_net()
-            tr_m_cand = _eval_multi_opp(tr_bundle, cand_now)
-            tr_m_gain = float((tr_m_cand - tr_multi_base).sum().item())
-            val_m_cand = _eval_multi_opp(val_bundle, cand_now)
-            val_m_gain = float((val_m_cand - val_multi_base).sum().item())
-
-            if tr_m_gain >= min_train_gain * 0.5 and val_m_gain > 0.0:
-                tr_multi_base = tr_m_cand
-                val_multi_base = val_m_cand
-                tr_prim_base = _eval_single_opp(tr_bundle, cand_now, primary_opp)
-                existing_rids.add(new_rid)
-                accepted_splits.append({
-                    "type": "jps_partner_belief_split",
-                    "parent_rule": parent_id,
-                    "new_rule_id": new_rid,
-                    "condition": f"{feat_k} {op_s} {val_f:g}",
-                    "old_call": ga.CALL_NAMES[old_c],
-                    "new_call": ga.CALL_NAMES[new_c],
-                    "shrunk_edge": best_shrunk,
-                    "train_gain_imps": tr_m_gain,
-                    "train_t": t_val,
-                    "val_gain_imps": val_m_gain,
-                    "n_changed": n_ch,
-                })
-                print(
-                    f"  [ACCEPT JPS SPLIT] {new_rid} ({feat_k} {op_s} {val_f:g}): "
-                    f"{ga.CALL_NAMES[old_c]}->{ga.CALL_NAMES[new_c]} | "
-                    f"shrunk={best_shrunk:+.4f} | train {tr_m_gain:+.1f} IMP (t={t_val:+.2f}, n={n_ch}) | "
-                    f"val {val_m_gain:+.1f} IMP"
-                )
-            else:
-                diff_net.num_rules = orig_num_rules
-                diff_net.rule_ids.pop()
-                diff_net._orig_conditions.pop()
-                diff_net.rule_atom_mat = diff_net.rule_atom_mat[:orig_num_rules]
-                diff_net.rule_atom_logits = torch.nn.Parameter(diff_net.rule_atom_mat.clone())
-                diff_net.rule_n_atoms = diff_net.rule_n_atoms[:orig_num_rules]
-                diff_net.rule_neg = diff_net.rule_neg[:orig_num_rules]
-                diff_net.rule_disabled = diff_net.rule_disabled[:orig_num_rules]
-                diff_net.neg_rule_call_mat = diff_net.neg_rule_call_mat[:orig_num_rules]
-                diff_net.rule_prio_param = torch.nn.Parameter(diff_net.rule_prio_param.data[:orig_num_rules])
-                diff_net.rule_call_logits = torch.nn.Parameter(diff_net.rule_call_logits.data[:orig_num_rules])
-                if diff_net.num_atoms > orig_num_atoms:
-                    diff_net.num_atoms = orig_num_atoms
-                    diff_net.atom_feat = diff_net.atom_feat[:orig_num_atoms]
-                    diff_net.atom_op = diff_net.atom_op[:orig_num_atoms]
-                    diff_net.atom_val = torch.nn.Parameter(diff_net.atom_val.data[:orig_num_atoms])
-                    diff_net.atom_in_mask = diff_net.atom_in_mask[:orig_num_atoms]
-                    diff_net.atom_in_lut = diff_net.atom_in_lut[:orig_num_atoms]
-                    diff_net.u_arange = torch.arange(orig_num_atoms, dtype=torch.long, device=diff_net.device)
-                    diff_net.atom_tunable_mask = diff_net.atom_tunable_mask[:orig_num_atoms]
-                    diff_net.rule_atom_mat = diff_net.rule_atom_mat[:, :orig_num_atoms]
-                    diff_net.rule_atom_logits = torch.nn.Parameter(diff_net.rule_atom_mat.clone())
 
     return accepted_splits
 
@@ -850,8 +990,8 @@ def run_jps_coupled_search_on_diff_net(
         reverse=True,
     )
 
-    max_pairs_scan = 60 if gpu_scale else 30
-    max_alter_r1 = 16 if gpu_scale else 8
+    max_pairs_scan = 110 if gpu_scale else 30
+    max_alter_r1 = 24 if gpu_scale else 8
 
     # Also discover `alterReach` partner rules for top opener rules when they change call
     rule_counts = tr_active.sum(dim=0)
@@ -1066,6 +1206,7 @@ def main() -> int:
     ap.add_argument("--out-dsl", default="system/brill_jps_diff.dsl")
     ap.add_argument("--out-pt", default="data/diff_dsl_jps.pt")
     ap.add_argument("--generations", type=int, default=1, help="Number of JPS self-improvement generations")
+    ap.add_argument("--start-gen", type=int, default=1, help="Starting generation index for rule naming")
     ap.add_argument("--gpu-scale", action="store_true", help="Enable expanded GPU search breadth")
     ap.add_argument("--train-boards", type=int, default=5000)
     ap.add_argument("--val-boards", type=int, default=2500)
@@ -1073,6 +1214,7 @@ def main() -> int:
     ap.add_argument("--min-train-gain", type=float, default=12.0)
     ap.add_argument("--min-train-t", type=float, default=1.4)
     ap.add_argument("--lambda-shrink", type=float, default=15.0)
+    ap.add_argument("--skip-coupled", action="store_true", help="Skip Stage 1 coupled search for fast Stage 0+2+3 refinement")
     ap.add_argument("--device", default="")
     args = ap.parse_args()
 
@@ -1094,8 +1236,9 @@ def main() -> int:
     diff_net = DiffDSLNet.from_dsl(args.dsl, device=dev)
     opp_distilled = ga.TensorDecisionNet.from_dsl("system/brill_distilled.dsl", device=dev)
     opp_shipdd = ga.TensorDecisionNet.from_dsl("system/brill_distilled_shipdd.dsl", device=dev)
-    opp_evolved = ga.TensorDecisionNet.from_dsl(args.dsl, device=dev)
-    opp_nets: List[ga.TensorDecisionNet] = [opp_distilled, opp_shipdd, opp_evolved]
+    opp_evolved = ga.TensorDecisionNet.from_dsl("system/brill_gpu_evolved.dsl", device=dev)
+    opp_start = ga.TensorDecisionNet.from_dsl(args.dsl, device=dev)
+    opp_nets: List[ga.TensorDecisionNet] = [opp_start, opp_distilled, opp_shipdd, opp_evolved]
 
     print(f"\nInitialized DiffDSLNet from {args.dsl}: {diff_net.num_rules} rules, {diff_net.num_atoms} condition atoms")
 
@@ -1104,10 +1247,11 @@ def main() -> int:
     base_res = ga.gpu_team_match(te_bundle, base_t, opp_distilled)
     print(f"Baseline vs brill_distilled on Held-Out Test ({n_te} bds): {base_res['mean']:+.4f} +/- {base_res['se']:.4f} IMP/bd")
 
-    for gen in range(1, args.generations + 1):
+    for g_step in range(args.generations):
+        gen = args.start_gen + g_step
         gen_t0 = time.perf_counter()
         print(f"\n======================================================================")
-        print(f"  GENERATION {gen}/{args.generations} | League Pool Size: {len(opp_nets)} | Rules: {diff_net.num_rules}")
+        print(f"  GENERATION {gen} (Step {g_step + 1}/{args.generations}) | League Pool Size: {len(opp_nets)} | Rules: {diff_net.num_rules}")
         print(f"======================================================================")
 
         print(f"\n[Gen {gen} - Stage 0] Online Training of partner_belief_net & value_head...")
@@ -1119,20 +1263,24 @@ def main() -> int:
         )
         print(
             f"  Trained heads on {head_metrics.get('n_decisions', 0)} decisions: "
-            f"belief_mse={head_metrics['belief_mse']:.4f}, val_mse={head_metrics['val_mse']:.4f}"
+            f"belief_mse={head_metrics['belief_mse']:.4f}, val_mse={head_metrics['val_mse']:.4f}, "
+            f"dd_mse={head_metrics.get('dd_mse', 0.0):.4f}"
         )
 
-        print(f"\n[Gen {gen} - Stage 1] Depth-2 Coupled JPS Search over DiffDSLNet...")
-        jps_edits = run_jps_coupled_search_on_diff_net(
-            tr_bundle,
-            val_bundle,
-            diff_net,
-            opp_nets,
-            min_train_gain=args.min_train_gain,
-            min_train_t=args.min_train_t,
-            lambda_shrink=args.lambda_shrink,
-            gpu_scale=gpu_scale,
-        )
+        if args.skip_coupled:
+            jps_edits = []
+        else:
+            print(f"\n[Gen {gen} - Stage 1] Depth-2 Coupled JPS Search over DiffDSLNet...")
+            jps_edits = run_jps_coupled_search_on_diff_net(
+                tr_bundle,
+                val_bundle,
+                diff_net,
+                opp_nets,
+                min_train_gain=args.min_train_gain,
+                min_train_t=args.min_train_t,
+                lambda_shrink=args.lambda_shrink,
+                gpu_scale=gpu_scale,
+            )
 
         print(f"\n[Gen {gen} - Stage 2] STE Gradient-Guided Threshold Search over DiffDSLNet.atom_val...")
         thresh_edits = search_threshold_shifts_on_diff_net(

@@ -245,6 +245,8 @@ def main():
     ap.add_argument("--dump", help="write the full result record, including "
                                    "per-board nets, as JSON (for paired "
                                    "comparison of two runs on the same seed)")
+    ap.add_argument("--bayes-b", action="store_true",
+                    help="wrap B in Program 4 BayesianSingleDummyBidder")
     args = ap.parse_args()
 
     if args.remote_a:
@@ -258,6 +260,9 @@ def main():
         a.name = os.path.splitext(os.path.basename(args.a))[0]
     b = load_decision_net_dsl(args.b)
     b.name = os.path.splitext(os.path.basename(args.b))[0]
+    if args.bayes_b:
+        from bid.bayesian_search import BayesianSingleDummyBidder
+        b = BayesianSingleDummyBidder(b, num_worlds=8)
 
     deals = build_deals(args.boards, seed=args.seed, include_stratified=False)
     arena = BiddingArena()
@@ -265,6 +270,8 @@ def main():
           % (a.name, b.name, len(deals), args.seed))
 
     res = play_match(a, b, deals, arena, args.seed, a.name, b.name)
+    if args.remote_a:
+        a.client.flush_cache()
     report(res)
     if args.dump:
         with open(args.dump, "w") as fh:

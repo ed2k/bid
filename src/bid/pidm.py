@@ -316,10 +316,15 @@ class PIDMEngine:
         if not actions:
             actions = {Call(CallType.PASS)}
 
-        # Fast path: single candidate
+        # Fast path: single candidate, or live remote match where actions[0] is the priority winner
         if len(actions) == 1:
             single_action = next(iter(actions))
             return single_action, {single_action: 0.0}
+        if isinstance(actions, list) and any(
+            getattr(m, "client", None) is not None for m in models.values() if m is not None
+        ):
+            top_action = actions[0]
+            return top_action, {top_action: 0.0}
 
         # Policy-guided pruning of the root candidate set (#5)
         actions_kept = self._prune_by_prior(partial_state, actions)

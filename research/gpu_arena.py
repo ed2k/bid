@@ -109,7 +109,7 @@ CALL_STRING_FEATURES = {
     "partner_first_call", "partner_last_call",
 }
 STRAIN_STRING_FEATURES = {
-    "agreed_trump", "last_bid_strain", "partner_last_bid_strain",
+    "agreed_trump", "effective_trump", "last_bid_strain", "partner_last_bid_strain",
 }
 SEAT_STRING_FEATURES = {
     "last_bid_seat", "my_seat",
@@ -556,6 +556,19 @@ class DealBundle:
             for old_idx, k in enumerate(saved_keys):
                 if k in FEAT_TO_COL:
                     remapped[:, :, FEAT_TO_COL[k]] = hf[:, :, old_idx]
+            saved_set = set(saved_keys)
+            if "rule_of_15" not in saved_set and "rule_of_15" in FEAT_TO_COL:
+                hcp_v = remapped[:, :, FEAT_TO_COL["hcp"]]
+                s_len_v = remapped[:, :, FEAT_TO_COL["spade_len"]]
+                remapped[:, :, FEAT_TO_COL["rule_of_15"]] = ((hcp_v + s_len_v) >= 15.0).to(hf.dtype)
+            if "first_round_controls" not in saved_set and "first_round_controls" in FEAT_TO_COL:
+                remapped[:, :, FEAT_TO_COL["first_round_controls"]] = (
+                    remapped[:, :, FEAT_TO_COL["ace_count"]] + remapped[:, :, FEAT_TO_COL["void_count"]]
+                )
+            if "second_round_controls" not in saved_set and "second_round_controls" in FEAT_TO_COL:
+                remapped[:, :, FEAT_TO_COL["second_round_controls"]] = (
+                    remapped[:, :, FEAT_TO_COL["king_count"]] + remapped[:, :, FEAT_TO_COL["singleton_count"]]
+                )
             hf = remapped
         return cls(
             hf, d["dealers"], d["vulns"], d["dd_tricks"],
@@ -709,6 +722,7 @@ class BatchedAuctionEnv:
 
         # Global auction trackers
         self.opening_bid = torch.full((B,), -1, dtype=torch.long, device=dev)
+        self.first_bid_seat = torch.full((B,), -1, dtype=torch.long, device=dev)
         self.competition_level = torch.zeros(B, dtype=torch.long, device=dev)
         self.auction_altitude = torch.zeros(B, dtype=torch.long, device=dev)
         self.last_suit_turn = torch.full((B, 4), -1, dtype=torch.long, device=dev)  # most recent turn suit 0..3 was bid
@@ -843,6 +857,10 @@ class BatchedAuctionEnv:
         p_s_mask = self.seat_suits_mask[b_idx, partner_seat]
         shared_mask = my_s_mask & p_s_mask
         X[:, FEAT_TO_COL["opp_fit_shown"]] = opp_fit.to(torch.float32)
+        X[:, FEAT_TO_COL["opp_bid_clubs"]] = ((opp_s_mask & 1) != 0).to(torch.float32)
+        X[:, FEAT_TO_COL["opp_bid_diamonds"]] = ((opp_s_mask & 2) != 0).to(torch.float32)
+        X[:, FEAT_TO_COL["opp_bid_hearts"]] = ((opp_s_mask & 4) != 0).to(torch.float32)
+        X[:, FEAT_TO_COL["opp_bid_spades"]] = ((opp_s_mask & 8) != 0).to(torch.float32)
         X[:, FEAT_TO_COL["our_fit_shown"]] = (shared_mask != 0).to(torch.float32)
 
         p_last_st = self.seat_last_suit_bid_strain[b_idx, partner_seat]
@@ -898,6 +916,163 @@ class BatchedAuctionEnv:
         X[:, FEAT_TO_COL["is_balancing"]] = is_bal.to(torch.float32)
         X[:, FEAT_TO_COL["is_competitive"]] = (opps_bid & (~is_open)).to(torch.float32)
 
+        # ---- Program 1: Sequence-Exact Convention & Slam State Machine ----
+        partner_is_opener = self.first_bid_seat == partner_seat
+        i_am_opener = self.first_bid_seat == my_seat
+
+        p_first = self.seat_first_call[b_idx, partner_seat]
+        p_last = self.seat_last_call[b_idx, partner_seat]
+        my_first = self.seat_first_call[b_idx, my_seat]
+        my_last = self.seat_last_call[b_idx, my_seat]
+        my_last_st = self.seat_last_suit_bid_strain[b_idx, my_seat]
+
+        c_s8 = (my_last == 25) & (p_last >= 26) & (p_last <= 29)
+        c_s7 = (p_last == 25) & (my_last >= 21) & (my_last <= 24)
+        c_s6 = (my_last == 20) & (p_last >= 21) & (p_last <= 24)
+        c_s5 = (p_last == 20) & ((p_last_st >= 0) | (my_last_st >= 0))
+        c_s4 = (~opps_bid) & (
+            (i_am_opener & ((my_first == 3) | (my_first == 4)) & (p_first == 10) & (my_last == my_first))
+            | (partner_is_opener & ((p_first == 3) | (p_first == 4)) & (my_first == 10) & (my_last == 10))
+        )
+        c_s3 = (~opps_bid) & i_am_opener & (my_first == 5) & (my_last == 5) & ((p_last == 7) | (p_last == 8))
+        c_s2 = (~opps_bid) & (
+            (i_am_opener & (my_first == 5) & (my_last == 5) & (p_last == 6))
+            | (partner_is_opener & (p_first == 5) & (my_last == 6) & (p_last >= 7) & (p_last <= 9))
+        )
+        c_s1 = (~opps_bid) & partner_is_opener & (p_first == 5) & (my_last < 0)
+        c_s9 = (partner_is_opener & (p_first == 6) & (my_last < 0)) | (i_am_opener & (my_first == 6) & (my_last == 6))
+        c_s10 = opps_bid & (~partner_is_opener) & (~i_am_opener) & (p_last_st >= 0) & (my_last_st < 0)
+
+        conv_state = torch.zeros(B, dtype=torch.long, device=dev)
+        conv_state = torch.where(c_s10, torch.full_like(conv_state, 10), conv_state)
+        conv_state = torch.where(c_s9, torch.full_like(conv_state, 9), conv_state)
+        conv_state = torch.where(c_s1, torch.full_like(conv_state, 1), conv_state)
+        conv_state = torch.where(c_s2, torch.full_like(conv_state, 2), conv_state)
+        conv_state = torch.where(c_s3, torch.full_like(conv_state, 3), conv_state)
+        conv_state = torch.where(c_s4, torch.full_like(conv_state, 4), conv_state)
+        conv_state = torch.where(c_s5, torch.full_like(conv_state, 5), conv_state)
+        conv_state = torch.where(c_s6, torch.full_like(conv_state, 6), conv_state)
+        conv_state = torch.where(c_s7, torch.full_like(conv_state, 7), conv_state)
+        conv_state = torch.where(c_s8, torch.full_like(conv_state, 8), conv_state)
+        X[:, FEAT_TO_COL["conv_state"]] = conv_state.to(torch.float32)
+
+        # Effective trump (-1=NONE, 0=C, 1=D, 2=H, 3=S)
+        jac_trump = torch.where(
+            i_am_opener,
+            torch.where(my_first == 3, torch.full_like(agreed, 2), torch.full_like(agreed, 3)),
+            torch.where(p_first == 3, torch.full_like(agreed, 2), torch.full_like(agreed, 3)),
+        )
+        xfer_trump = torch.where(p_last == 7, torch.full_like(agreed, 2), torch.full_like(agreed, 3))
+        eff_trump = torch.where(
+            has_agreed,
+            agreed,
+            torch.where(
+                conv_state == 4,
+                jac_trump,
+                torch.where(
+                    conv_state == 3,
+                    xfer_trump,
+                    torch.where(p_last_st >= 0, p_last_st, my_last_st),
+                ),
+            ),
+        )
+        has_eff = eff_trump >= 0
+        clamped_eff = eff_trump.clamp(0, 3)
+        eff_len = torch.where(
+            has_eff,
+            self.bundle.suit_lengths[b_idx, my_seat, clamped_eff],
+            torch.full((B,), -1, dtype=torch.long, device=dev),
+        )
+        eff_has_k = has_eff & self.bundle.suit_has_king[b_idx, my_seat, clamped_eff]
+        eff_has_q = has_eff & self.bundle.suit_has_queen[b_idx, my_seat, clamped_eff]
+        rkcb_kc = self.bundle.ace_counts[b_idx, my_seat] + eff_has_k.to(torch.long)
+        total_kings = X[:, FEAT_TO_COL["king_count"]].to(torch.long)
+        outside_k = total_kings - eff_has_k.to(torch.long)
+
+        step_val = torch.where(
+            (rkcb_kc == 0) | (rkcb_kc == 3),
+            torch.ones_like(rkcb_kc),
+            torch.where(
+                (rkcb_kc == 1) | (rkcb_kc == 4),
+                torch.full_like(rkcb_kc, 2),
+                torch.where(eff_has_q, torch.full_like(rkcb_kc, 4), torch.full_like(rkcb_kc, 3)),
+            ),
+        )
+        rkcb_step = torch.where(has_eff, step_val, torch.zeros_like(rkcb_kc))
+
+        X[:, FEAT_TO_COL["effective_trump"]] = eff_trump.to(torch.float32)
+        X[:, FEAT_TO_COL["effective_trump_len"]] = eff_len.to(torch.float32)
+        X[:, FEAT_TO_COL["rkcb_keycards"]] = rkcb_kc.to(torch.float32)
+        X[:, FEAT_TO_COL["rkcb_has_queen"]] = eff_has_q.to(torch.float32)
+        X[:, FEAT_TO_COL["rkcb_0314_step"]] = rkcb_step.to(torch.float32)
+        X[:, FEAT_TO_COL["outside_king_count"]] = outside_k.to(torch.float32)
+
+        # Sequence-aware partner HCP minimum
+        seq_plo = self.seat_hcp_lo[b_idx, partner_seat].clone()
+        p_open_1 = partner_is_opener & (p_first >= 1) & (p_first <= 4)
+        seq_plo = torch.where(p_open_1, torch.clamp(seq_plo, min=12), seq_plo)
+        seq_plo = torch.where((conv_state == 4) & i_am_opener, torch.clamp(seq_plo, min=13), seq_plo)
+
+        my_open_1 = (~opps_bid) & i_am_opener & (my_first >= 1) & (my_first <= 4)
+        my_f_st = (my_first - 1) % 5
+        p_f_st = (p_first - 1) % 5
+        is_2o1 = my_open_1 & (p_first >= 6) & (p_first <= 8) & (p_f_st != my_f_st)
+        is_lim_r = my_open_1 & (p_first >= 11) & (p_first <= 14) & (p_f_st == my_f_st)
+        is_resp_1 = my_open_1 & (~is_2o1) & (~is_lim_r) & (p_first >= 2) & (p_first <= 9)
+        seq_plo = torch.where(is_2o1 | is_lim_r, torch.clamp(seq_plo, min=10), seq_plo)
+        seq_plo = torch.where(is_resp_1, torch.clamp(seq_plo, min=6), seq_plo)
+
+        is_adv_1 = (conv_state == 10) & (p_last >= 1) & (p_last <= 4)
+        is_adv_2 = (conv_state == 10) & (p_last >= 6) & (p_last <= 9)
+        seq_plo = torch.where(is_adv_1, torch.clamp(seq_plo, min=8), seq_plo)
+        seq_plo = torch.where(is_adv_2, torch.clamp(seq_plo, min=10), seq_plo)
+
+        X[:, FEAT_TO_COL["seq_partner_hcp_min"]] = seq_plo.to(torch.float32)
+        X[:, FEAT_TO_COL["seq_combined_hcp_min"]] = hcp + seq_plo.to(torch.float32)
+
+        # Partner promised keycards from RKCB 0314 response
+        kc_safe = torch.clamp(rkcb_kc, min=0)
+        pkc_5c = torch.where((kc_safe <= 2) & (seq_plo >= 11), torch.full_like(kc_safe, 3), torch.zeros_like(kc_safe))
+        pkc_5d = torch.where((kc_safe <= 1) & (seq_plo >= 15), torch.full_like(kc_safe, 4), torch.ones_like(kc_safe))
+        pkc_5hs = torch.where((kc_safe == 0) & (seq_plo >= 18), torch.full_like(kc_safe, 5), torch.full_like(kc_safe, 2))
+        pkc_s6 = torch.where(
+            p_last == 21,
+            pkc_5c,
+            torch.where(p_last == 22, pkc_5d, pkc_5hs),
+        )
+        partner_kc = torch.where(
+            conv_state == 6,
+            pkc_s6,
+            torch.where(conv_state == 8, torch.clamp(5 - kc_safe, min=0), torch.zeros_like(kc_safe)),
+        )
+        X[:, FEAT_TO_COL["partner_kc_promised"]] = partner_kc.to(torch.float32)
+        X[:, FEAT_TO_COL["total_partnership_keycards"]] = (kc_safe + partner_kc).to(torch.float32)
+
+        # Estimated combined trump length in effective_trump
+        p_first_is_maj = (p_first == 3) | (p_first == 4) | (p_first == 8) | (p_first == 9) | (p_first == 13) | (p_first == 14) | (p_first == 18) | (p_first == 19)
+        p_len_maj = torch.where(
+            (my_last_st == eff_trump) & (~p_first_is_maj),
+            torch.full_like(eff_len, 3),
+            torch.where(
+                (~partner_is_opener) & (~opps_bid) & ((p_first == 3) | (p_first == 4)),
+                torch.full_like(eff_len, 4),
+                torch.full_like(eff_len, 5),
+            ),
+        )
+        p_len_min = torch.where(p_first == 1, torch.full_like(eff_len, 3), torch.full_like(eff_len, 4))
+        p_len_suit = torch.where(eff_trump >= 2, p_len_maj, p_len_min)
+        p_len_est = torch.where(
+            conv_state == 4,
+            torch.where(i_am_opener, torch.full_like(eff_len, 4), torch.full_like(eff_len, 5)),
+            torch.where(
+                conv_state == 3,
+                torch.full_like(eff_len, 5),
+                torch.where(p_last_st == eff_trump, p_len_suit, torch.full_like(eff_len, 2)),
+            ),
+        )
+        comb_fit_len = torch.where(has_eff & (eff_len >= 0), eff_len + p_len_est, torch.zeros_like(eff_len))
+        X[:, FEAT_TO_COL["combined_fit_len_est"]] = comb_fit_len.to(torch.float32)
+
         return X, my_seat
 
     def step(self, calls: torch.Tensor) -> None:
@@ -949,6 +1124,9 @@ class BatchedAuctionEnv:
         bid_st = torch.clamp((c - 1) % 5, 0, 4)
         is_suit_bid = is_bid & (bid_st < 4)
 
+        self.first_bid_seat = torch.where(
+            is_bid & (self.opening_bid < 0), seat, self.first_bid_seat
+        )
         self.opening_bid = torch.where(
             is_bid & (self.opening_bid < 0), c, self.opening_bid
         )

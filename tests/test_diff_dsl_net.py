@@ -109,6 +109,21 @@ class TestDiffDSLNetAndJPS(unittest.TestCase):
         shrunk_large = jps.jps_shrink_edge(20.0, cnt=50, total_boards=100, lambda_shrink=15.0)
         self.assertGreater(shrunk_large, shrunk_small)
 
+    def test_program1_to_4_features_and_bayesian_search(self):
+        from bid.bayesian_search import BayesianSingleDummyBidder
+        from bid.eval_vs_dds import parse_call
+        from bid.models import Seat
+
+        jps_dsl = os.path.join(REPO_ROOT, "system", "brill_jps_diff.dsl")
+        bidder = BayesianSingleDummyBidder(jps_dsl, num_worlds=4, pool_size=40)
+        deal9 = self.deals[9]  # Board 10 (seed=7): 1S - P - 2NT - P - 3D - P - 4S - P - 4NT
+        hist = [parse_call(c) for c in ("1S", "PASS", "2NT", "PASS", "3D", "PASS", "4S", "PASS")]
+        call, exp = bidder.decide_with_explanation(
+            deal9.hands[Seat.NORTH], hist, Seat.NORTH, deal9.dealer, deal9.vuln
+        )
+        self.assertEqual(str(call), "4NT")
+        self.assertTrue(exp.to_cot_str().endswith("-> BID 4NT"))
+
 
 if __name__ == "__main__":
     unittest.main()
