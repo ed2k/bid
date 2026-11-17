@@ -199,5 +199,7 @@ Across 6 generations (Round 1: Gen 1–3; Round 2: Gen 4–6 with mega-batched S
 
 Executing all 4 programs in [`docs/BEAT_REMOTE_BRILL_PROPOSAL.md`](./BEAT_REMOTE_BRILL_PROPOSAL.md) (152-feature sequence-exact convention/slam state machine in [`src/bid/features.py`](../src/bid/features.py) & [`research/gpu_arena.py`](../research/gpu_arena.py), [`research/graft_conventions.py`](../research/graft_conventions.py), [`research/brill_dagger_dd.py`](../research/brill_dagger_dd.py), Gen-7 JPS + 10-strain DD trick prediction in [`research/jps_search.py`](../research/jps_search.py), and test-time [`BayesianSingleDummyBidder`](../src/bid/bayesian_search.py)) turned our 16-board match (`seed=7`) against live Remote Brill from **`-3.19 ± 1.23 IMP/board` (`-51 IMPs`)** into a statistically significant **`+2.50 ± 1.08 IMP/board` ($t = +2.31$, `+40 IMPs`, `W/L/T = 6 / 3 / 7`; Contested `+4.89 ± 1.48 IMP/board`, $t = +3.31$) victory** while simultaneously lifting our Held-Out Test (`2,500` boards) margin over [`system/champion_system.dsl`](../system/champion_system.dsl) from `+0.8432` to **`+1.1516 ± 0.1365 IMP/board` ($t = +8.43$, `+2,879 IMPs`)**.
 
+See [`docs/HOLISTIC_REVIEW_AND_COLAB_GUIDE.md`](./HOLISTIC_REVIEW_AND_COLAB_GUIDE.md) and [`notebooks/train_superhuman_bidding_from_scratch.ipynb`](../notebooks/train_superhuman_bidding_from_scratch.ipynb) for a holistic review of all 10 repository methods and an end-to-end Google Colab GPU tutorial training a superhuman bidding system from scratch.
+
 
 
