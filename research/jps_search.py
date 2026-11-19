@@ -549,6 +549,8 @@ def search_threshold_shifts_on_diff_net(
         affected_rules = torch.where(diff_net.rule_atom_mat[:, u_i] > 0.5)[0].tolist()
         if not affected_rules:
             continue
+        if any(float(diff_net.rule_prio[r].item()) >= 900.0 for r in affected_rules):
+            continue
 
         best_cand_val = None
         best_shrunk = 0.0
@@ -739,13 +741,17 @@ def search_jps_partner_belief_splits_on_diff_net(
     s1, s2, tr_active, _ = record_jps_coupling_and_baseline(tr_bundle, cand_t, primary_opp)
     tr_prim_base = ga.points_to_imps_tensor(s1 - s2).to(torch.float32)
 
-    max_rules_scan = 75 if gpu_scale else 25
+    max_rules_scan = 55 if gpu_scale else 25
     rule_counts = tr_active.sum(dim=0)
     top_rules = sorted(
         [
             (int(rule_counts[r].item()), r)
             for r in range(cand_t.num_rules)
-            if not bool(cand_t.rule_neg[r].item()) and int(rule_counts[r].item()) >= 14
+            if (
+                not bool(cand_t.rule_neg[r].item())
+                and float(cand_t.rule_prio[r].item()) < 900.0
+                and int(rule_counts[r].item()) >= 14
+            )
         ],
         reverse=True,
     )[:max_rules_scan]
@@ -785,9 +791,26 @@ def search_jps_partner_belief_splits_on_diff_net(
             ("quick_tricks", ">=", 2.0),
             ("opp_suit_stoppers", ">=", 1.0),
             ("opp_suit_stoppers", "==", 0.0),
-            ("zar_points", ">=", 26.0),
             ("total_points", ">=", 14.0),
             ("is_favorable_vuln", "==", 1.0),
+            ("seq_combined_hcp_min", ">=", 24.0),
+            ("seq_combined_hcp_min", ">=", 26.0),
+            ("seq_combined_hcp_min", "<=", 19.0),
+            ("combined_fit_len_est", "<=", 7.0),
+            ("effective_trump_len", ">=", 5.0),
+            ("rkcb_keycards", ">=", 2.0),
+            ("first_round_controls", ">=", 3.0),
+            ("rule_of_15", "==", 1.0),
+            ("opp_bid_spades", "==", 1.0),
+            ("opp_bid_hearts", "==", 1.0),
+            ("unstopped_opp_suits", "==", 0.0),
+            ("unstopped_opp_suits", ">=", 1.0),
+            ("all_opp_suits_stopped", "==", 1.0),
+            ("unbid_major_unstopped", "==", 1.0),
+            ("is_unusual_2nt_shape", "==", 1.0),
+            ("is_michaels_shape", "==", 1.0),
+            ("is_power_double_hand", "==", 1.0),
+            ("controls", ">=", 6.0),
         ])
 
     op_str_to_code = {">=": ga.OP_GE, "<=": ga.OP_LE, "==": ga.OP_EQ}
@@ -814,7 +837,7 @@ def search_jps_partner_belief_splits_on_diff_net(
                 split_tasks.append((r_i, feat_k, op_s, val_f, new_c, new_rid, active_b))
 
     print(f"  [JPS Stage 3] Evaluating {len(split_tasks)} candidate rule splits in packed mega-batches...")
-    max_batch_rows = 24576 if gpu_scale else 8192
+    max_batch_rows = 32768 if gpu_scale else 8192
     best_per_rule: Dict[int, Tuple[float, str, str, float, int, str, float, float, int]] = {}
 
     idx = 0
@@ -975,8 +998,8 @@ def run_jps_coupled_search_on_diff_net(
     dev = tr_bundle.hand_features.device
     cand_net = diff_net.to_tensor_decision_net()
     primary_opp = opp_nets[0]
-    if gpu_scale and max_batch_rows < 24576:
-        max_batch_rows = 24576
+    if gpu_scale and max_batch_rows < 32768:
+        max_batch_rows = 32768
 
     s1, s2, tr_active, pair_tensors = record_jps_coupling_and_baseline(
         tr_bundle, cand_net, primary_opp
@@ -991,12 +1014,20 @@ def run_jps_coupled_search_on_diff_net(
     )
 
     max_pairs_scan = 110 if gpu_scale else 30
-    max_alter_r1 = 24 if gpu_scale else 8
+    max_alter_r1 = 35 if gpu_scale else 8
 
     # Also discover `alterReach` partner rules for top opener rules when they change call
     rule_counts = tr_active.sum(dim=0)
     top_r1 = sorted(
-        [(int(rule_counts[r].item()), r) for r in range(cand_net.num_rules) if not bool(cand_net.rule_neg[r].item()) and int(rule_counts[r].item()) >= 12],
+        [
+            (int(rule_counts[r].item()), r)
+            for r in range(cand_net.num_rules)
+            if (
+                not bool(cand_net.rule_neg[r].item())
+                and float(cand_net.rule_prio[r].item()) < 800.0
+                and int(rule_counts[r].item()) >= 12
+            )
+        ],
         reverse=True,
     )[:max_alter_r1]
 
@@ -1006,6 +1037,8 @@ def run_jps_coupled_search_on_diff_net(
     # 1. Observed `(r1, r2)` coupled pairs
     for (r1, r2), b_idx in sorted_pairs[:max_pairs_scan]:
         if bool(cand_net.rule_neg[r1].item()) or bool(cand_net.rule_neg[r2].item()):
+            continue
+        if float(cand_net.rule_prio[r1].item()) >= 800.0 or float(cand_net.rule_prio[r2].item()) >= 800.0:
             continue
         # Union of boards where r1 or r2 is active so we capture full board impact
         union_mask = tr_active[:, r1] | tr_active[:, r2]
@@ -1038,7 +1071,7 @@ def run_jps_coupled_search_on_diff_net(
                 tr_bundle, cand_net, primary_opp, r1, c1, r1_b, top_m=(3 if gpu_scale else 2)
             )
             for r2, _r2_b in alter_r2_list:
-                if bool(cand_net.rule_neg[r2].item()):
+                if bool(cand_net.rule_neg[r2].item()) or float(cand_net.rule_prio[r2].item()) >= 800.0:
                     continue
                 union_b = torch.where(tr_active[:, r1] | tr_active[:, r2])[0]
                 old_c2 = int(cand_net.rule_call[r2].item())
@@ -1215,6 +1248,7 @@ def main() -> int:
     ap.add_argument("--min-train-t", type=float, default=1.4)
     ap.add_argument("--lambda-shrink", type=float, default=15.0)
     ap.add_argument("--skip-coupled", action="store_true", help="Skip Stage 1 coupled search for fast Stage 0+2+3 refinement")
+    ap.add_argument("--extra-opp", action="append", default=[], help="Additional .dsl opponent paths to include in opp_nets")
     ap.add_argument("--device", default="")
     args = ap.parse_args()
 
@@ -1239,6 +1273,11 @@ def main() -> int:
     opp_evolved = ga.TensorDecisionNet.from_dsl("system/brill_gpu_evolved.dsl", device=dev)
     opp_start = ga.TensorDecisionNet.from_dsl(args.dsl, device=dev)
     opp_nets: List[ga.TensorDecisionNet] = [opp_start, opp_distilled, opp_shipdd, opp_evolved]
+    if os.path.exists("system/brill_jps_diff_gen7.dsl"):
+        opp_nets.append(ga.TensorDecisionNet.from_dsl("system/brill_jps_diff_gen7.dsl", device=dev))
+    for extra_path in args.extra_opp:
+        if os.path.exists(extra_path):
+            opp_nets.append(ga.TensorDecisionNet.from_dsl(extra_path, device=dev))
 
     print(f"\nInitialized DiffDSLNet from {args.dsl}: {diff_net.num_rules} rules, {diff_net.num_atoms} condition atoms")
 

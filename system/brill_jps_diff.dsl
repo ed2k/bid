@@ -1,4 +1,4 @@
-# Exported from DiffDSLNet (brill_jps_diff) — 1915 active rules
+# Exported from DiffDSLNet (brill_jps_diff) — 1953 active rules
 
 RULE BD_open_uncont_P0:
   PRIORITY: 10
@@ -139,7 +139,7 @@ RULE BD_open_uncont_P9:
   CONDITION: auction_len <= 2.5
   CONDITION: spade_len > 4.5
   CONDITION: rule20_total > 19.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
 
 RULE BD_open_uncont_P10:
   PRIORITY: 10
@@ -153,7 +153,7 @@ RULE BD_open_uncont_P10:
   CONDITION: auction_len > 2.5
   CONDITION: spade_len > 4.5
   CONDITION: rule20_total > 19.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
 
 RULE BD_open_uncont_P11:
   PRIORITY: 10
@@ -1336,7 +1336,7 @@ RULE BD_open_uncont_P89:
   CONDITION: longest_suit_len > 5.5
   CONDITION: s_is_longest <= 0.5
   CONDITION: heart_len <= 6.5
-  CONDITION: h_top3_honors > 1.5
+  CONDITION: h_top3_honors > 0.5
 
 RULE BD_open_uncont_P90:
   PRIORITY: 10
@@ -1352,7 +1352,7 @@ RULE BD_open_uncont_P90:
   CONDITION: s_is_longest <= 0.5
   CONDITION: is_unfavorable_vuln <= 0.5
   CONDITION: heart_len <= 6.5
-  CONDITION: h_top3_honors > 1.5
+  CONDITION: h_top3_honors > 0.5
 
 RULE BD_open_uncont_P91:
   PRIORITY: 10
@@ -1368,7 +1368,7 @@ RULE BD_open_uncont_P91:
   CONDITION: s_is_longest <= 0.5
   CONDITION: is_unfavorable_vuln > 0.5
   CONDITION: heart_len <= 6.5
-  CONDITION: h_top3_honors > 1.5
+  CONDITION: h_top3_honors > 0.5
 
 RULE BD_open_uncont_P92:
   PRIORITY: 10
@@ -1382,7 +1382,7 @@ RULE BD_open_uncont_P92:
   CONDITION: longest_suit_len > 5.5
   CONDITION: s_is_longest <= 0.5
   CONDITION: heart_len <= 6.5
-  CONDITION: h_top3_honors > 1.5
+  CONDITION: h_top3_honors > 0.5
 
 RULE BD_open_uncont_P93:
   PRIORITY: 10
@@ -1805,7 +1805,7 @@ RULE BD_open_uncont_P120:
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 11.5
   CONDITION: rule20_total <= 20.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: hcp <= 10.5
   CONDITION: longest_suit_len > 5.5
   CONDITION: losing_trick_count <= 7.5
@@ -2331,7 +2331,7 @@ RULE BD_open_uncont_P155:
   CONDITION: is_opening == True
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 11.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: rule20_total > 20.5
   CONDITION: is_favorable_vuln <= 0.5
   CONDITION: longest_suit_len > 5.5
@@ -2431,7 +2431,7 @@ RULE BD_open_uncont_P163:
   CONDITION: hcp > 14.5
   CONDITION: total_points > 17.5
   CONDITION: hcp <= 19.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
 
 RULE BD_open_uncont_P164:
   PRIORITY: 10
@@ -2478,7 +2478,7 @@ RULE BD_open_uncont_P166:
   CONDITION: hcp > 14.5
   CONDITION: total_points > 17.5
   CONDITION: hcp <= 19.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: losing_trick_count <= 2.5
 
 RULE BD_open_uncont_P167:
@@ -2494,7 +2494,7 @@ RULE BD_open_uncont_P167:
   CONDITION: hcp > 14.5
   CONDITION: total_points > 17.5
   CONDITION: hcp <= 19.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: losing_trick_count > 2.5
 
 RULE BD_open_uncont_P168:
@@ -2728,7 +2728,7 @@ RULE BD_open_uncont_P183:
   CONDITION: hcp > 14.5
   CONDITION: total_points > 17.5
   CONDITION: hcp <= 19.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
 
 RULE BD_open_uncont_P184:
   PRIORITY: 10
@@ -2959,7 +2959,7 @@ RULE BD_open_uncont_P199:
   CONDITION: minor_hcp <= 9.5
   CONDITION: hcp > 11.5
   CONDITION: hcp <= 19.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: losing_trick_count <= 3.5
   CONDITION: h_is_longest > 0.5
   CONDITION: rule20_total > 27.5
@@ -3376,7 +3376,7 @@ RULE BD_open_uncont_P229:
   CONDITION: s_is_longest > 0.5
   CONDITION: hcp > 11.5
   CONDITION: hcp <= 19.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: losing_trick_count > 1.5
   CONDITION: shape_pattern == '7321'
   CONDITION: total_points <= 19.5
@@ -3392,7 +3392,7 @@ RULE BD_open_uncont_P230:
   CONDITION: s_is_longest > 0.5
   CONDITION: hcp > 11.5
   CONDITION: hcp <= 19.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: losing_trick_count > 1.5
   CONDITION: shape_pattern == '7321'
   CONDITION: total_points > 19.5
@@ -3814,7 +3814,7 @@ RULE BD_later_uncont_P7:
   CONDITION: longest_suit_len <= 5.5
   CONDITION: spade_len <= 3.5
   CONDITION: heart_len <= 4.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: combined_hcp_max <= 26.5
@@ -3830,7 +3830,7 @@ RULE BD_later_uncont_P8:
   CONDITION: longest_suit_len <= 5.5
   CONDITION: spade_len <= 3.5
   CONDITION: heart_len <= 4.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: combined_hcp_max <= 26.5
@@ -3846,7 +3846,7 @@ RULE BD_later_uncont_P9:
   CONDITION: longest_suit_len <= 5.5
   CONDITION: spade_len <= 3.5
   CONDITION: heart_len <= 4.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: combined_hcp_max <= 26.5
@@ -3862,7 +3862,7 @@ RULE BD_later_uncont_P10:
   CONDITION: longest_suit_len <= 5.5
   CONDITION: spade_len <= 3.5
   CONDITION: heart_len <= 4.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: combined_hcp_max <= 26.5
@@ -4306,7 +4306,7 @@ RULE BD_later_uncont_P38:
   CONDITION: support_in_partner_suit <= 4.5
   CONDITION: opening_bid != '1NT'
   CONDITION: competition_level > 1.5
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
 
 RULE BD_later_uncont_P39:
   PRIORITY: 10
@@ -4490,7 +4490,7 @@ RULE BD_later_uncont_P50:
   CONDITION: longest_suit_len <= 5.5
   CONDITION: spade_len <= 3.5
   CONDITION: heart_len <= 4.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: spade_len <= 1.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -4557,7 +4557,7 @@ RULE BD_later_uncont_P54:
   CONDITION: auction_len <= 5.5
   CONDITION: hcp > 7.5
   CONDITION: club_hcp <= 4.5
-  CONDITION: c_has_ten > 0.5
+  CONDITION: c_has_ten > -0.5
 
 RULE BD_later_uncont_P55:
   PRIORITY: 10
@@ -4812,7 +4812,7 @@ RULE BD_later_uncont_P72:
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: d_is_longest <= 0.5
   CONDITION: hcp <= 6.5
   CONDITION: is_opening == False
@@ -4828,7 +4828,7 @@ RULE BD_later_uncont_P73:
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: d_is_longest <= 0.5
   CONDITION: hcp > 6.5
   CONDITION: is_opening == False
@@ -4844,7 +4844,7 @@ RULE BD_later_uncont_P74:
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: d_is_longest <= 0.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -4859,7 +4859,7 @@ RULE BD_later_uncont_P75:
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: d_is_longest <= 0.5
   CONDITION: club_len > 3.5
   CONDITION: club_len <= 6.5
@@ -4875,7 +4875,7 @@ RULE BD_later_uncont_P76:
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: d_is_longest <= 0.5
   CONDITION: club_len > 3.5
   CONDITION: club_len <= 6.5
@@ -4891,7 +4891,7 @@ RULE BD_later_uncont_P77:
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: d_is_longest <= 0.5
   CONDITION: club_len > 3.5
   CONDITION: club_len > 6.5
@@ -4906,7 +4906,7 @@ RULE BD_later_uncont_P78:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: hcp <= 10.5
   CONDITION: d_is_longest <= 0.5
   CONDITION: is_opening == False
@@ -4922,7 +4922,7 @@ RULE BD_later_uncont_P79:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: hcp <= 10.5
   CONDITION: d_is_longest <= 0.5
   CONDITION: is_opening == False
@@ -4938,7 +4938,7 @@ RULE BD_later_uncont_P80:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: hcp > 10.5
   CONDITION: d_is_longest <= 0.5
   CONDITION: is_opening == False
@@ -4954,7 +4954,7 @@ RULE BD_later_uncont_P81:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: hcp > 10.5
   CONDITION: d_is_longest <= 0.5
   CONDITION: is_opening == False
@@ -4970,7 +4970,7 @@ RULE BD_later_uncont_P82:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: d_is_longest <= 0.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -4985,7 +4985,7 @@ RULE BD_later_uncont_P83:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: d_is_longest <= 0.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -5001,7 +5001,7 @@ RULE BD_later_uncont_P84:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: d_is_longest <= 0.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -5177,7 +5177,7 @@ RULE BD_later_uncont_P95:
   CONDITION: heart_len > 3.5
   CONDITION: d_is_longest <= 0.5
   CONDITION: heart_len > 6.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: combined_hcp_max > 26.5
@@ -5282,6 +5282,7 @@ RULE BD_later_uncont_P102:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
+  CONDITION: heart_len > 3.5
   CONDITION: d_is_longest > 0.5
   CONDITION: second_longest_len <= 4.5
   CONDITION: is_opening == False
@@ -5290,7 +5291,6 @@ RULE BD_later_uncont_P102:
   CONDITION: partner_last_call == '1C'
   CONDITION: second_longest_len > 1.5
   CONDITION: c_is_longest <= 0.5
-  CONDITION: heart_len > 2.5
 
 RULE BD_later_uncont_P103:
   PRIORITY: 10
@@ -5452,7 +5452,7 @@ RULE BD_later_uncont_P113:
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: club_len <= 7.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -5467,7 +5467,7 @@ RULE BD_later_uncont_P114:
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: club_len > 7.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -5482,7 +5482,7 @@ RULE BD_later_uncont_P115:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: competition_level <= 1.5
@@ -5498,7 +5498,7 @@ RULE BD_later_uncont_P116:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: competition_level > 1.5
@@ -5514,7 +5514,7 @@ RULE BD_later_uncont_P117:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: total_points > 7.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -5530,7 +5530,7 @@ RULE BD_later_uncont_P118:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: total_points > 7.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -5546,7 +5546,7 @@ RULE BD_later_uncont_P119:
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: passes_since_last_bid <= 0.5
@@ -5562,7 +5562,7 @@ RULE BD_later_uncont_P120:
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: passes_since_last_bid > 0.5
@@ -5578,7 +5578,7 @@ RULE BD_later_uncont_P121:
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: losing_trick_count <= 6.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -5593,7 +5593,7 @@ RULE BD_later_uncont_P122:
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: losing_trick_count > 6.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -5608,7 +5608,7 @@ RULE BD_later_uncont_P123:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: passes_since_last_bid <= 0.5
@@ -5624,7 +5624,7 @@ RULE BD_later_uncont_P124:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: passes_since_last_bid <= 0.5
@@ -5639,7 +5639,7 @@ RULE BD_later_uncont_P125:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: passes_since_last_bid > 0.5
@@ -5655,7 +5655,7 @@ RULE BD_later_uncont_P126:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: passes_since_last_bid > 0.5
@@ -5783,7 +5783,7 @@ RULE BD_later_uncont_P134:
   CONDITION: spade_len <= 3.5
   CONDITION: heart_len > 3.5
   CONDITION: club_len <= 2.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: auction_len <= 3.5
@@ -5799,7 +5799,7 @@ RULE BD_later_uncont_P135:
   CONDITION: spade_len <= 3.5
   CONDITION: heart_len > 3.5
   CONDITION: club_len <= 2.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: auction_len <= 3.5
@@ -5815,7 +5815,7 @@ RULE BD_later_uncont_P136:
   CONDITION: spade_len <= 3.5
   CONDITION: heart_len > 3.5
   CONDITION: club_len > 2.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: auction_len <= 3.5
@@ -5829,7 +5829,7 @@ RULE BD_later_uncont_P137:
   CONDITION: opponents_bid == False
   CONDITION: spade_len <= 3.5
   CONDITION: heart_len > 3.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: shortest_suit_len <= 1.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -5844,7 +5844,7 @@ RULE BD_later_uncont_P138:
   CONDITION: opponents_bid == False
   CONDITION: spade_len <= 3.5
   CONDITION: heart_len > 3.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: shortest_suit_len > -0.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -6143,7 +6143,7 @@ RULE BD_later_uncont_P157:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: competition_level <= 1.5
@@ -6159,7 +6159,7 @@ RULE BD_later_uncont_P158:
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: competition_level > 1.5
@@ -6528,7 +6528,7 @@ RULE BD_later_uncont_P182:
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len > 3.5
   CONDITION: heart_len <= 4.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: heart_len > 1.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -6910,7 +6910,7 @@ RULE BD_later_uncont_P206:
   CONDITION: spade_len > 4.5
   CONDITION: spade_len > 3.5
   CONDITION: heart_len <= 4.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: major_hcp <= 9.0
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -6926,7 +6926,7 @@ RULE BD_later_uncont_P207:
   CONDITION: spade_len > 4.5
   CONDITION: spade_len > 3.5
   CONDITION: heart_len <= 4.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: major_hcp > 9.0
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
@@ -6942,7 +6942,7 @@ RULE BD_later_uncont_P208:
   CONDITION: spade_len > 4.5
   CONDITION: spade_len > 3.5
   CONDITION: heart_len <= 4.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: opening_bid == '1NT'
@@ -7080,7 +7080,7 @@ RULE BD_later_uncont_P217:
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: opening_bid == '1NT'
-  CONDITION: c_has_ten > 0.5
+  CONDITION: c_has_ten > -0.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: rule20_total <= 15.5
 
@@ -7134,7 +7134,7 @@ RULE BD_later_uncont_P221:
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 4.5
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: c_is_best_minor <= 0.5
   CONDITION: hcp <= 16.5
   CONDITION: spade_len <= 5.5
@@ -7150,7 +7150,7 @@ RULE BD_later_uncont_P222:
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 4.5
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: c_is_best_minor <= 0.5
   CONDITION: hcp <= 16.5
   CONDITION: spade_len <= 5.5
@@ -7166,7 +7166,7 @@ RULE BD_later_uncont_P223:
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 4.5
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: c_is_best_minor <= 0.5
   CONDITION: hcp > 16.5
   CONDITION: spade_len <= 5.5
@@ -7182,7 +7182,7 @@ RULE BD_later_uncont_P224:
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 4.5
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: c_is_best_minor <= 0.5
   CONDITION: hcp > 16.5
   CONDITION: spade_len <= 5.5
@@ -7199,7 +7199,7 @@ RULE BD_later_uncont_P225:
   CONDITION: spade_len > 4.5
   CONDITION: hcp <= 9.5
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: hcp <= 10.5
   CONDITION: c_is_best_minor > 0.5
   CONDITION: spade_len <= 5.5
@@ -7215,7 +7215,7 @@ RULE BD_later_uncont_P226:
   CONDITION: spade_len > 4.5
   CONDITION: hcp > 9.5
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: hcp <= 10.5
   CONDITION: c_is_best_minor > 0.5
   CONDITION: spade_len <= 5.5
@@ -7230,7 +7230,7 @@ RULE BD_later_uncont_P227:
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 4.5
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: hcp > 10.5
   CONDITION: c_is_best_minor > 0.5
   CONDITION: hcp <= 16.5
@@ -7246,7 +7246,7 @@ RULE BD_later_uncont_P228:
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 4.5
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: hcp > 10.5
   CONDITION: c_is_best_minor > 0.5
   CONDITION: hcp > 16.5
@@ -7646,7 +7646,7 @@ RULE BD_later_uncont_P253:
   CONDITION: last_bid_level <= 1.5
   CONDITION: support_in_partner_suit <= 4.5
   CONDITION: last_bid_strain == 'S'
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: combined_hcp_min <= 19.5
   CONDITION: combined_hcp_min <= 15.5
@@ -7662,7 +7662,7 @@ RULE BD_later_uncont_P254:
   CONDITION: last_bid_level <= 1.5
   CONDITION: support_in_partner_suit <= 4.5
   CONDITION: last_bid_strain == 'S'
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: combined_hcp_min <= 19.5
   CONDITION: combined_hcp_min <= 15.5
@@ -7678,7 +7678,7 @@ RULE BD_later_uncont_P255:
   CONDITION: last_bid_level <= 1.5
   CONDITION: support_in_partner_suit <= 4.5
   CONDITION: last_bid_strain == 'S'
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: combined_hcp_min <= 19.5
   CONDITION: combined_hcp_min <= 15.5
@@ -7694,7 +7694,7 @@ RULE BD_later_uncont_P256:
   CONDITION: last_bid_level <= 1.5
   CONDITION: support_in_partner_suit <= 4.5
   CONDITION: last_bid_strain == 'S'
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: combined_hcp_min <= 19.5
   CONDITION: combined_hcp_min <= 15.5
@@ -7752,7 +7752,7 @@ RULE BD_later_uncont_P260:
   CALL: 2S
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: support_in_partner_suit <= 4.5
@@ -8252,7 +8252,7 @@ RULE BD_later_uncont_P292:
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
   CONDITION: hcp > 14.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain == 'S'
@@ -8268,7 +8268,7 @@ RULE BD_later_uncont_P293:
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
   CONDITION: hcp > 14.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain == 'S'
@@ -8284,7 +8284,7 @@ RULE BD_later_uncont_P294:
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
   CONDITION: hcp > 14.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain == 'S'
@@ -8300,7 +8300,7 @@ RULE BD_later_uncont_P295:
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
   CONDITION: hcp > 14.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain == 'S'
@@ -8381,7 +8381,7 @@ RULE BD_later_uncont_P300:
   CONDITION: last_bid_strain == 'H'
   CONDITION: passes_since_last_bid <= 0.5
   CONDITION: last_bid_strain != 'S'
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: heart_len <= 2.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: combined_hcp_min <= 15.5
@@ -8397,7 +8397,7 @@ RULE BD_later_uncont_P301:
   CONDITION: last_bid_strain == 'H'
   CONDITION: passes_since_last_bid > 0.5
   CONDITION: last_bid_strain != 'S'
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: heart_len <= 2.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: combined_hcp_min <= 15.5
@@ -8408,12 +8408,12 @@ RULE BD_later_uncont_P302:
   CALL: 2H
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
+  CONDITION: heart_len > 3.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain == 'H'
   CONDITION: last_bid_strain != 'S'
-  CONDITION: total_points > 5.5
-  CONDITION: heart_len > 2.5
+  CONDITION: total_points > 6.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: combined_hcp_min <= 15.5
   CONDITION: h_is_best_major <= 0.5
@@ -8429,7 +8429,7 @@ RULE BD_later_uncont_P303:
   CONDITION: last_bid_strain != 'H'
   CONDITION: passes_since_last_bid <= 0.5
   CONDITION: last_bid_strain != 'S'
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: combined_hcp_min <= 15.5
   CONDITION: h_is_best_major <= 0.5
@@ -8445,7 +8445,7 @@ RULE BD_later_uncont_P304:
   CONDITION: last_bid_strain != 'H'
   CONDITION: passes_since_last_bid <= 0.5
   CONDITION: last_bid_strain != 'S'
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: combined_hcp_min <= 15.5
   CONDITION: h_is_best_major <= 0.5
@@ -8461,7 +8461,7 @@ RULE BD_later_uncont_P305:
   CONDITION: last_bid_strain != 'H'
   CONDITION: passes_since_last_bid > 0.5
   CONDITION: last_bid_strain != 'S'
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: combined_hcp_min <= 15.5
   CONDITION: h_is_best_major <= 0.5
@@ -8477,7 +8477,7 @@ RULE BD_later_uncont_P306:
   CONDITION: last_bid_strain != 'H'
   CONDITION: passes_since_last_bid > 0.5
   CONDITION: last_bid_strain != 'S'
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: combined_hcp_min <= 15.5
   CONDITION: h_is_best_major <= 0.5
@@ -8712,7 +8712,7 @@ RULE BD_later_uncont_P321:
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
   CONDITION: is_semi_balanced <= 0.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain != 'S'
@@ -8728,7 +8728,7 @@ RULE BD_later_uncont_P322:
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
   CONDITION: is_semi_balanced > 0.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain != 'S'
@@ -8864,7 +8864,7 @@ RULE BD_later_uncont_P330:
   CONDITION: combined_hcp_min > 19.5
   CONDITION: h_is_best_major > 0.5
   CONDITION: opening_bid == '1H'
-  CONDITION: doubleton_count > 0.5
+  CONDITION: doubleton_count > -0.5
 
 RULE BD_later_uncont_P331:
   PRIORITY: 10
@@ -8966,7 +8966,7 @@ RULE BD_later_uncont_P337:
   CALL: 4H
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain == 'H'
@@ -9032,7 +9032,7 @@ RULE BD_later_uncont_P341:
   CONDITION: last_bid_strain != 'H'
   CONDITION: passes_since_last_bid <= 0.5
   CONDITION: last_bid_strain != 'S'
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: shape_pattern != '6421'
   CONDITION: combined_hcp_min <= 15.5
@@ -9048,7 +9048,7 @@ RULE BD_later_uncont_P342:
   CONDITION: last_bid_strain != 'H'
   CONDITION: passes_since_last_bid > 0.5
   CONDITION: last_bid_strain != 'S'
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: shape_pattern != '6421'
   CONDITION: combined_hcp_min <= 15.5
@@ -9077,7 +9077,7 @@ RULE BD_later_uncont_P344:
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len > 3.5
   CONDITION: d_is_longest <= 0.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain != 'H'
@@ -9463,7 +9463,7 @@ RULE BD_later_uncont_P369:
   CALL: 3NT
   CONDITION: opponents_bid == False
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: opening_bid != '1S'
   CONDITION: last_bid_strain == 'NT'
@@ -9479,7 +9479,7 @@ RULE BD_later_uncont_P370:
   CALL: 3C
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: opening_bid != '1S'
   CONDITION: last_bid_strain == 'NT'
@@ -9623,7 +9623,7 @@ RULE BD_later_uncont_P379:
   CALL: 3NT
   CONDITION: opponents_bid == False
   CONDITION: hcp <= 19.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: is_opening == False
   CONDITION: opening_bid != '1S'
   CONDITION: last_bid_strain == 'NT'
@@ -9638,7 +9638,7 @@ RULE BD_later_uncont_P380:
   PRIORITY: 10
   CALL: 3NT
   CONDITION: opponents_bid == False
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: hcp > 19.5
   CONDITION: is_opening == False
   CONDITION: opening_bid != '1S'
@@ -9923,9 +9923,9 @@ RULE BD_later_uncont_P398:
   PRIORITY: 10
   CALL: 3H
   CONDITION: opponents_bid == False
+  CONDITION: heart_len > 3.5
   CONDITION: is_opening == False
   CONDITION: opening_bid == '1NT'
-  CONDITION: heart_len > 2.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: last_bid_level > 1.5
   CONDITION: last_bid_level <= 2.5
@@ -10299,9 +10299,9 @@ RULE BD_later_uncont_P422:
   PRIORITY: 10
   CALL: 4H
   CONDITION: opponents_bid == False
+  CONDITION: heart_len > 3.5
   CONDITION: is_opening == False
   CONDITION: opening_bid == '1NT'
-  CONDITION: heart_len > 2.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: last_bid_level > 1.5
   CONDITION: last_bid_level <= 2.5
@@ -10314,7 +10314,7 @@ RULE BD_later_uncont_P423:
   PRIORITY: 10
   CALL: 3C
   CONDITION: opponents_bid == False
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: opening_bid != '1NT'
   CONDITION: heart_len <= 2.5
@@ -10330,10 +10330,10 @@ RULE BD_later_uncont_P424:
   PRIORITY: 10
   CALL: 3S
   CONDITION: opponents_bid == False
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
+  CONDITION: heart_len > 3.5
   CONDITION: is_opening == False
   CONDITION: opening_bid != '1NT'
-  CONDITION: heart_len > 2.5
   CONDITION: diamond_len <= 3.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: last_bid_level > 1.5
@@ -10346,7 +10346,7 @@ RULE BD_later_uncont_P425:
   PRIORITY: 10
   CALL: 3NT
   CONDITION: opponents_bid == False
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: opening_bid != '1NT'
   CONDITION: diamond_len > 3.5
@@ -10362,7 +10362,7 @@ RULE BD_later_uncont_P426:
   PRIORITY: 10
   CALL: 4NT
   CONDITION: opponents_bid == False
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: opening_bid != '1NT'
   CONDITION: diamond_len > 3.5
@@ -10472,7 +10472,7 @@ RULE BD_later_uncont_P433:
   CONDITION: opponents_bid == False
   CONDITION: total_points > 17.5
   CONDITION: is_opening == False
-  CONDITION: c_has_ten > 0.5
+  CONDITION: c_has_ten > -0.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: last_bid_level > 1.5
   CONDITION: last_bid_level <= 2.5
@@ -10488,7 +10488,7 @@ RULE BD_later_uncont_P434:
   CONDITION: opponents_bid == False
   CONDITION: total_points > 17.5
   CONDITION: is_opening == False
-  CONDITION: c_has_ten > 0.5
+  CONDITION: c_has_ten > -0.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: last_bid_level > 1.5
   CONDITION: last_bid_level <= 2.5
@@ -11090,7 +11090,7 @@ RULE BD_later_uncont_P473:
   CONDITION: spade_len <= 4.5
   CONDITION: hcp <= 9.5
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_strain == 'S'
   CONDITION: support_in_partner_suit > 2.5
@@ -11743,7 +11743,7 @@ RULE BD_later_uncont_P514:
   CALL: 2H
   CONDITION: opponents_bid == False
   CONDITION: hcp > 9.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'H'
   CONDITION: last_bid_strain != 'S'
@@ -11935,7 +11935,7 @@ RULE BD_later_uncont_P526:
   CALL: 2D
   CONDITION: opponents_bid == False
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'S'
   CONDITION: last_bid_strain != 'NT'
@@ -11949,7 +11949,7 @@ RULE BD_later_uncont_P527:
   CALL: 2D
   CONDITION: opponents_bid == False
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: hcp <= 7.5
   CONDITION: last_bid_strain != 'S'
@@ -11965,7 +11965,7 @@ RULE BD_later_uncont_P528:
   CALL: 3H
   CONDITION: opponents_bid == False
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: hcp <= 7.5
   CONDITION: last_bid_strain != 'S'
@@ -11981,7 +11981,7 @@ RULE BD_later_uncont_P529:
   CALL: 4NT
   CONDITION: opponents_bid == False
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'S'
   CONDITION: hcp > 7.5
@@ -11997,7 +11997,7 @@ RULE BD_later_uncont_P530:
   CALL: 3NT
   CONDITION: opponents_bid == False
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'S'
   CONDITION: hcp > 7.5
@@ -12013,7 +12013,7 @@ RULE BD_later_uncont_P531:
   CALL: 2S
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'S'
   CONDITION: last_bid_strain != 'NT'
@@ -12027,7 +12027,7 @@ RULE BD_later_uncont_P532:
   CALL: 2S
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: hcp <= 7.5
   CONDITION: last_bid_strain != 'S'
@@ -12043,7 +12043,7 @@ RULE BD_later_uncont_P533:
   CALL: 4H
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: hcp <= 7.5
   CONDITION: last_bid_strain != 'S'
@@ -12059,7 +12059,7 @@ RULE BD_later_uncont_P534:
   CALL: 4S
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'S'
   CONDITION: hcp > 7.5
@@ -12075,7 +12075,7 @@ RULE BD_later_uncont_P535:
   CALL: 3C
   CONDITION: opponents_bid == False
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'S'
   CONDITION: hcp > 7.5
@@ -12291,9 +12291,9 @@ RULE BD_later_uncont_P549:
   PRIORITY: 10
   CALL: 4NT
   CONDITION: opponents_bid == False
+  CONDITION: heart_len > 3.5
   CONDITION: hcp > 14.5
   CONDITION: is_opening == False
-  CONDITION: heart_len > 2.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: last_bid_level > 1.5
   CONDITION: partner_last_bid_strain == 'D'
@@ -12301,15 +12301,16 @@ RULE BD_later_uncont_P549:
   CONDITION: last_bid_level <= 4.5
   CONDITION: partner_hcp_min <= 8.0
   CONDITION: my_last_call == '2NT'
-  CONDITION: king_count <= 0.5
+  CONDITION: king_count <= -0.5
 
 RULE BD_later_uncont_P550:
   PRIORITY: 10
   CALL: PASS
   CONDITION: opponents_bid == False
+  CONDITION: heart_len > 3.5
   CONDITION: hcp > 14.5
   CONDITION: is_opening == False
-  CONDITION: heart_len > 2.5
+  CONDITION: king_count > 1.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: last_bid_level > 1.5
   CONDITION: partner_last_bid_strain == 'D'
@@ -12317,16 +12318,15 @@ RULE BD_later_uncont_P550:
   CONDITION: last_bid_level <= 4.5
   CONDITION: partner_hcp_min <= 8.0
   CONDITION: my_last_call == '2NT'
-  CONDITION: king_count > 0.5
 
 RULE BD_later_uncont_P551:
   PRIORITY: 10
   CALL: 4H
   CONDITION: opponents_bid == False
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
+  CONDITION: heart_len > 3.5
   CONDITION: hcp > 14.5
   CONDITION: is_opening == False
-  CONDITION: heart_len > 2.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: last_bid_level > 1.5
   CONDITION: partner_last_bid_strain == 'D'
@@ -12342,7 +12342,6 @@ RULE BD_later_uncont_P552:
   CONDITION: heart_len > 3.5
   CONDITION: hcp > 14.5
   CONDITION: is_opening == False
-  CONDITION: heart_len > 2.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: last_bid_level > 1.5
   CONDITION: partner_last_bid_strain == 'D'
@@ -13719,7 +13718,7 @@ RULE BD_later_uncont_P639:
   PRIORITY: 10
   CALL: 3NT
   CONDITION: opponents_bid == False
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: hcp > 14.5
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'NT'
@@ -13735,7 +13734,7 @@ RULE BD_later_uncont_P640:
   PRIORITY: 10
   CALL: 3NT
   CONDITION: opponents_bid == False
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: hcp > 14.5
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'NT'
@@ -14558,7 +14557,7 @@ RULE BD_later_uncont_P692:
   PRIORITY: 10
   CALL: PASS
   CONDITION: opponents_bid == False
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: controls <= 7.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level > 1.5
@@ -15492,7 +15491,7 @@ RULE BD_later_cont_P0:
   CALL: PASS
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: c_is_longest <= 0.5
@@ -15508,11 +15507,11 @@ RULE BD_later_cont_P1:
   CALL: 1H
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
+  CONDITION: heart_len > 3.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: c_is_longest <= 0.5
-  CONDITION: heart_len > 2.5
   CONDITION: last_bid_strain == 'D'
   CONDITION: opponents_bid == True
   CONDITION: combined_hcp_min <= 9.5
@@ -15524,7 +15523,7 @@ RULE BD_later_cont_P2:
   CALL: 1D
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: c_is_longest <= 0.5
@@ -15540,7 +15539,7 @@ RULE BD_later_cont_P3:
   CALL: 2D
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: c_is_longest <= 0.5
@@ -15684,11 +15683,11 @@ RULE BD_later_cont_P12:
   CALL: 3C
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: losing_trick_count <= 7.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: c_is_longest > 0.5
   CONDITION: opponents_bid == True
   CONDITION: combined_hcp_min <= 9.5
@@ -15700,11 +15699,11 @@ RULE BD_later_cont_P13:
   CALL: 1NT
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: losing_trick_count > 7.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: c_is_longest > 0.5
   CONDITION: opponents_bid == True
   CONDITION: combined_hcp_min <= 9.5
@@ -15720,7 +15719,7 @@ RULE BD_later_cont_P14:
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain == 'S'
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: c_is_longest > 0.5
   CONDITION: opponents_bid == True
   CONDITION: combined_hcp_min <= 9.5
@@ -15736,7 +15735,7 @@ RULE BD_later_cont_P15:
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain != 'S'
-  CONDITION: total_points > 5.5
+  CONDITION: total_points > 6.5
   CONDITION: c_is_longest > 0.5
   CONDITION: opponents_bid == True
   CONDITION: combined_hcp_min <= 9.5
@@ -16268,7 +16267,7 @@ RULE BD_later_cont_P49:
   CALL: 1S
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain != 'S'
@@ -16284,7 +16283,7 @@ RULE BD_later_cont_P50:
   CALL: 1S
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain != 'S'
@@ -16300,7 +16299,7 @@ RULE BD_later_cont_P51:
   CALL: 1S
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain != 'S'
@@ -16316,7 +16315,7 @@ RULE BD_later_cont_P52:
   CALL: 1NT
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain != 'S'
@@ -16848,7 +16847,7 @@ RULE BD_later_cont_P85:
   CONDITION: last_bid_level <= 1.5
   CONDITION: diamond_len > 3.5
   CONDITION: last_bid_strain != 'C'
-  CONDITION: king_count <= 0.5
+  CONDITION: king_count <= -0.5
   CONDITION: opponents_bid == True
   CONDITION: combined_hcp_min <= 9.5
   CONDITION: partner_last_call != 'X'
@@ -16862,9 +16861,9 @@ RULE BD_later_cont_P86:
   CONDITION: total_points > 7.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
+  CONDITION: king_count > 1.5
   CONDITION: diamond_len > 3.5
   CONDITION: last_bid_strain != 'C'
-  CONDITION: king_count > 0.5
   CONDITION: opponents_bid == True
   CONDITION: combined_hcp_min <= 9.5
   CONDITION: partner_last_call != 'X'
@@ -17295,7 +17294,7 @@ RULE BD_later_cont_P114:
   PRIORITY: 10
   CALL: PASS
   CONDITION: spade_len > 4.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: hcp <= 7.5
@@ -18285,13 +18284,13 @@ RULE BD_later_cont_P179:
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len <= 3.5
   CONDITION: heart_len <= 4.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
   CONDITION: opp_suit_stoppers <= 0.25
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P180:
@@ -18301,13 +18300,13 @@ RULE BD_later_cont_P180:
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len <= 3.5
   CONDITION: heart_len <= 4.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
   CONDITION: opp_suit_stoppers > 0.25
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P181:
@@ -18323,7 +18322,7 @@ RULE BD_later_cont_P181:
   CONDITION: last_bid_strain == 'H'
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P182:
@@ -18339,7 +18338,7 @@ RULE BD_later_cont_P182:
   CONDITION: last_bid_strain != 'H'
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P183:
@@ -18349,13 +18348,13 @@ RULE BD_later_cont_P183:
   CONDITION: spade_len <= 4.5
   CONDITION: spade_len > 3.5
   CONDITION: heart_len <= 4.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain == 'S'
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P184:
@@ -18371,7 +18370,7 @@ RULE BD_later_cont_P184:
   CONDITION: last_bid_strain == 'S'
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P185:
@@ -18387,7 +18386,7 @@ RULE BD_later_cont_P185:
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
   CONDITION: opp_suit_stoppers <= 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P186:
@@ -18403,7 +18402,7 @@ RULE BD_later_cont_P186:
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
   CONDITION: opp_suit_stoppers > 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P187:
@@ -18419,7 +18418,7 @@ RULE BD_later_cont_P187:
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
   CONDITION: my_seat == 'N'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P188:
@@ -18435,7 +18434,7 @@ RULE BD_later_cont_P188:
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
   CONDITION: my_seat != 'N'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P189:
@@ -18451,7 +18450,7 @@ RULE BD_later_cont_P189:
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
   CONDITION: opp_suit_stoppers <= 0.25
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P190:
@@ -18467,7 +18466,7 @@ RULE BD_later_cont_P190:
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
   CONDITION: opp_suit_stoppers > 0.25
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P191:
@@ -18483,7 +18482,7 @@ RULE BD_later_cont_P191:
   CONDITION: longest_suit_len > 4.5
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P192:
@@ -18499,7 +18498,7 @@ RULE BD_later_cont_P192:
   CONDITION: longest_suit_len > 4.5
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P193:
@@ -18515,7 +18514,7 @@ RULE BD_later_cont_P193:
   CONDITION: longest_suit_len > 4.5
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P194:
@@ -18531,7 +18530,7 @@ RULE BD_later_cont_P194:
   CONDITION: longest_suit_len > 4.5
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P195:
@@ -18547,7 +18546,7 @@ RULE BD_later_cont_P195:
   CONDITION: club_len <= 4.5
   CONDITION: last_bid_strain == 'C'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P196:
@@ -18563,7 +18562,7 @@ RULE BD_later_cont_P196:
   CONDITION: club_len <= 4.5
   CONDITION: last_bid_strain == 'C'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P197:
@@ -18578,7 +18577,7 @@ RULE BD_later_cont_P197:
   CONDITION: club_len <= 4.5
   CONDITION: last_bid_strain == 'C'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
   CONDITION: club_len <= 0.5
 
@@ -18594,7 +18593,7 @@ RULE BD_later_cont_P198:
   CONDITION: club_len <= 4.5
   CONDITION: last_bid_strain == 'C'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
   CONDITION: club_len > 0.5
 
@@ -18611,7 +18610,7 @@ RULE BD_later_cont_P199:
   CONDITION: second_longest_len <= 1.5
   CONDITION: last_bid_strain != 'C'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P200:
@@ -18627,7 +18626,7 @@ RULE BD_later_cont_P200:
   CONDITION: second_longest_len > 1.5
   CONDITION: last_bid_strain != 'C'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P201:
@@ -18643,7 +18642,7 @@ RULE BD_later_cont_P201:
   CONDITION: opening_bid != '1NT'
   CONDITION: last_bid_strain != 'C'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P202:
@@ -18659,7 +18658,7 @@ RULE BD_later_cont_P202:
   CONDITION: opening_bid != '1NT'
   CONDITION: last_bid_strain != 'C'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P203:
@@ -18675,7 +18674,7 @@ RULE BD_later_cont_P203:
   CONDITION: last_bid_level <= 1.5
   CONDITION: diamond_len <= 4.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P204:
@@ -18691,7 +18690,7 @@ RULE BD_later_cont_P204:
   CONDITION: last_bid_level <= 1.5
   CONDITION: diamond_len <= 4.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P205:
@@ -18707,7 +18706,7 @@ RULE BD_later_cont_P205:
   CONDITION: diamond_len <= 4.5
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P206:
@@ -18723,7 +18722,7 @@ RULE BD_later_cont_P206:
   CONDITION: diamond_len <= 4.5
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P207:
@@ -18738,7 +18737,7 @@ RULE BD_later_cont_P207:
   CONDITION: diamond_len > 3.5
   CONDITION: opponents_bid == True
   CONDITION: major_hcp <= 2.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
   CONDITION: club_hcp <= 9.5
 
@@ -18754,7 +18753,7 @@ RULE BD_later_cont_P208:
   CONDITION: diamond_len > 3.5
   CONDITION: opponents_bid == True
   CONDITION: major_hcp <= 2.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
   CONDITION: club_hcp > 9.5
 
@@ -18771,7 +18770,7 @@ RULE BD_later_cont_P209:
   CONDITION: opponents_bid == True
   CONDITION: major_hcp > 2.5
   CONDITION: spade_hcp <= 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P210:
@@ -18787,7 +18786,7 @@ RULE BD_later_cont_P210:
   CONDITION: opponents_bid == True
   CONDITION: major_hcp > 2.5
   CONDITION: spade_hcp > 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
 
 RULE BD_later_cont_P211:
@@ -18803,7 +18802,7 @@ RULE BD_later_cont_P211:
   CONDITION: combined_hcp_max <= 24.5
   CONDITION: combined_hcp_max <= 29.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
 
 RULE BD_later_cont_P212:
@@ -18819,7 +18818,7 @@ RULE BD_later_cont_P212:
   CONDITION: combined_hcp_max <= 24.5
   CONDITION: combined_hcp_max <= 29.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
 
 RULE BD_later_cont_P213:
@@ -18834,7 +18833,7 @@ RULE BD_later_cont_P213:
   CONDITION: combined_hcp_max > 24.5
   CONDITION: combined_hcp_max <= 29.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: partner_first_call == '1NT'
 
@@ -18850,7 +18849,7 @@ RULE BD_later_cont_P214:
   CONDITION: combined_hcp_max > 24.5
   CONDITION: combined_hcp_max <= 29.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: partner_first_call != '1NT'
 
@@ -18867,7 +18866,7 @@ RULE BD_later_cont_P215:
   CONDITION: competition_level <= 2.5
   CONDITION: combined_hcp_max <= 29.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
 
 RULE BD_later_cont_P216:
@@ -18883,7 +18882,7 @@ RULE BD_later_cont_P216:
   CONDITION: competition_level <= 2.5
   CONDITION: combined_hcp_max <= 29.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
 
 RULE BD_later_cont_P217:
@@ -18899,7 +18898,7 @@ RULE BD_later_cont_P217:
   CONDITION: competition_level > 2.5
   CONDITION: combined_hcp_max <= 29.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
 
 RULE BD_later_cont_P218:
@@ -18915,7 +18914,7 @@ RULE BD_later_cont_P218:
   CONDITION: competition_level > 2.5
   CONDITION: combined_hcp_max <= 29.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
 
 RULE BD_later_cont_P219:
@@ -18931,7 +18930,7 @@ RULE BD_later_cont_P219:
   CONDITION: combined_hcp_min <= 17.5
   CONDITION: combined_hcp_max > 31.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
 
 RULE BD_later_cont_P220:
@@ -18947,7 +18946,7 @@ RULE BD_later_cont_P220:
   CONDITION: combined_hcp_min <= 17.5
   CONDITION: combined_hcp_max > 31.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
 
 RULE BD_later_cont_P221:
@@ -18962,7 +18961,7 @@ RULE BD_later_cont_P221:
   CONDITION: combined_hcp_min > 17.5
   CONDITION: combined_hcp_max > 31.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: my_side_bid_count <= 0.5
 
@@ -18978,7 +18977,7 @@ RULE BD_later_cont_P222:
   CONDITION: combined_hcp_min > 17.5
   CONDITION: combined_hcp_max > 31.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: my_side_bid_count > 0.5
 
@@ -18995,7 +18994,7 @@ RULE BD_later_cont_P223:
   CONDITION: competition_level > 2.5
   CONDITION: combined_hcp_max > 31.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
 
 RULE BD_later_cont_P224:
@@ -19011,7 +19010,7 @@ RULE BD_later_cont_P224:
   CONDITION: competition_level > 2.5
   CONDITION: combined_hcp_max > 31.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
 
 RULE BD_later_cont_P225:
@@ -19027,7 +19026,7 @@ RULE BD_later_cont_P225:
   CONDITION: competition_level > 2.5
   CONDITION: combined_hcp_max > 31.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
 
 RULE BD_later_cont_P226:
@@ -19043,7 +19042,7 @@ RULE BD_later_cont_P226:
   CONDITION: competition_level > 2.5
   CONDITION: combined_hcp_max > 31.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
 
 RULE BD_later_cont_P227:
@@ -19058,7 +19057,7 @@ RULE BD_later_cont_P227:
   CONDITION: support_in_partner_suit <= 3.5
   CONDITION: partner_first_call == '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: combined_hcp_max <= 27.5
 
@@ -19074,7 +19073,7 @@ RULE BD_later_cont_P228:
   CONDITION: support_in_partner_suit <= 3.5
   CONDITION: partner_first_call == '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: combined_hcp_max <= 27.5
 
@@ -19090,7 +19089,7 @@ RULE BD_later_cont_P229:
   CONDITION: support_in_partner_suit <= 3.5
   CONDITION: partner_first_call != '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: combined_hcp_max <= 27.5
 
@@ -19106,7 +19105,7 @@ RULE BD_later_cont_P230:
   CONDITION: support_in_partner_suit <= 3.5
   CONDITION: partner_first_call != '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: combined_hcp_max <= 27.5
 
@@ -19122,7 +19121,7 @@ RULE BD_later_cont_P231:
   CONDITION: opening_bid == '1C'
   CONDITION: partner_last_bid_strain == 'D'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: combined_hcp_max <= 27.5
 
@@ -19138,7 +19137,7 @@ RULE BD_later_cont_P232:
   CONDITION: opening_bid != '1C'
   CONDITION: partner_last_bid_strain == 'D'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: combined_hcp_max <= 27.5
 
@@ -19154,7 +19153,7 @@ RULE BD_later_cont_P233:
   CONDITION: partner_first_call == '1C'
   CONDITION: partner_last_bid_strain != 'D'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: combined_hcp_max <= 27.5
 
@@ -19170,7 +19169,7 @@ RULE BD_later_cont_P234:
   CONDITION: partner_first_call != '1C'
   CONDITION: partner_last_bid_strain != 'D'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: combined_hcp_max <= 27.5
 
@@ -19186,7 +19185,7 @@ RULE BD_later_cont_P235:
   CONDITION: support_in_partner_suit > 2.5
   CONDITION: combined_hcp_max > 26.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: partner_last_call == '1S'
 
@@ -19202,7 +19201,7 @@ RULE BD_later_cont_P236:
   CONDITION: support_in_partner_suit > 2.5
   CONDITION: combined_hcp_max > 26.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: partner_last_call == '1S'
 
@@ -19217,7 +19216,7 @@ RULE BD_later_cont_P237:
   CONDITION: support_in_partner_suit > 2.5
   CONDITION: combined_hcp_max > 26.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: partner_last_call == '1S'
   CONDITION: opp_last_call == '1C'
@@ -19233,7 +19232,7 @@ RULE BD_later_cont_P238:
   CONDITION: support_in_partner_suit > 2.5
   CONDITION: combined_hcp_max > 26.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: partner_last_call == '1S'
   CONDITION: opp_last_call != '1C'
@@ -19249,7 +19248,7 @@ RULE BD_later_cont_P239:
   CONDITION: support_in_partner_suit > 2.5
   CONDITION: combined_hcp_max > 26.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: partner_last_call != '1S'
   CONDITION: partner_last_call == '1H'
@@ -19265,7 +19264,7 @@ RULE BD_later_cont_P240:
   CONDITION: support_in_partner_suit > 2.5
   CONDITION: combined_hcp_max > 26.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: partner_last_call != '1S'
   CONDITION: partner_last_call != '1H'
@@ -19282,7 +19281,7 @@ RULE BD_later_cont_P242:
   CONDITION: support_in_partner_suit > 2.5
   CONDITION: combined_hcp_max > 26.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: partner_last_call != '1S'
 
@@ -19298,7 +19297,7 @@ RULE BD_later_cont_P243:
   CONDITION: last_bid_strain == 'S'
   CONDITION: competition_level <= 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P244:
   PRIORITY: 10
@@ -19314,7 +19313,7 @@ RULE BD_later_cont_P244:
   CONDITION: competition_level <= 2.5
   CONDITION: s_has_queen <= 0.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P245:
   PRIORITY: 10
@@ -19330,7 +19329,7 @@ RULE BD_later_cont_P245:
   CONDITION: competition_level <= 2.5
   CONDITION: s_has_queen > 0.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P246:
   PRIORITY: 10
@@ -19345,7 +19344,7 @@ RULE BD_later_cont_P246:
   CONDITION: last_bid_strain == 'S'
   CONDITION: competition_level <= 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P247:
   PRIORITY: 10
@@ -19360,7 +19359,7 @@ RULE BD_later_cont_P247:
   CONDITION: support_in_partner_suit <= 3.5
   CONDITION: competition_level > 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P248:
   PRIORITY: 10
@@ -19376,7 +19375,7 @@ RULE BD_later_cont_P248:
   CONDITION: support_in_partner_suit <= 3.5
   CONDITION: competition_level > 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P249:
   PRIORITY: 10
@@ -19392,7 +19391,7 @@ RULE BD_later_cont_P249:
   CONDITION: support_in_partner_suit <= 3.5
   CONDITION: competition_level > 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P250:
   PRIORITY: 10
@@ -19406,7 +19405,7 @@ RULE BD_later_cont_P250:
   CONDITION: support_in_partner_suit > 3.5
   CONDITION: competition_level > 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: hcp <= 2.5
 
 RULE BD_later_cont_P251:
@@ -19422,7 +19421,7 @@ RULE BD_later_cont_P251:
   CONDITION: support_in_partner_suit > 3.5
   CONDITION: competition_level > 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: hcp > 2.5
 
 RULE BD_later_cont_P252:
@@ -19438,7 +19437,7 @@ RULE BD_later_cont_P252:
   CONDITION: support_in_partner_suit > 3.5
   CONDITION: competition_level > 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: hcp > 2.5
 
 RULE BD_later_cont_P253:
@@ -19454,7 +19453,7 @@ RULE BD_later_cont_P253:
   CONDITION: hcp > 7.5
   CONDITION: combined_hcp_min <= 20.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: my_side_bid_count <= 0.5
 
 RULE BD_later_cont_P254:
@@ -19470,7 +19469,7 @@ RULE BD_later_cont_P254:
   CONDITION: hcp > 7.5
   CONDITION: combined_hcp_min <= 20.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: my_side_bid_count > 0.5
 
 RULE BD_later_cont_P255:
@@ -19487,7 +19486,7 @@ RULE BD_later_cont_P255:
   CONDITION: my_last_call == '1H'
   CONDITION: combined_hcp_min > 20.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P256:
   PRIORITY: 10
@@ -19503,7 +19502,7 @@ RULE BD_later_cont_P256:
   CONDITION: my_last_call != '1H'
   CONDITION: combined_hcp_min > 20.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P257:
   PRIORITY: 10
@@ -19518,7 +19517,7 @@ RULE BD_later_cont_P257:
   CONDITION: opening_bid == '1S'
   CONDITION: hcp > 7.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: passes_since_last_bid <= 1.0
 
 RULE BD_later_cont_P258:
@@ -19534,7 +19533,7 @@ RULE BD_later_cont_P258:
   CONDITION: opening_bid == '1S'
   CONDITION: hcp > 7.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: passes_since_last_bid > 1.0
 
 RULE BD_later_cont_P259:
@@ -19550,7 +19549,7 @@ RULE BD_later_cont_P259:
   CONDITION: opening_bid != '1S'
   CONDITION: hcp > 7.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_first_call == 'PASS'
 
 RULE BD_later_cont_P260:
@@ -19566,7 +19565,7 @@ RULE BD_later_cont_P260:
   CONDITION: opening_bid != '1S'
   CONDITION: hcp > 7.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_first_call != 'PASS'
 
 RULE BD_later_cont_P261:
@@ -19582,7 +19581,7 @@ RULE BD_later_cont_P261:
   CONDITION: hcp > 7.5
   CONDITION: diamond_len <= 4.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P262:
   PRIORITY: 10
@@ -19597,7 +19596,7 @@ RULE BD_later_cont_P262:
   CONDITION: hcp > 7.5
   CONDITION: diamond_len > 3.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P263:
   PRIORITY: 10
@@ -19611,7 +19610,7 @@ RULE BD_later_cont_P263:
   CONDITION: last_bid_seat != 'E'
   CONDITION: hcp > 7.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: last_bid_seat == 'W'
 
 RULE BD_later_cont_P264:
@@ -19626,7 +19625,7 @@ RULE BD_later_cont_P264:
   CONDITION: last_bid_seat != 'E'
   CONDITION: hcp > 7.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: last_bid_seat != 'W'
 
 RULE BD_later_cont_P265:
@@ -19641,7 +19640,7 @@ RULE BD_later_cont_P265:
   CONDITION: hcp > 7.5
   CONDITION: opponents_bid == True
   CONDITION: s_has_king <= 0.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: c_has_queen <= 0.5
 
 RULE BD_later_cont_P266:
@@ -19656,7 +19655,7 @@ RULE BD_later_cont_P266:
   CONDITION: hcp > 7.5
   CONDITION: opponents_bid == True
   CONDITION: s_has_king > 0.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: c_has_queen <= 0.5
 
 RULE BD_later_cont_P267:
@@ -19671,7 +19670,7 @@ RULE BD_later_cont_P267:
   CONDITION: last_bid_strain == 'S'
   CONDITION: hcp > 7.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: c_has_queen > 0.5
 
 RULE BD_later_cont_P268:
@@ -19686,7 +19685,7 @@ RULE BD_later_cont_P268:
   CONDITION: last_bid_strain == 'S'
   CONDITION: hcp > 7.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: c_has_queen > 0.5
 
 RULE BD_later_cont_P269:
@@ -19700,7 +19699,7 @@ RULE BD_later_cont_P269:
   CONDITION: last_bid_strain != 'S'
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: my_last_call == 'PASS'
 
@@ -19716,7 +19715,7 @@ RULE BD_later_cont_P270:
   CONDITION: last_bid_strain != 'S'
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: my_last_call == 'PASS'
 
@@ -19732,7 +19731,7 @@ RULE BD_later_cont_P271:
   CONDITION: last_bid_strain != 'S'
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: my_last_call == 'PASS'
 
@@ -19748,7 +19747,7 @@ RULE BD_later_cont_P272:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
   CONDITION: rule20_total <= 16.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: my_last_call != 'PASS'
 
@@ -19764,7 +19763,7 @@ RULE BD_later_cont_P273:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
   CONDITION: rule20_total > 16.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: my_last_call != 'PASS'
 
@@ -19779,7 +19778,7 @@ RULE BD_later_cont_P274:
   CONDITION: second_longest_len <= 1.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: my_last_call != 'PASS'
 
@@ -19794,7 +19793,7 @@ RULE BD_later_cont_P275:
   CONDITION: second_longest_len > 1.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: my_last_call != 'PASS'
 
@@ -19811,7 +19810,7 @@ RULE BD_later_cont_P277:
   CONDITION: opening_bid == '1NT'
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P278:
@@ -19827,7 +19826,7 @@ RULE BD_later_cont_P278:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: combined_hcp_min <= 19.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P279:
@@ -19843,7 +19842,7 @@ RULE BD_later_cont_P279:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: combined_hcp_min > 19.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P280:
@@ -19858,7 +19857,7 @@ RULE BD_later_cont_P280:
   CONDITION: second_longest_len <= 1.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P281:
@@ -19873,7 +19872,7 @@ RULE BD_later_cont_P281:
   CONDITION: second_longest_len > 1.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P282:
@@ -19888,7 +19887,7 @@ RULE BD_later_cont_P282:
   CONDITION: opening_bid != '1NT'
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P283:
@@ -19903,7 +19902,7 @@ RULE BD_later_cont_P283:
   CONDITION: opening_bid != '1NT'
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P284:
@@ -19920,7 +19919,7 @@ RULE BD_later_cont_P284:
   CONDITION: opening_bid == '1H'
   CONDITION: opponents_bid == True
   CONDITION: my_seat == 'N'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P285:
   PRIORITY: 10
@@ -19936,7 +19935,7 @@ RULE BD_later_cont_P285:
   CONDITION: opening_bid != '1H'
   CONDITION: opponents_bid == True
   CONDITION: my_seat == 'N'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P286:
   PRIORITY: 10
@@ -19952,7 +19951,7 @@ RULE BD_later_cont_P286:
   CONDITION: combined_hcp_min <= 15.5
   CONDITION: opponents_bid == True
   CONDITION: my_seat != 'N'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P287:
   PRIORITY: 10
@@ -19968,7 +19967,7 @@ RULE BD_later_cont_P287:
   CONDITION: combined_hcp_min <= 15.5
   CONDITION: opponents_bid == True
   CONDITION: my_seat != 'N'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P288:
   PRIORITY: 10
@@ -19984,7 +19983,7 @@ RULE BD_later_cont_P288:
   CONDITION: competition_level <= 2.5
   CONDITION: combined_hcp_min > 15.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P289:
   PRIORITY: 10
@@ -20000,7 +19999,7 @@ RULE BD_later_cont_P289:
   CONDITION: competition_level <= 2.5
   CONDITION: combined_hcp_min > 15.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P290:
   PRIORITY: 10
@@ -20015,7 +20014,7 @@ RULE BD_later_cont_P290:
   CONDITION: competition_level > 2.5
   CONDITION: combined_hcp_min > 15.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: c_stopper <= 0.5
 
 RULE BD_later_cont_P291:
@@ -20031,7 +20030,7 @@ RULE BD_later_cont_P291:
   CONDITION: competition_level > 2.5
   CONDITION: combined_hcp_min > 15.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: c_stopper > 0.5
 
 RULE BD_later_cont_P292:
@@ -20048,7 +20047,7 @@ RULE BD_later_cont_P292:
   CONDITION: last_bid_strain != 'S'
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P293:
   PRIORITY: 10
@@ -20057,14 +20056,14 @@ RULE BD_later_cont_P293:
   CONDITION: heart_len > 4.5
   CONDITION: heart_len <= 5.5
   CONDITION: second_longest_len <= 4.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain != 'H'
   CONDITION: last_bid_strain != 'S'
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P294:
   PRIORITY: 10
@@ -20079,7 +20078,7 @@ RULE BD_later_cont_P294:
   CONDITION: last_bid_strain != 'S'
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P295:
   PRIORITY: 10
@@ -20094,7 +20093,7 @@ RULE BD_later_cont_P295:
   CONDITION: last_bid_strain != 'S'
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P296:
   PRIORITY: 10
@@ -20109,7 +20108,7 @@ RULE BD_later_cont_P296:
   CONDITION: heart_hcp <= 0.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: hcp <= 7.0
 
 RULE BD_later_cont_P297:
@@ -20125,7 +20124,7 @@ RULE BD_later_cont_P297:
   CONDITION: heart_hcp <= 0.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: hcp > 7.0
 
 RULE BD_later_cont_P298:
@@ -20142,7 +20141,7 @@ RULE BD_later_cont_P298:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
   CONDITION: opp_suit_stoppers <= 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P299:
   PRIORITY: 10
@@ -20158,7 +20157,7 @@ RULE BD_later_cont_P299:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
   CONDITION: opp_suit_stoppers > 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P300:
   PRIORITY: 10
@@ -20170,7 +20169,7 @@ RULE BD_later_cont_P300:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: my_side_bid_count <= 1.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
 
 RULE BD_later_cont_P301:
@@ -20184,7 +20183,7 @@ RULE BD_later_cont_P301:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: my_side_bid_count <= 1.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
 
 RULE BD_later_cont_P302:
@@ -20199,7 +20198,7 @@ RULE BD_later_cont_P302:
   CONDITION: my_side_bid_count <= 1.5
   CONDITION: hcp <= 17.0
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
 
 RULE BD_later_cont_P303:
@@ -20214,7 +20213,7 @@ RULE BD_later_cont_P303:
   CONDITION: my_side_bid_count <= 1.5
   CONDITION: hcp > 17.0
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
 
 RULE BD_later_cont_P304:
@@ -20229,7 +20228,7 @@ RULE BD_later_cont_P304:
   CONDITION: total_points <= 14.5
   CONDITION: my_side_bid_count <= 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: partner_first_call == 'X'
 
@@ -20245,7 +20244,7 @@ RULE BD_later_cont_P305:
   CONDITION: total_points <= 14.5
   CONDITION: my_side_bid_count <= 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: partner_first_call == 'X'
 
@@ -20260,7 +20259,7 @@ RULE BD_later_cont_P306:
   CONDITION: total_points <= 14.5
   CONDITION: my_side_bid_count <= 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: partner_first_call != 'X'
   CONDITION: minor_hcp <= 8.5
@@ -20276,7 +20275,7 @@ RULE BD_later_cont_P307:
   CONDITION: total_points <= 14.5
   CONDITION: my_side_bid_count <= 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: partner_first_call != 'X'
   CONDITION: minor_hcp > 8.5
@@ -20294,7 +20293,7 @@ RULE BD_later_cont_P308:
   CONDITION: my_side_bid_count > 2.5
   CONDITION: minor_hcp <= 3.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
 
 RULE BD_later_cont_P309:
@@ -20310,7 +20309,7 @@ RULE BD_later_cont_P309:
   CONDITION: my_side_bid_count > 2.5
   CONDITION: minor_hcp > 3.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
 
 RULE BD_later_cont_P310:
@@ -20326,7 +20325,7 @@ RULE BD_later_cont_P310:
   CONDITION: total_points <= 14.5
   CONDITION: my_side_bid_count > 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
 
 RULE BD_later_cont_P311:
@@ -20342,7 +20341,7 @@ RULE BD_later_cont_P311:
   CONDITION: total_points <= 14.5
   CONDITION: my_side_bid_count > 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
 
 RULE BD_later_cont_P312:
@@ -20356,7 +20355,7 @@ RULE BD_later_cont_P312:
   CONDITION: my_side_bid_count > 1.5
   CONDITION: total_points > 14.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: ace_count <= 1.5
   CONDITION: major_hcp <= 6.0
@@ -20372,7 +20371,7 @@ RULE BD_later_cont_P313:
   CONDITION: my_side_bid_count > 1.5
   CONDITION: total_points > 14.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: ace_count <= 1.5
   CONDITION: major_hcp > 6.0
@@ -20388,7 +20387,7 @@ RULE BD_later_cont_P314:
   CONDITION: my_side_bid_count > 1.5
   CONDITION: total_points > 14.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: ace_count <= 1.5
 
@@ -20404,7 +20403,7 @@ RULE BD_later_cont_P315:
   CONDITION: partner_opened <= 0.5
   CONDITION: total_points > 14.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: ace_count > 1.5
 
@@ -20420,7 +20419,7 @@ RULE BD_later_cont_P316:
   CONDITION: partner_opened <= 0.5
   CONDITION: total_points > 14.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: ace_count > 1.5
 
@@ -20435,7 +20434,7 @@ RULE BD_later_cont_P317:
   CONDITION: partner_opened > 0.5
   CONDITION: total_points > 14.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1NT'
   CONDITION: ace_count > 1.5
 
@@ -20449,7 +20448,7 @@ RULE BD_later_cont_P318:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: hcp <= 15.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
   CONDITION: minor_hcp <= 10.5
   CONDITION: partner_last_call == 'XX'
@@ -20465,7 +20464,7 @@ RULE BD_later_cont_P319:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: hcp <= 15.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
   CONDITION: minor_hcp <= 10.5
   CONDITION: partner_last_call != 'XX'
@@ -20481,7 +20480,7 @@ RULE BD_later_cont_P320:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: hcp <= 15.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
   CONDITION: minor_hcp <= 10.5
   CONDITION: partner_last_call != 'XX'
@@ -20496,7 +20495,7 @@ RULE BD_later_cont_P321:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: hcp <= 15.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
   CONDITION: minor_hcp > 10.5
 
@@ -20511,7 +20510,7 @@ RULE BD_later_cont_P322:
   CONDITION: hcp > 15.5
   CONDITION: hcp <= 18.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
   CONDITION: club_hcp <= 2.5
 
@@ -20526,7 +20525,7 @@ RULE BD_later_cont_P323:
   CONDITION: hcp > 15.5
   CONDITION: hcp > 18.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
   CONDITION: club_hcp <= 2.5
 
@@ -20540,7 +20539,7 @@ RULE BD_later_cont_P324:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: hcp > 15.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
   CONDITION: club_hcp > 2.5
 
@@ -20557,7 +20556,7 @@ RULE BD_later_cont_P325:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: hcp <= 16.0
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P326:
@@ -20573,7 +20572,7 @@ RULE BD_later_cont_P326:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: hcp > 16.0
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P327:
@@ -20588,7 +20587,7 @@ RULE BD_later_cont_P327:
   CONDITION: second_longest_len <= 1.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
   CONDITION: controls <= 3.5
 
@@ -20604,7 +20603,7 @@ RULE BD_later_cont_P328:
   CONDITION: second_longest_len <= 1.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
   CONDITION: controls > 3.5
 
@@ -20620,14 +20619,14 @@ RULE BD_later_cont_P329:
   CONDITION: total_points <= 11.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P330:
   PRIORITY: 10
   CALL: 2S
   CONDITION: spade_len > 4.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: shape_pattern != '5332'
   CONDITION: total_points > 7.5
   CONDITION: is_opening == False
@@ -20636,7 +20635,7 @@ RULE BD_later_cont_P330:
   CONDITION: second_longest_len > 1.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P331:
@@ -20652,7 +20651,7 @@ RULE BD_later_cont_P331:
   CONDITION: second_longest_len > 1.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P332:
@@ -20668,7 +20667,7 @@ RULE BD_later_cont_P332:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: combined_hcp_min <= 19.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P333:
@@ -20684,7 +20683,7 @@ RULE BD_later_cont_P333:
   CONDITION: last_bid_strain == 'NT'
   CONDITION: combined_hcp_min <= 19.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P334:
@@ -20700,7 +20699,7 @@ RULE BD_later_cont_P334:
   CONDITION: combined_hcp_min <= 19.5
   CONDITION: third_longest_len <= 1.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P335:
@@ -20716,7 +20715,7 @@ RULE BD_later_cont_P335:
   CONDITION: combined_hcp_min <= 19.5
   CONDITION: third_longest_len > 1.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P336:
@@ -20731,7 +20730,7 @@ RULE BD_later_cont_P336:
   CONDITION: combined_hcp_min > 19.5
   CONDITION: opponents_bid == True
   CONDITION: opp_bid_count <= 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: c_has_queen <= 0.5
   CONDITION: partner_last_call != '1NT'
 
@@ -20747,7 +20746,7 @@ RULE BD_later_cont_P337:
   CONDITION: combined_hcp_min > 19.5
   CONDITION: opponents_bid == True
   CONDITION: opp_bid_count <= 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: c_has_queen > 0.5
   CONDITION: partner_last_call != '1NT'
 
@@ -20764,7 +20763,7 @@ RULE BD_later_cont_P338:
   CONDITION: combined_hcp_min > 19.5
   CONDITION: opponents_bid == True
   CONDITION: opp_bid_count > 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P339:
@@ -20780,7 +20779,7 @@ RULE BD_later_cont_P339:
   CONDITION: combined_hcp_min > 19.5
   CONDITION: opponents_bid == True
   CONDITION: opp_bid_count > 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1NT'
 
 RULE BD_later_cont_P340:
@@ -20796,7 +20795,7 @@ RULE BD_later_cont_P340:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: my_last_call == '1S'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 16.5
 
 RULE BD_later_cont_P341:
@@ -20812,7 +20811,7 @@ RULE BD_later_cont_P341:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: my_last_call == '1S'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 16.5
 
 RULE BD_later_cont_P342:
@@ -20828,7 +20827,7 @@ RULE BD_later_cont_P342:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: my_last_call != '1S'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 16.5
 
 RULE BD_later_cont_P343:
@@ -20844,7 +20843,7 @@ RULE BD_later_cont_P343:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: my_last_call != '1S'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 16.5
 
 RULE BD_later_cont_P344:
@@ -20860,7 +20859,7 @@ RULE BD_later_cont_P344:
   CONDITION: d_has_king <= 0.5
   CONDITION: opponents_bid == True
   CONDITION: vuln_pressure == 'equal'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 16.5
 
 RULE BD_later_cont_P345:
@@ -20876,7 +20875,7 @@ RULE BD_later_cont_P345:
   CONDITION: d_has_king <= 0.5
   CONDITION: opponents_bid == True
   CONDITION: vuln_pressure != 'equal'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 16.5
 
 RULE BD_later_cont_P346:
@@ -20892,7 +20891,7 @@ RULE BD_later_cont_P346:
   CONDITION: major_hcp <= 6.5
   CONDITION: d_has_king > 0.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 16.5
 
 RULE BD_later_cont_P347:
@@ -20908,13 +20907,14 @@ RULE BD_later_cont_P347:
   CONDITION: major_hcp > 6.5
   CONDITION: d_has_king > 0.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 16.5
 
 RULE BD_later_cont_P348:
   PRIORITY: 10
   CALL: 1NT
   CONDITION: spade_len > 4.5
+  CONDITION: hcp <= 8.0
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain == 'S'
@@ -20923,9 +20923,8 @@ RULE BD_later_cont_P348:
   CONDITION: heart_hcp <= 1.5
   CONDITION: opening_bid == '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 16.5
-  CONDITION: hcp <= 10.0
 
 RULE BD_later_cont_P349:
   PRIORITY: 10
@@ -20939,7 +20938,7 @@ RULE BD_later_cont_P349:
   CONDITION: heart_hcp <= 1.5
   CONDITION: opening_bid == '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 16.5
   CONDITION: hcp > 10.0
 
@@ -20956,7 +20955,7 @@ RULE BD_later_cont_P350:
   CONDITION: heart_hcp > 1.5
   CONDITION: opening_bid == '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 16.5
 
 RULE BD_later_cont_P351:
@@ -20972,7 +20971,7 @@ RULE BD_later_cont_P351:
   CONDITION: heart_hcp > 1.5
   CONDITION: opening_bid == '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 16.5
 
 RULE BD_later_cont_P352:
@@ -20987,7 +20986,7 @@ RULE BD_later_cont_P352:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opening_bid != '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 16.5
   CONDITION: ace_count <= 0.5
 
@@ -21003,7 +21002,7 @@ RULE BD_later_cont_P353:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opening_bid != '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 16.5
   CONDITION: ace_count > 0.5
 
@@ -21020,7 +21019,7 @@ RULE BD_later_cont_P354:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opening_bid != '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 16.5
 
 RULE BD_later_cont_P355:
@@ -21036,7 +21035,7 @@ RULE BD_later_cont_P355:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opening_bid != '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 16.5
 
 RULE BD_later_cont_P356:
@@ -21051,7 +21050,7 @@ RULE BD_later_cont_P356:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: spade_hcp <= 4.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: c_stopper <= 0.5
   CONDITION: heart_hcp <= 2.0
 
@@ -21067,7 +21066,7 @@ RULE BD_later_cont_P357:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: spade_hcp > 4.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: c_stopper <= 0.5
   CONDITION: heart_hcp <= 2.0
 
@@ -21083,7 +21082,7 @@ RULE BD_later_cont_P358:
   CONDITION: hcp <= 8.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: c_stopper > 0.5
   CONDITION: heart_hcp <= 2.0
 
@@ -21099,7 +21098,7 @@ RULE BD_later_cont_P359:
   CONDITION: hcp <= 8.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: c_stopper > 0.5
   CONDITION: heart_hcp <= 2.0
 
@@ -21115,7 +21114,7 @@ RULE BD_later_cont_P360:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opening_bid == '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: heart_hcp > 2.0
 
 RULE BD_later_cont_P361:
@@ -21131,7 +21130,7 @@ RULE BD_later_cont_P361:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opening_bid != '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: heart_hcp > 2.0
 
 RULE BD_later_cont_P362:
@@ -21147,7 +21146,7 @@ RULE BD_later_cont_P362:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opening_bid != '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: heart_hcp > 2.0
 
 RULE BD_later_cont_P363:
@@ -21163,7 +21162,7 @@ RULE BD_later_cont_P363:
   CONDITION: opening_bid == '1D'
   CONDITION: controls <= 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P364:
   PRIORITY: 10
@@ -21178,7 +21177,7 @@ RULE BD_later_cont_P364:
   CONDITION: opening_bid == '1D'
   CONDITION: controls > 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P365:
   PRIORITY: 10
@@ -21193,7 +21192,7 @@ RULE BD_later_cont_P365:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opening_bid != '1D'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P366:
   PRIORITY: 10
@@ -21208,7 +21207,7 @@ RULE BD_later_cont_P366:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opening_bid != '1D'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P367:
   PRIORITY: 10
@@ -21222,7 +21221,7 @@ RULE BD_later_cont_P367:
   CONDITION: heart_len <= 2.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1H'
 
 RULE BD_later_cont_P368:
@@ -21238,7 +21237,7 @@ RULE BD_later_cont_P368:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: competition_level <= 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1H'
 
 RULE BD_later_cont_P369:
@@ -21254,7 +21253,7 @@ RULE BD_later_cont_P369:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: competition_level > 2.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1H'
 
 RULE BD_later_cont_P370:
@@ -21262,15 +21261,15 @@ RULE BD_later_cont_P370:
   CALL: PASS
   CONDITION: spade_len > 4.5
   CONDITION: hcp <= 9.5
+  CONDITION: heart_len > 3.5
   CONDITION: second_longest_len <= 4.5
   CONDITION: hcp <= 6.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain != 'S'
-  CONDITION: heart_len > 2.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1H'
 
 RULE BD_later_cont_P371:
@@ -21278,15 +21277,15 @@ RULE BD_later_cont_P371:
   CALL: 2H
   CONDITION: spade_len > 4.5
   CONDITION: hcp <= 9.5
+  CONDITION: heart_len > 3.5
   CONDITION: second_longest_len <= 4.5
   CONDITION: hcp > 6.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain != 'S'
-  CONDITION: heart_len > 2.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1H'
 
 RULE BD_later_cont_P372:
@@ -21294,14 +21293,14 @@ RULE BD_later_cont_P372:
   CALL: 1S
   CONDITION: spade_len > 4.5
   CONDITION: hcp > 9.5
+  CONDITION: heart_len > 3.5
   CONDITION: second_longest_len <= 4.5
   CONDITION: is_opening == False
   CONDITION: last_bid_level <= 1.5
   CONDITION: last_bid_strain != 'S'
-  CONDITION: heart_len > 2.5
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call == '1H'
 
 RULE BD_later_cont_P373:
@@ -21317,7 +21316,7 @@ RULE BD_later_cont_P373:
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
   CONDITION: opp_suit_stoppers <= 0.25
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1H'
 
 RULE BD_later_cont_P374:
@@ -21333,7 +21332,7 @@ RULE BD_later_cont_P374:
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
   CONDITION: opp_suit_stoppers > 0.25
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1H'
 
 RULE BD_later_cont_P375:
@@ -21348,7 +21347,7 @@ RULE BD_later_cont_P375:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1H'
   CONDITION: spade_hcp <= 2.5
 
@@ -21364,7 +21363,7 @@ RULE BD_later_cont_P376:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1H'
   CONDITION: spade_hcp > 2.5
 
@@ -21380,7 +21379,7 @@ RULE BD_later_cont_P377:
   CONDITION: last_bid_strain != 'S'
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1H'
   CONDITION: combined_hcp_min <= 11.5
 
@@ -21396,7 +21395,7 @@ RULE BD_later_cont_P378:
   CONDITION: last_bid_strain != 'S'
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1H'
   CONDITION: combined_hcp_min <= 11.5
 
@@ -21412,7 +21411,7 @@ RULE BD_later_cont_P379:
   CONDITION: last_bid_strain != 'S'
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1H'
   CONDITION: combined_hcp_min > 11.5
 
@@ -21428,7 +21427,7 @@ RULE BD_later_cont_P380:
   CONDITION: last_bid_strain != 'S'
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: partner_last_call != '1H'
   CONDITION: combined_hcp_min > 11.5
 
@@ -21444,7 +21443,7 @@ RULE BD_later_cont_P381:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opening_bid == '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: passes_since_last_bid <= 1.0
 
 RULE BD_later_cont_P382:
@@ -21460,7 +21459,7 @@ RULE BD_later_cont_P382:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opening_bid == '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: passes_since_last_bid > 1.0
 
 RULE BD_later_cont_P383:
@@ -21476,7 +21475,7 @@ RULE BD_later_cont_P383:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opening_bid == '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: passes_since_last_bid > 1.0
 
 RULE BD_later_cont_P384:
@@ -21491,7 +21490,7 @@ RULE BD_later_cont_P384:
   CONDITION: last_bid_strain != 'NT'
   CONDITION: opening_bid == '1H'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P385:
   PRIORITY: 10
@@ -21507,7 +21506,7 @@ RULE BD_later_cont_P385:
   CONDITION: opening_bid != '1H'
   CONDITION: opponents_bid == True
   CONDITION: opp_bid_count <= 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P386:
   PRIORITY: 10
@@ -21523,7 +21522,7 @@ RULE BD_later_cont_P386:
   CONDITION: opening_bid != '1H'
   CONDITION: opponents_bid == True
   CONDITION: opp_bid_count <= 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P387:
   PRIORITY: 10
@@ -21539,7 +21538,7 @@ RULE BD_later_cont_P387:
   CONDITION: opening_bid != '1H'
   CONDITION: opponents_bid == True
   CONDITION: opp_bid_count > 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P388:
   PRIORITY: 10
@@ -21555,7 +21554,7 @@ RULE BD_later_cont_P388:
   CONDITION: opening_bid != '1H'
   CONDITION: opponents_bid == True
   CONDITION: opp_bid_count > 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P389:
   PRIORITY: 10
@@ -21571,7 +21570,7 @@ RULE BD_later_cont_P389:
   CONDITION: opening_bid != '1H'
   CONDITION: last_bid_strain == 'C'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P390:
   PRIORITY: 10
@@ -21587,7 +21586,7 @@ RULE BD_later_cont_P390:
   CONDITION: opening_bid != '1H'
   CONDITION: last_bid_strain == 'C'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P391:
   PRIORITY: 10
@@ -21603,7 +21602,7 @@ RULE BD_later_cont_P391:
   CONDITION: opening_bid != '1H'
   CONDITION: last_bid_strain != 'C'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P392:
   PRIORITY: 10
@@ -21619,7 +21618,7 @@ RULE BD_later_cont_P392:
   CONDITION: opening_bid != '1H'
   CONDITION: last_bid_strain != 'C'
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
 
 RULE BD_later_cont_P393:
   PRIORITY: 10
@@ -22021,7 +22020,7 @@ RULE BD_later_cont_P417:
 RULE BD_later_cont_P418:
   PRIORITY: 10
   CALL: PASS
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: losing_trick_count <= 7.5
   CONDITION: spade_len > 5.5
   CONDITION: is_opening == False
@@ -22150,7 +22149,7 @@ RULE BD_later_cont_P426:
   CALL: PASS
   CONDITION: losing_trick_count <= 7.5
   CONDITION: is_opening == False
-  CONDITION: c_has_ten > 0.5
+  CONDITION: c_has_ten > -0.5
   CONDITION: third_longest_len > 4.5
   CONDITION: competition_level > 2.5
   CONDITION: last_bid_level > 1.5
@@ -22232,7 +22231,7 @@ RULE BD_later_cont_P431:
   CONDITION: losing_trick_count <= 7.5
   CONDITION: is_opening == False
   CONDITION: competition_level > 2.5
-  CONDITION: doubleton_count > 0.5
+  CONDITION: doubleton_count > -0.5
   CONDITION: last_bid_level > 1.5
   CONDITION: last_bid_level <= 2.5
   CONDITION: rule_of_21 > 0.5
@@ -22248,7 +22247,7 @@ RULE BD_later_cont_P432:
   CONDITION: losing_trick_count <= 7.5
   CONDITION: is_opening == False
   CONDITION: competition_level > 2.5
-  CONDITION: doubleton_count > 0.5
+  CONDITION: doubleton_count > -0.5
   CONDITION: last_bid_level > 1.5
   CONDITION: last_bid_level <= 2.5
   CONDITION: rule_of_21 > 0.5
@@ -22622,7 +22621,7 @@ RULE BD_later_cont_P455:
 
 RULE BD_later_cont_P456:
   PRIORITY: 10
-  CALL: 2D
+  CALL: 2C
   CONDITION: heart_len <= 5.5
   CONDITION: losing_trick_count > 7.5
   CONDITION: spade_len <= 5.5
@@ -22917,7 +22916,7 @@ RULE BD_later_cont_P475:
   CONDITION: spade_len <= 3.5
   CONDITION: losing_trick_count > 7.5
   CONDITION: is_opening == False
-  CONDITION: doubleton_count > 0.5
+  CONDITION: doubleton_count > -0.5
   CONDITION: last_bid_level > 1.5
   CONDITION: opponents_bid == True
   CONDITION: opp_suit_stoppers > 0.75
@@ -22933,7 +22932,7 @@ RULE BD_later_cont_P476:
   CONDITION: spade_len <= 3.5
   CONDITION: losing_trick_count > 7.5
   CONDITION: is_opening == False
-  CONDITION: doubleton_count > 0.5
+  CONDITION: doubleton_count > -0.5
   CONDITION: last_bid_level > 1.5
   CONDITION: opponents_bid == True
   CONDITION: opp_suit_stoppers > 0.75
@@ -23262,7 +23261,7 @@ RULE BD_later_cont_P496:
 RULE BD_later_cont_P497:
   PRIORITY: 10
   CALL: 3H
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_favorable_vuln <= 0.5
   CONDITION: is_opening == False
   CONDITION: my_side_bid_count > 1.5
@@ -23278,7 +23277,7 @@ RULE BD_later_cont_P497:
 RULE BD_later_cont_P498:
   PRIORITY: 10
   CALL: PASS
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_favorable_vuln <= 0.5
   CONDITION: is_opening == False
   CONDITION: my_side_bid_count > 1.5
@@ -23294,7 +23293,7 @@ RULE BD_later_cont_P498:
 RULE BD_later_cont_P499:
   PRIORITY: 10
   CALL: 3H
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_favorable_vuln > 0.5
   CONDITION: is_opening == False
   CONDITION: my_side_bid_count > 1.5
@@ -23310,7 +23309,7 @@ RULE BD_later_cont_P499:
 RULE BD_later_cont_P500:
   PRIORITY: 10
   CALL: PASS
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_favorable_vuln > 0.5
   CONDITION: is_opening == False
   CONDITION: my_side_bid_count > 1.5
@@ -23601,7 +23600,7 @@ RULE BD_later_cont_P518:
   CONDITION: diamond_hcp <= 3.5
   CONDITION: is_opening == False
   CONDITION: competition_level <= 1.5
-  CONDITION: doubleton_count > 0.5
+  CONDITION: doubleton_count > -0.5
   CONDITION: last_bid_level > 1.5
   CONDITION: last_bid_level <= 2.5
   CONDITION: hcp > 18.5
@@ -23617,7 +23616,7 @@ RULE BD_later_cont_P519:
   CONDITION: diamond_hcp > 3.5
   CONDITION: is_opening == False
   CONDITION: competition_level <= 1.5
-  CONDITION: doubleton_count > 0.5
+  CONDITION: doubleton_count > -0.5
   CONDITION: last_bid_level > 1.5
   CONDITION: last_bid_level <= 2.5
   CONDITION: hcp > 18.5
@@ -25484,7 +25483,7 @@ RULE BD_later_cont_P637:
   CONDITION: competition_level > 2.5
   CONDITION: last_bid_level > 1.5
   CONDITION: last_bid_level <= 2.5
-  CONDITION: king_count <= 0.5
+  CONDITION: king_count <= -0.5
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
   CONDITION: partner_last_call != 'PASS'
@@ -25497,10 +25496,10 @@ RULE BD_later_cont_P638:
   CONDITION: hcp <= 6.5
   CONDITION: is_opening == False
   CONDITION: passes_since_last_bid > 0.5
+  CONDITION: king_count > 1.5
   CONDITION: competition_level > 2.5
   CONDITION: last_bid_level > 1.5
   CONDITION: last_bid_level <= 2.5
-  CONDITION: king_count > 0.5
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
   CONDITION: partner_last_call != 'PASS'
@@ -25767,7 +25766,7 @@ RULE BD_later_cont_P655:
   CONDITION: is_opening == False
   CONDITION: passes_since_last_bid > 0.5
   CONDITION: opening_bid != '1NT'
-  CONDITION: c_has_ten > 0.5
+  CONDITION: c_has_ten > -0.5
   CONDITION: last_bid_strain == 'C'
   CONDITION: last_bid_level > 1.5
   CONDITION: last_bid_level <= 2.5
@@ -25972,7 +25971,7 @@ RULE BD_later_cont_P668:
   PRIORITY: 10
   CALL: X
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: hcp > 6.5
   CONDITION: is_opening == False
   CONDITION: support_in_partner_suit <= 2.5
@@ -25988,7 +25987,7 @@ RULE BD_later_cont_P669:
   PRIORITY: 10
   CALL: PASS
   CONDITION: spade_len <= 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: hcp > 6.5
   CONDITION: is_opening == False
   CONDITION: support_in_partner_suit <= 2.5
@@ -26197,7 +26196,7 @@ RULE BD_later_cont_P682:
   CALL: 4S
   CONDITION: spade_len > 4.5
   CONDITION: spade_len > 3.5
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: hcp > 6.5
   CONDITION: is_opening == False
   CONDITION: support_in_partner_suit <= 3.5
@@ -26370,7 +26369,7 @@ RULE BD_later_cont_P692:
 
 RULE BD_later_cont_P693:
   PRIORITY: 10
-  CALL: 3D
+  CALL: 2D
   CONDITION: spade_len <= 4.5
   CONDITION: heart_len <= 4.5
   CONDITION: hcp > 6.5
@@ -26501,9 +26500,9 @@ RULE BD_later_cont_P701:
   CALL: 2H
   CONDITION: rule20_total <= 20.5
   CONDITION: spade_len > 4.5
+  CONDITION: heart_len > 3.5
   CONDITION: hcp > 6.5
   CONDITION: is_opening == False
-  CONDITION: heart_len > 2.5
   CONDITION: last_bid_strain != 'C'
   CONDITION: last_bid_level > 1.5
   CONDITION: last_bid_level <= 2.5
@@ -27107,6 +27106,7 @@ RULE BD_later_cont_P739:
   PRIORITY: 10
   CALL: 3S
   CONDITION: hcp <= 5.5
+  CONDITION: hcp <= 8.0
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'S'
   CONDITION: spade_len <= 2.5
@@ -27116,13 +27116,13 @@ RULE BD_later_cont_P739:
   CONDITION: partner_last_bid_strain == 'S'
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
-  CONDITION: hcp <= 10.0
   CONDITION: partner_last_call != 'PASS'
 
 RULE BD_later_cont_P740:
   PRIORITY: 10
   CALL: 4S
   CONDITION: hcp > 5.5
+  CONDITION: hcp <= 8.0
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'S'
   CONDITION: spade_len <= 2.5
@@ -27132,7 +27132,6 @@ RULE BD_later_cont_P740:
   CONDITION: partner_last_bid_strain == 'S'
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == 'X'
-  CONDITION: hcp <= 10.0
   CONDITION: partner_last_call != 'PASS'
 
 RULE BD_later_cont_P741:
@@ -27177,7 +27176,7 @@ RULE BD_later_cont_P743:
   CONDITION: opening_bid == '2S'
   CONDITION: last_bid_level > 2.5
   CONDITION: last_bid_level <= 4.5
-  CONDITION: king_count <= 0.5
+  CONDITION: king_count <= -0.5
   CONDITION: partner_last_bid_strain == 'S'
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
@@ -27189,11 +27188,11 @@ RULE BD_later_cont_P744:
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'S'
   CONDITION: spade_len <= 2.5
+  CONDITION: king_count > 1.5
   CONDITION: last_bid_level > 1.5
   CONDITION: opening_bid == '2S'
   CONDITION: last_bid_level > 2.5
   CONDITION: last_bid_level <= 4.5
-  CONDITION: king_count > 0.5
   CONDITION: partner_last_bid_strain == 'S'
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
@@ -27424,9 +27423,9 @@ RULE BD_later_cont_P758:
 RULE BD_later_cont_P759:
   PRIORITY: 10
   CALL: 4H
+  CONDITION: heart_len > 3.5
   CONDITION: is_opening == False
   CONDITION: passes_since_last_bid <= 0.5
-  CONDITION: heart_len > 2.5
   CONDITION: last_bid_strain == 'NT'
   CONDITION: last_bid_level > 1.5
   CONDITION: last_bid_level > 2.5
@@ -27550,7 +27549,7 @@ RULE BD_later_cont_P766:
 RULE BD_later_cont_P767:
   PRIORITY: 10
   CALL: 3S
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'NT'
   CONDITION: last_bid_level > 1.5
@@ -27566,7 +27565,7 @@ RULE BD_later_cont_P767:
 RULE BD_later_cont_P768:
   PRIORITY: 10
   CALL: 3NT
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'NT'
   CONDITION: last_bid_level > 1.5
@@ -27582,7 +27581,7 @@ RULE BD_later_cont_P768:
 RULE BD_later_cont_P769:
   PRIORITY: 10
   CALL: PASS
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'NT'
   CONDITION: last_bid_level > 1.5
@@ -27598,7 +27597,7 @@ RULE BD_later_cont_P769:
 RULE BD_later_cont_P770:
   PRIORITY: 10
   CALL: PASS
-  CONDITION: heart_len <= 3.5
+  CONDITION: heart_len <= 5.5
   CONDITION: is_opening == False
   CONDITION: last_bid_strain != 'NT'
   CONDITION: last_bid_level > 1.5
@@ -28557,7 +28556,7 @@ RULE BD_open_uncont_P183_suitc:
   CONDITION: hcp > 14.5
   CONDITION: total_points > 17.5
   CONDITION: hcp <= 19.5
-  CONDITION: hcp > 17.5
+  CONDITION: hcp > 16.5
   CONDITION: short_suit_wasted_hcp >= 3
 
 RULE BD_later_uncont_P139_suitc:
@@ -28586,7 +28585,7 @@ RULE BD_later_cont_P240_suitc:
   CONDITION: support_in_partner_suit > 2.5
   CONDITION: combined_hcp_max > 26.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: partner_last_call != '1S'
   CONDITION: partner_last_call != '1H'
@@ -28622,7 +28621,7 @@ RULE BD_later_cont_P224_suitc:
   CONDITION: competition_level > 2.5
   CONDITION: combined_hcp_max > 31.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: short_suit_wasted_hcp == 0
 
@@ -28672,7 +28671,7 @@ RULE BD_later_cont_P386_suitc:
   CONDITION: opening_bid != '1H'
   CONDITION: opponents_bid == True
   CONDITION: opp_bid_count <= 1.5
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: short_suit_wasted_hcp >= 2
 
 RULE BD_later_uncont_P160_suitc:
@@ -28720,7 +28719,7 @@ RULE BD_later_cont_P239_suitc:
   CONDITION: support_in_partner_suit > 2.5
   CONDITION: combined_hcp_max > 26.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: partner_last_call != '1S'
   CONDITION: partner_last_call == '1H'
@@ -28737,7 +28736,7 @@ RULE BD_later_cont_P238_suitc:
   CONDITION: support_in_partner_suit > 2.5
   CONDITION: combined_hcp_max > 26.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: partner_last_call == '1S'
   CONDITION: opp_last_call != '1C'
@@ -28973,7 +28972,7 @@ RULE BD_later_cont_P193_JPS_G2_long_suit_intermediates_2_2D:
   CONDITION: longest_suit_len > 4.5
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
   CONDITION: long_suit_intermediates >= 2
 
@@ -28989,7 +28988,7 @@ RULE BD_later_cont_P222_JPS_G2_combined_hcp_min_26_2C:
   CONDITION: combined_hcp_min > 17.5
   CONDITION: combined_hcp_max > 31.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: my_side_bid_count > 0.5
   CONDITION: combined_hcp_min >= 26
@@ -29006,7 +29005,7 @@ RULE BD_later_cont_P222_JPS_G3_combined_hcp_min_24_PASS:
   CONDITION: combined_hcp_min > 17.5
   CONDITION: combined_hcp_max > 31.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: my_side_bid_count > 0.5
   CONDITION: combined_hcp_min >= 24
@@ -29040,7 +29039,7 @@ RULE BD_later_cont_P193_JPS_G2_long_suit_intermediates_2_2D_JPS_G4_combined_hcp_
   CONDITION: longest_suit_len > 4.5
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
   CONDITION: combined_hcp_min <= 21
   CONDITION: long_suit_intermediates >= 2
@@ -29093,7 +29092,7 @@ RULE BD_later_cont_P76_JPS_G4_controls_4_1NT:
 
 RULE BD_later_cont_P239_JPS_G5_support_in_partner_suit_3_1NT:
   PRIORITY: 11
-  CALL: 1NT
+  CALL: PASS
   CONDITION: spade_len <= 4.5
   CONDITION: heart_len <= 4.5
   CONDITION: is_opening == False
@@ -29102,7 +29101,7 @@ RULE BD_later_cont_P239_JPS_G5_support_in_partner_suit_3_1NT:
   CONDITION: support_in_partner_suit > 2.5
   CONDITION: combined_hcp_max > 26.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: partner_last_call != '1S'
   CONDITION: partner_last_call == '1H'
@@ -29121,7 +29120,7 @@ RULE BD_later_cont_P193_JPS_G5_losing_trick_count_6_2D:
   CONDITION: longest_suit_len > 4.5
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
   CONDITION: losing_trick_count <= 6
 
@@ -29137,7 +29136,7 @@ RULE BD_later_cont_P242_JPS_G5_total_points_14_1S:
   CONDITION: support_in_partner_suit > 2.5
   CONDITION: combined_hcp_max > 26.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min > 14.5
   CONDITION: partner_last_call != '1S'
   CONDITION: total_points >= 14
@@ -29188,7 +29187,7 @@ RULE BD_later_cont_P203_JPS_G6_opp_suit_stoppers_1_2C:
   CONDITION: last_bid_level <= 1.5
   CONDITION: diamond_len <= 4.5
   CONDITION: opponents_bid == True
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
   CONDITION: opp_suit_stoppers >= 1
 
@@ -29209,26 +29208,16 @@ RULE BD_later_cont_P84_JPS_G1_short_suit_wasted_hcp_0_2D_JPS_G6_combined_hcp_min
   CONDITION: short_suit_wasted_hcp == 0
   CONDITION: combined_hcp_min <= 21
 
-RULE P1_OPEN_1C_18_19_BAL:
-  PRIORITY: 915
-  CALL: 1C
-  CONDITION: is_opening == True
-  CONDITION: spade_len <= 4.0
-  CONDITION: heart_len <= 4.0
-  CONDITION: diamond_len <= 4.0
-  CONDITION: hcp >= 18
-  CONDITION: hcp <= 19
-  CONDITION: is_balanced == True
-
 RULE P1_PASS_WEAK_OPP_SUIT_2D:
   PRIORITY: 915
   CALL: PASS
   CONDITION: is_opening == False
   CONDITION: last_bid_strain == 'D'
-  CONDITION: hcp <= 10.0
+  CONDITION: hcp <= 7.0
   CONDITION: partner_last_call == 'NONE'
   CONDITION: opp_bid_diamonds == True
-  CONDITION: second_longest_len <= 4
+  CONDITION: d_is_longest == True
+  CONDITION: losing_trick_count >= 9
 
 RULE P1_RKCB_0314_5C:
   PRIORITY: 920
@@ -29451,11 +29440,11 @@ RULE P2_DAGGER_PASS_OPP_SUIT_D:
   PRIORITY: 916
   CALL: PASS
   CONDITION: is_opening == False
-  CONDITION: hcp <= 10.0
+  CONDITION: hcp <= 7.0
   CONDITION: opp_bid_diamonds == True
-  CONDITION: second_longest_len <= 4
-  CONDITION: partner_last_call in ['NONE', 'PASS']
   CONDITION: d_is_longest == True
+  CONDITION: losing_trick_count >= 9
+  CONDITION: partner_last_call in ['NONE', 'PASS']
 
 RULE P2_DAGGER_PASS_OPP_SUIT_H:
   PRIORITY: 916
@@ -29463,19 +29452,19 @@ RULE P2_DAGGER_PASS_OPP_SUIT_H:
   CONDITION: heart_len <= 4.0
   CONDITION: is_opening == False
   CONDITION: last_bid_strain == 'C'
-  CONDITION: hcp <= 10.0
   CONDITION: opp_bid_hearts == True
   CONDITION: spade_len <= 3
+  CONDITION: hcp <= 10
 
 RULE P2_DAGGER_PASS_OPP_SUIT_S:
   PRIORITY: 916
   CALL: PASS
   CONDITION: is_opening == False
-  CONDITION: hcp <= 10.0
-  CONDITION: second_longest_len <= 4
   CONDITION: partner_last_call in ['NONE', 'PASS']
+  CONDITION: hcp <= 10
   CONDITION: opp_bid_spades == True
   CONDITION: s_is_longest == True
+  CONDITION: second_longest_len <= 4
 
 RULE P2_DAGGER_1NT_OVERCALL:
   PRIORITY: 912
@@ -29494,8 +29483,8 @@ RULE P2_DAGGER_2NT_ADV_OVER_1NT_OVERCALL:
   CALL: 2NT
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call == '1NT'
-  CONDITION: hcp <= 10.0
   CONDITION: hcp >= 8
+  CONDITION: hcp <= 10
   CONDITION: my_last_call in ['NONE', 'PASS']
   CONDITION: longest_suit_len >= 5
   CONDITION: second_longest_len >= 5
@@ -29589,8 +29578,8 @@ RULE P2_DAGGER_1NT_OVER_1S_REBID:
   CONDITION: my_first_call == '1H'
   CONDITION: partner_first_call == '1D'
   CONDITION: partner_last_call == '1S'
-  CONDITION: hcp <= 10.0
   CONDITION: spade_len <= 3
+  CONDITION: hcp <= 10
   CONDITION: last_bid_level == 1
   CONDITION: hcp >= 7
 
@@ -29604,15 +29593,17 @@ RULE P2_DAGGER_TAKEOUT_X_OVER_1D:
   CONDITION: partner_last_call in ['NONE', 'PASS']
   CONDITION: my_last_call == 'NONE'
   CONDITION: last_bid_level == 1
+  CONDITION: spade_len >= 3
   CONDITION: heart_len >= 4
+  CONDITION: heart_len <= 5
   CONDITION: diamond_len <= 2
 
 RULE P2_DAGGER_FREE_2S_AFTER_X:
   PRIORITY: 912
   CALL: 2S
   CONDITION: partner_last_call == 'X'
-  CONDITION: hcp <= 10.0
   CONDITION: spade_len >= 6
+  CONDITION: hcp <= 10
   CONDITION: opp_last_call == '2D'
   CONDITION: hcp >= 5
 
@@ -29629,7 +29620,7 @@ RULE BD_later_cont_P194_JPS_G7_combined_fit_len_est_9_2D:
   CONDITION: longest_suit_len > 4.5
   CONDITION: opponents_bid == True
   CONDITION: partner_last_call != 'X'
-  CONDITION: combined_hcp_min > 2.5
+  CONDITION: combined_hcp_min > 0.5
   CONDITION: combined_hcp_min <= 14.5
   CONDITION: combined_fit_len_est >= 9
 
@@ -29642,3 +29633,543 @@ RULE P2_DAGGER_3NT_OVER_2NT_INV:
   CONDITION: hcp >= 15
   CONDITION: has_stopper == True
   CONDITION: longest_suit_len >= 5
+
+RULE BD_open_uncont_P48_JPS_G8_controls_2_1D:
+  PRIORITY: 11
+  CALL: 1D
+  CONDITION: is_opening == True
+  CONDITION: opponents_bid == False
+  CONDITION: hcp <= 11.5
+  CONDITION: rule20_total <= 20.5
+  CONDITION: longest_suit_len > 5.5
+  CONDITION: s_is_longest <= 0.5
+  CONDITION: heart_len <= 5.5
+  CONDITION: diamond_len <= 5.5
+  CONDITION: club_len <= 6.5
+  CONDITION: quick_tricks <= 2.75
+  CONDITION: controls <= 2
+
+RULE BD_later_cont_P722_suitc_JPS_G1_support_in_partner_suit_3_PASS_JPS_G8_opp_bid_spades_1_PASS:
+  PRIORITY: 13
+  CALL: PASS
+  CONDITION: hcp > 6.5
+  CONDITION: is_opening == False
+  CONDITION: support_in_partner_suit > 2.5
+  CONDITION: last_bid_strain != 'C'
+  CONDITION: last_bid_level > 1.5
+  CONDITION: last_bid_level <= 2.5
+  CONDITION: last_bid_strain != 'D'
+  CONDITION: opponents_bid == True
+  CONDITION: partner_last_call != 'PASS'
+  CONDITION: partner_last_call != '2NT'
+  CONDITION: partner_last_call != '2S'
+  CONDITION: partner_last_call != '2H'
+  CONDITION: short_suit_wasted_hcp == 0
+  CONDITION: support_in_partner_suit >= 3
+  CONDITION: opp_bid_spades == True
+
+RULE BD_later_cont_P456_JPS_G6_opp_suit_stoppers_1_PASS_JPS_G8_opp_bid_spades_1_2D:
+  PRIORITY: 12
+  CALL: 2D
+  CONDITION: heart_len <= 5.5
+  CONDITION: losing_trick_count > 7.5
+  CONDITION: spade_len <= 5.5
+  CONDITION: is_opening == False
+  CONDITION: opening_bid != '1H'
+  CONDITION: last_bid_level > 1.5
+  CONDITION: opponents_bid == True
+  CONDITION: opp_bid_count <= 2.5
+  CONDITION: combined_hcp_min <= 11.5
+  CONDITION: partner_last_call == 'PASS'
+  CONDITION: opp_contract_level <= 4.5
+  CONDITION: auction_len <= 9.5
+  CONDITION: opp_suit_stoppers >= 1
+  CONDITION: opp_bid_spades == True
+
+RULE BD_later_cont_P470_JPS_G9_opp_suit_stoppers_0_2D:
+  PRIORITY: 11
+  CALL: 2D
+  CONDITION: losing_trick_count > 7.5
+  CONDITION: is_opening == False
+  CONDITION: last_bid_level > 1.5
+  CONDITION: opponents_bid == True
+  CONDITION: opp_bid_count > 1.5
+  CONDITION: combined_hcp_min <= 11.5
+  CONDITION: partner_last_call == 'PASS'
+  CONDITION: opp_contract_level <= 4.5
+  CONDITION: opp_last_call != '2S'
+  CONDITION: opp_suit_stoppers == 0
+
+RULE BD_later_cont_P461_JPS_G1_combined_hcp_min_21_2D_JPS_G10_combined_hcp_min_21_PASS:
+  PRIORITY: 12
+  CALL: PASS
+  CONDITION: heart_len > 4.5
+  CONDITION: hcp <= 10.5
+  CONDITION: losing_trick_count > 7.5
+  CONDITION: is_opening == False
+  CONDITION: opening_bid != '1H'
+  CONDITION: last_bid_level > 1.5
+  CONDITION: opponents_bid == True
+  CONDITION: opp_bid_count <= 2.5
+  CONDITION: partner_first_call != 'X'
+  CONDITION: combined_hcp_min <= 11.5
+  CONDITION: partner_last_call == 'PASS'
+  CONDITION: opp_contract_level <= 4.5
+  CONDITION: combined_hcp_min <= 21
+
+RULE P1_OPEN_1C_18_19_BAL:
+  PRIORITY: 915
+  CALL: 1C
+  CONDITION: is_opening == True
+  CONDITION: spade_len <= 3
+  CONDITION: hcp == 19
+  CONDITION: is_balanced == True
+  CONDITION: heart_len == 4
+  CONDITION: diamond_len == 3
+  CONDITION: club_len == 3
+  CONDITION: controls >= 6
+
+RULE P2_DAGGER_SINGLE_RAISE_2H_3CARD:
+  PRIORITY: 914
+  CALL: 2H
+  CONDITION: opponents_bid == False
+  CONDITION: hcp <= 9.0
+  CONDITION: partner_last_call == '1H'
+  CONDITION: losing_trick_count >= 8
+  CONDITION: spade_len <= 3
+  CONDITION: last_bid_level == 1
+  CONDITION: support_in_partner_suit == 3
+  CONDITION: hcp >= 6
+
+RULE P2_DAGGER_PASS_1H_2H_MIN_OPENER:
+  PRIORITY: 914
+  CALL: PASS
+  CONDITION: opponents_bid == False
+  CONDITION: last_bid_strain == 'H'
+  CONDITION: my_last_call == '1H'
+  CONDITION: hcp <= 13.0
+  CONDITION: partner_last_call == '2H'
+  CONDITION: last_bid_level == 2
+  CONDITION: losing_trick_count >= 6
+
+RULE P2_DAGGER_WEAK_2S_64_SHAPE:
+  PRIORITY: 912
+  CALL: 2S
+  CONDITION: is_opening == True
+  CONDITION: hcp <= 9.0
+  CONDITION: s_is_longest == True
+  CONDITION: losing_trick_count <= 7
+  CONDITION: hcp >= 6
+  CONDITION: spade_len == 6
+  CONDITION: second_longest_len == 4
+  CONDITION: heart_len <= 2
+  CONDITION: s_stopper >= 1
+
+RULE P2_DAGGER_TAKEOUT_X_OVER_2S:
+  PRIORITY: 914
+  CALL: X
+  CONDITION: is_opening == False
+  CONDITION: last_bid_strain == 'S'
+  CONDITION: opp_last_call == '2S'
+  CONDITION: last_bid_level == 2
+  CONDITION: partner_last_call in ['NONE', 'PASS']
+  CONDITION: my_last_call == 'NONE'
+  CONDITION: losing_trick_count <= 7
+  CONDITION: hcp >= 13
+  CONDITION: spade_len <= 2
+  CONDITION: heart_len >= 5
+  CONDITION: club_len >= 4
+
+RULE P2_DAGGER_4H_OVER_2S_X:
+  PRIORITY: 914
+  CALL: 4H
+  CONDITION: last_bid_strain == 'S'
+  CONDITION: partner_last_call == 'X'
+  CONDITION: last_bid_level == 2
+  CONDITION: opp_bid_spades == True
+  CONDITION: hcp >= 10
+  CONDITION: losing_trick_count <= 7
+  CONDITION: heart_len >= 4
+
+RULE P2_DAGGER_RAISE_3H_TO_4H_AFTER_2S_X:
+  PRIORITY: 914
+  CALL: 4H
+  CONDITION: partner_last_call == '3H'
+  CONDITION: my_last_call == 'X'
+  CONDITION: opp_bid_spades == True
+  CONDITION: support_in_partner_suit >= 4
+  CONDITION: losing_trick_count <= 7
+  CONDITION: hcp >= 13
+
+RULE P2_DAGGER_2D_OVER_1S_X_NO_STOP:
+  PRIORITY: 914
+  CALL: 2D
+  CONDITION: is_opening == False
+  CONDITION: hcp <= 12.0
+  CONDITION: partner_last_call == 'X'
+  CONDITION: opp_last_call == '1S'
+  CONDITION: opp_bid_spades == True
+  CONDITION: my_last_call == 'NONE'
+  CONDITION: heart_len <= 3
+  CONDITION: s_stopper == 0
+  CONDITION: hcp >= 9
+  CONDITION: diamond_len >= 4
+
+RULE P2_DAGGER_PASS_2D_AFTER_1S_X:
+  PRIORITY: 914
+  CALL: PASS
+  CONDITION: hcp <= 16.0
+  CONDITION: last_bid_strain == 'D'
+  CONDITION: my_last_call == 'X'
+  CONDITION: last_bid_level == 2
+  CONDITION: opp_bid_spades == True
+  CONDITION: partner_last_call == '2D'
+  CONDITION: diamond_len >= 4
+
+RULE P2_DAGGER_RAISE_1S_RESP_4CARD:
+  PRIORITY: 914
+  CALL: 2S
+  CONDITION: last_bid_strain == 'S'
+  CONDITION: hcp <= 15.0
+  CONDITION: partner_last_call == '1S'
+  CONDITION: last_bid_level == 1
+  CONDITION: hcp >= 12
+  CONDITION: support_in_partner_suit >= 4
+  CONDITION: my_last_call == '1D'
+
+RULE P2_DAGGER_3NT_ACCEPT_2NT_44_MINORS:
+  PRIORITY: 914
+  CALL: 3NT
+  CONDITION: opponents_bid == False
+  CONDITION: my_last_call == '2S'
+  CONDITION: my_first_call == '1NT'
+  CONDITION: partner_last_call == '2NT'
+  CONDITION: controls >= 4
+  CONDITION: hcp >= 15
+  CONDITION: club_len >= 4
+  CONDITION: diamond_len >= 4
+
+RULE BD_open_uncont_P167_JPS_G11_controls_5_1NT:
+  PRIORITY: 11
+  CALL: 1NT
+  CONDITION: is_opening == True
+  CONDITION: opponents_bid == False
+  CONDITION: spade_len <= 4.5
+  CONDITION: heart_len <= 4.5
+  CONDITION: d_is_longest <= 0.5
+  CONDITION: club_len > 2.5
+  CONDITION: hcp > 11.5
+  CONDITION: hcp > 14.5
+  CONDITION: total_points > 17.5
+  CONDITION: hcp <= 19.5
+  CONDITION: hcp > 16.5
+  CONDITION: losing_trick_count > 2.5
+  CONDITION: controls >= 5
+
+RULE BD_later_cont_P194_JPS_G11_is_favorable_vuln_1_1H:
+  PRIORITY: 11
+  CALL: 1H
+  CONDITION: longest_suit_len <= 5.5
+  CONDITION: spade_len <= 4.5
+  CONDITION: heart_len <= 4.5
+  CONDITION: club_len > 3.5
+  CONDITION: is_opening == False
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: last_bid_strain != 'C'
+  CONDITION: longest_suit_len > 4.5
+  CONDITION: opponents_bid == True
+  CONDITION: partner_last_call != 'X'
+  CONDITION: combined_hcp_min > 0.5
+  CONDITION: combined_hcp_min <= 14.5
+  CONDITION: is_favorable_vuln == 1
+
+RULE BD_later_cont_P461_JPS_G1_combined_hcp_min_21_2D_JPS_G10_combined_hcp_min_21_PASS_JPS_G11_opp_bid_spades_1_2D:
+  PRIORITY: 13
+  CALL: 2D
+  CONDITION: heart_len > 4.5
+  CONDITION: hcp <= 10.5
+  CONDITION: losing_trick_count > 7.5
+  CONDITION: is_opening == False
+  CONDITION: opening_bid != '1H'
+  CONDITION: last_bid_level > 1.5
+  CONDITION: opponents_bid == True
+  CONDITION: opp_bid_count <= 2.5
+  CONDITION: partner_first_call != 'X'
+  CONDITION: combined_hcp_min <= 11.5
+  CONDITION: partner_last_call == 'PASS'
+  CONDITION: opp_contract_level <= 4.5
+  CONDITION: combined_hcp_min <= 21
+  CONDITION: opp_bid_spades == True
+
+RULE R5_POWER_X_OVER_PREEMPT:
+  PRIORITY: 815
+  CALL: X
+  CONDITION: partner_last_call in ['NONE', 'PASS']
+  CONDITION: is_power_double_hand == True
+
+RULE R5_POS_3S_OVER_2DH_X:
+  PRIORITY: 815
+  CALL: 3S
+  CONDITION: partner_last_call == 'X'
+  CONDITION: last_bid_level == 2
+  CONDITION: hcp >= 8
+  CONDITION: losing_trick_count <= 8
+  CONDITION: my_last_call in ['NONE', 'PASS']
+  CONDITION: spade_len >= 5
+  CONDITION: opp_preempted == True
+  CONDITION: last_bid_strain in ['D', 'H']
+
+RULE R5_POS_3H_OVER_2DS_X:
+  PRIORITY: 815
+  CALL: 3H
+  CONDITION: spade_len <= 4.0
+  CONDITION: partner_last_call == 'X'
+  CONDITION: last_bid_level == 2
+  CONDITION: hcp >= 8
+  CONDITION: losing_trick_count <= 8
+  CONDITION: my_last_call in ['NONE', 'PASS']
+  CONDITION: heart_len >= 5
+  CONDITION: opp_preempted == True
+  CONDITION: last_bid_strain in ['D', 'S']
+
+RULE R5_POWER_X_RKCB_S:
+  PRIORITY: 818
+  CALL: 4NT
+  CONDITION: my_last_call == 'X'
+  CONDITION: support_in_partner_suit >= 3
+  CONDITION: losing_trick_count <= 5
+  CONDITION: controls >= 5
+  CONDITION: opp_preempted == True
+  CONDITION: partner_last_call in ['3S', '4S']
+  CONDITION: hcp >= 18
+
+RULE R5_POWER_X_RKCB_H:
+  PRIORITY: 818
+  CALL: 4NT
+  CONDITION: my_last_call == 'X'
+  CONDITION: support_in_partner_suit >= 3
+  CONDITION: losing_trick_count <= 5
+  CONDITION: controls >= 5
+  CONDITION: opp_preempted == True
+  CONDITION: hcp >= 18
+  CONDITION: partner_last_call in ['3H', '4H']
+
+RULE R5_UNUSUAL_2NT_OVERCALL:
+  PRIORITY: 812
+  CALL: 2NT
+  CONDITION: hcp <= 12.0
+  CONDITION: losing_trick_count <= 6
+  CONDITION: partner_last_call in ['NONE', 'PASS']
+  CONDITION: last_bid_level == 1
+  CONDITION: hcp >= 7
+  CONDITION: is_unusual_2nt_shape == True
+
+RULE R5_ADV_PREF_3H_OVER_U2NT:
+  PRIORITY: 814
+  CALL: 3H
+  CONDITION: last_bid_strain == 'NT'
+  CONDITION: opponents_bid == True
+  CONDITION: partner_last_call == '2NT'
+  CONDITION: last_bid_level == 2
+  CONDITION: my_last_call in ['NONE', 'PASS']
+  CONDITION: opening_bid in ['1C', '1D']
+  CONDITION: heart_len >= 3
+
+RULE R5_ADV_PREF_3C_OVER_U2NT:
+  PRIORITY: 813
+  CALL: 3C
+  CONDITION: last_bid_strain == 'NT'
+  CONDITION: opponents_bid == True
+  CONDITION: partner_last_call == '2NT'
+  CONDITION: last_bid_level == 2
+  CONDITION: my_last_call in ['NONE', 'PASS']
+  CONDITION: opening_bid in ['1D', '1H', '1S']
+  CONDITION: club_len >= 3
+
+RULE R5_ADV_PREF_3D_OVER_U2NT:
+  PRIORITY: 812
+  CALL: 3D
+  CONDITION: last_bid_strain == 'NT'
+  CONDITION: opponents_bid == True
+  CONDITION: partner_last_call == '2NT'
+  CONDITION: last_bid_level == 2
+  CONDITION: my_last_call in ['NONE', 'PASS']
+  CONDITION: opening_bid in ['1C', '1H', '1S']
+  CONDITION: diamond_len >= 3
+
+RULE R5_BALANCE_X_OVER_1D_2D:
+  PRIORITY: 814
+  CALL: X
+  CONDITION: opening_bid == '1D'
+  CONDITION: last_bid_strain == 'D'
+  CONDITION: opponents_bid == True
+  CONDITION: last_bid_level == 2
+  CONDITION: partner_last_call in ['NONE', 'PASS']
+  CONDITION: my_last_call in ['NONE', 'PASS']
+  CONDITION: hcp >= 10
+  CONDITION: heart_len >= 4
+  CONDITION: diamond_len <= 2
+  CONDITION: opp_last_call == '2D'
+  CONDITION: spade_len >= 4
+
+RULE BD_later_cont_P376_JPS_G13_seq_combined_hcp_min_24_2C:
+  PRIORITY: 11
+  CALL: 2C
+  CONDITION: spade_len > 4.5
+  CONDITION: second_longest_len <= 4.5
+  CONDITION: spade_len <= 5.5
+  CONDITION: is_opening == False
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: last_bid_strain != 'S'
+  CONDITION: last_bid_strain != 'NT'
+  CONDITION: opponents_bid == True
+  CONDITION: partner_last_call != 'X'
+  CONDITION: combined_hcp_min > 0.5
+  CONDITION: partner_last_call != '1H'
+  CONDITION: spade_hcp > 2.5
+  CONDITION: seq_combined_hcp_min >= 24
+
+RULE BD_later_cont_P394_JPS_G1_combined_hcp_min_21_2D_JPS_G13_combined_hcp_min_21_PASS:
+  PRIORITY: 12
+  CALL: PASS
+  CONDITION: is_favorable_vuln <= 0.5
+  CONDITION: heart_len <= 5.5
+  CONDITION: losing_trick_count <= 7.5
+  CONDITION: spade_len <= 5.5
+  CONDITION: is_opening == False
+  CONDITION: competition_level <= 2.5
+  CONDITION: opening_bid != '1H'
+  CONDITION: last_bid_level > 1.5
+  CONDITION: total_points <= 12.5
+  CONDITION: opponents_bid == True
+  CONDITION: combined_hcp_min <= 11.5
+  CONDITION: partner_last_call == 'PASS'
+  CONDITION: combined_hcp_min <= 21
+
+RULE BD_later_cont_P456_JPS_G13_opp_bid_spades_1_2D:
+  PRIORITY: 11
+  CALL: 2D
+  CONDITION: heart_len <= 5.5
+  CONDITION: losing_trick_count > 7.5
+  CONDITION: spade_len <= 5.5
+  CONDITION: is_opening == False
+  CONDITION: opening_bid != '1H'
+  CONDITION: last_bid_level > 1.5
+  CONDITION: opponents_bid == True
+  CONDITION: opp_bid_count <= 2.5
+  CONDITION: combined_hcp_min <= 11.5
+  CONDITION: partner_last_call == 'PASS'
+  CONDITION: opp_contract_level <= 4.5
+  CONDITION: auction_len <= 9.5
+  CONDITION: opp_bid_spades == True
+
+RULE BD_later_cont_P87_JPS_G13_unstopped_opp_suits_0_1NT:
+  PRIORITY: 11
+  CALL: 1NT
+  CONDITION: longest_suit_len <= 5.5
+  CONDITION: spade_len <= 4.5
+  CONDITION: heart_len > 4.5
+  CONDITION: is_opening == False
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: hcp <= 7.5
+  CONDITION: opponents_bid == True
+  CONDITION: combined_hcp_min <= 9.5
+  CONDITION: partner_last_call != 'X'
+  CONDITION: club_hcp <= 6.5
+  CONDITION: unstopped_opp_suits == 0
+
+RULE BD_open_uncont_P161_JPS_G13_losing_trick_count_5_1D:
+  PRIORITY: 11
+  CALL: 1D
+  CONDITION: is_opening == True
+  CONDITION: opponents_bid == False
+  CONDITION: spade_len <= 4.5
+  CONDITION: heart_len <= 4.5
+  CONDITION: d_is_longest <= 0.5
+  CONDITION: hcp > 11.5
+  CONDITION: hcp > 14.5
+  CONDITION: total_points <= 17.5
+  CONDITION: is_semi_balanced > 0.5
+  CONDITION: losing_trick_count <= 5
+
+RULE BD_later_cont_P84_JPS_G1_short_suit_wasted_hcp_0_2D_JPS_G6_combined_hcp_min_21_1H_JPS_G13_second_round_controls_2_2D:
+  PRIORITY: 13
+  CALL: 2D
+  CONDITION: spade_len <= 4.5
+  CONDITION: heart_len <= 4.5
+  CONDITION: losing_trick_count > 7.5
+  CONDITION: is_opening == False
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: total_points <= 9.5
+  CONDITION: diamond_len > 3.5
+  CONDITION: last_bid_strain != 'C'
+  CONDITION: opponents_bid == True
+  CONDITION: combined_hcp_min <= 9.5
+  CONDITION: partner_last_call != 'X'
+  CONDITION: short_suit_wasted_hcp == 0
+  CONDITION: combined_hcp_min <= 21
+  CONDITION: second_round_controls >= 2
+
+RULE BD_later_cont_P84_JPS_G6_controls_2_2D_JPS_G13_opp_suit_stoppers_0_1H:
+  PRIORITY: 12
+  CALL: 1H
+  CONDITION: spade_len <= 4.5
+  CONDITION: heart_len <= 4.5
+  CONDITION: losing_trick_count > 7.5
+  CONDITION: is_opening == False
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: total_points <= 9.5
+  CONDITION: diamond_len > 3.5
+  CONDITION: last_bid_strain != 'C'
+  CONDITION: opponents_bid == True
+  CONDITION: combined_hcp_min <= 9.5
+  CONDITION: partner_last_call != 'X'
+  CONDITION: controls <= 2
+  CONDITION: opp_suit_stoppers == 0
+
+RULE BD_open_uncont_P201_JPS_G15_is_favorable_vuln_1_1D:
+  PRIORITY: 11
+  CALL: 1D
+  CONDITION: is_opening == True
+  CONDITION: opponents_bid == False
+  CONDITION: auction_len <= 2.5
+  CONDITION: spade_len <= 4.5
+  CONDITION: heart_len > 4.5
+  CONDITION: shape_pattern != '5332'
+  CONDITION: hcp > 11.5
+  CONDITION: hcp <= 19.5
+  CONDITION: losing_trick_count > 1.5
+  CONDITION: h_is_longest > 0.5
+  CONDITION: is_favorable_vuln == 1
+
+RULE BD_later_cont_P189_JPS_G15_effective_trump_len_4_2C:
+  PRIORITY: 11
+  CALL: 2C
+  CONDITION: longest_suit_len <= 5.5
+  CONDITION: spade_len <= 4.5
+  CONDITION: heart_len <= 4.5
+  CONDITION: total_points > 7.5
+  CONDITION: is_opening == False
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: longest_suit_len <= 4.5
+  CONDITION: opponents_bid == True
+  CONDITION: partner_last_call != 'X'
+  CONDITION: opp_suit_stoppers <= 0.25
+  CONDITION: combined_hcp_min > 0.5
+  CONDITION: combined_hcp_min <= 14.5
+  CONDITION: effective_trump_len >= 4
+
+RULE BD_later_cont_P87_JPS_G15_is_favorable_vuln_1_1NT:
+  PRIORITY: 11
+  CALL: 1NT
+  CONDITION: longest_suit_len <= 5.5
+  CONDITION: spade_len <= 4.5
+  CONDITION: heart_len > 4.5
+  CONDITION: is_opening == False
+  CONDITION: last_bid_level <= 1.5
+  CONDITION: hcp <= 7.5
+  CONDITION: opponents_bid == True
+  CONDITION: combined_hcp_min <= 9.5
+  CONDITION: partner_last_call != 'X'
+  CONDITION: club_hcp <= 6.5
+  CONDITION: is_favorable_vuln == 1

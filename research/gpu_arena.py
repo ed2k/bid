@@ -569,6 +569,14 @@ class DealBundle:
                 remapped[:, :, FEAT_TO_COL["second_round_controls"]] = (
                     remapped[:, :, FEAT_TO_COL["king_count"]] + remapped[:, :, FEAT_TO_COL["singleton_count"]]
                 )
+            if "all_opp_suits_stopped" not in saved_set and "all_opp_suits_stopped" in FEAT_TO_COL:
+                remapped[:, :, FEAT_TO_COL["all_opp_suits_stopped"]] = 1.0
+            if "unbid_major_unstopped" not in saved_set and "unbid_major_unstopped" in FEAT_TO_COL:
+                sq = d["suit_stopper_q"]
+                sl = d["suit_lengths"]
+                h_u = (sq[:, :, 2] <= 0.0) & (sl[:, :, 2] <= 3)
+                s_u = (sq[:, :, 3] <= 0.0) & (sl[:, :, 3] <= 3)
+                remapped[:, :, FEAT_TO_COL["unbid_major_unstopped"]] = (h_u | s_u).to(hf.dtype)
             hf = remapped
         return cls(
             hf, d["dealers"], d["vulns"], d["dd_tricks"],
@@ -1072,6 +1080,59 @@ class BatchedAuctionEnv:
         )
         comb_fit_len = torch.where(has_eff & (eff_len >= 0), eff_len + p_len_est, torch.zeros_like(eff_len))
         X[:, FEAT_TO_COL["combined_fit_len_est"]] = comb_fit_len.to(torch.float32)
+
+        # ---- Round 5: Competitive Slam & NT-Stopper Features ----
+        stop_q = self.bundle.suit_stopper_q[b_idx, my_seat]  # (B, 4)
+        my_lens = self.bundle.suit_lengths[b_idx, my_seat]   # (B, 4)
+        opp_mask_v = self.side_suits_mask[b_idx, opp_side]
+        my_mask_v = self.side_suits_mask[b_idx, my_side]
+        opp_suit_bool = torch.stack(
+            [(opp_mask_v & (1 << su_i)) != 0 for su_i in range(4)],
+            dim=1,
+        )  # (B, 4)
+        unstopped_opp = (opp_suit_bool & (stop_q <= 0.0)).sum(dim=1)
+        X[:, FEAT_TO_COL["unstopped_opp_suits"]] = unstopped_opp.to(torch.float32)
+        X[:, FEAT_TO_COL["all_opp_suits_stopped"]] = (unstopped_opp == 0).to(torch.float32)
+
+        all_mask_v = opp_mask_v | my_mask_v
+        h_unbid_unstop = ((all_mask_v & 4) == 0) & (stop_q[:, 2] <= 0.0) & (my_lens[:, 2] <= 3)
+        s_unbid_unstop = ((all_mask_v & 8) == 0) & (stop_q[:, 3] <= 0.0) & (my_lens[:, 3] <= 3)
+        X[:, FEAT_TO_COL["unbid_major_unstopped"]] = (h_unbid_unstop | s_unbid_unstop).to(torch.float32)
+
+        they_opened_v = (self.first_bid_seat >= 0) & ((self.first_bid_seat % 2) == opp_side)
+        can_comp_ov = they_opened_v & (my_last < 0)
+        ob = self.opening_bid
+        c_l, d_l, h_l, s_l = my_lens[:, 0], my_lens[:, 1], my_lens[:, 2], my_lens[:, 3]
+        is_u2nt = can_comp_ov & (
+            ((ob == 1) & (d_l >= 5) & (h_l >= 5))
+            | ((ob == 2) & (c_l >= 5) & (h_l >= 5))
+            | (((ob == 3) | (ob == 4)) & (c_l >= 5) & (d_l >= 5))
+        )
+        is_mich = can_comp_ov & (
+            (((ob == 1) | (ob == 2)) & (h_l >= 5) & (s_l >= 5))
+            | ((ob == 3) & (s_l >= 5) & ((c_l >= 5) | (d_l >= 5)))
+            | ((ob == 4) & (h_l >= 5) & ((c_l >= 5) | (d_l >= 5)))
+        )
+        X[:, FEAT_TO_COL["is_unusual_2nt_shape"]] = is_u2nt.to(torch.float32)
+        X[:, FEAT_TO_COL["is_michaels_shape"]] = is_mich.to(torch.float32)
+
+        opp_fb_c = self.side_first_bid[b_idx, opp_side]
+        opp_fb_st = (opp_fb_c - 1) % 5
+        has_opp_fb_suit = (opp_fb_c >= 1) & (opp_fb_c <= 35) & (opp_fb_st < 4)
+        opp_fb_len = torch.where(
+            has_opp_fb_suit,
+            my_lens[b_idx, opp_fb_st.clamp(0, 3)],
+            torch.full((B,), 13, dtype=torch.long, device=dev),
+        )
+        controls_v = X[:, FEAT_TO_COL["controls"]]
+        is_pow_x = (
+            self.side_preempted[b_idx, opp_side]
+            & (my_last < 0)
+            & (hcp >= 17.0)
+            & (controls_v >= 5.0)
+            & (opp_fb_len <= 2)
+        )
+        X[:, FEAT_TO_COL["is_power_double_hand"]] = is_pow_x.to(torch.float32)
 
         return X, my_seat
 

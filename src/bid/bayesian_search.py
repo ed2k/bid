@@ -315,7 +315,12 @@ class BayesianSingleDummyBidder:
         # Never override explicit Program 1/2 high-priority convention/DAgger rules (prio >= 900)
         if base_exp.priority >= 900.0 or conv_state in (2, 3, 4, 5, 6, 7, 8):
             return [default_call], False
-        if is_open or last_lvl <= 2:
+        nt_unstopped_alert = (
+            default_call.type == CallType.BID
+            and default_call.strain == Strain.NT
+            and int(feats.get("unstopped_opp_suits", 0)) >= 1
+        )
+        if is_open or (last_lvl <= 2 and not bool(feats.get("is_power_double_hand", False)) and not nt_unstopped_alert):
             return [default_call], False
 
         cands: List[Call] = [default_call]
@@ -343,8 +348,8 @@ class BayesianSingleDummyBidder:
             if comb_hcp >= 30 and int(feats["rkcb_keycards"]) >= 2:
                 _add(f"6{eff_trump}")
 
-        # 2. Notrump Game / Partscore with stoppers
-        if bool(feats["has_stopper"]):
+        # 2. Notrump Game / Partscore with all opponent suits stopped
+        if bool(feats.get("all_opp_suits_stopped", feats["has_stopper"])):
             if 22 <= comb_hcp <= 25:
                 _add("2NT")
             if comb_hcp >= 25:

@@ -53,8 +53,8 @@ def build_program2_dagger_rules() -> List[DecisionNetRule]:
                 ("partner_last_call", "in", ["NONE", "PASS"]),
                 ("opp_bid_diamonds", "==", True),
                 ("d_is_longest", "==", True),
-                ("hcp", "<=", 10),
-                ("second_longest_len", "<=", 4),
+                ("hcp", "<=", 7),
+                ("losing_trick_count", ">=", 9),
             ],
         ),
         (
@@ -266,7 +266,7 @@ def build_program2_dagger_rules() -> List[DecisionNetRule]:
                 ("heart_len", "<=", 4),
             ],
         ),
-        # 7. Takeout double over 1D with 14+ HCP, 4+ hearts, and <=2 diamonds + free 2S by partner
+        # 7. Takeout double over 1D with 14+ HCP, 4-5 hearts, <=2 diamonds, 3-4 spades + free 2S by partner
         (
             "P2_DAGGER_TAKEOUT_X_OVER_1D",
             "X",
@@ -280,7 +280,9 @@ def build_program2_dagger_rules() -> List[DecisionNetRule]:
                 ("last_bid_level", "==", 1),
                 ("hcp", ">=", 14),
                 ("heart_len", ">=", 4),
+                ("heart_len", "<=", 5),
                 ("diamond_len", "<=", 2),
+                ("spade_len", ">=", 3),
                 ("spade_len", "<=", 4),
             ],
         ),
@@ -295,6 +297,171 @@ def build_program2_dagger_rules() -> List[DecisionNetRule]:
                 ("spade_len", ">=", 6),
                 ("hcp", ">=", 5),
                 ("hcp", "<=", 10),
+            ],
+        ),
+        # 8. Constructive 1H - 2H single raise with 3-card support (6-9 HCP, LTC >= 8) & minimum opener pass
+        (
+            "P2_DAGGER_SINGLE_RAISE_2H_3CARD",
+            "2H",
+            914,
+            False,
+            [
+                ("opponents_bid", "==", False),
+                ("partner_last_call", "==", "1H"),
+                ("last_bid_level", "==", 1),
+                ("support_in_partner_suit", "==", 3),
+                ("hcp", ">=", 6),
+                ("hcp", "<=", 9),
+                ("losing_trick_count", ">=", 8),
+                ("spade_len", "<=", 3),
+            ],
+        ),
+        (
+            "P2_DAGGER_PASS_1H_2H_MIN_OPENER",
+            "PASS",
+            914,
+            False,
+            [
+                ("opponents_bid", "==", False),
+                ("my_last_call", "==", "1H"),
+                ("partner_last_call", "==", "2H"),
+                ("last_bid_level", "==", 2),
+                ("last_bid_strain", "==", "H"),
+                ("hcp", "<=", 13),
+                ("losing_trick_count", ">=", 6),
+            ],
+        ),
+        # 9. 6-4 Weak-Two 2S opening & Takeout X over opponent's weak 2S with 5H-4C (13+ HCP)
+        (
+            "P2_DAGGER_WEAK_2S_64_SHAPE",
+            "2S",
+            912,
+            False,
+            [
+                ("is_opening", "==", True),
+                ("hcp", ">=", 6),
+                ("hcp", "<=", 9),
+                ("spade_len", "==", 6),
+                ("s_is_longest", "==", True),
+                ("second_longest_len", "==", 4),
+                ("heart_len", "<=", 2),
+                ("losing_trick_count", "<=", 7),
+                ("s_stopper", ">=", 1),
+            ],
+        ),
+        (
+            "P2_DAGGER_TAKEOUT_X_OVER_2S",
+            "X",
+            914,
+            False,
+            [
+                ("is_opening", "==", False),
+                ("my_last_call", "==", "NONE"),
+                ("partner_last_call", "in", ["NONE", "PASS"]),
+                ("opp_last_call", "==", "2S"),
+                ("last_bid_level", "==", 2),
+                ("last_bid_strain", "==", "S"),
+                ("hcp", ">=", 13),
+                ("spade_len", "<=", 2),
+                ("heart_len", ">=", 5),
+                ("club_len", ">=", 4),
+                ("losing_trick_count", "<=", 7),
+            ],
+        ),
+        (
+            "P2_DAGGER_4H_OVER_2S_X",
+            "4H",
+            914,
+            False,
+            [
+                ("partner_last_call", "==", "X"),
+                ("opp_bid_spades", "==", True),
+                ("last_bid_level", "==", 2),
+                ("last_bid_strain", "==", "S"),
+                ("heart_len", ">=", 4),
+                ("hcp", ">=", 10),
+                ("losing_trick_count", "<=", 7),
+            ],
+        ),
+        (
+            "P2_DAGGER_RAISE_3H_TO_4H_AFTER_2S_X",
+            "4H",
+            914,
+            False,
+            [
+                ("my_last_call", "==", "X"),
+                ("partner_last_call", "==", "3H"),
+                ("opp_bid_spades", "==", True),
+                ("support_in_partner_suit", ">=", 4),
+                ("hcp", ">=", 13),
+                ("losing_trick_count", "<=", 7),
+            ],
+        ),
+        # 10. Bid 2D (not 1NT) over (1S) - X - (PASS) when lacking a spade stopper with 4+ diamonds
+        (
+            "P2_DAGGER_2D_OVER_1S_X_NO_STOP",
+            "2D",
+            914,
+            False,
+            [
+                ("is_opening", "==", False),
+                ("my_last_call", "==", "NONE"),
+                ("partner_last_call", "==", "X"),
+                ("opp_last_call", "==", "1S"),
+                ("opp_bid_spades", "==", True),
+                ("s_stopper", "==", 0),
+                ("hcp", ">=", 9),
+                ("hcp", "<=", 12),
+                ("diamond_len", ">=", 4),
+                ("heart_len", "<=", 3),
+            ],
+        ),
+        (
+            "P2_DAGGER_PASS_2D_AFTER_1S_X",
+            "PASS",
+            914,
+            False,
+            [
+                ("my_last_call", "==", "X"),
+                ("partner_last_call", "==", "2D"),
+                ("opp_bid_spades", "==", True),
+                ("last_bid_level", "==", 2),
+                ("last_bid_strain", "==", "D"),
+                ("diamond_len", ">=", 4),
+                ("hcp", "<=", 16),
+            ],
+        ),
+        # 11. Opener 2S raise over 1D - (1H) - 1S - (PASS) with 4-card spade support (12-15 HCP)
+        (
+            "P2_DAGGER_RAISE_1S_RESP_4CARD",
+            "2S",
+            914,
+            False,
+            [
+                ("my_last_call", "==", "1D"),
+                ("partner_last_call", "==", "1S"),
+                ("last_bid_level", "==", 1),
+                ("last_bid_strain", "==", "S"),
+                ("support_in_partner_suit", ">=", 4),
+                ("hcp", ">=", 12),
+                ("hcp", "<=", 15),
+            ],
+        ),
+        # 12. Opener accepts 3NT after 1NT - 2H(transfer) - 2S - 2NT(inv) with 15+ HCP, 4-4 minors & 4+ controls
+        (
+            "P2_DAGGER_3NT_ACCEPT_2NT_44_MINORS",
+            "3NT",
+            914,
+            False,
+            [
+                ("opponents_bid", "==", False),
+                ("my_first_call", "==", "1NT"),
+                ("my_last_call", "==", "2S"),
+                ("partner_last_call", "==", "2NT"),
+                ("hcp", ">=", 15),
+                ("club_len", ">=", 4),
+                ("diamond_len", ">=", 4),
+                ("controls", ">=", 4),
             ],
         ),
     ]
@@ -328,19 +495,23 @@ def run_dagger_harvest_and_graft(
     cache_path: str = "/tmp/brill_live_16.json",
 ) -> DecisionNet:
     net = load_decision_net_dsl(in_dsl)
-    existing_ids = {r.rule_id for r in net.rules}
+    existing_idx = {r.rule_id: i for i, r in enumerate(net.rules)}
     added_p1 = 0
     for r in build_program1_rules():
-        if r.rule_id not in existing_ids:
+        if r.rule_id in existing_idx:
+            net.rules[existing_idx[r.rule_id]] = r
+        else:
             net.rules.append(r)
-            existing_ids.add(r.rule_id)
+            existing_idx[r.rule_id] = len(net.rules) - 1
             added_p1 += 1
 
     added_p2 = 0
     for r in build_program2_dagger_rules():
-        if r.rule_id not in existing_ids:
+        if r.rule_id in existing_idx:
+            net.rules[existing_idx[r.rule_id]] = r
+        else:
             net.rules.append(r)
-            existing_ids.add(r.rule_id)
+            existing_idx[r.rule_id] = len(net.rules) - 1
             added_p2 += 1
 
     diff_net = DiffDSLNet(net)

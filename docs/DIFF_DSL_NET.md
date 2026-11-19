@@ -111,7 +111,7 @@ flowchart LR
 
 ## 5. Summary of Empirical Gains on Untouched Held-Out Test Boards
 
-Exporting the 6-generation Colab `NVIDIA L4` GPU JPS-optimized `DiffDSLNet` weights to [`system/brill_jps_diff.dsl`](../system/brill_jps_diff.dsl) (`1,867` rules) broke the **`+1.0000 IMP/board` barrier** over [`system/brill_distilled.dsl`](../system/brill_distilled.dsl) (**`+1.0008 ± 0.0990 IMP/board`**, a **+179.2% increase** over [`brill_gpu_evolved.dsl`](../system/brill_gpu_evolved.dsl)'s `+0.3584 IMP/board`) on the **2,500 untouched Held-Out Test boards** (`boards 7500..9999` of `data/colab_bundle_10k.pt`), and beat the Round 1 (Gen 3) checkpoint head-to-head by **`+0.3196 ± 0.0597 IMP/board` ($t = +5.35$, `+799 IMPs`)**:
+Exporting the 10-generation Colab `NVIDIA L4` GPU JPS-optimized `DiffDSLNet` weights to [`system/brill_jps_diff.dsl`](../system/brill_jps_diff.dsl) (`1,919` rules across the expanded `152`-feature schema) reached **`+1.0536 ± 0.1001 IMP/board` ($t = +10.53$, `+2,634 IMPs`)** over [`system/brill_distilled.dsl`](../system/brill_distilled.dsl) on the **2,500 untouched Held-Out Test boards** (`boards 7500..9999` of `data/colab_bundle_10k.pt`), beating Round 2 / Gen 7 ([`system/brill_jps_diff_gen7.dsl`](../system/brill_jps_diff_gen7.dsl)) head-to-head by **`+0.2288 ± 0.0519 IMP/board` ($t = +4.41$, `+572 IMPs`)**:
 
 | System Progression | vs. [`brill_distilled.dsl`](../system/brill_distilled.dsl) (`2,500` Test bds) | vs. [`brill_distilled_shipdd.dsl`](../system/brill_distilled_shipdd.dsl) (`2,500` Test bds) | vs. [`brill_gpu_evolved.dsl`](../system/brill_gpu_evolved.dsl) (`2,500` Test bds) | Independent Seed-7 (`500` bds) vs. [`brill_distilled.dsl`](../system/brill_distilled.dsl) |
 | :--- | :--- | :--- | :--- | :--- |
@@ -119,7 +119,8 @@ Exporting the 6-generation Colab `NVIDIA L4` GPU JPS-optimized `DiffDSLNet` weig
 | + GPU + `SuitC` ([`system/brill_gpu_evolved.dsl`](../system/brill_gpu_evolved.dsl), `1,840` rules) | `+0.3584 ± 0.0737` ($t = +4.86$) | `+0.3320 ± 0.0544` ($t = +6.10$) | `0.0000` | `+0.1720 ± 0.1680` ($t = +1.02$) |
 | + 1-Gen CPU `DiffDSLNet` + JPS (`1,844` rules) | `+0.7876 ± 0.0883` ($t = +8.92$) | `+0.7244 ± 0.0783` ($t = +9.25$) | `+0.3208 ± 0.0610` ($t = +5.26$) | `+0.4100 ± 0.2192` ($t = +1.87$) |
 | + Round 1 (Gen 1–3) Colab `L4` GPU `DiffDSLNet` + JPS (`1,855` rules) | `+0.9624 ± 0.0920` ($t = +10.46$, `+2,406 IMP`) | `+0.9184 ± 0.0854` ($t = +10.75$, `+2,296 IMP`) | `+0.5028 ± 0.0739` ($t = +6.80$, `+1,257 IMP`) | `+0.6540 ± 0.2473` ($t = +2.64$, `+327 IMP`) |
-| **+ Round 2 (Gen 4–6) Colab `L4` GPU `DiffDSLNet` + JPS ([`system/brill_jps_diff.dsl`](../system/brill_jps_diff.dsl), `1,867` rules)** | **`+1.0008 ± 0.0990` ($t = +10.11$, `+2,502 IMP`)** | **`+0.9688 ± 0.0941` ($t = +10.29$, `+2,422 IMP`)** | **`+0.6092 ± 0.0861` ($t = +7.08$, `+1,523 IMP`)** | **`+0.6380 ± 0.2572` ($t = +2.48$, `+319 IMP`)** |
+| + Round 2 (Gen 4–6) Colab `L4` GPU `DiffDSLNet` + JPS (`1,867` rules) | `+1.0008 ± 0.0990` ($t = +10.11$, `+2,502 IMP`) | `+0.9688 ± 0.0941` ($t = +10.29$, `+2,422 IMP`) | `+0.6092 ± 0.0861` ($t = +7.08$, `+1,523 IMP`) | `+0.6380 ± 0.2572` ($t = +2.48$, `+319 IMP`) |
+| **+ Round 3 (Gen 8–10) Colab `L4` GPU `DiffDSLNet` + JPS ([`system/brill_jps_diff.dsl`](../system/brill_jps_diff.dsl), `1,919` rules)** | **`+1.0536 ± 0.1001` ($t = +10.53$, `+2,634 IMP`)** | **`+1.0124 ± 0.0952` ($t = +10.64$, `+2,531 IMP`)** | **`+0.6544 ± 0.0882` ($t = +7.42$, `+1,636 IMP`)** | **`+0.7120 ± 0.2582` ($t = +2.76$, `+356 IMP`)** |
 
 ---
 
@@ -161,9 +162,9 @@ flowchart TD
     G1 --> P1
 ```
 
-### Generation-by-Generation Colab `NVIDIA L4` Self-Improvement Trajectory (Generations 1–6)
+### Generation-by-Generation Colab `NVIDIA L4` Self-Improvement Trajectory (Generations 1–10)
 
-Across 6 generations (Round 1: Gen 1–3; Round 2: Gen 4–6 with mega-batched Stage 3 split probing over `13,650` candidate splits and `9,600+` coupled depth-2 pairs per generation) on the Colab `NVIDIA L4`, [`DiffDSLNet`](../src/bid/diff_dsl_net.py) accepted **54 multi-opponent-validated structural and parameter updates** (`6` coupled depth-2 JPS pairs, `21` STE gradient-guided threshold shifts, and `27` partner-belief/stopper/control/`SuitC` rule splits), monotonically improving across all 6 generations:
+Across Rounds 1–3 (Gen 1–6 on the original schema; P1/P2 + Gen 7 locally; Round 3: Gen 8–10 on the expanded `152`-feature schema evaluating `9,586–9,640` coupled depth-2 pairs and `16,555` candidate splits per generation) on the Colab `NVIDIA L4`, [`DiffDSLNet`](../src/bid/diff_dsl_net.py) accepted **15 additional multi-opponent-validated updates in Round 3** (`3` coupled depth-2 JPS pairs, `7` STE gradient-guided threshold shifts, and `5` condition splits including `opp_bid_spades`, `controls`, and `opp_suit_stoppers`):
 
 | Generation | League Pool Size | Coupled Pairs / Split Tasks Evaluated | Edits Accepted (Coupled / Thresh / Split) | Total Rules | Held-Out Test (`2,500` bds) vs [`brill_distilled.dsl`](../system/brill_distilled.dsl) | Held-Out Test (`2,500` bds) vs [`brill_gpu_evolved.dsl`](../system/brill_gpu_evolved.dsl) |
 | :--- | :---: | :---: | :---: | :---: | :--- | :--- |
@@ -173,7 +174,11 @@ Across 6 generations (Round 1: Gen 1–3; Round 2: Gen 4–6 with mega-batched S
 | **Gen 3** (`L4` GPU, Round 1) | `5` | `5,376` / `2,800` | **`5`** (`1 / 3 / 1`) | `1,855` | `+0.9624 ± 0.0920` ($t = +10.46$) | `+0.5028 ± 0.0739` ($t = +6.80$) |
 | **Gen 4** (`L4` GPU, Round 2) | `4` | `9,616` / `13,650` | **`9`** (`0 / 4 / 5`) | `1,860` | `+0.9864 ± 0.0931` ($t = +10.60$) | `+0.5296 ± 0.0758` ($t = +6.99$) |
 | **Gen 5** (`L4` GPU, Round 2) | `5` | `9,622` / `13,650` | **`10`** (`2 / 5 / 3`) | `1,863` | `+0.9624 ± 0.0983` ($t = +9.79$) | `+0.5524 ± 0.0845` ($t = +6.54$) |
-| **Gen 6** (`L4` GPU, Round 2) | `6` | `9,508` / `13,650` | **`7`** (`0 / 3 / 4`) | **`1,867`** | **`+1.0008 ± 0.0990` ($t = +10.11$)** | **`+0.6092 ± 0.0861` ($t = +7.08$)** |
+| **Gen 6** (`L4` GPU, Round 2) | `6` | `9,508` / `13,650` | **`7`** (`0 / 3 / 4`) | `1,867` | `+1.0008 ± 0.0990` ($t = +10.11$) | `+0.6092 ± 0.0861` ($t = +7.08$) |
+| **Gen 7** (P1–P4 + 152-feat JPS, [`brill_jps_diff_gen7.dsl`](../system/brill_jps_diff_gen7.dsl)) | `4` | `—` / `2,800` | **`1`** (`0 / 0 / 1`) | `1,915` | `+0.9600 ± 0.0989` ($t = +9.71$) | `+0.5792 ± 0.0864` ($t = +6.70$) |
+| **Gen 8** (`L4` GPU, Round 3) | `4` | `9,640` / `16,555` | **`10`** (`2 / 5 / 3`) | `1,918` | `+1.0232 ± 0.1013` ($t = +10.10$) | `+0.6400 ± 0.0890` ($t = +7.19$) |
+| **Gen 9** (`L4` GPU, Round 3) | `5` | `9,586` / `16,555` | **`2`** (`0 / 1 / 1`) | `1,919` | `+1.0208 ± 0.1012` ($t = +10.09$) | `+0.6456 ± 0.0893` ($t = +7.23$) |
+| **Gen 10** (`L4` GPU, Round 3, [`system/brill_jps_diff.dsl`](../system/brill_jps_diff.dsl)) | `6` | `9,604` / `16,555` | **`3`** (`1 / 1 / 1`) | **`1,919`** | **`+1.0536 ± 0.1001` ($t = +10.53$)** | **`+0.6544 ± 0.0882` ($t = +7.42$)** |
 
 ### Key Multi-Generation Discoveries from the Colab `L4` Runs
 

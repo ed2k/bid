@@ -93,14 +93,14 @@ We implemented the neuro-symbolic differentiable DSL model and JPS search in:
   2. **Stage 2 (STE Gradient-Guided `atom_val` Threshold Shifts)**: Uses STE gradients $\nabla_{\theta_u}$ on `DiffDSLNet.atom_val` to prioritize continuous threshold shifts across the top 110 atoms (`delta in {-2, -1, +1, +2}`), validating 21 threshold refinements across 6 generations.
   3. **Stage 3 (Mega-Batched JPS Partner-Belief, Stopper, Control & `SuitC` Condition Splits)**: Evaluates `13,650` candidate splits per generation in packed mega-batches ([`run_packed_split_probe_batch`](../research/jps_search.py#L616-L699)), appending 27 multi-opponent-validated condition splits across 6 generations via [`DiffDSLNet.clone_and_split_rule()`](../src/bid/diff_dsl_net.py#L636-L706) and exporting the learned weights back to [`system/brill_jps_diff.dsl`](../system/brill_jps_diff.dsl) (`1,867` rules).
 
-### Held-Out Duplicate Team Match Results ([`system/brill_jps_diff.dsl`](../system/brill_jps_diff.dsl), Generation 6)
+### Held-Out Duplicate Team Match Results ([`system/brill_jps_diff.dsl`](../system/brill_jps_diff.dsl), Generation 10 / Round 3)
 
-Evaluated on the **2,500 untouched Held-Out Test boards** (`boards 7500..9999` of `data/colab_bundle_10k.pt`) and the independent **500-board Seed-7 benchmark** (`data/colab_bundle_500.pt`) after 6 generations of Colab `NVIDIA L4` GPU self-improvement:
+Evaluated on the **2,500 untouched Held-Out Test boards** (`boards 7500..9999` of `data/colab_bundle_10k.pt`) and the independent **500-board Seed-7 benchmark** (`data/colab_bundle_500.pt`) after Round 3 (`Generations 8–10`) of Colab `NVIDIA L4` GPU self-improvement (`1,919` rules):
 
 | Opponent System | Held-Out Test (`2,500` bds) Net IMP/bd | Held-Out Test $t$-stat (Total IMPs) | Independent `colab_bundle_500` (`500` bds) |
 | :--- | :--- | :--- | :--- |
-| vs. [`brill_distilled.dsl`](../system/brill_distilled.dsl) | **`+1.0008 ± 0.0990`** (up from `+0.3584`) | **`t = +10.11`** (`+2,502 IMPs`) | **`+0.6380 ± 0.2572`** (`t = +2.48`, `+319 IMPs`) |
-| vs. [`brill_distilled_shipdd.dsl`](../system/brill_distilled_shipdd.dsl) | **`+0.9688 ± 0.0941`** (up from `+0.3320`) | **`t = +10.29`** (`+2,422 IMPs`) | **`+0.6160 ± 0.2427`** (`t = +2.54`, `+308 IMPs`) |
-| vs. [`brill_gpu_evolved.dsl`](../system/brill_gpu_evolved.dsl) *(prior best)* | **`+0.6092 ± 0.0861`** | **`t = +7.08`** (`+1,523 IMPs`) | **`+0.4080 ± 0.2223`** (`t = +1.84`, `+204 IMPs`) |
-| vs. `brill_jps_diff_r1.dsl` *(Round 1 / Gen 3)* | **`+0.3196 ± 0.0597`** | **`t = +5.35`** (`+799 IMPs`) | `-0.0220 ± 0.1140` (`t = -0.19`) |
-| vs. [`champion_system.dsl`](../system/champion_system.dsl) | **`+0.8432 ± 0.1348`** | **`t = +6.26`** (`+2,108 IMPs`) | **`+0.9520 ± 0.3233`** (`t = +2.94`, `+476 IMPs`) |
+| vs. [`brill_distilled.dsl`](../system/brill_distilled.dsl) | **`+1.0536 ± 0.1001`** (up from `+0.3584`) | **`t = +10.53`** (`+2,634 IMPs`) | **`+0.7120 ± 0.2582`** (`t = +2.76`, `+356 IMPs`) |
+| vs. [`brill_distilled_shipdd.dsl`](../system/brill_distilled_shipdd.dsl) | **`+1.0124 ± 0.0952`** (up from `+0.3320`) | **`t = +10.64`** (`+2,531 IMPs`) | **`+0.6660 ± 0.2437`** (`t = +2.73`, `+333 IMPs`) |
+| vs. [`brill_gpu_evolved.dsl`](../system/brill_gpu_evolved.dsl) *(Gen 0 base)* | **`+0.6544 ± 0.0882`** | **`t = +7.42`** (`+1,636 IMPs`) | **`+0.3740 ± 0.2232`** (`t = +1.68`, `+187 IMPs`) |
+| vs. [`brill_jps_diff_gen7.dsl`](../system/brill_jps_diff_gen7.dsl) *(Gen 7 baseline)* | **`+0.2288 ± 0.0519`** | **`t = +4.41`** (`+572 IMPs`) | `+0.0020 ± 0.1337` (`t = +0.01`, `+1 IMP`) |
+| vs. [`champion_system.dsl`](../system/champion_system.dsl) | **`+1.1052 ± 0.1384`** | **`t = +7.98`** (`+2,763 IMPs`) | **`+1.0800 ± 0.3254`** (`t = +3.32`, `+540 IMPs`) |

@@ -583,9 +583,22 @@ class BridgeFeatures:
 
         if opp_suits and hand is not None:
             features["opp_suit_stoppers"] = max(_stopper_q(s) for s in opp_suits)
+            unstopped_opp = sum(1 for s in opp_suits if _stopper_q(s) <= 0.0)
         else:
             features["opp_suit_stoppers"] = 2.0   # nothing to stop / no hand: treat as safe
+            unstopped_opp = 0
         features["has_stopper"] = features["opp_suit_stoppers"] > 0
+        features["unstopped_opp_suits"] = unstopped_opp
+        features["all_opp_suits_stopped"] = (unstopped_opp == 0)
+
+        all_bid_suits = opp_suits | my_suits | partner_suits
+        unbid_maj_unstop = False
+        if hand is not None:
+            for maj_s in (Suit.HEARTS, Suit.SPADES):
+                if (maj_s not in all_bid_suits) and (_stopper_q(maj_s) <= 0.0) and (len(hand.by_suit.get(maj_s, [])) <= 3):
+                    unbid_maj_unstop = True
+                    break
+        features["unbid_major_unstopped"] = unbid_maj_unstop
 
 
         # Balancing seat (2 consecutive passes after an opponent bid)
@@ -750,8 +763,49 @@ class BridgeFeatures:
                     p_len_est = 3 if p_first_str == "1C" else 4
             else:
                 p_len_est = 2
-            comb_fit_len = eff_len + p_len_est
+        comb_fit_len = eff_len + p_len_est if (eff_trump_str != "NONE" and eff_len >= 0) else 0
         features["combined_fit_len_est"] = comb_fit_len
+
+        # Round 5: Competitive two-suiter (Unusual 2NT / Michaels) & Power Double over preempts
+        if hand is not None:
+            c_l = len(hand.by_suit.get(Suit.CLUBS, []))
+            d_l = len(hand.by_suit.get(Suit.DIAMONDS, []))
+            h_l = len(hand.by_suit.get(Suit.HEARTS, []))
+            s_l = len(hand.by_suit.get(Suit.SPADES, []))
+            they_opened = (first_bid_seat in (opp1, opp2))
+            can_comp_ov = they_opened and (my_last_str == "NONE")
+            ob_s = features["opening_bid"]
+            if can_comp_ov and ob_s == "1C":
+                features["is_unusual_2nt_shape"] = (d_l >= 5 and h_l >= 5)
+                features["is_michaels_shape"] = (h_l >= 5 and s_l >= 5)
+            elif can_comp_ov and ob_s == "1D":
+                features["is_unusual_2nt_shape"] = (c_l >= 5 and h_l >= 5)
+                features["is_michaels_shape"] = (h_l >= 5 and s_l >= 5)
+            elif can_comp_ov and ob_s == "1H":
+                features["is_unusual_2nt_shape"] = (c_l >= 5 and d_l >= 5)
+                features["is_michaels_shape"] = (s_l >= 5 and (c_l >= 5 or d_l >= 5))
+            elif can_comp_ov and ob_s == "1S":
+                features["is_unusual_2nt_shape"] = (c_l >= 5 and d_l >= 5)
+                features["is_michaels_shape"] = (h_l >= 5 and (c_l >= 5 or d_l >= 5))
+            else:
+                features["is_unusual_2nt_shape"] = False
+                features["is_michaels_shape"] = False
+
+            opp_fb = opp_bid_calls[0] if opp_bid_calls else None
+            opp_fb_len = 13
+            if opp_fb is not None and opp_fb.strain is not None and opp_fb.strain != Strain.NT:
+                opp_fb_len = len(hand.by_suit.get(Suit(opp_fb.strain.value), []))
+            features["is_power_double_hand"] = (
+                bool(features["opp_preempted"])
+                and (my_last_str == "NONE")
+                and (hand.hcp >= 17)
+                and (hand.controls >= 5)
+                and (opp_fb_len <= 2)
+            )
+        else:
+            features["is_unusual_2nt_shape"] = False
+            features["is_michaels_shape"] = False
+            features["is_power_double_hand"] = False
 
         return features
 

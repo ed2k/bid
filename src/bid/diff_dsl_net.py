@@ -84,6 +84,11 @@ _BOOL_FEATURES = {
     "opp_bid_hearts",
     "opp_bid_spades",
     "rkcb_has_queen",
+    "all_opp_suits_stopped",
+    "unbid_major_unstopped",
+    "is_unusual_2nt_shape",
+    "is_michaels_shape",
+    "is_power_double_hand",
 }
 
 _CALL_CODED_FEATURES = {
